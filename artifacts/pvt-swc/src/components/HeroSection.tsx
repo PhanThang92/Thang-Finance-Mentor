@@ -78,82 +78,87 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Portrait Card */}
+          {/* Portrait — real photo */}
           <motion.div
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.1, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="flex justify-center lg:justify-end"
           >
-            <div className="relative w-72 md:w-80 lg:w-full">
-              {/* Card */}
+            <div className="relative w-64 sm:w-72 lg:w-full max-w-[380px]">
+
+              {/* Portrait image wrapper */}
               <div
-                className="w-full aspect-[3/4] rounded-2xl overflow-hidden flex flex-col items-center justify-center relative"
-                style={{
-                  background: "linear-gradient(160deg, #1a4a44 0%, #133833 60%, #0e2e2a 100%)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  boxShadow: "0 32px 64px -16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)",
-                }}
+                className="relative w-full overflow-hidden"
+                style={{ borderRadius: "1.25rem", aspectRatio: "3/4" }}
               >
-                {/* Inner glow */}
+                {/* The photo */}
+                <img
+                  src="/portrait.png"
+                  alt="Phan Văn Thắng SWC"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ objectPosition: "50% 8%" }}
+                />
+
+                {/* Left edge fade — blends dark photo bg into teal hero */}
                 <div
-                  className="absolute inset-0"
+                  className="absolute inset-0 pointer-events-none"
                   style={{
                     background:
-                      "radial-gradient(ellipse 80% 60% at 50% 30%, rgba(52,160,140,0.12) 0%, transparent 70%)",
+                      "linear-gradient(to right, #0d2521 0%, rgba(13,37,33,0.55) 22%, transparent 48%)",
                   }}
                 />
 
-                {/* Placeholder monogram */}
-                <div className="relative z-10 flex flex-col items-center gap-4">
-                  <div
-                    className="w-24 h-24 rounded-full flex items-center justify-center"
-                    style={{
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1px solid rgba(255,255,255,0.10)",
-                    }}
-                  >
-                    <span className="text-3xl font-bold text-white/30 tracking-widest">PVT</span>
-                  </div>
-                  <div className="text-center space-y-1">
-                    <p className="text-white/60 text-sm font-medium">Phan Văn Thắng</p>
-                    <p className="text-white/35 text-xs">Mentor · Nhà đầu tư dài hạn</p>
-                  </div>
-                </div>
-
-                {/* Decorative horizontal line */}
+                {/* Bottom fade — smooth transition to content below */}
                 <div
-                  className="absolute bottom-24 left-8 right-8 h-px"
-                  style={{ background: "rgba(255,255,255,0.06)" }}
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(to top, #0a1f1c 0%, rgba(10,31,28,0.7) 22%, transparent 55%)",
+                  }}
                 />
 
-                {/* Stats row at bottom */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 flex justify-around">
+                {/* Subtle top vignette */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(to bottom, rgba(10,31,28,0.35) 0%, transparent 28%)",
+                  }}
+                />
+
+                {/* Stats bar — anchored at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 px-6 pb-5 flex justify-start gap-8 z-10">
                   {[
                     { n: "7+", label: "năm đầu tư" },
                     { n: "5+", label: "năm công nghệ" },
                   ].map((s) => (
-                    <div key={s.label} className="text-center">
-                      <p className="text-white/80 text-lg font-bold">{s.n}</p>
-                      <p className="text-white/35 text-[11px] mt-0.5">{s.label}</p>
+                    <div key={s.label}>
+                      <p className="text-white text-xl font-bold leading-none">{s.n}</p>
+                      <p className="text-white/45 text-[11px] mt-1 font-light">{s.label}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Floating badge */}
+              {/* Name chip — below the card */}
               <motion.div
-                initial={{ opacity: 0, x: 16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1, duration: 0.6 }}
-                className="absolute -right-4 top-10 rounded-xl py-2.5 px-4 text-xs font-semibold text-white/90 shadow-xl"
-                style={{
-                  background: "rgba(30,80,70,0.85)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.1, duration: 0.6 }}
+                className="mt-4 flex items-center gap-3"
               >
-                Đầu tư dài hạn
+                <div
+                  className="h-px flex-1"
+                  style={{ background: "rgba(255,255,255,0.08)" }}
+                />
+                <span className="text-[12px] text-white/40 font-light tracking-wide whitespace-nowrap">
+                  Phan Văn Thắng · Mentor · Nhà đầu tư dài hạn
+                </span>
+                <div
+                  className="h-px flex-1"
+                  style={{ background: "rgba(255,255,255,0.08)" }}
+                />
               </motion.div>
             </div>
           </motion.div>
