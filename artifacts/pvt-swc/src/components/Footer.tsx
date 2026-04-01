@@ -2,64 +2,106 @@ import React from "react";
 import { Mail, Users } from "lucide-react";
 import { SiYoutube, SiFacebook } from "react-icons/si";
 
-export function Footer() {
-  const navLinks = [
-    { name: "Trang chủ", href: "#trang-chu" },
-    { name: "Giới thiệu", href: "#gioi-thieu" },
-    { name: "Nội dung", href: "#noi-dung" },
-    { name: "Cộng đồng", href: "#cong-dong" },
-    { name: "Liên hệ", href: "#lien-he" },
-  ];
+const navLinks = [
+  { name: "Trang chủ", href: "#trang-chu" },
+  { name: "Giới thiệu", href: "#gioi-thieu" },
+  { name: "Nội dung", href: "#noi-dung" },
+  { name: "Cộng đồng", href: "#cong-dong" },
+  { name: "Liên hệ", href: "#lien-he" },
+];
 
+const socials = [
+  { icon: SiYoutube, label: "YouTube", href: "#", ariaLabel: "YouTube" },
+  { icon: SiFacebook, label: "Facebook", href: "#", ariaLabel: "Facebook" },
+];
+
+export function Footer() {
   return (
-    <footer className="bg-[#0a1816] text-white pt-16 pb-8">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 border-b border-white/10 pb-12">
-          
-          <div className="md:col-span-5 space-y-6">
-            <h2 className="text-2xl font-bold text-primary">Thắng SWC</h2>
-            <p className="text-white/70 leading-relaxed max-w-sm">
-              Chia sẻ về tư duy tài chính, đầu tư dài hạn, phát triển bản thân và hành trình xây tài sản bền vững.
+    <footer
+      className="text-white"
+      style={{ background: "linear-gradient(180deg, #091d1a 0%, #07161360 100%), #091d1a" }}
+    >
+      <div className="max-w-5xl mx-auto px-5 sm:px-8">
+        {/* Main grid */}
+        <div
+          className="py-14 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 md:gap-16 border-b"
+          style={{ borderColor: "rgba(255,255,255,0.07)" }}
+        >
+          {/* Brand */}
+          <div className="space-y-5 max-w-sm">
+            <p className="text-lg font-bold text-primary">Thắng SWC</p>
+            <p className="text-sm leading-[1.85] text-white/50">
+              Chia sẻ về tư duy tài chính, đầu tư dài hạn, phát triển bản thân và hành trình xây
+              tài sản bền vững.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/70 hover:bg-primary hover:text-white transition-colors" aria-label="YouTube">
-                <SiYoutube size={18} />
+            {/* Social icons */}
+            <div className="flex items-center gap-2">
+              {socials.map(({ icon: Icon, href, ariaLabel }) => (
+                <a
+                  key={ariaLabel}
+                  href={href}
+                  aria-label={ariaLabel}
+                  className="w-9 h-9 rounded-full flex items-center justify-center transition-colors duration-200"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(52,160,140,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
+                  }}
+                >
+                  <Icon size={15} className="text-white/60" />
+                </a>
+              ))}
+              <a
+                href="mailto:contact@thangswc.com"
+                aria-label="Email"
+                className="w-9 h-9 rounded-full flex items-center justify-center transition-colors duration-200"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+              >
+                <Mail size={15} className="text-white/60" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/70 hover:bg-primary hover:text-white transition-colors" aria-label="Facebook">
-                <SiFacebook size={18} />
-              </a>
-              <a href="mailto:#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/70 hover:bg-primary hover:text-white transition-colors" aria-label="Email">
-                <Mail size={18} />
-              </a>
-              <a href="#cong-dong" className="px-4 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/70 hover:bg-primary hover:text-white transition-colors space-x-2 text-sm font-medium">
-                <Users size={16} />
-                <span>Cộng đồng</span>
+              <a
+                href="#cong-dong"
+                className="h-9 px-3.5 rounded-full flex items-center gap-2 text-xs font-medium text-white/60 transition-colors duration-200"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+              >
+                <Users size={13} />
+                Cộng đồng
               </a>
             </div>
           </div>
 
-          <div className="md:col-span-7 flex flex-col md:items-end justify-between">
-            <ul className="flex flex-wrap gap-x-8 gap-y-4 text-white/70 font-medium">
-              {navLinks.map((link) => (
-                <li key={link.name}>
-                  <a href={link.href} className="hover:text-white transition-colors">
-                    {link.name}
+          {/* Nav links */}
+          <div className="space-y-4">
+            <p className="text-[11px] font-semibold tracking-[0.16em] uppercase text-white/30">
+              Điều hướng
+            </p>
+            <ul className="space-y-3">
+              {navLinks.map(({ name, href }) => (
+                <li key={name}>
+                  <a
+                    href={href}
+                    className="text-sm text-white/50 hover:text-white/85 transition-colors duration-200"
+                  >
+                    {name}
                   </a>
                 </li>
               ))}
             </ul>
-            
-            <div className="mt-8 md:mt-0 max-w-xl text-right">
-              <p className="text-[11px] text-white/40 leading-relaxed text-left md:text-right">
-                Thông tin trên website mang tính chia sẻ, giáo dục và tham khảo. Đây không phải là cam kết lợi nhuận và cũng không phải là lời khuyên đầu tư cá nhân hóa cho từng trường hợp cụ thể.
-              </p>
-            </div>
           </div>
-          
         </div>
-        
-        <div className="pt-8 text-center md:text-left text-sm text-white/50">
-          <p>© 2024 Phan Văn Thắng SWC. Bảo lưu mọi quyền.</p>
+
+        {/* Bottom bar */}
+        <div className="py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <p className="text-[12px] text-white/35">
+            © 2024 Phan Văn Thắng SWC. Bảo lưu mọi quyền.
+          </p>
+          <p className="text-[11px] text-white/25 leading-relaxed max-w-md md:text-right">
+            Thông tin trên website mang tính chia sẻ, giáo dục và tham khảo. Đây không phải là
+            cam kết lợi nhuận và cũng không phải là lời khuyên đầu tư cá nhân hóa cho từng trường
+            hợp cụ thể.
+          </p>
         </div>
       </div>
     </footer>

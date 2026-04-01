@@ -3,22 +3,80 @@ import { motion } from "framer-motion";
 
 export function BackgroundDecor() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Grid pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
-      
-      {/* Decorative circles */}
-      <motion.div 
+    <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+      {/* Subtle grid */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)",
+          backgroundSize: "5rem 5rem",
+          maskImage: "radial-gradient(ellipse 70% 60% at 60% 10%, black 50%, transparent 100%)",
+        }}
+      />
+
+      {/* Outer slow ring */}
+      <motion.div
         animate={{ rotate: 360 }}
-        transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
-        className="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] rounded-full border-[1px] border-primary/10 border-dashed"
+        transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
+        className="absolute"
+        style={{
+          top: "-8%", right: "-6%",
+          width: "44rem", height: "44rem",
+          borderRadius: "50%",
+          border: "1px dashed rgba(100,200,180,0.12)",
+        }}
       />
-      <motion.div 
+
+      {/* Inner medium ring */}
+      <motion.div
         animate={{ rotate: -360 }}
-        transition={{ duration: 200, repeat: Infinity, ease: "linear" }}
-        className="absolute top-[5%] right-[5%] w-[30rem] h-[30rem] rounded-full border-[1px] border-primary/20 border-dotted"
+        transition={{ duration: 130, repeat: Infinity, ease: "linear" }}
+        className="absolute"
+        style={{
+          top: "4%", right: "4%",
+          width: "32rem", height: "32rem",
+          borderRadius: "50%",
+          border: "1px solid rgba(100,200,180,0.09)",
+        }}
       />
-      <div className="absolute bottom-[-20%] left-[-10%] w-[50rem] h-[50rem] rounded-full bg-primary/5 blur-[100px]" />
+
+      {/* Small accent ring */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
+        className="absolute"
+        style={{
+          top: "12%", right: "12%",
+          width: "18rem", height: "18rem",
+          borderRadius: "50%",
+          border: "1.5px dashed rgba(100,200,180,0.15)",
+        }}
+      />
+
+      {/* Glow blob bottom left */}
+      <div
+        className="absolute"
+        style={{
+          bottom: "-15%", left: "-8%",
+          width: "42rem", height: "42rem",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(26,94,84,0.22) 0%, transparent 70%)",
+          filter: "blur(40px)",
+        }}
+      />
+
+      {/* Glow top center */}
+      <div
+        className="absolute"
+        style={{
+          top: "20%", left: "30%",
+          width: "20rem", height: "20rem",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(36,130,115,0.10) 0%, transparent 70%)",
+          filter: "blur(60px)",
+        }}
+      />
     </div>
   );
 }
