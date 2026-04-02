@@ -4,9 +4,9 @@ import { BackgroundDecor } from "./BackgroundDecor";
 import { ArrowDown } from "lucide-react";
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.85, delay, ease: [0.22, 1, 0.36, 1] },
 });
 
 export function HeroSection() {
@@ -14,77 +14,111 @@ export function HeroSection() {
     <section
       id="trang-chu"
       className="relative min-h-screen flex items-center overflow-hidden"
-      style={{ background: "linear-gradient(145deg, #0c2420 0%, #102a26 40%, #0a1f1c 100%)" }}
+      style={{ background: "linear-gradient(150deg, #0d2622 0%, #102a26 45%, #091e1b 100%)" }}
     >
       <BackgroundDecor />
 
       <div className="max-w-6xl mx-auto px-5 sm:px-8 relative z-10 w-full pt-24 pb-20 md:pt-32 md:pb-28">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_390px] gap-10 lg:gap-14 items-center">
 
           {/* ── Text Column ── */}
-          <div className="space-y-6 max-w-2xl">
+          <div className="flex flex-col max-w-xl">
 
             {/* Brand label */}
-            <motion.div {...fadeUp(0.1)} className="flex items-center gap-3">
-              <div className="h-px w-7 bg-accent/65" />
-              <span className="text-[11px] font-semibold tracking-[0.20em] uppercase text-accent/80">
+            <motion.div {...fadeUp(0.1)} className="flex items-center gap-2.5 mb-7">
+              <div
+                className="flex-shrink-0"
+                style={{ width: "1.75rem", height: "0.5px", background: "rgba(200,158,76,0.65)" }}
+              />
+              <span
+                className="text-accent/78"
+                style={{ fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase" }}
+              >
                 Phan Văn Thắng SWC
               </span>
             </motion.div>
 
             {/* Headline */}
             <motion.h1
-              {...fadeUp(0.2)}
-              className="text-[1.65rem] sm:text-[2.1rem] md:text-[2.6rem] font-bold text-white leading-[1.18]"
+              {...fadeUp(0.18)}
+              className="text-white mb-7"
+              style={{
+                fontSize: "clamp(1.6rem, 4.5vw, 2.55rem)",
+                fontWeight: 700,
+                lineHeight: 1.16,
+                letterSpacing: "-0.025em",
+              }}
             >
               Xây tài sản dài hạn{" "}
-              <span className="text-white/70 font-normal">không bắt đầu từ may mắn.</span>
+              <span style={{ color: "rgba(255,255,255,0.62)", fontWeight: 400 }}>
+                không bắt đầu từ may mắn.
+              </span>
               <br />
-              <span className="text-white/88">
+              <span style={{ color: "rgba(255,255,255,0.88)" }}>
                 Nó bắt đầu từ kỷ luật, tư duy đúng và một hành trình nghiêm túc.
               </span>
             </motion.h1>
 
-            {/* 1. Body text — main supporting paragraph, clearer weight */}
+            {/* Primary body paragraph */}
             <motion.p
-              {...fadeUp(0.32)}
-              className="text-[15px] md:text-[15.5px] text-white/68 leading-[1.9] max-w-lg"
-              style={{ fontWeight: 400 }}
+              {...fadeUp(0.30)}
+              className="mb-3.5"
+              style={{
+                fontSize: "15px",
+                fontWeight: 400,
+                color: "rgba(255,255,255,0.70)",
+                lineHeight: 1.88,
+                maxWidth: "32rem",
+              }}
             >
               Tôi chia sẻ về tư duy tài chính, đầu tư dài hạn, phát triển bản thân và cách xây
               dựng một hệ thống đủ vững để người bình thường có thể đi xa hơn trên hành trình tự
               do tài chính.
             </motion.p>
 
-            {/* 1. Secondary paragraph — softer, visually lighter */}
+            {/* Secondary paragraph — whisper tier */}
             <motion.p
-              {...fadeUp(0.42)}
-              className="text-[12.5px] md:text-[13px] text-white/36 leading-[1.95] max-w-lg italic"
-              style={{ fontWeight: 300 }}
+              {...fadeUp(0.40)}
+              className="mb-9"
+              style={{
+                fontSize: "12.5px",
+                fontWeight: 300,
+                fontStyle: "italic",
+                color: "rgba(255,255,255,0.38)",
+                lineHeight: 2.0,
+                maxWidth: "30rem",
+              }}
             >
               Tôi không theo đuổi những lời hứa làm giàu nhanh. Tôi tin vào một con đường thực
               tế hơn: hiểu tiền đúng, sống kỷ luật hơn, đầu tư tỉnh táo hơn và kiên trì đủ lâu
               để tài sản có cơ hội hình thành.
             </motion.p>
 
-            {/* 2. CTA buttons — premium, polished */}
-            <motion.div {...fadeUp(0.52)} className="flex flex-col sm:flex-row gap-3 pt-3">
-              {/* Primary — brighter teal, clean shadow, smooth hover */}
+            {/* Buttons */}
+            <motion.div {...fadeUp(0.50)} className="flex flex-col sm:flex-row gap-2.5">
+
+              {/* Primary */}
               <a
                 href="#noi-dung"
-                className="inline-flex items-center justify-center h-11 px-7 rounded-full text-[13.5px] font-semibold tracking-[0.02em] text-white transition-all duration-250"
+                className="inline-flex items-center justify-center rounded-full text-white transition-all"
                 style={{
-                  background: "linear-gradient(135deg, #1f9e8a 0%, #1a8876 100%)",
-                  boxShadow: "0 4px 18px rgba(26,136,118,0.30), inset 0 1px 0 rgba(255,255,255,0.12)",
+                  height: "2.625rem",
+                  padding: "0 1.875rem",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  letterSpacing: "0.02em",
+                  background: "linear-gradient(140deg, #22917f 0%, #1a7868 100%)",
+                  boxShadow: "0 3px 16px rgba(20,115,98,0.28), inset 0 1px 0 rgba(255,255,255,0.13)",
+                  transition: "box-shadow 0.2s ease, transform 0.2s ease",
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.boxShadow = "0 6px 24px rgba(26,136,118,0.42), inset 0 1px 0 rgba(255,255,255,0.15)";
+                  el.style.boxShadow = "0 5px 22px rgba(20,115,98,0.40), inset 0 1px 0 rgba(255,255,255,0.16)";
                   el.style.transform = "translateY(-1px)";
                 }}
                 onMouseLeave={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.boxShadow = "0 4px 18px rgba(26,136,118,0.30), inset 0 1px 0 rgba(255,255,255,0.12)";
+                  el.style.boxShadow = "0 3px 16px rgba(20,115,98,0.28), inset 0 1px 0 rgba(255,255,255,0.13)";
                   el.style.transform = "translateY(0)";
                 }}
                 data-testid="btn-hero-explore"
@@ -92,24 +126,33 @@ export function HeroSection() {
                 Khám phá nội dung
               </a>
 
-              {/* Secondary — dark glass, refined border */}
+              {/* Secondary */}
               <a
                 href="#lien-he"
-                className="inline-flex items-center justify-center h-11 px-7 rounded-full text-[13.5px] font-medium text-white/80 transition-all duration-250"
+                className="inline-flex items-center justify-center rounded-full transition-all"
                 style={{
+                  height: "2.625rem",
+                  padding: "0 1.75rem",
+                  fontSize: "13px",
+                  fontWeight: 450,
+                  letterSpacing: "0.01em",
+                  color: "rgba(255,255,255,0.75)",
                   background: "rgba(255,255,255,0.055)",
-                  border: "1px solid rgba(255,255,255,0.13)",
-                  backdropFilter: "blur(8px)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  backdropFilter: "blur(10px)",
+                  transition: "background 0.2s ease, border-color 0.2s ease, color 0.2s ease",
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.background = "rgba(255,255,255,0.09)";
-                  el.style.borderColor = "rgba(255,255,255,0.20)";
+                  el.style.background = "rgba(255,255,255,0.085)";
+                  el.style.borderColor = "rgba(255,255,255,0.22)";
+                  el.style.color = "rgba(255,255,255,0.90)";
                 }}
                 onMouseLeave={(e) => {
                   const el = e.currentTarget as HTMLElement;
                   el.style.background = "rgba(255,255,255,0.055)";
-                  el.style.borderColor = "rgba(255,255,255,0.13)";
+                  el.style.borderColor = "rgba(255,255,255,0.15)";
+                  el.style.color = "rgba(255,255,255,0.75)";
                 }}
                 data-testid="btn-hero-community"
               >
@@ -120,35 +163,34 @@ export function HeroSection() {
 
           {/* ── Portrait Column ── */}
           <motion.div
-            initial={{ opacity: 0, y: 32 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="flex justify-center lg:justify-end"
           >
-            <div className="relative w-64 sm:w-72 lg:w-full max-w-[380px]">
+            <div className="w-60 sm:w-72 lg:w-full max-w-[360px]">
 
-              {/* Portrait image wrapper */}
+              {/* Image frame */}
               <div
                 className="relative w-full overflow-hidden"
-                style={{ borderRadius: "1.25rem", aspectRatio: "3/4" }}
+                style={{ borderRadius: "1rem", aspectRatio: "4/5" }}
               >
-                {/* 5. Photo — slight brightness/contrast lift for better suit/shoulder area */}
                 <img
                   src="/portrait.png"
                   alt="Phan Văn Thắng SWC"
                   className="absolute inset-0 w-full h-full object-cover"
                   style={{
-                    objectPosition: "60% 12%",
-                    filter: "brightness(1.07) contrast(1.04) saturate(0.96)",
+                    objectPosition: "60% 10%",
+                    filter: "brightness(1.06) contrast(1.04) saturate(0.94)",
                   }}
                 />
 
-                {/* Left edge fade */}
+                {/* Left edge blend */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background:
-                      "linear-gradient(to right, #0c2420 0%, rgba(12,36,32,0.68) 18%, rgba(12,36,32,0.18) 38%, transparent 60%)",
+                      "linear-gradient(to right, #0d2622 0%, rgba(13,38,34,0.62) 16%, rgba(13,38,34,0.14) 35%, transparent 56%)",
                   }}
                 />
 
@@ -157,7 +199,7 @@ export function HeroSection() {
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background:
-                      "linear-gradient(to top, #0a1f1c 0%, rgba(10,31,28,0.72) 24%, transparent 52%)",
+                      "linear-gradient(to top, #091e1b 0%, rgba(9,30,27,0.75) 20%, transparent 48%)",
                   }}
                 />
 
@@ -166,56 +208,74 @@ export function HeroSection() {
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background:
-                      "linear-gradient(to bottom, rgba(10,31,28,0.30) 0%, transparent 26%)",
+                      "linear-gradient(to bottom, rgba(9,30,27,0.28) 0%, transparent 24%)",
                   }}
                 />
 
-                {/* 3. Metrics — refined, smaller, more editorial */}
-                <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 z-10">
-                  {/* Thin separator line */}
+                {/* Metrics — editorial, minimal */}
+                <div className="absolute bottom-0 left-0 right-0 px-5 pb-4.5 z-10">
                   <div
-                    className="mb-3.5"
-                    style={{ height: "0.5px", background: "rgba(255,255,255,0.10)" }}
+                    className="mb-3"
+                    style={{ height: "0.5px", background: "rgba(255,255,255,0.09)" }}
                   />
-                  <div className="flex items-start gap-6">
+                  <div className="flex items-start gap-5">
                     {[
                       { n: "7+", label: "năm đầu tư dài hạn" },
                       { n: "5+", label: "năm công nghệ" },
-                    ].map((s) => (
-                      <div key={s.label} className="space-y-0.5">
-                        <p
-                          className="text-white leading-none"
-                          style={{ fontSize: "1.05rem", fontWeight: 600, letterSpacing: "-0.01em" }}
-                        >
-                          {s.n}
-                        </p>
-                        <p
-                          className="text-white/42"
-                          style={{ fontSize: "10px", fontWeight: 400, letterSpacing: "0.04em", lineHeight: 1.5 }}
-                        >
-                          {s.label}
-                        </p>
-                      </div>
+                    ].map((s, i) => (
+                      <React.Fragment key={s.label}>
+                        {i > 0 && (
+                          <div
+                            className="self-stretch"
+                            style={{ width: "0.5px", background: "rgba(255,255,255,0.09)", flexShrink: 0 }}
+                          />
+                        )}
+                        <div>
+                          <p
+                            className="text-white leading-none"
+                            style={{ fontSize: "0.95rem", fontWeight: 600, letterSpacing: "-0.01em" }}
+                          >
+                            {s.n}
+                          </p>
+                          <p
+                            style={{
+                              fontSize: "9.5px",
+                              fontWeight: 400,
+                              color: "rgba(255,255,255,0.40)",
+                              letterSpacing: "0.06em",
+                              lineHeight: 1.5,
+                              marginTop: "3px",
+                            }}
+                          >
+                            {s.label}
+                          </p>
+                        </div>
+                      </React.Fragment>
                     ))}
                   </div>
                 </div>
               </div>
 
-              {/* 4. Caption — brighter, medium weight, refined divider */}
+              {/* Signature caption */}
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.1, duration: 0.6 }}
-                className="mt-4 flex items-center gap-2.5"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2, duration: 0.7 }}
+                className="mt-3.5 flex items-center gap-3"
               >
-                <div style={{ flexGrow: 1, height: "0.5px", background: "rgba(255,255,255,0.14)" }} />
+                <div style={{ flexGrow: 1, height: "0.5px", background: "rgba(255,255,255,0.12)" }} />
                 <span
-                  className="text-white/55 whitespace-nowrap"
-                  style={{ fontSize: "11.5px", fontWeight: 500, letterSpacing: "0.025em" }}
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    color: "rgba(255,255,255,0.52)",
+                    letterSpacing: "0.03em",
+                    whiteSpace: "nowrap",
+                  }}
                 >
                   Phan Văn Thắng · Mentor tài chính dài hạn
                 </span>
-                <div style={{ flexGrow: 1, height: "0.5px", background: "rgba(255,255,255,0.14)" }} />
+                <div style={{ flexGrow: 1, height: "0.5px", background: "rgba(255,255,255,0.12)" }} />
               </motion.div>
             </div>
           </motion.div>
@@ -226,14 +286,14 @@ export function HeroSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.4, duration: 0.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          transition={{ delay: 1.5, duration: 1 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: [0, 5, 0] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
           >
-            <ArrowDown size={15} className="text-white/20" />
+            <ArrowDown size={14} style={{ color: "rgba(255,255,255,0.18)" }} />
           </motion.div>
         </motion.div>
       </div>
