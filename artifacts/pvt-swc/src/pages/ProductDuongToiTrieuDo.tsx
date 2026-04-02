@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { Footer } from "@/components/Footer";
 
 /* ── Animation presets — identical to home page ─────────── */
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
@@ -72,121 +71,6 @@ function NumMarker({ num, dark = false }: { num: string; dark?: boolean }) {
       <span style={{ fontSize: "11.5px", fontWeight: 600, letterSpacing: "0.10em", color: dark ? "rgba(52,160,140,0.80)" : "hsl(var(--primary) / 0.80)" }}>{num}</span>
       <div style={{ width: "1.75rem", height: "1px", background: dark ? "rgba(52,160,140,0.35)" : "hsl(var(--primary) / 0.35)" }} />
     </div>
-  );
-}
-
-/* ── Inline Navbar ────────────────────────────────────────── */
-function ProductNavbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-  const ctaRef = useRef<HTMLAnchorElement | null>(null);
-
-  useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 48);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    linkRefs.current.forEach((el, i) => {
-      if (!el) return;
-      const isActive = i === 3; // "Sản phẩm"
-      el.style.color = isActive
-        ? (isScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.96)")
-        : (isScrolled ? "hsl(var(--foreground) / 0.62)" : "rgba(255,255,255,0.72)");
-      el.style.fontWeight = isActive ? "500" : "400";
-    });
-    if (ctaRef.current) {
-      if (isScrolled) {
-        ctaRef.current.style.background = "hsl(var(--primary))";
-        ctaRef.current.style.borderColor = "transparent";
-        ctaRef.current.style.boxShadow = "0 1px 8px rgba(10,40,35,0.14)";
-      } else {
-        ctaRef.current.style.background = "rgba(255,255,255,0.10)";
-        ctaRef.current.style.borderColor = "rgba(255,255,255,0.22)";
-        ctaRef.current.style.boxShadow = "none";
-      }
-    }
-  }, [isScrolled]);
-
-  const homeBase = import.meta.env.BASE_URL.replace(/\/$/, "");
-  const desktopLinks = [
-    { name: "Trang chủ", href: homeBase + "/" },
-    { name: "Giới thiệu", href: homeBase + "/#gioi-thieu" },
-    { name: "Nội dung", href: homeBase + "/#noi-dung" },
-    { name: "Sản phẩm", href: "#" },
-    { name: "Liên hệ", href: homeBase + "/#lien-he" },
-  ];
-
-  return (
-    <nav style={{
-      position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
-      transition: "background 0.45s ease, box-shadow 0.45s ease, padding 0.45s ease",
-      ...(isScrolled
-        ? { background: "rgba(251,253,251,0.97)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 1px 0 rgba(0,0,0,0.06), 0 2px 16px rgba(10,40,35,0.04)", paddingTop: "0.75rem", paddingBottom: "0.75rem" }
-        : { background: "linear-gradient(to bottom, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.05) 70%, transparent 100%)", paddingTop: "1.125rem", paddingBottom: "1.125rem" }),
-    }}>
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 flex items-center justify-between">
-        <a href={homeBase + "/"} style={{ fontSize: "15px", fontWeight: 700, letterSpacing: "-0.02em", color: isScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.92)", textDecoration: "none", transition: "color 0.3s ease" }}>
-          Thắng SWC
-        </a>
-
-        <div className="hidden md:flex items-center gap-6">
-          <ul className="flex gap-6" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-            {desktopLinks.map((link, i) => (
-              <li key={link.name}>
-                <a ref={el => { linkRefs.current[i] = el; }} href={link.href}
-                  style={{ fontSize: "13px", letterSpacing: "0.008em", textDecoration: "none", transition: "color 0.2s ease", color: i === 3 ? (isScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.96)") : (isScrolled ? "hsl(var(--foreground) / 0.62)" : "rgba(255,255,255,0.72)"), fontWeight: i === 3 ? 500 : 400 }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = isScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.96)"; }}
-                  onMouseLeave={e => {
-                    const isActive = i === 3;
-                    (e.currentTarget as HTMLElement).style.color = isActive ? (isScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.96)") : (isScrolled ? "hsl(var(--foreground) / 0.62)" : "rgba(255,255,255,0.72)");
-                  }}>
-                  {link.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a ref={ctaRef} href="#cta" style={{
-            display: "inline-flex", alignItems: "center", height: "34px", padding: "0 18px",
-            borderRadius: "999px", border: "1px solid", fontSize: "13px", fontWeight: 500,
-            letterSpacing: "0.01em", textDecoration: "none", color: "#fff",
-            transition: "background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease",
-            ...(isScrolled ? { background: "hsl(var(--primary))", borderColor: "transparent", boxShadow: "0 1px 8px rgba(10,40,35,0.14)" } : { background: "rgba(255,255,255,0.10)", borderColor: "rgba(255,255,255,0.22)" }),
-          }}
-            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = isScrolled ? "hsl(var(--primary) / 0.88)" : "rgba(255,255,255,0.17)"; }}
-            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = isScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.10)"; }}>
-            Đăng ký quan tâm
-          </a>
-        </div>
-
-        <button className="md:hidden p-2 rounded-md" style={{ color: isScrolled ? "hsl(var(--foreground))" : "rgba(255,255,255,0.90)", background: "none", border: "none", cursor: "pointer" }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Toggle menu">
-          <svg width="21" height="21" viewBox="0 0 21 21" fill="none">
-            {isMobileMenuOpen
-              ? <><line x1="3" y1="3" x2="18" y2="18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /><line x1="18" y1="3" x2="3" y2="18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></>
-              : <><line x1="3" y1="7" x2="18" y2="7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /><line x1="3" y1="11" x2="18" y2="11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /><line x1="3" y1="15" x2="18" y2="15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></>}
-          </svg>
-        </button>
-      </div>
-
-      {isMobileMenuOpen && (
-        <div style={{ background: "rgba(251,253,251,0.98)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(0,0,0,0.07)", boxShadow: "0 4px 20px rgba(10,40,35,0.07)" }} className="md:hidden absolute top-full left-0 w-full">
-          <div className="max-w-6xl mx-auto px-5 py-4 flex flex-col gap-0.5">
-            {desktopLinks.map((link) => (
-              <a key={link.name} href={link.href}
-                style={{ fontSize: "14px", fontWeight: 400, color: "hsl(var(--foreground) / 0.72)", padding: "0.7rem 0", borderBottom: "1px solid hsl(var(--border) / 0.45)", textDecoration: "none", transition: "color 0.2s ease" }}
-                onClick={() => setIsMobileMenuOpen(false)}>
-                {link.name}
-              </a>
-            ))}
-            <a href="#cta" style={{ marginTop: "0.875rem", height: "2.625rem", display: "flex", alignItems: "center", justifyContent: "center", background: "hsl(var(--primary))", borderRadius: "999px", fontSize: "13.5px", fontWeight: 500, color: "#fff", textDecoration: "none", boxShadow: "0 1px 8px rgba(10,40,35,0.14)" }} onClick={() => setIsMobileMenuOpen(false)}>
-              Đăng ký quan tâm
-            </a>
-          </div>
-        </div>
-      )}
-    </nav>
   );
 }
 
@@ -888,21 +772,17 @@ function FinalCTA() {
 ══════════════════════════════════════════════════════════ */
 export default function ProductDuongToiTrieuDo() {
   return (
-    <div className="min-h-[100dvh] flex flex-col w-full bg-background font-sans overflow-x-hidden">
-      <ProductNavbar />
-      <main className="flex-1">
-        <Hero />
-        <ProblemSection />
-        <GoalSection />
-        <AudienceSection />
-        <JourneySection />
-        <KnowledgeSection />
-        <PsychologySection />
-        <SwcPassSection />
-        <PricingSection />
-        <FinalCTA />
-      </main>
-      <Footer />
-    </div>
+    <>
+      <Hero />
+      <ProblemSection />
+      <GoalSection />
+      <AudienceSection />
+      <JourneySection />
+      <KnowledgeSection />
+      <PsychologySection />
+      <SwcPassSection />
+      <PricingSection />
+      <FinalCTA />
+    </>
   );
 }

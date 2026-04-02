@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
 
 /* ── Navigation data ────────────────────────────────────── */
@@ -6,28 +7,11 @@ type NavItem =
   | { name: string; href: string; dropdown?: false }
   | { name: string; href?: never; dropdown: true; items: { name: string; href: string }[] };
 
-const navLinks: NavItem[] = [
-  { name: "Trang chủ",  href: "#trang-chu"  },
-  { name: "Giới thiệu", href: "#gioi-thieu" },
-  { name: "Nội dung",   href: "#noi-dung"   },
-  { name: "Cộng đồng",  href: "#cong-dong"  },
-  {
-    name: "Sản phẩm",
-    dropdown: true,
-    items: [
-      {
-        name: "Road to $1M · SWC PASS",
-        href: `${import.meta.env.BASE_URL}san-pham/duong-toi-1-trieu-do`,
-      },
-    ],
-  },
-  { name: "Liên hệ",    href: "#lien-he"    },
-];
-
 /* ── Per-state design tokens ────────────────────────────── */
 const HERO = {
   linkColor:      "rgba(255,255,255,0.70)",
   linkHover:      "rgba(255,255,255,0.92)",
+  linkActive:     "rgba(255,255,255,0.96)",
   ctaBg:          "rgba(255,255,255,0.08)",
   ctaBorder:      "rgba(255,255,255,0.18)",
   ctaHoverBg:     "rgba(255,255,255,0.14)",
@@ -37,6 +21,7 @@ const HERO = {
 const SCROLLED = {
   linkColor:      "hsl(var(--foreground) / 0.56)",
   linkHover:      "hsl(var(--primary))",
+  linkActive:     "hsl(var(--primary))",
   ctaBg:          "hsl(var(--primary))",
   ctaBorder:      "transparent",
   ctaShadow:      "0 1px 8px rgba(10,40,35,0.14)",
@@ -54,38 +39,80 @@ function Chevron({ open, color }: { open: boolean; color: string }) {
         flexShrink: 0,
         opacity:    0.85,
         transform:  open ? "rotate(180deg)" : "rotate(0deg)",
-        transition: "transform 0.25s ease, opacity 0.18s ease",
+        transition: "transform 0.25s ease",
         color,
       }}
     >
-      <path d="M1 2.5L4 5.5L7 2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M1 2.5L4 5.5L7 2.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
 
 export function Navbar() {
+  const [location]            = useLocation();
   const [isScrolled,          setIsScrolled]          = useState(false);
   const [isMobileMenuOpen,    setIsMobileMenuOpen]    = useState(false);
   const [isSanPhamOpen,       setIsSanPhamOpen]       = useState(false);
   const [isMobileSanPhamOpen, setIsMobileSanPhamOpen] = useState(false);
 
-  /* Refs for imperative color sync */
-  const linkRefs   = useRef<(HTMLElement | null)[]>([]);
-  const ctaRef     = useRef<HTMLAnchorElement | null>(null);
-  const dropdownEl = useRef<HTMLLIElement | null>(null);
+  /* Refs */
+  const linkRefs       = useRef<(HTMLElement | null)[]>([]);
+  const ctaRef         = useRef<HTMLAnchorElement | null>(null);
+  const dropdownEl     = useRef<HTMLLIElement | null>(null);
+  const closeTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  /* Scroll detection */
+  /* Derived state */
+  const homeBase       = import.meta.env.BASE_URL.replace(/\/$/, "");
+  const isHome         = location === "/" || location === "";
+  const isProductPage  = location.startsWith("/san-pham");
+  const isSubItemActive = location === "/san-pham/duong-toi-1-trieu-do";
+
+  /* Conditional hrefs — hash on home, absolute elsewhere */
+  const sec = (hash: string) => isHome ? hash : `${homeBase}/${hash}`;
+
+  const navLinks: NavItem[] = [
+    { name: "Trang chủ",  href: sec("#trang-chu")  },
+    { name: "Giới thiệu", href: sec("#gioi-thieu") },
+    { name: "Nội dung",   href: sec("#noi-dung")   },
+    { name: "Cộng đồng",  href: sec("#cong-dong")  },
+    {
+      name: "Sản phẩm",
+      dropdown: true,
+      items: [
+        {
+          name: "Road to $1M · SWC PASS",
+          href: `${homeBase}/san-pham/duong-toi-1-trieu-do`,
+        },
+      ],
+    },
+    { name: "Liên hệ", href: sec("#lien-he") },
+  ];
+
+  /* ── Scroll detection ───────────────────────────────── */
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 48);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* Imperatively sync colors when scroll state flips */
+  /* ── Imperative color sync on scroll state + active page ── */
   useEffect(() => {
-    linkRefs.current.forEach((el) => {
+    linkRefs.current.forEach((el, i) => {
       if (!el) return;
-      el.style.color = isScrolled ? SCROLLED.linkColor : HERO.linkColor;
+      /* Index 4 = "Sản phẩm" dropdown trigger */
+      if (i === 4 && isProductPage) {
+        el.style.color      = isScrolled ? SCROLLED.linkActive : HERO.linkActive;
+        el.style.fontWeight = "500";
+      } else {
+        el.style.color      = isScrolled ? SCROLLED.linkColor : HERO.linkColor;
+        el.style.fontWeight = "400";
+      }
     });
     const cta = ctaRef.current;
     if (!cta) return;
@@ -100,9 +127,22 @@ export function Navbar() {
       cta.style.color       = "#fff";
       cta.style.boxShadow   = "none";
     }
-  }, [isScrolled]);
+  }, [isScrolled, isProductPage]);
 
-  /* Close desktop dropdown on outside click */
+  /* ── Dropdown close delay helpers ───────────────────── */
+  const openDropdown = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setIsSanPhamOpen(true);
+  };
+
+  const scheduleClose = () => {
+    closeTimerRef.current = setTimeout(() => setIsSanPhamOpen(false), 160);
+  };
+
+  /* ── Outside-click closes dropdown ──────────────────── */
   useEffect(() => {
     if (!isSanPhamOpen) return;
     const handler = (e: MouseEvent) => {
@@ -114,25 +154,31 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, [isSanPhamOpen]);
 
-  /* Derived link color for the current scroll state */
-  const linkColor = isScrolled ? SCROLLED.linkColor : HERO.linkColor;
-  const linkHover = isScrolled ? SCROLLED.linkHover : HERO.linkHover;
+  /* Cleanup timer on unmount */
+  useEffect(() => () => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+  }, []);
 
-  /* Shared nav link style */
-  const linkStyle: React.CSSProperties = {
-    fontSize:      "13px",
-    fontWeight:    400,
-    letterSpacing: "0.010em",
-    color:         linkColor,
+  /* ── Derived color shortcuts ─────────────────────────── */
+  const linkColor  = isScrolled ? SCROLLED.linkColor  : HERO.linkColor;
+  const linkHover  = isScrolled ? SCROLLED.linkHover  : HERO.linkHover;
+  const linkActive = isScrolled ? SCROLLED.linkActive : HERO.linkActive;
+
+  /* ── Shared nav link style ───────────────────────────── */
+  const baseLinkStyle: React.CSSProperties = {
+    fontSize:       "13px",
+    fontWeight:     400,
+    letterSpacing:  "0.010em",
     textDecoration: "none",
-    transition:    "color 0.18s ease",
-    background:    "none",
-    border:        "none",
-    padding:       0,
-    cursor:        "pointer",
-    display:       "inline-flex",
-    alignItems:    "center",
-    lineHeight:    1,
+    transition:     "color 0.18s ease",
+    background:     "none",
+    border:         "none",
+    padding:        0,
+    cursor:         "pointer",
+    display:        "inline-flex",
+    alignItems:     "center",
+    lineHeight:     1,
+    position:       "relative",
   };
 
   return (
@@ -166,14 +212,14 @@ export function Navbar() {
 
         {/* ── Logo ─────────────────────────────────────── */}
         <a
-          href="#trang-chu"
+          href={`${homeBase}/`}
           style={{
-            fontSize:      "15px",
-            fontWeight:    700,
-            letterSpacing: "-0.02em",
-            color:         isScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.92)",
+            fontSize:       "15px",
+            fontWeight:     700,
+            letterSpacing:  "-0.02em",
+            color:          isScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.92)",
             textDecoration: "none",
-            transition:    "color 0.3s ease",
+            transition:     "color 0.3s ease",
           }}
         >
           Thắng SWC
@@ -183,85 +229,119 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-6">
           <ul className="flex gap-6" style={{ listStyle: "none", margin: 0, padding: 0 }}>
             {navLinks.map((link, i) => {
+
               if (link.dropdown) {
-                /* ── Dropdown item ─────────────────────── */
+                /* ── Dropdown trigger ──────────────────── */
+                const triggerColor = isProductPage
+                  ? (isSanPhamOpen ? linkHover : linkActive)
+                  : (isSanPhamOpen ? linkHover : linkColor);
+
                 return (
                   <li
                     key={link.name}
                     ref={dropdownEl}
                     style={{ position: "relative" }}
-                    onMouseEnter={() => setIsSanPhamOpen(true)}
-                    onMouseLeave={() => setIsSanPhamOpen(false)}
+                    onMouseEnter={openDropdown}
+                    onMouseLeave={scheduleClose}
                   >
                     <button
                       ref={(el) => { linkRefs.current[i] = el; }}
                       style={{
-                        ...linkStyle,
-                        /* Hold hover color while dropdown is open */
-                        color: isSanPhamOpen ? linkHover : linkColor,
+                        ...baseLinkStyle,
+                        color:      triggerColor,
+                        fontWeight: isProductPage ? 500 : 400,
                       }}
-                      onClick={() => setIsSanPhamOpen((v) => !v)}
+                      onClick={() => isSanPhamOpen ? setIsSanPhamOpen(false) : openDropdown()}
                       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = linkHover; }}
                       onMouseLeave={(e) => {
-                        /* Only revert if dropdown is closed */
-                        if (!isSanPhamOpen) {
-                          (e.currentTarget as HTMLElement).style.color = linkColor;
-                        }
+                        (e.currentTarget as HTMLElement).style.color = triggerColor;
                       }}
                     >
                       {link.name}
+
+                      {/* Active page underline */}
+                      {isProductPage && !isSanPhamOpen && (
+                        <span style={{
+                          position:     "absolute",
+                          bottom:       "-2px",
+                          left:         0,
+                          right:        "13px",  /* exclude chevron width */
+                          height:       "1.5px",
+                          background:   isScrolled
+                            ? "hsl(var(--primary) / 0.60)"
+                            : "rgba(255,255,255,0.50)",
+                          borderRadius: "999px",
+                        }} />
+                      )}
+
                       <Chevron open={isSanPhamOpen} color="currentColor" />
                     </button>
 
-                    {/* ── Dropdown panel ───────────────── */}
+                    {/* ── Dropdown panel ─────────────────── */}
                     {isSanPhamOpen && (
                       <div
+                        onMouseEnter={openDropdown}
+                        onMouseLeave={scheduleClose}
                         style={{
-                          position:       "absolute",
-                          top:            "calc(100% + 10px)",
-                          left:           "50%",
-                          transform:      "translateX(-50%)",
-                          minWidth:       "252px",
-                          background:     "rgba(251,253,251,0.98)",
-                          backdropFilter: "blur(20px)",
+                          position:             "absolute",
+                          top:                  "calc(100% + 6px)",
+                          left:                 "50%",
+                          transform:            "translateX(-50%)",
+                          minWidth:             "252px",
+                          background:           "rgba(251,253,251,0.98)",
+                          backdropFilter:       "blur(20px)",
                           WebkitBackdropFilter: "blur(20px)",
-                          /* Two-layer shadow: tight close depth + wide ambient */
-                          boxShadow:      "0 2px 8px rgba(10,40,35,0.06), 0 8px 28px rgba(10,40,35,0.11)",
-                          border:         "1px solid rgba(0,0,0,0.07)",
-                          borderRadius:   "0.625rem",
-                          padding:        "0.5rem 0",
-                          zIndex:         100,
+                          boxShadow:
+                            "0 2px 8px rgba(10,40,35,0.06), 0 8px 28px rgba(10,40,35,0.11)",
+                          border:       "1px solid rgba(0,0,0,0.07)",
+                          borderRadius: "0.625rem",
+                          padding:      "0.5rem 0",
+                          zIndex:       100,
                         }}
                       >
-                        {link.items.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            style={{
-                              display:        "block",
-                              padding:        "0.75rem 1.25rem",
-                              fontSize:       "13px",
-                              fontWeight:     400,
-                              letterSpacing:  "0.008em",
-                              color:          "hsl(var(--foreground) / 0.60)",
-                              textDecoration: "none",
-                              transition:     "color 0.18s ease, background 0.18s ease",
-                            }}
-                            onMouseEnter={(e) => {
-                              const el = e.currentTarget as HTMLElement;
-                              el.style.color      = "hsl(var(--primary))";
-                              el.style.background = "hsl(var(--primary) / 0.07)";
-                            }}
-                            onMouseLeave={(e) => {
-                              const el = e.currentTarget as HTMLElement;
-                              el.style.color      = "hsl(var(--foreground) / 0.60)";
-                              el.style.background = "transparent";
-                            }}
-                            onClick={() => setIsSanPhamOpen(false)}
-                          >
-                            {item.name}
-                          </a>
-                        ))}
+                        {link.items.map((item) => {
+                          const itemActive = location === "/san-pham/duong-toi-1-trieu-do"
+                            && item.href.endsWith("duong-toi-1-trieu-do");
+
+                          return (
+                            <a
+                              key={item.name}
+                              href={item.href}
+                              style={{
+                                display:        "block",
+                                padding:        "0.75rem 1.25rem",
+                                fontSize:       "13px",
+                                fontWeight:     itemActive ? 500 : 400,
+                                letterSpacing:  "0.008em",
+                                color:          itemActive
+                                  ? "hsl(var(--primary))"
+                                  : "hsl(var(--foreground) / 0.60)",
+                                background:     itemActive
+                                  ? "hsl(var(--primary) / 0.07)"
+                                  : "transparent",
+                                textDecoration: "none",
+                                transition:     "color 0.18s ease, background 0.18s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                const el = e.currentTarget as HTMLElement;
+                                el.style.color      = "hsl(var(--primary))";
+                                el.style.background = "hsl(var(--primary) / 0.09)";
+                              }}
+                              onMouseLeave={(e) => {
+                                const el = e.currentTarget as HTMLElement;
+                                el.style.color      = itemActive
+                                  ? "hsl(var(--primary))"
+                                  : "hsl(var(--foreground) / 0.60)";
+                                el.style.background = itemActive
+                                  ? "hsl(var(--primary) / 0.07)"
+                                  : "transparent";
+                              }}
+                              onClick={() => setIsSanPhamOpen(false)}
+                            >
+                              {item.name}
+                            </a>
+                          );
+                        })}
                       </div>
                     )}
                   </li>
@@ -275,12 +355,8 @@ export function Navbar() {
                     ref={(el) => { linkRefs.current[i] = el; }}
                     href={link.href}
                     style={{
-                      fontSize:      "13px",
-                      fontWeight:    400,
-                      letterSpacing: "0.010em",
-                      color:         linkColor,
-                      textDecoration: "none",
-                      transition:    "color 0.18s ease",
+                      ...baseLinkStyle,
+                      color: linkColor,
                     }}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = linkHover; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = linkColor; }}
@@ -295,7 +371,7 @@ export function Navbar() {
           {/* ── CTA button ───────────────────────────── */}
           <a
             ref={ctaRef}
-            href="#lien-he"
+            href={sec("#lien-he")}
             style={{
               display:        "inline-flex",
               alignItems:     "center",
@@ -377,8 +453,9 @@ export function Navbar() {
         >
           <div className="max-w-6xl mx-auto px-5 py-4 flex flex-col" style={{ gap: "0" }}>
             {navLinks.map((link) => {
+
               if (link.dropdown) {
-                /* ── Mobile dropdown accordion ─────────── */
+                /* ── Mobile accordion ──────────────────── */
                 return (
                   <React.Fragment key={link.name}>
                     <button
@@ -388,70 +465,82 @@ export function Navbar() {
                         justifyContent: "space-between",
                         width:          "100%",
                         fontSize:       "14px",
-                        fontWeight:     400,
+                        fontWeight:     isProductPage ? 500 : 400,
                         letterSpacing:  "0.010em",
-                        color:          "hsl(var(--foreground) / 0.68)",
+                        color:          isProductPage
+                          ? "hsl(var(--primary))"
+                          : "hsl(var(--foreground) / 0.68)",
                         padding:        "0.7rem 0",
                         textDecoration: "none",
                         background:     "none",
                         borderTop:      "none",
                         borderLeft:     "none",
                         borderRight:    "none",
-                        borderBottom:   isMobileSanPhamOpen ? "none" : "1px solid hsl(var(--border) / 0.40)",
+                        borderBottom:   isMobileSanPhamOpen
+                          ? "none"
+                          : "1px solid hsl(var(--border) / 0.40)",
                         cursor:         "pointer",
                       }}
                       onClick={() => setIsMobileSanPhamOpen((v) => !v)}
                     >
                       <span>{link.name}</span>
-                      <Chevron open={isMobileSanPhamOpen} color="hsl(var(--foreground) / 0.45)" />
+                      <Chevron
+                        open={isMobileSanPhamOpen}
+                        color={isProductPage
+                          ? "hsl(var(--primary) / 0.70)"
+                          : "hsl(var(--foreground) / 0.45)"}
+                      />
                     </button>
 
                     {isMobileSanPhamOpen && (
-                      <div
-                        style={{
-                          borderBottom:  "1px solid hsl(var(--border) / 0.40)",
-                          paddingBottom: "0.25rem",
-                        }}
-                      >
-                        {link.items.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            style={{
-                              display:        "flex",
-                              alignItems:     "center",
-                              gap:            "0.625rem",
-                              fontSize:       "13.5px",
-                              fontWeight:     400,
-                              letterSpacing:  "0.008em",
-                              color:          "hsl(var(--foreground) / 0.55)",
-                              padding:        "0.6rem 0 0.6rem 1rem",
-                              textDecoration: "none",
-                              transition:     "color 0.18s ease",
-                            }}
-                            onMouseEnter={(e) => {
-                              (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary))";
-                            }}
-                            onMouseLeave={(e) => {
-                              (e.currentTarget as HTMLElement).style.color = "hsl(var(--foreground) / 0.55)";
-                            }}
-                            onClick={() => {
-                              setIsMobileMenuOpen(false);
-                              setIsMobileSanPhamOpen(false);
-                            }}
-                          >
-                            <span
+                      <div style={{ borderBottom: "1px solid hsl(var(--border) / 0.40)", paddingBottom: "0.25rem" }}>
+                        {link.items.map((item) => {
+                          const itemActive = item.href.endsWith("duong-toi-1-trieu-do")
+                            && isSubItemActive;
+                          return (
+                            <a
+                              key={item.name}
+                              href={item.href}
                               style={{
+                                display:        "flex",
+                                alignItems:     "center",
+                                gap:            "0.625rem",
+                                fontSize:       "13.5px",
+                                fontWeight:     itemActive ? 500 : 400,
+                                letterSpacing:  "0.008em",
+                                color:          itemActive
+                                  ? "hsl(var(--primary))"
+                                  : "hsl(var(--foreground) / 0.55)",
+                                padding:        "0.6rem 0 0.6rem 1rem",
+                                textDecoration: "none",
+                                transition:     "color 0.18s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary))";
+                              }}
+                              onMouseLeave={(e) => {
+                                (e.currentTarget as HTMLElement).style.color = itemActive
+                                  ? "hsl(var(--primary))"
+                                  : "hsl(var(--foreground) / 0.55)";
+                              }}
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                setIsMobileSanPhamOpen(false);
+                              }}
+                            >
+                              <span style={{
                                 width:        "4px",
                                 height:       "4px",
                                 borderRadius: "50%",
-                                background:   "hsl(var(--primary) / 0.55)",
+                                background:   itemActive
+                                  ? "hsl(var(--primary))"
+                                  : "hsl(var(--primary) / 0.55)",
                                 flexShrink:   0,
-                              }}
-                            />
-                            {item.name}
-                          </a>
-                        ))}
+                              }} />
+                              {item.name}
+                            </a>
+                          );
+                        })}
                       </div>
                     )}
                   </React.Fragment>
@@ -464,14 +553,14 @@ export function Navbar() {
                   key={link.name}
                   href={link.href}
                   style={{
-                    fontSize:      "14px",
-                    fontWeight:    400,
-                    letterSpacing: "0.010em",
-                    color:         "hsl(var(--foreground) / 0.68)",
-                    padding:       "0.7rem 0",
-                    borderBottom:  "1px solid hsl(var(--border) / 0.40)",
+                    fontSize:       "14px",
+                    fontWeight:     400,
+                    letterSpacing:  "0.010em",
+                    color:          "hsl(var(--foreground) / 0.68)",
+                    padding:        "0.7rem 0",
+                    borderBottom:   "1px solid hsl(var(--border) / 0.40)",
                     textDecoration: "none",
-                    transition:    "color 0.18s ease",
+                    transition:     "color 0.18s ease",
                   }}
                   onClick={() => setIsMobileMenuOpen(false)}
                   onMouseEnter={(e) => {
@@ -487,7 +576,7 @@ export function Navbar() {
             })}
 
             <a
-              href="#lien-he"
+              href={sec("#lien-he")}
               style={{
                 marginTop:      "0.875rem",
                 display:        "flex",

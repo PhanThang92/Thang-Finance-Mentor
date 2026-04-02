@@ -1,0 +1,49 @@
+Refactor the website structure so that the navbar and footer become shared global layout components used by all pages.
+
+Goals:
+- all pages must inherit the same navbar and footer automatically
+- the product page `/san-pham/duong-toi-1-trieu-do` must use the same navbar and footer as the homepage
+- the “Sản phẩm” navbar item must support a premium dropdown submenu
+- fix the current dropdown usability issue where it is hard to move the cursor from the parent nav item down to the submenu item
+
+Please make these exact improvements:
+
+1. Create a shared global layout / master layout
+- extract the current navbar into a shared reusable component
+- extract the current footer into a shared reusable component
+- make all pages use the same layout automatically
+- homepage and product pages must inherit the same navbar and footer
+- preserve the two navbar states:
+  - dark transparent / overlay state on top dark hero sections
+  - light scrolled state on light sections
+
+2. Fix the “Sản phẩm” dropdown usability
+- keep “Sản phẩm” as a parent dropdown item
+- keep submenu item:
+  “Road to $1M · SWC PASS”
+- submenu item should link to:
+  `/san-pham/duong-toi-1-trieu-do`
+
+Improve interaction so that:
+- on desktop: dropdown opens on hover and also supports click
+- moving the mouse from the parent item down to the submenu must not close the dropdown too easily
+- remove any dead gap between parent item and dropdown
+- make the hover area more forgiving
+- add a small close delay if needed so the dropdown does not disappear immediately
+- on mobile: tapping “Sản phẩm” expands/collapses the submenu
+
+3. Refine the dropdown styling
+- keep it premium, minimal, and consistent with the rest of the site
+- avoid generic default dropdown styling
+- improve spacing, padding, hover state, and shadow subtly
+- make the dropdown feel integrated with both navbar states
+
+4. Active state behavior
+- when the user is on the product page, highlight the parent nav item “Sản phẩm”
+- also make the submenu item “Road to $1M · SWC PASS” show a subtle active state
+
+Important:
+- do not redesign the whole navbar
+- keep the current visual identity
+- focus on structure, inheritance, and dropdown usability
+- make the solution scalable so more submenu product items can be added later
