@@ -1,0 +1,57 @@
+Refine the “3 chuyển đổi lớn của hành trình này” section to make it feel more transformational, more premium, and less like a checklist while preserving the current dark layout and 3-card structure.
+
+Goals:
+- keep the current 3-stage framework
+- make each stage feel like a real shift in mindset and action
+- make the bullet points feel more like transformation markers, less like generic checklist items
+- preserve the calm mentor tone and premium dark visual system
+
+Please make these exact improvements:
+
+1. Keep the current title:
+“3 chuyển đổi lớn của hành trình này”
+
+2. Keep the current anchor line:
+“Ba chuyển đổi theo trình tự — mỗi bước đặt nền tảng cho bước tiếp theo.”
+
+But make it feel slightly more intentional and noticeable while staying elegant.
+
+3. Refine the 3 cards
+Keep the current card titles and structure, but update the bullet wording to this version:
+
+Card 1 title:
+“Đổi góc nhìn”
+Bullets:
+- Hiểu vì sao giữ tiền không đồng nghĩa an toàn
+- Nhìn tự do tài chính như số tiền đang làm việc thay mình
+- Phân biệt rõ tiền nằm im và tài sản thực sự
+
+Card 2 title:
+“Xây hệ thống”
+Bullets:
+- Bắt đầu trích đều 5–10% từ thu nhập mỗi tháng
+- Xây danh mục 3 cấp độ thay vì đầu tư rời rạc
+- Dùng công cụ hỗ trợ để không phải nghiên cứu hàng giờ mỗi tuần
+
+Card 3 title:
+“Hành động nhỏ nhưng thật”
+Bullets:
+- Bắt đầu từ bước nhỏ, nhưng rõ ràng và có ý thức
+- Xây thói quen tài chính đều đặn thay vì chờ quyết định lớn
+- Đi đường dài cùng cộng đồng và nguồn thông tin đáng tin cậy
+
+4. Improve the stage labels
+- keep “Giai đoạn 1 / 2 / 3”
+- make them slightly more intentional and premium
+- keep them subtle, but give them clearer hierarchy
+
+5. Improve card feel
+- preserve the current dark premium style
+- make the cards feel more like transformational stages and less like information blocks
+- improve spacing, hierarchy, and editorial rhythm
+- keep the design calm and not over-styled
+
+Important:
+Do not redesign the section.
+Do not make it flashy.
+Keep it premium, dark, and consistent with the rest of the Road to $1M page.

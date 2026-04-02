@@ -474,15 +474,15 @@ function AudienceSection() {
 const stages = [
   {
     num: "01", label: "Giai đoạn 1", title: "Đổi góc nhìn",
-    points: ["Hiểu vì sao giữ tiền không có nghĩa là an toàn", "Hiểu tự do tài chính được đo bằng số tiền đang làm việc thay mình", "Phân biệt tiền nằm im và tài sản thực sự"],
+    points: ["Hiểu vì sao giữ tiền không đồng nghĩa an toàn", "Nhìn tự do tài chính như số tiền đang làm việc thay mình", "Phân biệt rõ tiền nằm im và tài sản thực sự"],
   },
   {
     num: "02", label: "Giai đoạn 2", title: "Xây hệ thống",
-    points: ["Bắt đầu trích 5–10% cố định từ thu nhập hàng tháng", "Xây danh mục 3 cấp độ: bảo vệ, tăng trưởng, mạo hiểm có ý thức", "Dùng công cụ hỗ trợ để không phải nghiên cứu hàng giờ mỗi tuần"],
+    points: ["Bắt đầu trích đều 5–10% từ thu nhập mỗi tháng", "Xây danh mục 3 cấp độ thay vì đầu tư rời rạc", "Dùng công cụ hỗ trợ để không phải nghiên cứu hàng giờ mỗi tuần"],
   },
   {
     num: "03", label: "Giai đoạn 3", title: "Hành động nhỏ nhưng thật",
-    points: ["Bước đầu tiên không cần lớn, chỉ cần cụ thể và có ý thức", "Xây thói quen nhỏ nhưng nhất quán thay vì quyết định lớn nhưng không thực hiện", "Đồng hành dài hạn với cộng đồng và thông tin đáng tin cậy"],
+    points: ["Bắt đầu từ bước nhỏ, nhưng rõ ràng và có ý thức", "Xây thói quen tài chính đều đặn thay vì chờ quyết định lớn", "Đi đường dài cùng cộng đồng và nguồn thông tin đáng tin cậy"],
   },
 ];
 
@@ -494,22 +494,48 @@ function JourneySection() {
           <div className="space-y-5 max-w-2xl">
             <motion.div variants={fadeUp}><SectionLabel dark>Hành trình</SectionLabel></motion.div>
             <motion.div variants={fadeUp}><SectionHeading dark>3 chuyển đổi lớn của hành trình này</SectionHeading></motion.div>
-            <motion.div variants={fadeUp}><AnchorLine dark>Ba chuyển đổi theo trình tự — mỗi bước đặt nền tảng cho bước tiếp theo.</AnchorLine></motion.div>
+            <motion.div variants={fadeUp}>
+              <AnchorLine dark style={{ fontSize: "13px", color: "rgba(52,160,140,0.90)" }}>
+                Ba chuyển đổi theo trình tự — mỗi bước đặt nền tảng cho bước tiếp theo.
+              </AnchorLine>
+            </motion.div>
           </div>
           <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {stages.map(({ num, label, title, points }) => (
-              <motion.div key={num} variants={fadeUp} className="flex flex-col" style={CARD_DARK}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.25rem" }}>
-                  <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.13em", color: "rgba(52,160,140,0.72)" }}>{num}</span>
-                  <div style={{ width: "2rem", height: "1px", background: "rgba(52,160,140,0.25)" }} />
-                  <span style={{ fontSize: "11px", fontWeight: 400, fontStyle: "italic", letterSpacing: "0.01em", color: "rgba(255,255,255,0.35)" }}>{label}</span>
+              <motion.div key={num} variants={fadeUp} className="flex flex-col"
+                style={{ ...CARD_DARK, padding: "2rem 1.875rem" }}>
+                {/* Stage header — num + hairline + label */}
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
+                  <span style={{
+                    fontSize: "11.5px", fontWeight: 600,
+                    letterSpacing: "0.10em", color: "rgba(52,160,140,0.80)",
+                  }}>{num}</span>
+                  <div style={{ width: "1.75rem", height: "1px", background: "rgba(52,160,140,0.35)" }} />
+                  <span style={{
+                    fontSize: "11px", fontWeight: 500,
+                    fontStyle: "italic", letterSpacing: "0.012em",
+                    color: "rgba(255,255,255,0.44)",
+                  }}>{label}</span>
                 </div>
-                <h3 style={{ fontSize: "17px", fontWeight: 700, color: "rgba(255,255,255,0.92)", marginBottom: "1rem", letterSpacing: "-0.01em", lineHeight: 1.25 }}>{title}</h3>
-                <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+                <h3 style={{
+                  fontSize: "17.5px", fontWeight: 700,
+                  color: "rgba(255,255,255,0.92)",
+                  marginBottom: "1.125rem",
+                  letterSpacing: "-0.014em",
+                  lineHeight: 1.22,
+                }}>{title}</h3>
+                <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                   {points.map((pt, j) => (
-                    <li key={j} style={{ display: "flex", alignItems: "flex-start", gap: "0.625rem" }}>
-                      <div style={{ width: "4px", height: "4px", borderRadius: "50%", background: "rgba(52,160,140,0.60)", flexShrink: 0, marginTop: "7px" }} />
-                      <span style={{ fontSize: "13.5px", lineHeight: 1.75, color: "rgba(255,255,255,0.55)", fontWeight: 300 }}>{pt}</span>
+                    <li key={j} style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+                      <div style={{
+                        width: "4px", height: "4px", borderRadius: "50%",
+                        background: "rgba(52,160,140,0.65)",
+                        flexShrink: 0, marginTop: "8px",
+                      }} />
+                      <span style={{
+                        fontSize: "14px", lineHeight: 1.82,
+                        color: "rgba(255,255,255,0.52)", fontWeight: 300,
+                      }}>{pt}</span>
                     </li>
                   ))}
                 </ul>
