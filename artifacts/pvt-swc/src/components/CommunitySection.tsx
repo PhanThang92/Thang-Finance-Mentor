@@ -1,10 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { PlayCircle, Users, GraduationCap } from "lucide-react";
 
 const stagger = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.14 } },
+  visible: { transition: { staggerChildren: 0.13 } },
 };
 
 const fadeUp = {
@@ -12,90 +11,205 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };
 
-const stages = [
+const paths = [
   {
-    step: "01",
-    icon: PlayCircle,
+    num: "01",
+    label: "Bắt đầu nhẹ",
     title: "Theo dõi nội dung miễn phí",
+    anchor: "Phù hợp nếu anh/chị đang ở giai đoạn bắt đầu.",
     desc: "Nếu anh/chị đang ở giai đoạn bắt đầu, đây là cách phù hợp nhất. Hãy xem video, đọc bài viết, tiếp nhận dần các góc nhìn nền tảng và xây tư duy đúng trước.",
   },
   {
-    step: "02",
-    icon: Users,
+    num: "02",
+    label: "Đi cùng cộng đồng",
     title: "Tham gia cộng đồng",
+    anchor: "Một môi trường tốt giúp hành trình dài hạn bền hơn.",
     desc: "Nếu anh/chị muốn có môi trường để học cùng người khác, trao đổi, duy trì động lực và đi đường dài vững hơn, cộng đồng sẽ là nơi phù hợp hơn việc đi một mình.",
   },
   {
-    step: "03",
-    icon: GraduationCap,
+    num: "03",
+    label: "Đi sâu hơn",
     title: "Chương trình chuyên sâu",
+    anchor: "Dành cho người muốn đi sâu hơn với lộ trình nghiêm túc.",
     desc: "Nếu anh/chị muốn đi sâu hơn vào kiến thức, công cụ, hệ thống hoặc một lộ trình nghiêm túc hơn, tôi có những chương trình phù hợp cho từng giai đoạn phát triển.",
   },
 ];
 
 export function CommunitySection() {
   return (
-    <section id="cong-dong" className="py-28 md:py-36 bg-background">
+    <section id="cong-dong" className="py-24 md:py-32 bg-background">
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
-          className="space-y-16"
+          className="space-y-14"
         >
-          {/* Header */}
+
+          {/* ── Header ── */}
           <div className="max-w-2xl space-y-4">
             <motion.div variants={fadeUp} className="flex items-center gap-3">
               <div className="h-px w-8 bg-primary/50" />
               <span className="section-label">Cộng đồng</span>
             </motion.div>
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold text-foreground">
+            <motion.h2
+              variants={fadeUp}
+              className="text-foreground"
+              style={{
+                fontSize: "clamp(1.65rem, 3.8vw, 2.25rem)",
+                fontWeight: 700,
+                lineHeight: 1.2,
+                letterSpacing: "-0.018em",
+              }}
+            >
               Những cách anh/chị có thể đồng hành cùng tôi
             </motion.h2>
-            <motion.p variants={fadeUp} className="prose-body max-w-xl">
-              Mỗi người đang ở một giai đoạn khác nhau. Vì vậy, tôi cũng muốn giữ cách đồng hành
-              đủ linh hoạt để anh/chị có thể bắt đầu từ nơi phù hợp nhất với mình.
+            <motion.p
+              variants={fadeUp}
+              style={{
+                fontSize: "15px",
+                lineHeight: 1.88,
+                fontWeight: 400,
+                color: "hsl(var(--muted-foreground))",
+                maxWidth: "36rem",
+              }}
+            >
+              Mỗi người đang ở một giai đoạn khác nhau. Vì vậy, tôi muốn giữ nhiều cách đồng hành
+              để anh/chị có thể bắt đầu từ nơi phù hợp nhất với mình.
             </motion.p>
           </div>
 
-          {/* Stage cards */}
-          <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {stages.map(({ step, icon: Icon, title, desc }) => (
+          {/* ── Path cards ── */}
+          <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {paths.map(({ num, label, title, anchor, desc }) => (
               <motion.div
-                key={step}
+                key={num}
                 variants={fadeUp}
-                className="rounded-xl bg-card border border-border p-7 space-y-6 hover:border-primary/25 transition-colors duration-300"
-                style={{ boxShadow: "0 2px 8px -2px rgba(10,40,35,0.06)" }}
+                className="flex flex-col rounded-xl bg-card"
+                style={{
+                  border: "1px solid hsl(var(--border) / 0.92)",
+                  padding: "1.75rem 1.625rem",
+                  boxShadow: "0 2px 8px rgba(10,40,35,0.07)",
+                  transition: "border-color 0.28s ease, box-shadow 0.28s ease, transform 0.28s ease",
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.borderColor = "hsl(var(--primary) / 0.28)";
+                  el.style.boxShadow = "0 4px 20px rgba(10,40,35,0.09)";
+                  el.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.borderColor = "hsl(var(--border) / 0.92)";
+                  el.style.boxShadow = "0 2px 8px rgba(10,40,35,0.07)";
+                  el.style.transform = "translateY(0)";
+                }}
               >
-                {/* Step + icon row */}
-                <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm shadow-primary/20">
-                    <Icon size={20} strokeWidth={1.7} />
+                {/* Editorial marker row */}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-3">
+                    <span
+                      style={{
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        letterSpacing: "0.13em",
+                        color: "hsl(var(--primary) / 0.72)",
+                        lineHeight: 1,
+                      }}
+                    >
+                      {num}
+                    </span>
+                    <div
+                      style={{
+                        width: "2rem",
+                        height: "1px",
+                        background: "hsl(var(--primary) / 0.28)",
+                      }}
+                    />
                   </div>
+                  {/* Soft engagement label */}
                   <span
-                    className="text-xs font-black tracking-[0.14em] uppercase"
-                    style={{ color: "hsl(var(--muted-foreground) / 0.55)" }}
+                    style={{
+                      fontSize: "10.5px",
+                      fontWeight: 500,
+                      fontStyle: "italic",
+                      letterSpacing: "0.01em",
+                      color: "hsl(var(--muted-foreground) / 0.70)",
+                      lineHeight: 1,
+                    }}
                   >
-                    Bước {step}
+                    {label}
                   </span>
                 </div>
 
-                <div className="space-y-2.5">
-                  <h3 className="text-[16px] font-bold text-foreground leading-snug">{title}</h3>
-                  <p className="text-sm leading-[1.85] text-muted-foreground">{desc}</p>
-                </div>
+                {/* Title */}
+                <h3
+                  className="text-foreground mb-2"
+                  style={{
+                    fontSize: "16.5px",
+                    fontWeight: 700,
+                    lineHeight: 1.3,
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {title}
+                </h3>
+
+                {/* Anchor line */}
+                <p
+                  className="mb-4"
+                  style={{
+                    fontSize: "12.5px",
+                    fontWeight: 500,
+                    fontStyle: "italic",
+                    color: "hsl(var(--primary) / 0.82)",
+                    lineHeight: 1.55,
+                    letterSpacing: "0.005em",
+                  }}
+                >
+                  {anchor}
+                </p>
+
+                {/* Body */}
+                <p
+                  style={{
+                    fontSize: "13.5px",
+                    lineHeight: 1.86,
+                    fontWeight: 400,
+                    color: "hsl(var(--muted-foreground))",
+                  }}
+                >
+                  {desc}
+                </p>
               </motion.div>
             ))}
           </motion.div>
 
-          {/* Soft note */}
-          <motion.div variants={fadeUp} className="flex items-center gap-3">
-            <div className="h-px w-6 bg-border" />
-            <p className="text-sm text-muted-foreground/70 italic">
-              Tôi ưu tiên sự phù hợp hơn số lượng.
+          {/* ── Closing note ── */}
+          <motion.div variants={fadeUp} className="flex items-center gap-4 pt-1">
+            <div
+              style={{
+                width: "1.75rem",
+                height: "1px",
+                flexShrink: 0,
+                background: "hsl(var(--border))",
+              }}
+            />
+            <p
+              style={{
+                fontSize: "13px",
+                fontWeight: 400,
+                fontStyle: "italic",
+                color: "hsl(var(--muted-foreground) / 0.72)",
+                lineHeight: 1.65,
+              }}
+            >
+              Tôi ưu tiên sự phù hợp hơn số lượng. Không phải nội dung nào hay chương trình nào
+              cũng dành cho tất cả mọi người.
             </p>
           </motion.div>
+
         </motion.div>
       </div>
     </section>

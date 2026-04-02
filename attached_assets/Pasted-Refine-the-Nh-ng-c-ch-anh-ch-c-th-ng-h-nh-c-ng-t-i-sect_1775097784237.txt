@@ -1,0 +1,66 @@
+Refine the “Những cách anh/chị có thể đồng hành cùng tôi” section to make it feel less like a conversion funnel and more like a premium mentor ecosystem section.
+
+Goals:
+- keep it calm, trustworthy, and premium
+- reduce the landing-page / funnel feeling
+- make the 3 cards feel like meaningful ways to engage, not sales steps
+- preserve the current 3-card layout and light theme
+
+Please make these exact improvements:
+
+1. Improve the intro copy
+Replace the current intro text with:
+“Mỗi người đang ở một giai đoạn khác nhau. Vì vậy, tôi muốn giữ nhiều cách đồng hành để anh/chị có thể bắt đầu từ nơi phù hợp nhất với mình.”
+
+2. Replace the step labels
+Do not use:
+“BƯỚC 01 / BƯỚC 02 / BƯỚC 03”
+
+Instead, use these softer labels:
+Card 1 label: “Bắt đầu nhẹ”
+Card 2 label: “Đi cùng cộng đồng”
+Card 3 label: “Đi sâu hơn”
+
+Make these labels elegant, subtle, and editorial.
+
+3. Add anchor lines under each title
+Use this exact structure and wording:
+
+Card 1 title:
+“Theo dõi nội dung miễn phí”
+Anchor line:
+“Phù hợp nếu anh/chị đang ở giai đoạn bắt đầu.”
+Body:
+“Nếu anh/chị đang ở giai đoạn bắt đầu, đây là cách phù hợp nhất. Hãy xem video, đọc bài viết, tiếp nhận dần các góc nhìn nền tảng và xây tư duy đúng trước.”
+
+Card 2 title:
+“Tham gia cộng đồng”
+Anchor line:
+“Một môi trường tốt giúp hành trình dài hạn bền hơn.”
+Body:
+“Nếu anh/chị muốn có môi trường để học cùng người khác, trao đổi, duy trì động lực và đi đường dài vững hơn, cộng đồng sẽ là nơi phù hợp hơn việc đi một mình.”
+
+Card 3 title:
+“Chương trình chuyên sâu”
+Anchor line:
+“Dành cho người muốn đi sâu hơn với lộ trình nghiêm túc.”
+Body:
+“Nếu anh/chị muốn đi sâu hơn vào kiến thức, công cụ, hệ thống hoặc một lộ trình nghiêm túc hơn, tôi có những chương trình phù hợp cho từng giai đoạn phát triển.”
+
+4. Improve card feel
+- keep the 3-card layout
+- make the cards feel less like process cards and more like curated engagement paths
+- improve spacing, hierarchy, and editorial quality
+- preserve the calm premium style
+
+5. Upgrade the closing note
+Replace the current bottom note with:
+“Tôi ưu tiên sự phù hợp hơn số lượng. Không phải nội dung nào hay chương trình nào cũng dành cho tất cả mọi người.”
+
+Make it feel like a quiet closing statement, elegant and intentional.
+
+Important:
+Do not redesign the section from scratch.
+Do not make it look salesy.
+Avoid generic funnel styling.
+Keep it premium, calm, thoughtful, and consistent with the rest of the website.
