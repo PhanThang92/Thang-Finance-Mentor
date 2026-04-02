@@ -100,16 +100,16 @@ export function LeadFormSection() {
                   <div
                     className="flex-shrink-0 flex items-center justify-center rounded-full"
                     style={{
-                      marginTop: "2px",
-                      width: "18px",
-                      height: "18px",
-                      background: "hsl(var(--primary) / 0.09)",
+                      marginTop: "3px",
+                      width: "17px",
+                      height: "17px",
+                      background: "hsl(var(--primary) / 0.08)",
                     }}
                   >
                     <Check
-                      size={10}
-                      strokeWidth={2.2}
-                      style={{ color: "hsl(var(--primary))" }}
+                      size={9}
+                      strokeWidth={2}
+                      style={{ color: "hsl(var(--primary) / 0.88)" }}
                     />
                   </div>
                   <span
@@ -271,6 +271,7 @@ export function LeadFormSection() {
                       id="interest"
                       {...register("interest")}
                       className={`${inputClass} cursor-pointer appearance-none`}
+                      style={{ background: "hsl(var(--background))" }}
                       data-testid="select-interest"
                     >
                       <option value="">Chọn một chủ đề...</option>
@@ -312,8 +313,8 @@ export function LeadFormSection() {
                     style={{
                       fontSize: "12px",
                       fontWeight: 400,
-                      lineHeight: 1.72,
-                      color: "hsl(var(--muted-foreground) / 0.68)",
+                      lineHeight: 1.78,
+                      color: "hsl(var(--muted-foreground) / 0.78)",
                     }}
                   >
                     Tôi tôn trọng sự riêng tư của anh/chị. Thông tin được dùng để gửi nội dung
