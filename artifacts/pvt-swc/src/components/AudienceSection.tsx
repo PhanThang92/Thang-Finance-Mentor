@@ -25,7 +25,7 @@ function AudienceCard({ n, text }: { n: string; text: string }) {
   return (
     <motion.div
       variants={fadeUp}
-      className={`flex items-start gap-4 rounded-xl transition-all duration-200${isLast ? " md:col-span-2 md:max-w-md" : ""}`}
+      className={`flex items-start gap-5 rounded-xl transition-all duration-200${isLast ? " md:col-span-2 md:max-w-md" : ""}`}
       style={{
         padding: "1.375rem 1.5rem",
         background: "rgba(255,255,255,0.052)",
@@ -46,10 +46,10 @@ function AudienceCard({ n, text }: { n: string; text: string }) {
       <span
         className="flex-shrink-0 mt-0.5"
         style={{
-          fontSize: "10.5px",
+          fontSize: "11px",
           fontWeight: 600,
           letterSpacing: "0.12em",
-          color: "rgba(120,210,185,0.62)",
+          color: "rgba(120,210,185,0.72)",
           lineHeight: 1,
           paddingTop: "3px",
         }}
@@ -63,7 +63,7 @@ function AudienceCard({ n, text }: { n: string; text: string }) {
           fontSize: "15px",
           lineHeight: 1.72,
           fontWeight: 400,
-          color: "rgba(255,255,255,0.80)",
+          color: "rgba(255,255,255,0.84)",
         }}
       >
         {text}
@@ -150,7 +150,7 @@ export function AudienceSection() {
                   lineHeight: 1.9,
                   fontWeight: 300,
                   fontStyle: "italic",
-                  color: "rgba(255,255,255,0.55)",
+                  color: "rgba(255,255,255,0.62)",
                   letterSpacing: "0.005em",
                 }}
               >
