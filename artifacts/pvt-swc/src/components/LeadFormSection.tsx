@@ -34,6 +34,9 @@ const interests = [
   { value: "all", label: "Tất cả các chủ đề trên" },
 ];
 
+const inputClass =
+  "w-full h-11 px-4 rounded-lg border border-input bg-background text-[13.5px] text-foreground placeholder:text-muted-foreground/45 outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/12 transition-all duration-200";
+
 export function LeadFormSection() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -46,7 +49,7 @@ export function LeadFormSection() {
   const onSubmit = (_data: FormData) => setIsSubmitted(true);
 
   return (
-    <section id="lien-he" className="py-28 md:py-36 bg-card">
+    <section id="lien-he" className="py-24 md:py-32 bg-card">
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
         <motion.div
           initial="hidden"
@@ -55,39 +58,83 @@ export function LeadFormSection() {
           variants={stagger}
           className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-16 items-start"
         >
-          {/* Left: info */}
+
+          {/* ── Left: info ── */}
           <div className="space-y-10">
             <div className="space-y-4">
               <motion.div variants={fadeUp} className="flex items-center gap-3">
                 <div className="h-px w-8 bg-primary/50" />
                 <span className="section-label">Liên hệ</span>
               </motion.div>
-              <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold text-foreground">
+              <motion.h2
+                variants={fadeUp}
+                className="text-foreground"
+                style={{
+                  fontSize: "clamp(1.65rem, 3.8vw, 2.25rem)",
+                  fontWeight: 700,
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.018em",
+                }}
+              >
                 Nhận tài liệu & cập nhật mới từ Thắng SWC
               </motion.h2>
-              <motion.p variants={fadeUp} className="prose-body max-w-md">
+              <motion.p
+                variants={fadeUp}
+                style={{
+                  fontSize: "15px",
+                  lineHeight: 1.88,
+                  fontWeight: 400,
+                  color: "hsl(var(--muted-foreground))",
+                  maxWidth: "30rem",
+                }}
+              >
                 Nếu anh/chị muốn nhận thêm những tài liệu nền tảng, cập nhật nội dung mới hoặc
                 thông tin về các chương trình phù hợp, hãy để lại thông tin ở đây.
               </motion.p>
             </div>
 
-            <motion.ul variants={stagger} className="space-y-3.5">
+            {/* Benefits list */}
+            <motion.ul variants={stagger} className="space-y-4">
               {benefits.map((b) => (
-                <motion.li key={b} variants={fadeUp} className="flex items-start gap-3">
-                  <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-primary/12 flex items-center justify-center">
-                    <Check size={11} className="text-primary" strokeWidth={2.5} />
+                <motion.li key={b} variants={fadeUp} className="flex items-start gap-3.5">
+                  <div
+                    className="flex-shrink-0 flex items-center justify-center rounded-full"
+                    style={{
+                      marginTop: "2px",
+                      width: "18px",
+                      height: "18px",
+                      background: "hsl(var(--primary) / 0.09)",
+                    }}
+                  >
+                    <Check
+                      size={10}
+                      strokeWidth={2.2}
+                      style={{ color: "hsl(var(--primary))" }}
+                    />
                   </div>
-                  <span className="text-[15px] text-foreground/75 leading-snug">{b}</span>
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      lineHeight: 1.72,
+                      color: "hsl(var(--foreground) / 0.72)",
+                    }}
+                  >
+                    {b}
+                  </span>
                 </motion.li>
               ))}
             </motion.ul>
           </div>
 
-          {/* Right: form card */}
+          {/* ── Right: form card ── */}
           <motion.div
             variants={fadeUp}
-            className="rounded-2xl bg-background border border-border p-8"
-            style={{ boxShadow: "0 8px 32px -8px rgba(10,40,35,0.10)" }}
+            className="rounded-2xl bg-background"
+            style={{
+              border: "1px solid hsl(var(--border) / 0.82)",
+              padding: "2.25rem 2rem",
+              boxShadow: "0 4px 24px rgba(10,40,35,0.07), 0 1px 4px rgba(10,40,35,0.04)",
+            }}
           >
             <AnimatePresence mode="wait">
               {isSubmitted ? (
@@ -99,11 +146,34 @@ export function LeadFormSection() {
                   transition={{ duration: 0.4 }}
                   className="flex flex-col items-center text-center py-10 space-y-4"
                 >
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <CheckCircle2 size={32} className="text-primary" strokeWidth={1.5} />
+                  <div
+                    className="rounded-full flex items-center justify-center"
+                    style={{
+                      width: "3.5rem",
+                      height: "3.5rem",
+                      background: "hsl(var(--primary) / 0.10)",
+                    }}
+                  >
+                    <CheckCircle2
+                      size={28}
+                      strokeWidth={1.5}
+                      style={{ color: "hsl(var(--primary))" }}
+                    />
                   </div>
-                  <h3 className="text-xl font-bold text-foreground">Cảm ơn anh/chị!</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+                  <h3
+                    className="text-foreground"
+                    style={{ fontSize: "18px", fontWeight: 700, letterSpacing: "-0.01em" }}
+                  >
+                    Cảm ơn anh/chị!
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: "13.5px",
+                      lineHeight: 1.82,
+                      color: "hsl(var(--muted-foreground))",
+                      maxWidth: "18rem",
+                    }}
+                  >
                     Thông tin đã được ghi nhận. Tôi sẽ sớm gửi những nội dung phù hợp đến anh/chị.
                   </p>
                 </motion.div>
@@ -117,24 +187,32 @@ export function LeadFormSection() {
                 >
                   {/* Name */}
                   <div className="space-y-1.5">
-                    <label className="text-[13px] font-semibold text-foreground/80" htmlFor="fullName">
+                    <label
+                      className="text-foreground/78"
+                      htmlFor="fullName"
+                      style={{ fontSize: "12.5px", fontWeight: 500, display: "block" }}
+                    >
                       Họ và tên <span className="text-destructive">*</span>
                     </label>
                     <input
                       id="fullName"
                       {...register("fullName", { required: "Vui lòng nhập họ và tên" })}
                       placeholder="Nguyễn Văn A"
-                      className="w-full h-11 px-4 rounded-lg border border-input bg-card text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all"
+                      className={inputClass}
                       data-testid="input-full-name"
                     />
                     {errors.fullName && (
-                      <p className="text-[12px] text-destructive">{errors.fullName.message}</p>
+                      <p className="text-[11.5px] text-destructive">{errors.fullName.message}</p>
                     )}
                   </div>
 
                   {/* Email */}
                   <div className="space-y-1.5">
-                    <label className="text-[13px] font-semibold text-foreground/80" htmlFor="email">
+                    <label
+                      className="text-foreground/78"
+                      htmlFor="email"
+                      style={{ fontSize: "12.5px", fontWeight: 500, display: "block" }}
+                    >
                       Email <span className="text-destructive">*</span>
                     </label>
                     <input
@@ -145,38 +223,54 @@ export function LeadFormSection() {
                         pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Email không hợp lệ" },
                       })}
                       placeholder="example@email.com"
-                      className="w-full h-11 px-4 rounded-lg border border-input bg-card text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all"
+                      className={inputClass}
                       data-testid="input-email"
                     />
                     {errors.email && (
-                      <p className="text-[12px] text-destructive">{errors.email.message}</p>
+                      <p className="text-[11.5px] text-destructive">{errors.email.message}</p>
                     )}
                   </div>
 
                   {/* Phone */}
                   <div className="space-y-1.5">
-                    <label className="text-[13px] font-semibold text-foreground/80" htmlFor="phone">
+                    <label
+                      className="text-foreground/78"
+                      htmlFor="phone"
+                      style={{ fontSize: "12.5px", fontWeight: 500, display: "block" }}
+                    >
                       Số điện thoại / Zalo{" "}
-                      <span className="text-muted-foreground/50 font-normal">(không bắt buộc)</span>
+                      <span
+                        style={{
+                          fontWeight: 400,
+                          color: "hsl(var(--muted-foreground) / 0.55)",
+                          fontSize: "12px",
+                        }}
+                      >
+                        (không bắt buộc)
+                      </span>
                     </label>
                     <input
                       id="phone"
                       {...register("phone")}
                       placeholder="0912 345 678"
-                      className="w-full h-11 px-4 rounded-lg border border-input bg-card text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all"
+                      className={inputClass}
                       data-testid="input-phone"
                     />
                   </div>
 
                   {/* Interest */}
                   <div className="space-y-1.5">
-                    <label className="text-[13px] font-semibold text-foreground/80" htmlFor="interest">
+                    <label
+                      className="text-foreground/78"
+                      htmlFor="interest"
+                      style={{ fontSize: "12.5px", fontWeight: 500, display: "block" }}
+                    >
                       Mối quan tâm chính
                     </label>
                     <select
                       id="interest"
                       {...register("interest")}
-                      className="w-full h-11 px-4 rounded-lg border border-input bg-card text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all appearance-none cursor-pointer"
+                      className={`${inputClass} cursor-pointer appearance-none`}
                       data-testid="select-interest"
                     >
                       <option value="">Chọn một chủ đề...</option>
@@ -191,13 +285,37 @@ export function LeadFormSection() {
                   {/* Submit */}
                   <button
                     type="submit"
-                    className="w-full h-12 rounded-full bg-primary text-white text-sm font-semibold tracking-wide hover:bg-primary/90 active:scale-[0.98] transition-all duration-200 shadow-md shadow-primary/20 mt-2"
+                    className="w-full rounded-full text-white transition-all duration-200 active:scale-[0.98] mt-2"
+                    style={{
+                      height: "2.75rem",
+                      fontSize: "13.5px",
+                      fontWeight: 500,
+                      letterSpacing: "0.012em",
+                      background: "hsl(var(--primary))",
+                      boxShadow: "0 2px 10px rgba(10,40,35,0.12)",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.background =
+                        "hsl(var(--primary) / 0.88)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.background = "hsl(var(--primary))";
+                    }}
                     data-testid="btn-submit-form"
                   >
                     Nhận thông tin
                   </button>
 
-                  <p className="text-center text-[11.5px] text-muted-foreground/60 leading-relaxed pt-1">
+                  {/* Privacy note */}
+                  <p
+                    className="text-center pt-1"
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: 400,
+                      lineHeight: 1.72,
+                      color: "hsl(var(--muted-foreground) / 0.68)",
+                    }}
+                  >
                     Tôi tôn trọng sự riêng tư của anh/chị. Thông tin được dùng để gửi nội dung
                     phù hợp, không làm phiền quá mức và không phục vụ cho các lời mời chào thiếu
                     chọn lọc.
@@ -206,6 +324,7 @@ export function LeadFormSection() {
               )}
             </AnimatePresence>
           </motion.div>
+
         </motion.div>
       </div>
     </section>
