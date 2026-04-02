@@ -1,0 +1,65 @@
+Refine the “Nội dung tôi đang chia sẻ” section to make it feel more premium, intentional, and less like generic category cards.
+
+Goals:
+- make this section feel like real content pillars of a personal brand
+- increase sophistication and editorial quality
+- keep it clean, calm, premium, and trustworthy
+- preserve the current light theme and 3-card structure
+
+Please make these exact improvements:
+
+1. Keep the current intro meaning, but improve presentation
+Use this exact intro text:
+“Những gì tôi chia sẻ xoay quanh một mục tiêu chung: giúp anh/chị xây một nền tảng tốt hơn cho tài chính, công việc, tư duy và cuộc sống dài hạn.”
+
+Improve spacing, width, and typography so it feels more elegant and intentional.
+
+2. Refine the 3 cards into content pillar cards
+- keep the same 3-column layout
+- make the cards feel more like content pillars than generic overview cards
+- improve internal hierarchy, spacing, typography rhythm, and premium feel
+- reduce template-card feeling
+
+3. Add an anchor line under each card title
+Use this exact structure and wording:
+
+Card 1 title:
+“Tư duy tài chính & đầu tư”
+Anchor line:
+“Hiểu tiền đúng trước khi đi tìm cơ hội.”
+Body:
+“Quản lý tài chính cá nhân, tư duy tích sản, hiểu rủi ro trước lợi nhuận, đầu tư dài hạn và góc nhìn thực tế về tài sản, dòng tiền và quyền sở hữu.”
+
+Card 2 title:
+“Phát triển bản thân & sự nghiệp”
+Anchor line:
+“Xây năng lực trước khi kỳ vọng bứt phá.”
+Body:
+“Kỷ luật cá nhân, trách nhiệm với cuộc đời mình, tư duy nghề nghiệp, phát triển sự nghiệp theo hướng dài hạn và xây phiên bản tốt hơn của chính mình.”
+
+Card 3 title:
+“Hệ thống & cộng đồng”
+Anchor line:
+“Đi đường dài cần môi trường và người đồng hành phù hợp.”
+Body:
+“Hệ thống học tập, công cụ và tư duy ứng dụng, cách xây môi trường phát triển lành mạnh và cộng đồng cùng học, cùng làm, cùng trưởng thành.”
+
+4. Refine the CTA button
+- make the YouTube CTA feel more intentional and premium
+- slightly improve size, spacing, typography, and icon balance
+- keep it elegant and calm
+- make it feel like a real next step, not a leftover button
+
+Replace CTA text with:
+“Khám phá playlist YouTube”
+
+5. Keep consistency
+- align visual quality with the previous premium sections
+- preserve responsiveness
+- do not redesign from scratch
+- only elevate and refine
+
+Important:
+Avoid generic SaaS card styling.
+Avoid overdesign.
+Make it feel like a premium content pillar section for a Vietnamese mentor brand.

@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Coins, User, Network } from "lucide-react";
 import { SiYoutube } from "react-icons/si";
 
 const stagger = {
@@ -15,81 +14,195 @@ const fadeUp = {
 
 const pillars = [
   {
-    icon: Coins,
+    num: "01",
     title: "Tư duy tài chính & đầu tư",
+    anchor: "Hiểu tiền đúng trước khi đi tìm cơ hội.",
     desc: "Quản lý tài chính cá nhân, tư duy tích sản, hiểu rủi ro trước lợi nhuận, đầu tư dài hạn và góc nhìn thực tế về tài sản, dòng tiền và quyền sở hữu.",
   },
   {
-    icon: User,
+    num: "02",
     title: "Phát triển bản thân & sự nghiệp",
+    anchor: "Xây năng lực trước khi kỳ vọng bứt phá.",
     desc: "Kỷ luật cá nhân, trách nhiệm với cuộc đời mình, tư duy nghề nghiệp, phát triển sự nghiệp theo hướng dài hạn và xây phiên bản tốt hơn của chính mình.",
   },
   {
-    icon: Network,
+    num: "03",
     title: "Hệ thống & cộng đồng",
+    anchor: "Đi đường dài cần môi trường và người đồng hành phù hợp.",
     desc: "Hệ thống học tập, công cụ và tư duy ứng dụng, cách xây môi trường phát triển lành mạnh và cộng đồng cùng học, cùng làm, cùng trưởng thành.",
   },
 ];
 
 export function ContentSection() {
   return (
-    <section id="noi-dung" className="py-28 md:py-36 bg-background">
+    <section id="noi-dung" className="py-24 md:py-32 bg-background">
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
-          className="space-y-16"
+          className="space-y-14"
         >
-          {/* Header */}
+
+          {/* ── Header ── */}
           <div className="max-w-2xl space-y-4">
             <motion.div variants={fadeUp} className="flex items-center gap-3">
               <div className="h-px w-8 bg-primary/50" />
               <span className="section-label">Nội dung</span>
             </motion.div>
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold text-foreground">
+            <motion.h2
+              variants={fadeUp}
+              className="text-foreground"
+              style={{
+                fontSize: "clamp(1.65rem, 3.8vw, 2.25rem)",
+                fontWeight: 700,
+                lineHeight: 1.2,
+                letterSpacing: "-0.018em",
+              }}
+            >
               Nội dung tôi đang chia sẻ
             </motion.h2>
-            <motion.p variants={fadeUp} className="prose-body max-w-xl">
+            <motion.p
+              variants={fadeUp}
+              style={{
+                fontSize: "15px",
+                lineHeight: 1.88,
+                fontWeight: 400,
+                color: "hsl(var(--muted-foreground))",
+                maxWidth: "34rem",
+              }}
+            >
               Những gì tôi chia sẻ xoay quanh một mục tiêu chung: giúp anh/chị xây một nền tảng
               tốt hơn cho tài chính, công việc, tư duy và cuộc sống dài hạn.
             </motion.p>
           </div>
 
-          {/* Pillar cards */}
-          <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {pillars.map(({ icon: Icon, title, desc }) => (
+          {/* ── Pillar cards ── */}
+          <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {pillars.map(({ num, title, anchor, desc }) => (
               <motion.div
-                key={title}
+                key={num}
                 variants={fadeUp}
-                className="rounded-xl bg-card border border-border p-7 space-y-5 hover:border-primary/25 transition-colors duration-300"
-                style={{ boxShadow: "0 2px 8px -2px rgba(10,40,35,0.06)" }}
+                className="group relative flex flex-col rounded-xl bg-card transition-all duration-300"
+                style={{
+                  border: "1px solid hsl(var(--border) / 0.92)",
+                  padding: "1.75rem 1.625rem",
+                  boxShadow: "0 2px 8px rgba(10,40,35,0.07)",
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.borderColor = "hsl(var(--primary) / 0.28)";
+                  el.style.boxShadow = "0 4px 20px rgba(10,40,35,0.09)";
+                  el.style.transform = "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.borderColor = "hsl(var(--border) / 0.92)";
+                  el.style.boxShadow = "0 2px 8px rgba(10,40,35,0.07)";
+                  el.style.transform = "translateY(0)";
+                }}
               >
-                <div className="w-10 h-10 rounded-lg bg-primary/8 flex items-center justify-center text-primary">
-                  <Icon size={20} strokeWidth={1.6} />
+                {/* Editorial number marker */}
+                <div className="flex items-center gap-3 mb-5">
+                  <span
+                    style={{
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      letterSpacing: "0.13em",
+                      color: "hsl(var(--primary) / 0.65)",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {num}
+                  </span>
+                  <div
+                    style={{
+                      flexGrow: 1,
+                      maxWidth: "2rem",
+                      height: "1px",
+                      background: "hsl(var(--primary) / 0.28)",
+                    }}
+                  />
                 </div>
-                <div>
-                  <h3 className="text-[16px] font-bold text-foreground mb-3">{title}</h3>
-                  <p className="text-sm leading-[1.85] text-muted-foreground">{desc}</p>
-                </div>
+
+                {/* Title */}
+                <h3
+                  className="text-foreground mb-2"
+                  style={{
+                    fontSize: "16.5px",
+                    fontWeight: 700,
+                    lineHeight: 1.3,
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {title}
+                </h3>
+
+                {/* Anchor line */}
+                <p
+                  className="mb-4"
+                  style={{
+                    fontSize: "12.5px",
+                    fontWeight: 500,
+                    fontStyle: "italic",
+                    color: "hsl(var(--primary) / 0.82)",
+                    lineHeight: 1.55,
+                    letterSpacing: "0.005em",
+                  }}
+                >
+                  {anchor}
+                </p>
+
+                {/* Body */}
+                <p
+                  style={{
+                    fontSize: "13.5px",
+                    lineHeight: 1.82,
+                    fontWeight: 400,
+                    color: "hsl(var(--muted-foreground))",
+                  }}
+                >
+                  {desc}
+                </p>
               </motion.div>
             ))}
           </motion.div>
 
-          {/* CTA */}
-          <motion.div variants={fadeUp} className="pt-4">
+          {/* ── CTA ── */}
+          <motion.div variants={fadeUp} className="pt-2">
             <a
               href="#"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2.5 h-11 px-6 rounded-full border border-primary/50 text-primary text-sm font-medium hover:bg-primary/6 transition-all duration-200"
+              className="inline-flex items-center gap-3 rounded-full transition-all duration-200"
+              style={{
+                height: "2.625rem",
+                padding: "0 1.625rem",
+                fontSize: "13px",
+                fontWeight: 500,
+                letterSpacing: "0.01em",
+                color: "hsl(var(--primary))",
+                border: "1px solid hsl(var(--primary) / 0.40)",
+                background: "transparent",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "hsl(var(--primary) / 0.06)";
+                el.style.borderColor = "hsl(var(--primary) / 0.60)";
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "transparent";
+                el.style.borderColor = "hsl(var(--primary) / 0.40)";
+              }}
               data-testid="btn-youtube"
             >
-              <SiYoutube size={16} className="text-red-500" />
-              Xem playlist YouTube
+              <SiYoutube size={15} style={{ color: "#e05050", flexShrink: 0 }} />
+              Khám phá playlist YouTube
             </a>
           </motion.div>
+
         </motion.div>
       </div>
     </section>
