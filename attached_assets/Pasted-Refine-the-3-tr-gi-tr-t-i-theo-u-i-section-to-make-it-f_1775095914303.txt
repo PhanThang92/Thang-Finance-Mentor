@@ -1,0 +1,61 @@
+Refine the “3 trụ giá trị tôi theo đuổi” section to make it feel more premium, intentional, and less like generic feature cards.
+
+Goals:
+- make the section feel like a core philosophy section, not a standard SaaS features block
+- increase sophistication and editorial quality
+- keep it clean, calm, trustworthy, and premium
+- preserve the current light theme and 3-card layout
+
+Please make these exact improvements:
+
+1. Improve the intro copy
+Replace the current intro text with:
+“Tôi tin rằng một hành trình tài chính bền vững không bắt đầu từ cơ hội kiếm được bao nhiêu. Nó bắt đầu từ nền tảng mình đang đứng trên.”
+
+2. Refine the 3 cards
+- keep the same 3-column structure
+- make the cards feel more like principle cards than feature cards
+- improve spacing, internal hierarchy, and typography rhythm
+- reduce the generic template-card feeling
+- make the cards feel more premium, thoughtful, and editorial
+
+3. Improve the number markers (01, 02, 03)
+- make them more intentional and refined
+- slightly increase their visual role
+- keep them subtle, but make them feel like editorial markers instead of faded decoration
+
+4. Add an anchor line under each title
+Use this exact structure and wording:
+
+Card 1 title:
+“Kỷ luật tài chính”
+Anchor line:
+“Nền móng của mọi tài sản bền vững.”
+Body:
+“Không có tài sản bền vững nếu không có kỷ luật. Từ quản lý chi tiêu, xây quỹ an toàn, hình thành thói quen tích lũy đến cách ra quyết định trước cám dỗ ngắn hạn — tất cả đều là phần gốc.”
+
+Card 2 title:
+“Tư duy đầu tư đúng”
+Anchor line:
+“Hiểu rủi ro trước khi nói tới lợi nhuận.”
+Body:
+“Đầu tư không bắt đầu bằng câu hỏi: ‘Cái gì tăng nhanh nhất?’. Nó nên bắt đầu bằng những câu hỏi sâu hơn về rủi ro, giá trị và khả năng giữ được sự tỉnh táo khi thị trường biến động.”
+
+Card 3 title:
+“Hệ thống phát triển dài hạn”
+Anchor line:
+“Đi đường dài cần công cụ, nguyên tắc và cộng đồng.”
+Body:
+“Một người có thể rất quyết tâm trong vài ngày. Nhưng để đi được vài năm, cần một hệ thống học tập, một môi trường đủ tốt, một cộng đồng đồng hành và những nguyên tắc đủ rõ để quay lại mỗi khi chệch hướng.”
+
+5. Keep consistency
+- preserve responsiveness
+- keep the section elegant and minimal
+- align its visual quality with the premium hero section
+- do not redesign from scratch
+- only elevate and refine
+
+Important:
+Avoid generic SaaS feature-card styling.
+Avoid overdesign.
+Make it feel like a calm, premium philosophy section for a Vietnamese finance mentor brand.
