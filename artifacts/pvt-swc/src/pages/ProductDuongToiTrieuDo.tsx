@@ -659,9 +659,9 @@ function PsychologySection() {
    8. SWC PASS
 ══════════════════════════════════════════════════════════ */
 const passFeatures = [
-  { title: "Phân tích hàng tháng", body: "Báo cáo định kỳ với các nhận định cụ thể về thị trường và danh mục." },
-  { title: "Hỗ trợ đánh giá cổ phiếu cổ tức", body: "Công cụ và góc nhìn để phân tích cổ phiếu theo tiêu chí dài hạn." },
-  { title: "Hỗ trợ cân bằng rủi ro danh mục", body: "Hướng dẫn cách điều chỉnh tỷ trọng phù hợp với từng giai đoạn." },
+  { title: "Phân tích hàng tháng", body: "Báo cáo định kỳ với các nhận định cụ thể để anh/chị không phải tự ghép mọi mảnh thông tin một mình." },
+  { title: "Hỗ trợ đánh giá cổ phiếu cổ tức", body: "Công cụ và góc nhìn giúp anh/chị nhìn doanh nghiệp theo tiêu chí dài hạn thay vì cảm xúc ngắn hạn." },
+  { title: "Hỗ trợ cân bằng rủi ro danh mục", body: "Hướng dẫn điều chỉnh tỷ trọng phù hợp với từng giai đoạn, để danh mục không chỉ tăng trưởng mà còn biết tự bảo vệ." },
 ];
 
 function SwcPassSection() {
@@ -672,36 +672,40 @@ function SwcPassSection() {
           <div className="space-y-5 max-w-2xl">
             <motion.div variants={fadeUp}><SectionLabel dark>Hệ sinh thái</SectionLabel></motion.div>
             <motion.div variants={fadeUp}><SectionHeading dark>Road to $1M nằm ở đâu trong hệ sinh thái SWC PASS?</SectionHeading></motion.div>
-            <motion.div variants={fadeUp}><AnchorLine dark>Một phần của dịch vụ đồng hành dài hạn, không đứng độc lập.</AnchorLine></motion.div>
+            <motion.div variants={fadeUp}>
+              <AnchorLine dark style={{ fontSize: "13px", color: "rgba(52,160,140,0.90)" }}>
+                Một phần của dịch vụ đồng hành dài hạn, không đứng độc lập.
+              </AnchorLine>
+            </motion.div>
           </div>
 
           <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
-            {/* Left: description */}
+            {/* Left: description + features */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
               <p style={{ fontSize: "15px", lineHeight: 1.88, color: "rgba(255,255,255,0.60)", fontWeight: 300 }}>
                 Road to $1M là nền tảng kiến thức nằm trong hệ sinh thái SWC PASS — một dịch vụ thông tin tài chính được xây dựng để đồng hành dài hạn, không phải để giải trí ngắn hạn.
               </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                 {passFeatures.map(({ title, body }, i) => (
                   <div key={i} style={{ display: "flex", gap: "1rem" }}>
-                    <div style={{ flexShrink: 0, width: "2px", borderRadius: "999px", background: "rgba(52,160,140,0.42)", marginTop: "3px" }} />
+                    <div style={{ flexShrink: 0, width: "2px", borderRadius: "999px", background: "rgba(52,160,140,0.52)", marginTop: "3px" }} />
                     <div>
-                      <p style={{ fontSize: "14px", fontWeight: 500, color: "rgba(255,255,255,0.80)", lineHeight: 1.35, marginBottom: "0.25rem" }}>{title}</p>
-                      <p style={{ fontSize: "13px", lineHeight: 1.75, color: "rgba(255,255,255,0.50)", fontWeight: 300 }}>{body}</p>
+                      <p style={{ fontSize: "14.5px", fontWeight: 500, color: "rgba(255,255,255,0.85)", lineHeight: 1.30, marginBottom: "0.375rem" }}>{title}</p>
+                      <p style={{ fontSize: "13.5px", lineHeight: 1.82, color: "rgba(255,255,255,0.52)", fontWeight: 300 }}>{body}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Right: positioning callout */}
-            <div style={{ borderRadius: "0.75rem", border: "1px solid rgba(52,160,140,0.18)", padding: "2rem 1.75rem", background: "rgba(52,160,140,0.05)" }}>
-              <div style={{ width: "2rem", height: "1px", background: "rgba(52,160,140,0.45)", marginBottom: "1.25rem" }} />
-              <p style={{ fontSize: "15.5px", fontStyle: "italic", fontWeight: 300, color: "rgba(255,255,255,0.72)", lineHeight: 1.78, marginBottom: "1.5rem" }}>
+            {/* Right: trust statement panel */}
+            <div style={{ borderRadius: "0.75rem", border: "1px solid rgba(52,160,140,0.22)", padding: "2.25rem 2rem", background: "rgba(52,160,140,0.07)" }}>
+              <div style={{ width: "2rem", height: "1px", background: "rgba(52,160,140,0.60)", marginBottom: "1.5rem" }} />
+              <p style={{ fontSize: "16px", fontStyle: "italic", fontWeight: 300, color: "rgba(255,255,255,0.78)", lineHeight: 1.80, marginBottom: "1.75rem" }}>
                 "Dịch vụ thông tin giúp anh/chị ra quyết định có ý thức hơn, không cam kết lợi nhuận ảo."
               </p>
-              <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "1.25rem" }}>
-                <p style={{ fontSize: "12px", fontWeight: 400, color: "rgba(255,255,255,0.35)", lineHeight: 1.65 }}>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "1.375rem" }}>
+                <p style={{ fontSize: "12.5px", fontWeight: 400, color: "rgba(255,255,255,0.38)", lineHeight: 1.70 }}>
                   SWC PASS là dịch vụ thông tin tài chính. Không phải tư vấn đầu tư cá nhân hay cam kết lợi nhuận dưới bất kỳ hình thức nào.
                 </p>
               </div>
