@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 const stagger = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
+  visible: { transition: { staggerChildren: 0.09 } },
 };
 
 const fadeUp = {
@@ -19,10 +19,63 @@ const audiences = [
   { n: "05", text: "Người muốn đi đường dài, không FOMO" },
 ];
 
+function AudienceCard({ n, text }: { n: string; text: string }) {
+  const isLast = n === "05";
+
+  return (
+    <motion.div
+      variants={fadeUp}
+      className={`flex items-start gap-4 rounded-xl transition-all duration-200${isLast ? " md:col-span-2 md:max-w-md" : ""}`}
+      style={{
+        padding: "1.375rem 1.5rem",
+        background: "rgba(255,255,255,0.052)",
+        border: "1px solid rgba(255,255,255,0.095)",
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLElement;
+        el.style.background = "rgba(255,255,255,0.082)";
+        el.style.borderColor = "rgba(255,255,255,0.14)";
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLElement;
+        el.style.background = "rgba(255,255,255,0.052)";
+        el.style.borderColor = "rgba(255,255,255,0.095)";
+      }}
+    >
+      {/* Editorial number marker */}
+      <span
+        className="flex-shrink-0 mt-0.5"
+        style={{
+          fontSize: "10.5px",
+          fontWeight: 600,
+          letterSpacing: "0.12em",
+          color: "rgba(120,210,185,0.62)",
+          lineHeight: 1,
+          paddingTop: "3px",
+        }}
+      >
+        {n}
+      </span>
+
+      {/* Card text */}
+      <p
+        style={{
+          fontSize: "15px",
+          lineHeight: 1.72,
+          fontWeight: 400,
+          color: "rgba(255,255,255,0.80)",
+        }}
+      >
+        {text}
+      </p>
+    </motion.div>
+  );
+}
+
 export function AudienceSection() {
   return (
     <section
-      className="py-28 md:py-36 relative overflow-hidden"
+      className="py-24 md:py-32 relative overflow-hidden"
       style={{ background: "linear-gradient(160deg, #102a26 0%, #0e2421 100%)" }}
     >
       {/* Subtle grid */}
@@ -30,7 +83,7 @@ export function AudienceSection() {
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.022) 1px, transparent 1px)",
           backgroundSize: "4rem 4rem",
         }}
       />
@@ -41,64 +94,72 @@ export function AudienceSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
-          className="space-y-14"
+          className="space-y-12"
         >
-          {/* Header */}
+          {/* ── Header ── */}
           <div className="max-w-2xl space-y-4">
             <motion.div variants={fadeUp} className="flex items-center gap-3">
-              <div className="h-px w-8" style={{ background: "rgba(200,160,80,0.6)" }} />
-              <span className="text-xs font-semibold tracking-[0.18em] uppercase text-accent/80">
+              <div className="flex-shrink-0" style={{ width: "2rem", height: "0.5px", background: "rgba(200,160,80,0.60)" }} />
+              <span
+                style={{ fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.20em", textTransform: "uppercase", color: "rgba(200,160,80,0.78)" }}
+              >
                 Dành cho ai?
               </span>
             </motion.div>
+
             <motion.h2
               variants={fadeUp}
-              className="text-3xl md:text-4xl font-bold text-white"
+              className="text-white"
+              style={{ fontSize: "clamp(1.65rem, 3.8vw, 2.25rem)", fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.018em" }}
             >
               Trang này dành cho ai?
             </motion.h2>
-            <motion.p variants={fadeUp} className="text-white/60 text-[15px] leading-[1.85]">
+
+            {/* 1. Updated intro copy */}
+            <motion.p
+              variants={fadeUp}
+              style={{ fontSize: "15px", lineHeight: 1.88, fontWeight: 400, color: "rgba(255,255,255,0.58)" }}
+            >
               Nếu anh/chị đang ở một trong những giai đoạn dưới đây, rất có thể những nội dung
-              tôi chia sẻ sẽ phù hợp:
+              tôi chia sẻ sẽ phù hợp.
             </motion.p>
           </div>
 
-          {/* Audience cards */}
-          <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* ── Audience cards ── */}
+          <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             {audiences.map(({ n, text }) => (
-              <motion.div
-                key={n}
-                variants={fadeUp}
-                className={`flex items-start gap-5 p-5 rounded-xl transition-colors ${
-                  n === "05" ? "md:col-span-2 md:max-w-md" : ""
-                }`}
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                }}
-              >
-                <span
-                  className="text-xs font-bold mt-0.5 flex-shrink-0"
-                  style={{ color: "rgba(100,200,175,0.45)", letterSpacing: "0.06em" }}
-                >
-                  {n}
-                </span>
-                <p className="text-white/80 text-[15px] leading-[1.7] font-light">{text}</p>
-              </motion.div>
+              <AudienceCard key={n} n={n} text={text} />
             ))}
           </motion.div>
 
-          {/* Closing line */}
+          {/* ── Closing statement — calm brand statement ── */}
           <motion.div
             variants={fadeUp}
-            className="pt-6 border-t"
-            style={{ borderColor: "rgba(255,255,255,0.07)" }}
+            className="pt-10 border-t"
+            style={{ borderColor: "rgba(255,255,255,0.08)" }}
           >
-            <p className="text-white/50 text-[15px] leading-[1.85] italic max-w-2xl font-light">
-              "Nếu anh/chị đang tìm một hướng đi bình tĩnh hơn, thực tế hơn và có chiều sâu hơn
-              với tài chính và cuộc sống — đây có thể là nơi phù hợp."
-            </p>
+            <div className="max-w-2xl">
+              {/* Short accent line */}
+              <div
+                className="mb-4"
+                style={{ width: "1.5rem", height: "1.5px", background: "rgba(120,210,185,0.45)" }}
+              />
+              <p
+                style={{
+                  fontSize: "15.5px",
+                  lineHeight: 1.9,
+                  fontWeight: 300,
+                  fontStyle: "italic",
+                  color: "rgba(255,255,255,0.55)",
+                  letterSpacing: "0.005em",
+                }}
+              >
+                Nếu anh/chị đang tìm một hướng đi bình tĩnh hơn, thực tế hơn và có chiều sâu
+                hơn với tài chính và cuộc sống — đây có thể là nơi phù hợp.
+              </p>
+            </div>
           </motion.div>
+
         </motion.div>
       </div>
     </section>
