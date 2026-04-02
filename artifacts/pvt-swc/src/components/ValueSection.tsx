@@ -29,6 +29,7 @@ const values = [
     title: "Hệ thống phát triển dài hạn",
     anchor: "Đi đường dài cần công cụ, nguyên tắc và cộng đồng.",
     desc: "Một người có thể rất quyết tâm trong vài ngày. Nhưng để đi được vài năm, cần một hệ thống học tập, một môi trường đủ tốt, một cộng đồng đồng hành và những nguyên tắc đủ rõ để quay lại mỗi khi chệch hướng.",
+    denseBody: true,
   },
 ];
 
@@ -80,15 +81,15 @@ export function ValueSection() {
 
           {/* ── Value cards ── */}
           <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {values.map(({ num, title, anchor, desc }) => (
+            {values.map(({ num, title, anchor, desc, denseBody }) => (
               <motion.div
                 key={num}
                 variants={fadeUp}
                 className="group relative flex flex-col rounded-xl bg-background transition-all duration-300"
                 style={{
-                  border: "1px solid hsl(var(--border) / 0.80)",
+                  border: "1px solid hsl(var(--border) / 0.92)",
                   padding: "1.75rem 1.625rem",
-                  boxShadow: "0 1px 6px rgba(10,40,35,0.05)",
+                  boxShadow: "0 2px 8px rgba(10,40,35,0.07)",
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
@@ -98,8 +99,8 @@ export function ValueSection() {
                 }}
                 onMouseLeave={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = "hsl(var(--border) / 0.80)";
-                  el.style.boxShadow = "0 1px 6px rgba(10,40,35,0.05)";
+                  el.style.borderColor = "hsl(var(--border) / 0.92)";
+                  el.style.boxShadow = "0 2px 8px rgba(10,40,35,0.07)";
                   el.style.transform = "translateY(0)";
                 }}
               >
@@ -146,7 +147,7 @@ export function ValueSection() {
                     fontSize: "12.5px",
                     fontWeight: 500,
                     fontStyle: "italic",
-                    color: "hsl(var(--primary) / 0.72)",
+                    color: "hsl(var(--primary) / 0.82)",
                     lineHeight: 1.55,
                     letterSpacing: "0.005em",
                   }}
@@ -157,8 +158,8 @@ export function ValueSection() {
                 {/* Body */}
                 <p
                   style={{
-                    fontSize: "14px",
-                    lineHeight: 1.85,
+                    fontSize: denseBody ? "13.5px" : "14px",
+                    lineHeight: denseBody ? 1.78 : 1.85,
                     fontWeight: 400,
                     color: "hsl(var(--muted-foreground))",
                   }}
