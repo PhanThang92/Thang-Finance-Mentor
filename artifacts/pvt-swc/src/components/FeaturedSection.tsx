@@ -18,40 +18,44 @@ const cards = [
     label: "Series",
     title: "Hành Trình Từ Tư Duy Đến Tự Do",
     desc: "Một series về tư duy, trách nhiệm, tài chính, sự nghiệp và cách một người bình thường có thể trưởng thành dần để bước gần hơn tới tự do.",
+    gradientAngle: 145,
     gradientFrom: "#0e2421",
     gradientTo: "#1a4a44",
-    glow: { color: "rgba(52,160,140,0.35)", x: "30%", y: "30%" },
-    shimmer: { x1: "0%", y1: "0%", x2: "100%", y2: "100%", opacity: 0.06 },
+    glow: { color: "rgba(52,160,140,0.36)", x: "30%", y: "28%", rx: "74%", ry: "68%" },
+    shimmer: { dir: "to bottom right", opacity: 0.065 },
   },
   {
     anchor: "Nên xem trước",
     label: "Hành trình",
     title: "Con đường đến 1 triệu đô",
     desc: "Không phải lời hứa làm giàu nhanh. Đây là hành trình xây tài sản dài hạn bằng kỷ luật tài chính, tư duy đầu tư đúng và một hệ thống đồng hành nghiêm túc.",
+    gradientAngle: 130,
     gradientFrom: "#142820",
     gradientTo: "#1e5448",
-    glow: { color: "rgba(36,130,100,0.32)", x: "72%", y: "22%" },
-    shimmer: { x1: "100%", y1: "0%", x2: "0%", y2: "100%", opacity: 0.05 },
+    glow: { color: "rgba(36,130,100,0.33)", x: "72%", y: "22%", rx: "80%", ry: "62%" },
+    shimmer: { dir: "to bottom left", opacity: 0.055 },
   },
   {
     anchor: "Nền tảng quan trọng",
     label: "Nền tảng",
     title: "Kiến thức đầu tư nền tảng",
     desc: "Dành cho người muốn bắt đầu từ gốc: hiểu tiền, hiểu rủi ro, hiểu cách nhìn một cơ hội đầu tư bằng sự tỉnh táo thay vì cảm xúc.",
-    gradientFrom: "#0f2320",
-    gradientTo: "#1c4840",
-    glow: { color: "rgba(60,140,120,0.28)", x: "50%", y: "75%" },
-    shimmer: { x1: "50%", y1: "0%", x2: "50%", y2: "100%", opacity: 0.055 },
+    gradientAngle: 155,
+    gradientFrom: "#0f2420",
+    gradientTo: "#1d4c42",
+    glow: { color: "rgba(58,148,124,0.32)", x: "52%", y: "78%", rx: "66%", ry: "80%" },
+    shimmer: { dir: "to top right", opacity: 0.06 },
   },
   {
     anchor: "Gần với đời sống",
     label: "Cuộc sống",
     title: "Kỷ luật, cuộc sống và phát triển bản thân",
     desc: "Những chia sẻ gần hơn với đời sống hằng ngày, nhưng lại là phần rất quan trọng để xây nên một hành trình tài chính bền vững.",
+    gradientAngle: 138,
     gradientFrom: "#132824",
-    gradientTo: "#214f47",
-    glow: { color: "rgba(45,150,130,0.30)", x: "18%", y: "55%" },
-    shimmer: { x1: "0%", y1: "100%", x2: "100%", y2: "0%", opacity: 0.06 },
+    gradientTo: "#22514a",
+    glow: { color: "rgba(48,152,132,0.34)", x: "18%", y: "55%", rx: "70%", ry: "72%" },
+    shimmer: { dir: "to top left", opacity: 0.065 },
   },
 ];
 
@@ -102,7 +106,7 @@ export function FeaturedSection() {
 
           {/* ── Cards grid ── */}
           <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {cards.map(({ anchor, label, title, desc, gradientFrom, gradientTo, glow, shimmer }) => (
+            {cards.map(({ anchor, label, title, desc, gradientAngle, gradientFrom, gradientTo, glow, shimmer }) => (
               <motion.div
                 key={title}
                 variants={fadeUp}
@@ -130,22 +134,21 @@ export function FeaturedSection() {
                   className="relative overflow-hidden"
                   style={{
                     height: "140px",
-                    background: `linear-gradient(145deg, ${gradientFrom} 0%, ${gradientTo} 100%)`,
+                    background: `linear-gradient(${gradientAngle}deg, ${gradientFrom} 0%, ${gradientTo} 100%)`,
                   }}
                 >
-                  {/* Radial glow — position varies per card */}
+                  {/* Radial glow — position and ellipse shape vary per card */}
                   <div
                     className="absolute inset-0"
                     style={{
-                      background: `radial-gradient(ellipse 72% 72% at ${glow.x} ${glow.y}, ${glow.color} 0%, transparent 68%)`,
+                      background: `radial-gradient(ellipse ${glow.rx} ${glow.ry} at ${glow.x} ${glow.y}, ${glow.color} 0%, transparent 68%)`,
                     }}
                   />
-                  {/* Diagonal shimmer — direction varies per card */}
+                  {/* Directional shimmer — direction varies per card */}
                   <div
                     className="absolute inset-0"
                     style={{
-                      background: `linear-gradient(to bottom right, rgba(255,255,255,${shimmer.opacity}) 0%, transparent 55%)`,
-                      opacity: 1,
+                      background: `linear-gradient(${shimmer.dir}, rgba(255,255,255,${shimmer.opacity}) 0%, transparent 55%)`,
                     }}
                   />
                   {/* Subtle horizontal light band at top edge */}
@@ -183,13 +186,13 @@ export function FeaturedSection() {
                   {/* Anchor label */}
                   <p
                     style={{
-                      fontSize: "11px",
+                      fontSize: "11.5px",
                       fontWeight: 500,
                       fontStyle: "italic",
-                      letterSpacing: "0.01em",
-                      color: "hsl(var(--primary) / 0.68)",
+                      letterSpacing: "0.012em",
+                      color: "hsl(var(--primary) / 0.75)",
                       lineHeight: 1,
-                      marginBottom: "0.55rem",
+                      marginBottom: "0.575rem",
                     }}
                   >
                     {anchor}
