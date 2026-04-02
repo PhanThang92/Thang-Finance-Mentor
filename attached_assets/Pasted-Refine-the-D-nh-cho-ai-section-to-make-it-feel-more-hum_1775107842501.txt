@@ -1,0 +1,60 @@
+Refine the “Dành cho ai?” section to make it feel more human, more specific, and more premium while preserving the current clean layout.
+
+Goals:
+- keep the current 3-card structure
+- make the audience descriptions feel more like real-life profiles, less like generic persona cards
+- preserve the calm premium mentor tone
+- keep the filtering function clear and thoughtful
+
+Please make these exact improvements:
+
+1. Keep the current title:
+“Dành cho ai?”
+
+2. Keep the current anchor line:
+“Được xây dựng cho người đi làm bận rộn, không phải nhà đầu tư chuyên nghiệp.”
+
+But make it feel slightly more intentional and more noticeable while staying elegant.
+
+3. Refine the 3 audience cards
+Keep the current structure, but update the body copy to this version:
+
+Card 1 title:
+“Người đi làm 35+ có tích lũy”
+Body:
+“Anh/chị có thu nhập ổn định, đã bắt đầu tích lũy hoặc có một khoản tiền nhàn rỗi, nhưng chưa có một cách rõ ràng để biến khoản tiền đó thành tài sản dài hạn.”
+
+Card 2 title:
+“Nhà đầu tư cá nhân bận rộn”
+Body:
+“Anh/chị đã từng tìm hiểu hoặc đầu tư, nhưng việc ra quyết định vẫn dễ bị kéo bởi cảm xúc, tin tức ngắn hạn hoặc thiếu thời gian để nhìn mọi thứ một cách hệ thống.”
+
+Card 3 title:
+“Người muốn biến tiền thành tài sản”
+Body:
+“Anh/chị biết giữ tiền trong tài khoản ngân hàng không phải là giải pháp tối ưu, nhưng vẫn chưa có một cấu trúc đủ rõ để bắt đầu thay đổi.”
+
+4. Refine the “not a fit” block
+Change the title from:
+“CHƯA PHÙ HỢP NẾU”
+
+to:
+“Chưa phù hợp nếu anh/chị đang tìm”
+
+Keep the filtering meaning, but make the block feel a little more intentional and refined, less like a generic bullet strip.
+
+Use these items:
+- lợi nhuận nhanh
+- tín hiệu mua bán ngắn hạn
+- cam kết kết quả
+- một con đường không cần đi dài
+
+5. Improve visual feel
+- keep the current layout and structure
+- make the section feel more human and less templated
+- keep it premium, calm, clean, and consistent with the rest of the page
+
+Important:
+Do not redesign the section.
+Do not make it flashy.
+Keep it premium, thoughtful, and consistent with the Road to $1M page.

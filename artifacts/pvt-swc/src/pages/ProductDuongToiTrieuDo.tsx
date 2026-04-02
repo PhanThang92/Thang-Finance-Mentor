@@ -400,11 +400,11 @@ function GoalSection() {
    4. AUDIENCE
 ══════════════════════════════════════════════════════════ */
 const forGroups = [
-  { num: "01", title: "Người đi làm 35+ có tích lũy", body: "Anh/chị đang có thu nhập ổn định, bắt đầu tích lũy được hoặc đã có một số tiền nhàn rỗi nhưng chưa biết đặt vào đâu một cách có hệ thống." },
-  { num: "02", title: "Nhà đầu tư cá nhân bận rộn", body: "Anh/chị đã có kinh nghiệm đầu tư nhưng ra quyết định chủ yếu dựa trên cảm tính hoặc thông tin ngắn hạn, muốn có góc nhìn dài hạn hơn." },
-  { num: "03", title: "Người muốn biến tiền thành tài sản", body: "Anh/chị đang giữ tiền trong tài khoản ngân hàng và biết rõ đó không phải giải pháp tối ưu, nhưng chưa có hệ thống để thay đổi." },
+  { num: "01", title: "Người đi làm 35+ có tích lũy", body: "Anh/chị có thu nhập ổn định, đã bắt đầu tích lũy hoặc có một khoản tiền nhàn rỗi, nhưng chưa có một cách rõ ràng để biến khoản tiền đó thành tài sản dài hạn." },
+  { num: "02", title: "Nhà đầu tư cá nhân bận rộn", body: "Anh/chị đã từng tìm hiểu hoặc đầu tư, nhưng việc ra quyết định vẫn dễ bị kéo bởi cảm xúc, tin tức ngắn hạn hoặc thiếu thời gian để nhìn mọi thứ một cách hệ thống." },
+  { num: "03", title: "Người muốn biến tiền thành tài sản", body: "Anh/chị biết giữ tiền trong tài khoản ngân hàng không phải là giải pháp tối ưu, nhưng vẫn chưa có một cấu trúc đủ rõ để bắt đầu thay đổi." },
 ];
-const notFor = ["Muốn lãi nhanh", "Muốn tín hiệu mua bán ngắn hạn", "Muốn cam kết kết quả", "Không sẵn sàng đi đường dài"];
+const notFor = ["lợi nhuận nhanh", "tín hiệu mua bán ngắn hạn", "cam kết kết quả", "một con đường không cần đi dài"];
 
 function AudienceSection() {
   return (
@@ -414,30 +414,50 @@ function AudienceSection() {
           <div className="space-y-5 max-w-2xl">
             <motion.div variants={fadeUp}><SectionLabel>Đối tượng</SectionLabel></motion.div>
             <motion.div variants={fadeUp}><SectionHeading>Dành cho ai?</SectionHeading></motion.div>
-            <motion.div variants={fadeUp}><AnchorLine>Được xây dựng cho người đi làm bận rộn, không phải nhà đầu tư chuyên nghiệp.</AnchorLine></motion.div>
+            <motion.div variants={fadeUp}>
+              <AnchorLine style={{ fontSize: "13px", color: "hsl(var(--primary) / 0.90)" }}>
+                Được xây dựng cho người đi làm bận rộn, không phải nhà đầu tư chuyên nghiệp.
+              </AnchorLine>
+            </motion.div>
           </div>
 
           <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {forGroups.map(({ num, title, body }) => (
               <motion.div key={num} variants={fadeUp} className="bg-background flex flex-col"
-                style={CARD_LIGHT} onMouseEnter={hoverLift} onMouseLeave={hoverReset}>
+                style={{ ...CARD_LIGHT, padding: "2rem 1.875rem" }}
+                onMouseEnter={hoverLift} onMouseLeave={hoverReset}>
                 <NumMarker num={num} />
-                <h3 style={{ fontSize: "15px", fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.008em", color: "hsl(var(--foreground))", marginBottom: "0.625rem" }}>{title}</h3>
-                <p style={{ fontSize: "13.5px", lineHeight: 1.82, color: "hsl(var(--muted-foreground))", fontWeight: 400 }}>{body}</p>
+                <h3 style={{
+                  fontSize: "15.5px", fontWeight: 600, lineHeight: 1.28,
+                  letterSpacing: "-0.012em", color: "hsl(var(--foreground))",
+                  marginBottom: "0.875rem",
+                }}>{title}</h3>
+                <p style={{
+                  fontSize: "14px", lineHeight: 1.88,
+                  color: "hsl(var(--foreground) / 0.50)", fontWeight: 400,
+                }}>{body}</p>
               </motion.div>
             ))}
           </motion.div>
 
-          {/* Not-for block */}
-          <motion.div variants={fadeUp} style={{ borderRadius: "0.75rem", border: "1px solid hsl(var(--border) / 0.65)", padding: "1.5rem 1.75rem", background: "hsl(var(--background))" }}>
-            <p style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.13em", textTransform: "uppercase", color: "hsl(var(--muted-foreground) / 0.58)", marginBottom: "0.875rem" }}>
-              Chưa phù hợp nếu
+          {/* Not-for block — a mentor's honest note, not a legal exclusion */}
+          <motion.div variants={fadeUp} style={{
+            borderRadius: "0.75rem",
+            border: "1px solid hsl(var(--border) / 0.65)",
+            padding: "1.625rem 1.875rem",
+            background: "hsl(var(--background))",
+          }}>
+            <p style={{
+              fontSize: "12.5px", fontWeight: 500, letterSpacing: "0.005em",
+              color: "hsl(var(--foreground) / 0.42)", marginBottom: "1rem",
+            }}>
+              Chưa phù hợp nếu anh/chị đang tìm
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 2rem" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 2.25rem" }}>
               {notFor.map((item) => (
                 <div key={item} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <div style={{ width: "3px", height: "3px", borderRadius: "50%", background: "hsl(var(--muted-foreground) / 0.40)", flexShrink: 0 }} />
-                  <span style={{ fontSize: "13.5px", color: "hsl(var(--muted-foreground) / 0.70)", fontWeight: 400 }}>{item}</span>
+                  <div style={{ width: "3px", height: "3px", borderRadius: "50%", background: "hsl(var(--foreground) / 0.28)", flexShrink: 0 }} />
+                  <span style={{ fontSize: "14px", color: "hsl(var(--foreground) / 0.52)", fontWeight: 400 }}>{item}</span>
                 </div>
               ))}
             </div>
