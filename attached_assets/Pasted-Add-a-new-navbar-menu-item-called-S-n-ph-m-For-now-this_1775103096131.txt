@@ -1,0 +1,163 @@
+Add a new navbar menu item called “Sản phẩm”.
+
+For now, this menu item should link directly to a new product detail page for:
+“Đường tới $1.000.000”
+
+Create a new page with the route:
+`/san-pham/duong-toi-1-trieu-do`
+
+This page must match the same premium visual system as the current website:
+- dark teal / premium finance mood
+- calm, trustworthy, mentor-like
+- not salesy
+- not flashy
+- clean, elegant, editorial
+- fully responsive
+
+This product page is NOT a generic sales landing page.
+It should feel like a premium information service / long-term investment guidance page for busy Vietnamese working adults, especially 35+ people with growing income but without a clear system to turn money into assets.
+
+Use Vietnamese language only.
+
+Build the page with these sections:
+
+1. Hero section
+Title:
+“Đường tới $1.000.000”
+
+Subtitle:
+“Không phải để kể chuyện hay. Mà để anh/chị có một bước đi tiếp theo cụ thể với tiền của mình.”
+
+Supporting text:
+“Dành cho người đi làm muốn hiểu đầu tư dài hạn đúng hơn, xây một hệ thống tài chính rõ hơn và bắt đầu bằng những hành động nhỏ nhưng có ý thức.”
+
+Include one key insight line:
+“Đồng tiền này đang làm việc hay chỉ đang nằm im?”
+
+CTA buttons:
+- “Tìm hiểu lộ trình”
+- “Đăng ký nhận thông tin”
+
+2. Problem section
+Title:
+“Vì sao nhiều người vẫn chưa tiến gần hơn tới tự do tài chính?”
+
+Create content blocks for these ideas:
+- Thu nhập tăng nhưng tự do tài chính không tăng theo
+- Chi phí sống luôn có xu hướng đuổi kịp thu nhập
+- Tiền nằm im không sinh ra gì và mất sức mua theo thời gian
+- Có tiền nhưng không có hệ thống thì cuối tháng vẫn dễ hết tiền
+
+3. Goal section
+Title:
+“Mục tiêu thật sự của Road to $1M”
+
+Use this positioning:
+- Giúp anh/chị hiểu đúng về đầu tư theo hướng dài hạn
+- Giúp anh/chị xây một danh mục có cấu trúc: bảo vệ – tăng trưởng – mạo hiểm có ý thức
+- Giúp anh/chị vượt qua 4 rào cản tâm lý phổ biến để bắt đầu
+- Quan trọng nhất: khi kết thúc, anh/chị có một bước đi tiếp theo cụ thể
+
+4. Audience section
+Title:
+“Dành cho ai?”
+
+Include these audience groups:
+- Anh/chị 35+ đi làm, có tích lũy hoặc đang bắt đầu tích lũy
+- Nhà đầu tư cá nhân bận rộn, muốn ra quyết định ít cảm tính hơn
+- Người có tiền nhàn rỗi nhưng chưa có hệ thống để biến tiền thành tài sản
+
+Also include a smaller “Chưa phù hợp nếu” block for:
+- Muốn lãi nhanh
+- Muốn tín hiệu mua bán ngắn hạn
+- Muốn cam kết kết quả
+- Không sẵn sàng đi đường dài
+
+5. User journey section
+Title:
+“3 chuyển đổi lớn của hành trình này”
+
+Use these 3 stages:
+- Giai đoạn 1 — Đổi góc nhìn
+- Giai đoạn 2 — Xây hệ thống
+- Giai đoạn 3 — Hành động nhỏ nhưng thật
+
+Use supporting text based on:
+- hiểu vì sao giữ tiền không có nghĩa là an toàn
+- hiểu tự do đo bằng số tiền đang làm việc thay mình
+- phân biệt tiền nằm im và tài sản
+- bắt đầu trích 5–10%
+- xây danh mục 3 cấp độ
+- dùng công cụ hỗ trợ để không phải nghiên cứu hàng giờ
+
+6. Core knowledge section
+Title:
+“Những gì anh/chị sẽ bắt đầu nhìn rõ hơn”
+
+Create elegant cards or blocks for:
+- Ba kiểu người cùng mức thu nhập
+- Lạm phát: cái lấy đi thầm lặng
+- Tiền chờ đợi vs. tiền làm việc
+- Danh mục 3 cấp độ: bảo vệ / tăng trưởng / rủi ro có ý thức
+- Vì sao dồn hết vào một dự án không phải chiến lược
+- Bắt đầu không cần hàng triệu đô
+- Lãi kép: sức mạnh của thời gian và tính đều đặn
+
+7. Psychology barriers section
+Title:
+“4 rào cản tâm lý phổ biến khi bắt đầu”
+
+Include:
+- Tôi không có tiền dư
+- Tôi không hiểu gì về đầu tư
+- Tôi sợ mất tiền
+- Tôi không có thời gian
+
+Each item should have a short calm explanation.
+
+8. SWC PASS section
+Title:
+“Road to $1M nằm ở đâu trong hệ sinh thái SWC PASS?”
+
+Explain that this is part of the SWC PASS ecosystem and supports:
+- Phân tích hàng tháng với các khuyến nghị cụ thể
+- Hỗ trợ đánh giá cổ phiếu cổ tức
+- Hỗ trợ cân bằng rủi ro
+
+Use this positioning:
+“Dịch vụ thông tin giúp anh/chị ra quyết định có ý thức hơn, không cam kết lợi nhuận ảo.”
+
+9. Pricing section
+Title:
+“Các lựa chọn đồng hành”
+
+Include these options as reference:
+- 240$/năm (20$/tháng)
+- 600$/5 năm (10$/tháng)
+- 2.600$ (trọn đời)
+
+Add a soft note:
+“Điều kiện ưu đãi và thời hạn có thể thay đổi theo từng thời điểm.”
+
+Keep the pricing section elegant, not salesy, not flashy.
+
+10. Final CTA section
+Title:
+“Bước đi tiếp theo không cần lớn. Chỉ cần rõ ràng.”
+
+Include these 3 next steps:
+- Chọn một tỷ lệ trích cố định (5–10%) từ thu nhập tháng này
+- Liệt kê 3 mục tiêu tiền trong 12 tháng tới: bảo vệ, tăng trưởng, mạo hiểm có ý thức
+- Đăng ký nhận thông tin hoặc nhắn tin để hiểu rõ hơn cách SWC PASS hoạt động
+
+Add CTA buttons:
+- “Đăng ký quan tâm”
+- “Nhận thông tin”
+
+Important:
+- Keep the page premium and mentor-like
+- Avoid hype language
+- Avoid “get rich quick” feeling
+- Avoid aggressive sales funnel styling
+- Make it feel like a calm, trustworthy financial guidance page for a Vietnamese personal brand
+- Reuse the site’s current premium visual system

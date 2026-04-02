@@ -6,6 +6,7 @@ const navLinks = [
   { name: "Giới thiệu", href: "#gioi-thieu" },
   { name: "Nội dung", href: "#noi-dung" },
   { name: "Cộng đồng", href: "#cong-dong" },
+  { name: "Sản phẩm", href: `${import.meta.env.BASE_URL}san-pham/duong-toi-1-trieu-do` },
   { name: "Liên hệ", href: "#lien-he" },
 ];
 
