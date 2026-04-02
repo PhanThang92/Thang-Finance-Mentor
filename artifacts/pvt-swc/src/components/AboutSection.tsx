@@ -1,15 +1,14 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Briefcase, TrendingUp, BookOpen, Target } from "lucide-react";
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 22 },
+  hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] } },
 };
 
 const stagger = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
+  visible: { transition: { staggerChildren: 0.11 } },
 };
 
 const metrics = [
@@ -18,35 +17,27 @@ const metrics = [
     num: "5+",
     unit: "năm",
     title: "Kinh nghiệm công nghệ",
-    icon: Briefcase,
   },
   {
     type: "metric",
     num: "7+",
     unit: "năm",
     title: "Theo đuổi đầu tư dài hạn",
-    icon: TrendingUp,
   },
   {
     type: "value",
-    num: null,
-    unit: "",
     title: "Chia sẻ thực tế",
     sub: "Kiến thức tài chính & phát triển bản thân",
-    icon: BookOpen,
   },
   {
     type: "value",
-    num: null,
-    unit: "",
     title: "Định hướng bền vững",
     sub: "Ưu tiên giá trị dài hạn thay vì hưng phấn ngắn hạn",
-    icon: Target,
   },
 ];
 
 const keyPoints = [
-  "Hiểu giá trị của lao động và thời gian",
+  "Hiểu đúng giá trị của lao động và thời gian",
   "Xây nền tài chính cá nhân vững hơn",
   "Rèn tư duy đầu tư đúng",
   "Từng bước hình thành tài sản bằng kỷ luật và kiến thức",
@@ -54,14 +45,14 @@ const keyPoints = [
 
 export function AboutSection() {
   return (
-    <section id="gioi-thieu" className="py-28 md:py-36 bg-background">
+    <section id="gioi-thieu" className="py-20 md:py-28 bg-background">
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
-          className="space-y-16"
+          className="space-y-14"
         >
 
           {/* ── Section header ── */}
@@ -73,29 +64,34 @@ export function AboutSection() {
             <motion.h2
               variants={fadeUp}
               className="text-foreground"
-              style={{ fontSize: "clamp(1.65rem, 3.8vw, 2.25rem)", fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.018em" }}
+              style={{
+                fontSize: "clamp(1.65rem, 3.8vw, 2.25rem)",
+                fontWeight: 700,
+                lineHeight: 1.2,
+                letterSpacing: "-0.018em",
+              }}
             >
               Tôi là ai
             </motion.h2>
           </div>
 
           {/* ── Body — two column ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_268px] gap-12 lg:gap-16 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_272px] gap-12 lg:gap-14 items-start">
 
             {/* Left: editorial text */}
-            <motion.div variants={fadeUp} className="space-y-0">
+            <motion.div variants={fadeUp}>
 
-              {/* Name intro — anchor statement */}
+              {/* Name intro */}
               <p
                 className="text-foreground mb-5"
-                style={{ fontSize: "17px", fontWeight: 600, lineHeight: 1.55, letterSpacing: "-0.01em" }}
+                style={{ fontSize: "17px", fontWeight: 600, lineHeight: 1.5, letterSpacing: "-0.01em" }}
               >
                 Tôi là Phan Văn Thắng.
               </p>
 
-              {/* Background paragraph */}
+              {/* Background */}
               <p
-                className="text-foreground/68 mb-5"
+                className="text-foreground/65 mb-5"
                 style={{ fontSize: "15px", lineHeight: 1.9, fontWeight: 400 }}
               >
                 Tôi từng làm việc trong lĩnh vực công nghệ nhiều năm, sau đó bước sâu hơn vào
@@ -103,9 +99,9 @@ export function AboutSection() {
                 sản dài hạn.
               </p>
 
-              {/* Key insight — slightly elevated contrast */}
+              {/* Key insight */}
               <p
-                className="text-foreground/80 mb-6"
+                className="text-foreground/78 mb-5"
                 style={{ fontSize: "15px", lineHeight: 1.9, fontWeight: 400 }}
               >
                 Qua thời gian, tôi nhận ra điều này rất rõ: nhiều người làm việc chăm chỉ, thu
@@ -113,15 +109,21 @@ export function AboutSection() {
                 thật sự vững.
               </p>
 
-              {/* Core diagnosis — broken into 3 short punchy lines */}
+              {/* Core diagnosis — left-border editorial block */}
               <div
-                className="mb-6 pl-4 space-y-2"
-                style={{ borderLeft: "2px solid hsl(var(--primary) / 0.28)" }}
+                className="mb-5 pl-4 space-y-1.5"
+                style={{ borderLeft: "1.5px solid hsl(var(--primary) / 0.30)" }}
               >
-                <p className="text-foreground/72" style={{ fontSize: "14.5px", lineHeight: 1.75, fontWeight: 400 }}>
+                <p
+                  className="text-foreground/68"
+                  style={{ fontSize: "14.5px", lineHeight: 1.8, fontWeight: 400 }}
+                >
                   Vấn đề thường không nằm ở việc họ thiếu cố gắng.
                 </p>
-                <p className="text-foreground/72" style={{ fontSize: "14.5px", lineHeight: 1.75, fontWeight: 400 }}>
+                <p
+                  className="text-foreground/68"
+                  style={{ fontSize: "14.5px", lineHeight: 1.8, fontWeight: 400 }}
+                >
                   Mà nằm ở chỗ họ chưa có một hệ thống đúng, chưa hiểu tiền đủ sâu,
                   chưa có kỷ luật tài chính đủ bền và tư duy đầu tư đủ dài hạn.
                 </p>
@@ -129,24 +131,30 @@ export function AboutSection() {
 
               {/* Conclusion */}
               <p
-                className="text-foreground/68 mb-8"
+                className="text-foreground/65 mb-8"
                 style={{ fontSize: "15px", lineHeight: 1.9, fontWeight: 400 }}
               >
                 Vì vậy, điều tôi đang theo đuổi không phải là tạo ra cảm giác hưng phấn nhất
                 thời. Tôi muốn chia sẻ một hướng đi thực tế hơn, bền hơn và có chiều sâu hơn.
               </p>
 
-              {/* Key points — editorial list */}
-              <ul className="space-y-3">
+              {/* Key points — refined bullet list */}
+              <ul className="space-y-2.5">
                 {keyPoints.map((item) => (
                   <li key={item} className="flex items-start gap-3.5">
                     <span
-                      className="flex-shrink-0 mt-[7px]"
-                      style={{ width: "5px", height: "5px", borderRadius: "50%", background: "hsl(var(--primary) / 0.55)" }}
+                      className="flex-shrink-0"
+                      style={{
+                        marginTop: "8px",
+                        width: "4px",
+                        height: "4px",
+                        borderRadius: "50%",
+                        background: "hsl(var(--primary) / 0.60)",
+                      }}
                     />
                     <span
-                      className="text-foreground/70"
-                      style={{ fontSize: "14.5px", lineHeight: 1.75, fontWeight: 400 }}
+                      className="text-foreground/68"
+                      style={{ fontSize: "14.5px", lineHeight: 1.78, fontWeight: 400 }}
                     >
                       {item}
                     </span>
@@ -155,53 +163,76 @@ export function AboutSection() {
               </ul>
             </motion.div>
 
-            {/* ── Quote card — editorial pull-quote ── */}
-            <motion.div
-              variants={fadeUp}
-              className="sticky top-28"
-            >
+            {/* ── Quote card ── */}
+            <motion.div variants={fadeUp} className="sticky top-28">
               <div
                 className="rounded-xl bg-card overflow-hidden"
                 style={{
-                  border: "1px solid hsl(var(--border) / 0.7)",
-                  boxShadow: "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)",
+                  border: "1px solid hsl(var(--border) / 0.65)",
+                  boxShadow: "0 6px 28px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04)",
                 }}
               >
-                {/* Primary accent bar at top */}
+                {/* Teal accent top bar */}
                 <div
-                  style={{ height: "3px", background: "linear-gradient(to right, hsl(var(--primary) / 0.85), hsl(var(--primary) / 0.20))" }}
+                  style={{
+                    height: "3px",
+                    background: "linear-gradient(to right, hsl(var(--primary) / 0.80), hsl(var(--primary) / 0.15))",
+                  }}
                 />
 
-                <div className="p-7">
-                  {/* Decorative opening quote */}
+                <div className="p-8">
+                  {/* Decorative quote mark */}
                   <div
-                    className="mb-4 select-none"
-                    style={{ fontSize: "3.5rem", lineHeight: 1, color: "hsl(var(--primary) / 0.20)", fontWeight: 700, marginTop: "-8px" }}
+                    className="select-none"
+                    style={{
+                      fontSize: "4.5rem",
+                      lineHeight: 0.85,
+                      color: "hsl(var(--primary) / 0.18)",
+                      fontWeight: 700,
+                      marginBottom: "1rem",
+                      marginTop: "-6px",
+                      fontStyle: "normal",
+                    }}
                     aria-hidden="true"
                   >
                     "
                   </div>
 
-                  {/* Quote body */}
+                  {/* Quote body — brand statement level presence */}
                   <p
-                    className="text-foreground/82"
-                    style={{ fontSize: "15px", lineHeight: 1.85, fontWeight: 400, fontStyle: "italic" }}
+                    style={{
+                      fontSize: "15.5px",
+                      lineHeight: 1.88,
+                      fontWeight: 400,
+                      fontStyle: "italic",
+                      color: "hsl(var(--foreground) / 0.84)",
+                      letterSpacing: "0.002em",
+                    }}
                   >
                     Hành trình tài chính bền vững không bắt đầu từ thị trường. Nó bắt đầu từ
-                    tư duy và kỷ luật.
+                    tư duy, kỷ luật và cách mình sống mỗi ngày.
                   </p>
 
                   {/* Attribution */}
                   <div
-                    className="mt-6 pt-5 flex items-center gap-3"
-                    style={{ borderTop: "1px solid hsl(var(--border) / 0.6)" }}
+                    className="mt-7 pt-5 flex items-center gap-3"
+                    style={{ borderTop: "1px solid hsl(var(--border) / 0.55)" }}
                   >
                     <div
-                      style={{ width: "1.5rem", height: "1.5px", background: "hsl(var(--primary) / 0.50)", flexShrink: 0 }}
+                      style={{
+                        width: "1.25rem",
+                        height: "1.5px",
+                        background: "hsl(var(--primary) / 0.55)",
+                        flexShrink: 0,
+                      }}
                     />
                     <p
-                      className="text-foreground/55"
-                      style={{ fontSize: "12px", fontWeight: 500, letterSpacing: "0.02em" }}
+                      style={{
+                        fontSize: "11.5px",
+                        fontWeight: 500,
+                        color: "hsl(var(--foreground) / 0.48)",
+                        letterSpacing: "0.025em",
+                      }}
                     >
                       Phan Văn Thắng SWC
                     </p>
@@ -214,65 +245,93 @@ export function AboutSection() {
           {/* ── Bottom cards ── */}
           <motion.div
             variants={stagger}
-            className="grid grid-cols-2 md:grid-cols-4 gap-3.5 pt-10 border-t border-border/60"
+            className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-10 border-t"
+            style={{ borderColor: "hsl(var(--border) / 0.55)" }}
           >
             {metrics.map((card, idx) => (
               <motion.div
                 key={idx}
                 variants={fadeUp}
-                className="flex flex-col gap-0 p-5 rounded-xl bg-card"
+                className="flex flex-col p-5 rounded-xl bg-card"
                 style={{
-                  border: "1px solid hsl(var(--border) / 0.65)",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
-                  minHeight: "108px",
+                  border: "1px solid hsl(var(--border) / 0.60)",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                  minHeight: "116px",
+                  ...(card.type === "metric" && {
+                    borderTop: "2px solid hsl(var(--primary) / 0.20)",
+                  }),
                 }}
               >
-                {/* Icon — small, subtle */}
-                <div
-                  className="mb-3.5 flex items-center justify-center rounded-lg"
-                  style={{ width: "2rem", height: "2rem", background: "hsl(var(--primary) / 0.07)" }}
-                >
-                  <card.icon size={14} strokeWidth={1.7} style={{ color: "hsl(var(--primary) / 0.75)" }} />
-                </div>
-
                 {card.type === "metric" ? (
-                  /* Metric card — large number + label */
+                  /* Metric card — no icon, data speaks */
                   <>
-                    <div className="flex items-baseline gap-1 mb-1">
+                    <div className="flex items-baseline gap-1 mb-auto">
                       <span
                         className="text-foreground"
-                        style={{ fontSize: "1.55rem", fontWeight: 700, lineHeight: 1, letterSpacing: "-0.02em" }}
+                        style={{
+                          fontSize: "1.65rem",
+                          fontWeight: 700,
+                          lineHeight: 1,
+                          letterSpacing: "-0.025em",
+                        }}
                       >
                         {card.num}
                       </span>
                       {card.unit && (
                         <span
-                          className="text-foreground/45"
-                          style={{ fontSize: "11px", fontWeight: 400 }}
+                          style={{
+                            fontSize: "11px",
+                            fontWeight: 400,
+                            color: "hsl(var(--foreground) / 0.38)",
+                            marginLeft: "1px",
+                          }}
                         >
                           {card.unit}
                         </span>
                       )}
                     </div>
                     <p
-                      className="text-foreground/55"
-                      style={{ fontSize: "12px", fontWeight: 400, lineHeight: 1.45 }}
+                      className="mt-3"
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: 400,
+                        color: "hsl(var(--foreground) / 0.50)",
+                        lineHeight: 1.5,
+                      }}
                     >
                       {card.title}
                     </p>
                   </>
                 ) : (
-                  /* Value statement card — title + description */
+                  /* Value card — no icon, statement speaks */
                   <>
+                    <div
+                      className="mb-3"
+                      style={{
+                        width: "1.25rem",
+                        height: "1.5px",
+                        background: "hsl(var(--primary) / 0.40)",
+                      }}
+                    />
                     <p
-                      className="text-foreground/88 mb-1.5"
-                      style={{ fontSize: "13px", fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.005em" }}
+                      className="mb-1.5"
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: 600,
+                        color: "hsl(var(--foreground) / 0.88)",
+                        lineHeight: 1.35,
+                        letterSpacing: "-0.005em",
+                      }}
                     >
                       {card.title}
                     </p>
                     <p
-                      className="text-foreground/48"
-                      style={{ fontSize: "11.5px", fontWeight: 400, lineHeight: 1.55 }}
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: 400,
+                        color: "hsl(var(--foreground) / 0.46)",
+                        lineHeight: 1.6,
+                      }}
                     >
                       {card.sub}
                     </p>
