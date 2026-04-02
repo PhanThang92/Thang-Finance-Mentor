@@ -50,14 +50,15 @@ function Chevron({ open, color }: { open: boolean; color: string }) {
       width="8" height="8" viewBox="0 0 8 8" fill="none"
       style={{
         display:    "inline-block",
-        marginLeft: "4px",
+        marginLeft: "5px",
         flexShrink: 0,
+        opacity:    0.85,
         transform:  open ? "rotate(180deg)" : "rotate(0deg)",
-        transition: "transform 0.22s ease",
+        transition: "transform 0.25s ease, opacity 0.18s ease",
         color,
       }}
     >
-      <path d="M1 2.5L4 5.5L7 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M1 2.5L4 5.5L7 2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -194,10 +195,19 @@ export function Navbar() {
                   >
                     <button
                       ref={(el) => { linkRefs.current[i] = el; }}
-                      style={linkStyle}
+                      style={{
+                        ...linkStyle,
+                        /* Hold hover color while dropdown is open */
+                        color: isSanPhamOpen ? linkHover : linkColor,
+                      }}
                       onClick={() => setIsSanPhamOpen((v) => !v)}
                       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = linkHover; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = linkColor; }}
+                      onMouseLeave={(e) => {
+                        /* Only revert if dropdown is closed */
+                        if (!isSanPhamOpen) {
+                          (e.currentTarget as HTMLElement).style.color = linkColor;
+                        }
+                      }}
                     >
                       {link.name}
                       <Chevron open={isSanPhamOpen} color="currentColor" />
@@ -211,14 +221,15 @@ export function Navbar() {
                           top:            "calc(100% + 10px)",
                           left:           "50%",
                           transform:      "translateX(-50%)",
-                          minWidth:       "240px",
+                          minWidth:       "252px",
                           background:     "rgba(251,253,251,0.98)",
                           backdropFilter: "blur(20px)",
                           WebkitBackdropFilter: "blur(20px)",
+                          /* Two-layer shadow: tight close depth + wide ambient */
+                          boxShadow:      "0 2px 8px rgba(10,40,35,0.06), 0 8px 28px rgba(10,40,35,0.11)",
                           border:         "1px solid rgba(0,0,0,0.07)",
                           borderRadius:   "0.625rem",
-                          boxShadow:      "0 4px 24px rgba(10,40,35,0.09)",
-                          padding:        "0.375rem 0",
+                          padding:        "0.5rem 0",
                           zIndex:         100,
                         }}
                       >
@@ -228,23 +239,22 @@ export function Navbar() {
                             href={item.href}
                             style={{
                               display:        "block",
-                              padding:        "0.625rem 1.125rem",
+                              padding:        "0.75rem 1.25rem",
                               fontSize:       "13px",
                               fontWeight:     400,
                               letterSpacing:  "0.008em",
-                              color:          "hsl(var(--foreground) / 0.65)",
+                              color:          "hsl(var(--foreground) / 0.60)",
                               textDecoration: "none",
                               transition:     "color 0.18s ease, background 0.18s ease",
-                              borderRadius:   "0.25rem",
                             }}
                             onMouseEnter={(e) => {
                               const el = e.currentTarget as HTMLElement;
                               el.style.color      = "hsl(var(--primary))";
-                              el.style.background = "hsl(var(--primary) / 0.05)";
+                              el.style.background = "hsl(var(--primary) / 0.07)";
                             }}
                             onMouseLeave={(e) => {
                               const el = e.currentTarget as HTMLElement;
-                              el.style.color      = "hsl(var(--foreground) / 0.65)";
+                              el.style.color      = "hsl(var(--foreground) / 0.60)";
                               el.style.background = "transparent";
                             }}
                             onClick={() => setIsSanPhamOpen(false)}
