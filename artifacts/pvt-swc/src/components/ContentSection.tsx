@@ -110,7 +110,7 @@ export function ContentSection() {
                       fontSize: "11px",
                       fontWeight: 600,
                       letterSpacing: "0.13em",
-                      color: "hsl(var(--primary) / 0.65)",
+                      color: "hsl(var(--primary) / 0.72)",
                       lineHeight: 1,
                     }}
                   >
@@ -158,7 +158,7 @@ export function ContentSection() {
                 <p
                   style={{
                     fontSize: "13.5px",
-                    lineHeight: 1.82,
+                    lineHeight: 1.86,
                     fontWeight: 400,
                     color: "hsl(var(--muted-foreground))",
                   }}
@@ -175,15 +175,15 @@ export function ContentSection() {
               href="#"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 rounded-full transition-all duration-200"
+              className="inline-flex items-center gap-2.5 rounded-full transition-all duration-200"
               style={{
                 height: "2.625rem",
-                padding: "0 1.625rem",
+                padding: "0 1.75rem",
                 fontSize: "13px",
                 fontWeight: 500,
-                letterSpacing: "0.01em",
+                letterSpacing: "0.015em",
                 color: "hsl(var(--primary))",
-                border: "1px solid hsl(var(--primary) / 0.40)",
+                border: "1px solid hsl(var(--primary) / 0.45)",
                 background: "transparent",
               }}
               onMouseEnter={(e) => {
@@ -198,7 +198,7 @@ export function ContentSection() {
               }}
               data-testid="btn-youtube"
             >
-              <SiYoutube size={15} style={{ color: "#e05050", flexShrink: 0 }} />
+              <SiYoutube size={14} style={{ color: "#e05050", flexShrink: 0 }} />
               Khám phá playlist YouTube
             </a>
           </motion.div>
