@@ -11,78 +11,223 @@ const navLinks = [
 ];
 
 const socials = [
-  { icon: SiYoutube, label: "YouTube", href: "#", ariaLabel: "YouTube" },
-  { icon: SiFacebook, label: "Facebook", href: "#", ariaLabel: "Facebook" },
+  { icon: SiYoutube, href: "#", ariaLabel: "YouTube" },
+  { icon: SiFacebook, href: "#", ariaLabel: "Facebook" },
 ];
+
+const iconButtonBase: React.CSSProperties = {
+  width: "34px",
+  height: "34px",
+  borderRadius: "50%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  background: "rgba(255,255,255,0.055)",
+  border: "1px solid rgba(255,255,255,0.09)",
+  transition: "background 0.22s ease, border-color 0.22s ease",
+  flexShrink: 0,
+};
 
 export function Footer() {
   return (
     <footer
-      className="text-white"
-      style={{ background: "linear-gradient(180deg, #091d1a 0%, #07161360 100%), #091d1a" }}
+      className="relative text-white overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #0a1f1c 0%, #071614 100%)" }}
     >
-      <div className="max-w-5xl mx-auto px-5 sm:px-8">
-        {/* Main grid */}
+      {/* Subtle ambient glow — top right, very soft */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          top: "-20%",
+          right: "-10%",
+          width: "32rem",
+          height: "32rem",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(26,94,84,0.14) 0%, transparent 68%)",
+          filter: "blur(48px)",
+        }}
+      />
+      {/* Top border accent */}
+      <div
+        className="absolute top-0 left-0 right-0 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(52,160,140,0.20) 35%, rgba(52,160,140,0.20) 65%, transparent 100%)",
+        }}
+      />
+
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 relative z-10">
+
+        {/* ── Main grid ── */}
         <div
-          className="py-14 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 md:gap-16 border-b"
+          className="py-14 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 md:gap-20 border-b"
           style={{ borderColor: "rgba(255,255,255,0.07)" }}
         >
-          {/* Brand */}
-          <div className="space-y-5 max-w-sm">
-            <p className="text-lg font-bold text-primary">Thắng SWC</p>
-            <p className="text-sm leading-[1.85] text-white/50">
+
+          {/* ── Brand block ── */}
+          <div className="space-y-5 max-w-xs">
+            {/* Brand signature */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2.5">
+                <div
+                  style={{
+                    width: "1.75rem",
+                    height: "1.5px",
+                    background: "hsl(var(--primary) / 0.55)",
+                    borderRadius: "999px",
+                    flexShrink: 0,
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: "13.5px",
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    color: "rgba(255,255,255,0.88)",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Thắng SWC
+                </span>
+              </div>
+              <p
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 400,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "hsl(var(--primary) / 0.58)",
+                  paddingLeft: "2.375rem",
+                  lineHeight: 1,
+                }}
+              >
+                Phan Văn Thắng
+              </p>
+            </div>
+
+            {/* Description */}
+            <p
+              style={{
+                fontSize: "13.5px",
+                lineHeight: 1.88,
+                fontWeight: 300,
+                color: "rgba(255,255,255,0.50)",
+              }}
+            >
               Chia sẻ về tư duy tài chính, đầu tư dài hạn, phát triển bản thân và hành trình xây
               tài sản bền vững.
             </p>
-            {/* Social icons */}
-            <div className="flex items-center gap-2">
+
+            {/* Social + action row */}
+            <div className="flex items-center gap-2.5 flex-wrap">
               {socials.map(({ icon: Icon, href, ariaLabel }) => (
                 <a
                   key={ariaLabel}
                   href={href}
                   aria-label={ariaLabel}
-                  className="w-9 h-9 rounded-full flex items-center justify-center transition-colors duration-200"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+                  style={{ ...iconButtonBase, textDecoration: "none" }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(52,160,140,0.25)";
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.background = "rgba(52,160,140,0.22)";
+                    el.style.borderColor = "rgba(52,160,140,0.30)";
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.background = "rgba(255,255,255,0.055)";
+                    el.style.borderColor = "rgba(255,255,255,0.09)";
                   }}
                 >
-                  <Icon size={15} className="text-white/60" />
+                  <Icon size={14} style={{ color: "rgba(255,255,255,0.58)" }} />
                 </a>
               ))}
+
               <a
                 href="mailto:contact@thangswc.com"
                 aria-label="Email"
-                className="w-9 h-9 rounded-full flex items-center justify-center transition-colors duration-200"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+                style={{ ...iconButtonBase, textDecoration: "none" }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = "rgba(52,160,140,0.22)";
+                  el.style.borderColor = "rgba(52,160,140,0.30)";
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = "rgba(255,255,255,0.055)";
+                  el.style.borderColor = "rgba(255,255,255,0.09)";
+                }}
               >
-                <Mail size={15} className="text-white/60" />
+                <Mail size={13} style={{ color: "rgba(255,255,255,0.58)" }} />
               </a>
+
+              {/* Cộng đồng pill — height matches icon circles */}
               <a
                 href="#cong-dong"
-                className="h-9 px-3.5 rounded-full flex items-center gap-2 text-xs font-medium text-white/60 transition-colors duration-200"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+                className="flex items-center gap-1.5"
+                style={{
+                  height: "34px",
+                  padding: "0 14px",
+                  borderRadius: "999px",
+                  background: "rgba(255,255,255,0.055)",
+                  border: "1px solid rgba(255,255,255,0.09)",
+                  fontSize: "11.5px",
+                  fontWeight: 500,
+                  letterSpacing: "0.01em",
+                  color: "rgba(255,255,255,0.55)",
+                  textDecoration: "none",
+                  transition: "background 0.22s ease, border-color 0.22s ease, color 0.22s ease",
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = "rgba(52,160,140,0.18)";
+                  el.style.borderColor = "rgba(52,160,140,0.28)";
+                  el.style.color = "rgba(255,255,255,0.80)";
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = "rgba(255,255,255,0.055)";
+                  el.style.borderColor = "rgba(255,255,255,0.09)";
+                  el.style.color = "rgba(255,255,255,0.55)";
+                }}
               >
-                <Users size={13} />
+                <Users size={12} style={{ flexShrink: 0, color: "rgba(255,255,255,0.55)" }} />
                 Cộng đồng
               </a>
             </div>
           </div>
 
-          {/* Nav links */}
-          <div className="space-y-4">
-            <p className="text-[11px] font-semibold tracking-[0.16em] uppercase text-white/30">
+          {/* ── Nav column ── */}
+          <div className="space-y-5">
+            <p
+              style={{
+                fontSize: "10px",
+                fontWeight: 600,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.28)",
+                lineHeight: 1,
+              }}
+            >
               Điều hướng
             </p>
-            <ul className="space-y-3">
+            <ul className="space-y-3.5">
               {navLinks.map(({ name, href }) => (
                 <li key={name}>
                   <a
                     href={href}
-                    className="text-sm text-white/50 hover:text-white/85 transition-colors duration-200"
+                    style={{
+                      fontSize: "13.5px",
+                      fontWeight: 400,
+                      letterSpacing: "0.005em",
+                      color: "rgba(255,255,255,0.48)",
+                      textDecoration: "none",
+                      transition: "color 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.86)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.48)";
+                    }}
                   >
                     {name}
                   </a>
@@ -92,17 +237,37 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <p className="text-[12px] text-white/35">
-            © 2024 Phan Văn Thắng SWC. Bảo lưu mọi quyền.
+        {/* ── Bottom bar ── */}
+        <div
+          className="py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3"
+        >
+          <p
+            style={{
+              fontSize: "12px",
+              fontWeight: 400,
+              color: "rgba(255,255,255,0.38)",
+              letterSpacing: "0.005em",
+              flexShrink: 0,
+            }}
+          >
+            © 2025 Phan Văn Thắng SWC. Bảo lưu mọi quyền.
           </p>
-          <p className="text-[11px] text-white/25 leading-relaxed max-w-md md:text-right">
-            Thông tin trên website mang tính chia sẻ, giáo dục và tham khảo. Đây không phải là
-            cam kết lợi nhuận và cũng không phải là lời khuyên đầu tư cá nhân hóa cho từng trường
-            hợp cụ thể.
+          <p
+            style={{
+              fontSize: "11.5px",
+              fontWeight: 300,
+              lineHeight: 1.72,
+              color: "rgba(255,255,255,0.28)",
+              maxWidth: "30rem",
+            }}
+            className="md:text-right"
+          >
+            Thông tin trên website mang tính chia sẻ, giáo dục và tham khảo. Đây không phải là cam
+            kết lợi nhuận và cũng không phải là lời khuyên đầu tư cá nhân hóa cho từng trường hợp
+            cụ thể.
           </p>
         </div>
+
       </div>
     </footer>
   );
