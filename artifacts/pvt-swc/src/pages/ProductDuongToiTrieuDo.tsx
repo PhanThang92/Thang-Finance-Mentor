@@ -227,24 +227,48 @@ function Hero() {
             <SectionLabel dark>Road to $1M · SWC PASS</SectionLabel>
           </motion.div>
 
-          <motion.h1 variants={fadeUp} style={{ fontSize: "clamp(2.4rem, 6.5vw, 4rem)", fontWeight: 800, lineHeight: 1.08, letterSpacing: "-0.028em", color: "rgba(255,255,255,0.96)", marginBottom: "1.75rem" }}>
+          <motion.h1 variants={fadeUp} style={{ fontSize: "clamp(2.4rem, 6.5vw, 4rem)", fontWeight: 800, lineHeight: 1.08, letterSpacing: "-0.028em", color: "rgba(255,255,255,0.96)", marginBottom: "1.5rem" }}>
             Đường tới<br />$1.000.000
           </motion.h1>
 
-          <motion.p variants={fadeUp} style={{ fontSize: "clamp(1rem, 2.1vw, 1.16rem)", lineHeight: 1.72, fontWeight: 300, color: "rgba(255,255,255,0.68)", maxWidth: "35rem", marginBottom: "1.25rem" }}>
-            Không phải để kể chuyện hay. Mà để anh/chị có một bước đi tiếp theo cụ thể với tiền của mình.
+          {/* Primary anchor statement — product direction, not hype */}
+          <motion.p variants={fadeUp} style={{ fontSize: "clamp(1rem, 2.0vw, 1.1rem)", lineHeight: 1.70, fontWeight: 400, color: "rgba(255,255,255,0.76)", maxWidth: "36rem", marginBottom: "1.25rem" }}>
+            Không phải lời hứa làm giàu nhanh. Đây là lộ trình để đồng tiền bắt đầu làm việc có hệ thống.
           </motion.p>
 
-          <motion.p variants={fadeUp} style={{ fontSize: "14.5px", lineHeight: 1.88, fontWeight: 300, color: "rgba(255,255,255,0.45)", maxWidth: "31rem", marginBottom: "2rem" }}>
+          {/* Secondary supporting context */}
+          <motion.p variants={fadeUp} style={{ fontSize: "14px", lineHeight: 1.88, fontWeight: 300, color: "rgba(255,255,255,0.42)", maxWidth: "32rem", marginBottom: "2rem" }}>
             Dành cho người đi làm muốn hiểu đầu tư dài hạn đúng hơn, xây một hệ thống tài chính rõ hơn và bắt đầu bằng những hành động nhỏ nhưng có ý thức.
           </motion.p>
 
-          {/* Insight quote — anchor treatment */}
-          <motion.div variants={fadeUp} style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "2.25rem" }}>
-            <div style={{ width: "2rem", height: "1.5px", background: "rgba(52,160,140,0.52)", borderRadius: "999px", flexShrink: 0 }} />
-            <p style={{ fontSize: "13px", fontStyle: "italic", fontWeight: 500, color: "rgba(52,160,140,0.82)", letterSpacing: "0.005em", lineHeight: 1.55 }}>
-              "Đồng tiền này đang làm việc hay chỉ đang nằm im?"
+          {/* Brand belief — elevated from decorative to intentional key insight */}
+          <motion.div variants={fadeUp} style={{ display: "flex", alignItems: "flex-start", gap: "1rem", marginBottom: "2rem" }}>
+            <div style={{ marginTop: "0.35rem", width: "2.5rem", height: "1.5px", background: "rgba(52,160,140,0.60)", borderRadius: "999px", flexShrink: 0 }} />
+            <p style={{ fontSize: "clamp(14px, 1.8vw, 15px)", fontStyle: "italic", fontWeight: 400, color: "rgba(52,160,140,0.90)", letterSpacing: "0.004em", lineHeight: 1.62, margin: 0 }}>
+              Đồng tiền này đang làm việc hay chỉ đang nằm im?
             </p>
+          </motion.div>
+
+          {/* Product micro-tags — editorial, subtle, informational */}
+          <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "2.25rem" }}>
+            {[
+              "Dành cho người bận rộn",
+              "Không cần nghiên cứu hàng giờ",
+              "Bắt đầu từ bước tiếp theo cụ thể",
+            ].map((tag) => (
+              <span key={tag} style={{
+                display: "inline-flex", alignItems: "center",
+                height: "26px", padding: "0 11px",
+                borderRadius: "999px",
+                border: "1px solid rgba(52,160,140,0.18)",
+                background: "rgba(52,160,140,0.07)",
+                fontSize: "11.5px", fontWeight: 400,
+                letterSpacing: "0.018em",
+                color: "rgba(255,255,255,0.50)",
+              }}>
+                {tag}
+              </span>
+            ))}
           </motion.div>
 
           <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
