@@ -1,0 +1,56 @@
+Refine the “Vì sao nhiều người vẫn chưa tiến gần hơn tới tự do tài chính?” section to make it feel sharper, more insightful, and more premium while preserving the current layout.
+
+Goals:
+- keep the current 2x2 card structure
+- make the section feel more like 4 hard truths, less like generic explanation cards
+- preserve the calm premium mentor tone
+- keep it editorial, thoughtful, and trustworthy
+
+Please make these exact improvements:
+
+1. Keep the current title.
+
+2. Improve the insight line under the title
+Keep this exact line:
+“Thu nhập không tự chuyển thành tài sản — đó là điểm khác biệt mà ít ai được dạy rõ ràng.”
+
+Make it feel slightly more intentional and noticeable, while still elegant and subtle.
+
+3. Refine the 4 problem cards
+Keep the current card structure, but replace the card body copy with this sharper version:
+
+Card 1 title:
+“Thu nhập tăng nhưng tự do tài chính không tăng theo”
+Body:
+“Nhiều người kiếm nhiều hơn trước, nhưng vẫn không tiến gần hơn tới tự do. Vì thu nhập và tài sản là hai câu chuyện hoàn toàn khác nhau.”
+
+Card 2 title:
+“Chi phí sống luôn có xu hướng đuổi kịp thu nhập”
+Body:
+“Khi thu nhập tăng, mức sống thường tăng theo. Nếu không có hệ thống phân bổ rõ ràng, phần tiền có thể trở thành tài sản sẽ ngày càng nhỏ lại.”
+
+Card 3 title:
+“Tiền nằm im không sinh ra gì và mất sức mua theo thời gian”
+Body:
+“Giữ tiền không đồng nghĩa an toàn. Khi tiền không làm việc, lạm phát vẫn âm thầm lấy đi giá trị của nó mỗi năm.”
+
+Card 4 title:
+“Có tiền nhưng không có hệ thống thì cuối tháng vẫn dễ hết tiền”
+Body:
+“Vấn đề thường không nằm ở số lượng. Mà nằm ở cách tổ chức. Không có hệ thống, tiền sẽ luôn tự tìm đường để biến mất.”
+
+4. Improve card feel
+- make the cards feel slightly less like neutral explanation cards
+- make them feel more like premium insight cards
+- improve hierarchy, spacing, and editorial clarity
+- keep them calm and not over-styled
+
+5. Refine number markers subtly
+- keep 01, 02, 03, 04
+- make them feel slightly more intentional and premium
+
+Important:
+Do not redesign the section.
+Do not make it flashy.
+Avoid generic SaaS card styling.
+Keep it premium, calm, and consistent with the rest of the website.

@@ -58,9 +58,9 @@ function SectionHeading({ children, dark = false }: { children: React.ReactNode;
 }
 
 /* Anchor line — the italic bridge between heading and body, per home page system */
-function AnchorLine({ children, dark = false }: { children: string; dark?: boolean }) {
+function AnchorLine({ children, dark = false, style }: { children: string; dark?: boolean; style?: React.CSSProperties }) {
   return (
-    <p style={{ fontSize: "12.5px", fontWeight: 500, fontStyle: "italic", letterSpacing: "0.005em", lineHeight: 1.55, color: dark ? "rgba(52,160,140,0.82)" : "hsl(var(--primary) / 0.82)" }}>
+    <p style={{ fontSize: "12.5px", fontWeight: 500, fontStyle: "italic", letterSpacing: "0.005em", lineHeight: 1.55, color: dark ? "rgba(52,160,140,0.82)" : "hsl(var(--primary) / 0.82)", ...style }}>
       {children}
     </p>
   );
@@ -68,9 +68,9 @@ function AnchorLine({ children, dark = false }: { children: string; dark?: boole
 
 function NumMarker({ num, dark = false }: { num: string; dark?: boolean }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" }}>
-      <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.13em", color: dark ? "rgba(52,160,140,0.72)" : "hsl(var(--primary) / 0.72)" }}>{num}</span>
-      <div style={{ width: "2rem", height: "1px", background: dark ? "rgba(52,160,140,0.28)" : "hsl(var(--primary) / 0.28)" }} />
+    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.125rem" }}>
+      <span style={{ fontSize: "11.5px", fontWeight: 600, letterSpacing: "0.10em", color: dark ? "rgba(52,160,140,0.80)" : "hsl(var(--primary) / 0.80)" }}>{num}</span>
+      <div style={{ width: "1.75rem", height: "1px", background: dark ? "rgba(52,160,140,0.35)" : "hsl(var(--primary) / 0.35)" }} />
     </div>
   );
 }
@@ -297,10 +297,10 @@ function Hero() {
    2. PROBLEM
 ══════════════════════════════════════════════════════════ */
 const problems = [
-  { num: "01", title: "Thu nhập tăng nhưng tự do tài chính không tăng theo", body: "Nhiều người có thu nhập cao hơn nhưng vẫn không tiến gần hơn tới tự do. Vì thu nhập và tài sản là hai khái niệm khác nhau." },
-  { num: "02", title: "Chi phí sống luôn có xu hướng đuổi kịp thu nhập", body: "Khi thu nhập tăng, lối sống thường tăng theo tương ứng. Phần chênh lệch thực sự tạo ra tài sản ngày càng nhỏ lại." },
-  { num: "03", title: "Tiền nằm im không sinh ra gì và mất sức mua theo thời gian", body: "Giữ tiền không phải là an toàn. Lạm phát lấy đi sức mua một cách thầm lặng, đều đặn, mỗi năm." },
-  { num: "04", title: "Có tiền nhưng không có hệ thống thì cuối tháng vẫn dễ hết tiền", body: "Không phải vấn đề về số lượng. Mà về cách tổ chức. Không có hệ thống, tiền sẽ tự tìm đường ra." },
+  { num: "01", title: "Thu nhập tăng nhưng tự do tài chính không tăng theo", body: "Nhiều người kiếm nhiều hơn trước, nhưng vẫn không tiến gần hơn tới tự do. Vì thu nhập và tài sản là hai câu chuyện hoàn toàn khác nhau." },
+  { num: "02", title: "Chi phí sống luôn có xu hướng đuổi kịp thu nhập", body: "Khi thu nhập tăng, mức sống thường tăng theo. Nếu không có hệ thống phân bổ rõ ràng, phần tiền có thể trở thành tài sản sẽ ngày càng nhỏ lại." },
+  { num: "03", title: "Tiền nằm im không sinh ra gì và mất sức mua theo thời gian", body: "Giữ tiền không đồng nghĩa an toàn. Khi tiền không làm việc, lạm phát vẫn âm thầm lấy đi giá trị của nó mỗi năm." },
+  { num: "04", title: "Có tiền nhưng không có hệ thống thì cuối tháng vẫn dễ hết tiền", body: "Vấn đề thường không nằm ở số lượng. Mà nằm ở cách tổ chức. Không có hệ thống, tiền sẽ luôn tự tìm đường để biến mất." },
 ];
 
 function ProblemSection() {
@@ -311,15 +311,27 @@ function ProblemSection() {
           <div className="space-y-5 max-w-2xl">
             <motion.div variants={fadeUp}><SectionLabel>Thực tế</SectionLabel></motion.div>
             <motion.div variants={fadeUp}><SectionHeading>Vì sao nhiều người vẫn chưa tiến gần hơn tới tự do tài chính?</SectionHeading></motion.div>
-            <motion.div variants={fadeUp}><AnchorLine>Thu nhập không tự chuyển thành tài sản — đó là điểm khác biệt mà ít ai được dạy rõ ràng.</AnchorLine></motion.div>
+            <motion.div variants={fadeUp}>
+              <AnchorLine style={{ fontSize: "13px", color: "hsl(var(--primary) / 0.90)" }}>
+                Thu nhập không tự chuyển thành tài sản — đó là điểm khác biệt mà ít ai được dạy rõ ràng.
+              </AnchorLine>
+            </motion.div>
           </div>
           <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {problems.map(({ num, title, body }) => (
               <motion.div key={num} variants={fadeUp} className="bg-card flex flex-col"
-                style={CARD_LIGHT} onMouseEnter={hoverLift} onMouseLeave={hoverReset}>
+                style={{ ...CARD_LIGHT, padding: "2rem 1.875rem" }}
+                onMouseEnter={hoverLift} onMouseLeave={hoverReset}>
                 <NumMarker num={num} />
-                <h3 style={{ fontSize: "15px", fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.008em", color: "hsl(var(--foreground))", marginBottom: "0.625rem" }}>{title}</h3>
-                <p style={{ fontSize: "13.5px", lineHeight: 1.82, color: "hsl(var(--muted-foreground))", fontWeight: 400 }}>{body}</p>
+                <h3 style={{
+                  fontSize: "15.5px", fontWeight: 600, lineHeight: 1.28,
+                  letterSpacing: "-0.012em", color: "hsl(var(--foreground))",
+                  marginBottom: "0.875rem",
+                }}>{title}</h3>
+                <p style={{
+                  fontSize: "14px", lineHeight: 1.88,
+                  color: "hsl(var(--foreground) / 0.50)", fontWeight: 400,
+                }}>{body}</p>
               </motion.div>
             ))}
           </motion.div>
