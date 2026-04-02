@@ -721,9 +721,9 @@ function SwcPassSection() {
    9. PRICING
 ══════════════════════════════════════════════════════════ */
 const tiers = [
-  { label: "Hàng năm", price: "$240 / năm", sub: "Tương đương $20 / tháng", tag: null },
-  { label: "5 năm", price: "$600 / 5 năm", sub: "Tương đương $10 / tháng", tag: "Tiết kiệm nhất" },
-  { label: "Trọn đời", price: "$2.600", sub: "Một lần, không gia hạn", tag: null },
+  { label: "Hàng năm", price: "$240 / năm", sub: "Tương đương $20 / tháng", tag: null, anchor: "Phù hợp để bắt đầu và trải nghiệm đầy đủ hệ thống." },
+  { label: "5 năm", price: "$600 / 5 năm", sub: "Tương đương $10 / tháng", tag: "Tiết kiệm nhất", anchor: "Phù hợp cho người muốn đi đường dài với chi phí tối ưu hơn." },
+  { label: "Trọn đời", price: "$2.600", sub: "Một lần, không gia hạn", tag: null, anchor: "Phù hợp nếu anh/chị xác định đây là một phần trong hành trình đầu tư lâu dài của mình." },
 ];
 
 function PricingSection() {
@@ -734,19 +734,41 @@ function PricingSection() {
           <div className="space-y-5 max-w-2xl">
             <motion.div variants={fadeUp}><SectionLabel>Đồng hành</SectionLabel></motion.div>
             <motion.div variants={fadeUp}><SectionHeading>Các lựa chọn đồng hành</SectionHeading></motion.div>
-            <motion.div variants={fadeUp}><AnchorLine>Đồng hành theo năm, theo chu kỳ dài, hoặc cả cuộc đời đầu tư.</AnchorLine></motion.div>
+            <motion.div variants={fadeUp}>
+              <AnchorLine style={{ fontSize: "13px", color: "hsl(var(--primary) / 0.90)" }}>
+                Đồng hành theo năm, theo chu kỳ dài, hoặc cả cuộc đời đầu tư.
+              </AnchorLine>
+            </motion.div>
           </div>
 
+          <motion.div variants={fadeUp}>
+            <p style={{ fontSize: "14.5px", fontStyle: "italic", fontWeight: 300, color: "hsl(var(--foreground) / 0.38)", lineHeight: 1.80 }}>
+              Mỗi lựa chọn phù hợp với một nhịp đồng hành khác nhau — từ bắt đầu, đi đường dài, đến gắn bó trọn hành trình đầu tư.
+            </p>
+          </motion.div>
+
           <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {tiers.map(({ label, price, sub, tag }) => (
+            {tiers.map(({ label, price, sub, tag, anchor }) => (
               <motion.div key={label} variants={fadeUp} className="bg-card flex flex-col relative"
-                style={{ ...CARD_LIGHT, border: `1px solid ${tag ? "hsl(var(--primary) / 0.38)" : "hsl(var(--border) / 0.92)"}`, boxShadow: tag ? "0 4px 20px rgba(10,40,35,0.09)" : "0 2px 8px rgba(10,40,35,0.06)" }}>
+                style={{ ...CARD_LIGHT, padding: "2rem 1.75rem", border: `1px solid ${tag ? "hsl(var(--primary) / 0.38)" : "hsl(var(--border) / 0.92)"}`, boxShadow: tag ? "0 4px 20px rgba(10,40,35,0.09)" : "0 2px 8px rgba(10,40,35,0.06)" }}>
 
                 {tag && (
-                  <span style={{ position: "absolute", top: "-1px", right: "1.25rem", fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "hsl(var(--primary))", background: "hsl(var(--background))", padding: "3px 10px", borderRadius: "0 0 6px 6px", border: "1px solid hsl(var(--primary) / 0.28)", borderTop: "none" }}>{tag}</span>
+                  <span style={{
+                    position: "absolute", top: "-1px", right: "1.25rem",
+                    fontSize: "10.5px", fontWeight: 500, letterSpacing: "0.06em",
+                    color: "hsl(var(--primary) / 0.88)", background: "hsl(var(--background))",
+                    padding: "2px 10px", borderRadius: "0 0 6px 6px",
+                    border: "1px solid hsl(var(--primary) / 0.22)", borderTop: "none",
+                  }}>{tag}</span>
                 )}
 
-                <p style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "hsl(var(--primary) / 0.68)", marginBottom: "0.875rem" }}>{label}</p>
+                {/* Label */}
+                <p style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "hsl(var(--primary) / 0.68)", marginBottom: "0.5rem" }}>{label}</p>
+
+                {/* Per-card anchor line */}
+                <p style={{ fontSize: "12.5px", fontStyle: "italic", fontWeight: 300, color: "hsl(var(--foreground) / 0.42)", lineHeight: 1.65, marginBottom: "1.125rem" }}>{anchor}</p>
+
+                {/* Price */}
                 <p style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.022em", color: "hsl(var(--foreground))", lineHeight: 1, marginBottom: "0.375rem" }}>{price}</p>
                 <p style={{ fontSize: "13px", color: "hsl(var(--muted-foreground))", fontWeight: 400, marginBottom: "0" }}>{sub}</p>
 
@@ -772,7 +794,7 @@ function PricingSection() {
 
           <motion.div variants={fadeUp} style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <div style={{ width: "1.75rem", height: "1px", background: "hsl(var(--border))", flexShrink: 0 }} />
-            <p style={{ fontSize: "13px", fontStyle: "italic", color: "hsl(var(--muted-foreground) / 0.68)", lineHeight: 1.65 }}>
+            <p style={{ fontSize: "12.5px", fontStyle: "italic", color: "hsl(var(--foreground) / 0.36)", lineHeight: 1.70 }}>
               Điều kiện ưu đãi và thời hạn có thể thay đổi theo từng thời điểm.
             </p>
           </motion.div>
