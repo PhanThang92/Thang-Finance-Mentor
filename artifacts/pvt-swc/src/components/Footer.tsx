@@ -92,11 +92,11 @@ export function Footer() {
               </div>
               <p
                 style={{
-                  fontSize: "11px",
+                  fontSize: "11.5px",
                   fontWeight: 400,
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
-                  color: "hsl(var(--primary) / 0.58)",
+                  color: "hsl(var(--primary) / 0.65)",
                   paddingLeft: "2.375rem",
                   lineHeight: 1,
                 }}
@@ -119,7 +119,7 @@ export function Footer() {
             </p>
 
             {/* Social + action row */}
-            <div className="flex items-center gap-2.5 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
               {socials.map(({ icon: Icon, href, ariaLabel }) => (
                 <a
                   key={ariaLabel}
@@ -256,9 +256,9 @@ export function Footer() {
             style={{
               fontSize: "11.5px",
               fontWeight: 300,
-              lineHeight: 1.72,
-              color: "rgba(255,255,255,0.28)",
-              maxWidth: "30rem",
+              lineHeight: 1.76,
+              color: "rgba(255,255,255,0.30)",
+              maxWidth: "28rem",
             }}
             className="md:text-right"
           >
