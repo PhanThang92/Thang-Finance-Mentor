@@ -552,13 +552,13 @@ function JourneySection() {
    6. CORE KNOWLEDGE
 ══════════════════════════════════════════════════════════ */
 const knowledge = [
-  { num: "01", title: "Ba kiểu người cùng mức thu nhập", body: "Cùng thu nhập nhưng kết quả tài chính sau 10 năm hoàn toàn khác nhau. Điều gì tạo ra sự khác biệt đó?" },
-  { num: "02", title: "Lạm phát: cái lấy đi thầm lặng", body: "Lạm phát không gây đau tức thì nhưng bào mòn đều đặn. Hiểu đúng để biết giữ tiền mặt có thực sự an toàn không." },
-  { num: "03", title: "Tiền chờ đợi và tiền làm việc", body: "Hai đồng tiền cùng giá trị hôm nay nhưng khác nhau hoàn toàn về tương lai nếu một đồng được đặt đúng chỗ." },
-  { num: "04", title: "Danh mục 3 cấp độ", body: "Bảo vệ – Tăng trưởng – Rủi ro có ý thức. Mỗi cấp độ phục vụ một mục tiêu khác nhau và cần được cân bằng phù hợp." },
-  { num: "05", title: "Vì sao dồn hết vào một dự án không phải chiến lược", body: "Tập trung có thể tạo ra lợi nhuận lớn, nhưng cũng có thể xóa sạch mọi thứ. Đa dạng hóa có ý thức là gì?" },
-  { num: "06", title: "Bắt đầu không cần hàng triệu đô", body: "5% từ thu nhập mỗi tháng, đặt đúng chỗ, trong 10 năm có thể tạo ra kết quả đáng kể hơn bạn nghĩ." },
-  { num: "07", title: "Lãi kép: thời gian và tính đều đặn", body: "Không phải phép màu. Là toán học. Và người bắt đầu sớm hơn 5 năm có lợi thế không thể bù đắp bằng số tiền." },
+  { num: "01", title: "Ba kiểu người cùng mức thu nhập", body: "Cùng một mức thu nhập, nhưng kết quả sau 10 năm có thể hoàn toàn khác nhau. Khác biệt không nằm ở thu nhập, mà ở cách tiền được sử dụng." },
+  { num: "02", title: "Lạm phát: cái lấy đi thầm lặng", body: "Lạm phát không làm bạn hoảng sợ, nhưng âm thầm lấy đi sức mua mỗi năm. Hiểu điều này để biết vì sao giữ tiền mặt không đồng nghĩa an toàn." },
+  { num: "03", title: "Tiền chờ đợi và tiền làm việc", body: "Hai đồng tiền giống nhau hôm nay có thể cho hai kết quả hoàn toàn khác nhau trong tương lai — nếu một đồng được đặt đúng chỗ." },
+  { num: "04", title: "Danh mục 3 cấp độ", body: "Bảo vệ – Tăng trưởng – Rủi ro có ý thức. Mỗi phần trong danh mục nên phục vụ một mục tiêu rõ ràng.", highlight: true },
+  { num: "05", title: "Vì sao dồn hết vào một dự án không phải chiến lược", body: "Tập trung có thể tạo lợi nhuận lớn, nhưng cũng có thể xóa sạch mọi thứ. Đa dạng hóa có ý thức là một phần của tư duy dài hạn." },
+  { num: "06", title: "Bắt đầu không cần hàng triệu đô", body: "Không cần đợi thật nhiều tiền mới bắt đầu. Điều quan trọng hơn là tỷ lệ đều đặn, vị trí đặt tiền và thời gian đi cùng nó.", highlight: true },
+  { num: "07", title: "Lãi kép: thời gian và tính đều đặn", body: "Lãi kép không phải phép màu. Nó là lợi thế dành cho người bắt đầu sớm và duy trì đủ đều trong thời gian dài.", highlight: true },
 ];
 
 function KnowledgeSection() {
@@ -569,15 +569,39 @@ function KnowledgeSection() {
           <div className="space-y-5 max-w-2xl">
             <motion.div variants={fadeUp}><SectionLabel>Kiến thức</SectionLabel></motion.div>
             <motion.div variants={fadeUp}><SectionHeading>Những gì anh/chị sẽ bắt đầu nhìn rõ hơn</SectionHeading></motion.div>
-            <motion.div variants={fadeUp}><AnchorLine>Hiểu đúng một lần để không phải đoán mò nhiều lần.</AnchorLine></motion.div>
+            <motion.div variants={fadeUp}>
+              <AnchorLine style={{ fontSize: "13px", color: "hsl(var(--primary) / 0.90)" }}>
+                Hiểu đúng một lần để không phải đoán mò nhiều lần.
+              </AnchorLine>
+            </motion.div>
           </div>
           <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {knowledge.map(({ num, title, body }) => (
+            {knowledge.map(({ num, title, body, highlight }) => (
               <motion.div key={num} variants={fadeUp} className="bg-card flex flex-col"
-                style={CARD_LIGHT} onMouseEnter={hoverLift} onMouseLeave={hoverReset}>
+                style={{
+                  ...CARD_LIGHT,
+                  padding: "2rem 1.875rem",
+                  /* Highlighted cards: trace teal border tint — one step more intentional */
+                  ...(highlight ? { borderColor: "hsl(var(--primary) / 0.20)" } : {}),
+                }}
+                onMouseEnter={highlight
+                  ? (e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "hsl(var(--primary) / 0.36)"; el.style.transform = "translateY(-2px)"; }
+                  : hoverLift
+                }
+                onMouseLeave={highlight
+                  ? (e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "hsl(var(--primary) / 0.20)"; el.style.transform = "translateY(0)"; }
+                  : hoverReset
+                }>
                 <NumMarker num={num} />
-                <h3 style={{ fontSize: "14.5px", fontWeight: 600, lineHeight: 1.38, color: "hsl(var(--foreground))", marginBottom: "0.5rem", letterSpacing: "-0.008em" }}>{title}</h3>
-                <p style={{ fontSize: "13px", lineHeight: 1.82, color: "hsl(var(--muted-foreground))", fontWeight: 400 }}>{body}</p>
+                <h3 style={{
+                  fontSize: "15px", fontWeight: 600, lineHeight: 1.28,
+                  letterSpacing: "-0.012em", color: "hsl(var(--foreground))",
+                  marginBottom: "0.75rem",
+                }}>{title}</h3>
+                <p style={{
+                  fontSize: "13.5px", lineHeight: 1.85,
+                  color: "hsl(var(--foreground) / 0.50)", fontWeight: 400,
+                }}>{body}</p>
               </motion.div>
             ))}
           </motion.div>
