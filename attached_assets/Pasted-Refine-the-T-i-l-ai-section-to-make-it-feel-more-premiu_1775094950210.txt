@@ -1,0 +1,64 @@
+Refine the “Tôi là ai” section to make it feel more premium, editorial, and consistent with the hero section.
+
+Goals:
+- make this section feel less like a generic template
+- increase brand sophistication
+- make it feel like a premium Vietnamese mentor brand website
+- keep it clean, calm, readable, and trustworthy
+- improve hierarchy, rhythm, and visual elegance
+
+Please update the section with these improvements:
+
+1. Improve the text layout
+- keep the same content meaning
+- break long paragraphs into a more editorial reading rhythm
+- create stronger visual separation between key ideas
+- make the section easier to scan and more elegant to read
+- emphasize one or two key lines with slightly stronger typography
+
+2. Upgrade the quote card on the right
+- make it feel more intentional and premium
+- slightly increase its visual presence
+- improve spacing, typography, border/shadow, and internal hierarchy
+- make it feel like an editorial quote block, not just a generic card
+
+Use this updated quote text:
+“Hành trình tài chính bền vững không bắt đầu từ thị trường. Nó bắt đầu từ tư duy và kỷ luật.”
+— Phan Văn Thắng SWC
+
+3. Redesign the bottom trust/value cards
+- make the first two cards feel like credibility metrics
+- make the last two cards feel like value statements
+- improve spacing, card height, icon treatment, and typography hierarchy
+- make them more premium and less generic
+- keep the section calm and minimal
+
+Use this exact content:
+
+Card 1:
+“5+ năm”
+“Kinh nghiệm công nghệ”
+
+Card 2:
+“7+ năm”
+“Theo đuổi đầu tư dài hạn”
+
+Card 3:
+“Chia sẻ thực tế”
+“Kiến thức tài chính & phát triển bản thân”
+
+Card 4:
+“Định hướng bền vững”
+“Ưu tiên giá trị dài hạn thay vì hưng phấn ngắn hạn”
+
+4. Improve section cohesion
+- make typography, card styling, spacing, and accents feel more aligned with the hero section
+- keep the light background, but make the whole section feel more premium and intentionally designed
+- preserve responsiveness
+- do not redesign the section from scratch
+- only elevate and refine it
+
+Important:
+Avoid generic SaaS template feeling.
+Avoid overdesign.
+Keep it elegant, editorial, calm, and premium.
