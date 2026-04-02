@@ -107,35 +107,35 @@ export function CommunitySection() {
                 }}
               >
                 {/* Editorial marker row */}
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex items-center gap-3">
-                    <span
-                      style={{
-                        fontSize: "11px",
-                        fontWeight: 600,
-                        letterSpacing: "0.13em",
-                        color: "hsl(var(--primary) / 0.72)",
-                        lineHeight: 1,
-                      }}
-                    >
-                      {num}
-                    </span>
-                    <div
-                      style={{
-                        width: "2rem",
-                        height: "1px",
-                        background: "hsl(var(--primary) / 0.28)",
-                      }}
-                    />
-                  </div>
-                  {/* Soft engagement label */}
+                <div className="flex items-center gap-3 mb-5">
+                  <span
+                    style={{
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      letterSpacing: "0.13em",
+                      color: "hsl(var(--primary) / 0.72)",
+                      lineHeight: 1,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {num}
+                  </span>
+                  <div
+                    style={{
+                      width: "2rem",
+                      height: "1px",
+                      flexShrink: 0,
+                      background: "hsl(var(--primary) / 0.28)",
+                    }}
+                  />
+                  {/* Soft engagement label — inline after the rule */}
                   <span
                     style={{
                       fontSize: "10.5px",
-                      fontWeight: 500,
+                      fontWeight: 400,
                       fontStyle: "italic",
                       letterSpacing: "0.01em",
-                      color: "hsl(var(--muted-foreground) / 0.70)",
+                      color: "hsl(var(--muted-foreground) / 0.58)",
                       lineHeight: 1,
                     }}
                   >
@@ -175,7 +175,7 @@ export function CommunitySection() {
                 <p
                   style={{
                     fontSize: "13.5px",
-                    lineHeight: 1.86,
+                    lineHeight: 1.88,
                     fontWeight: 400,
                     color: "hsl(var(--muted-foreground))",
                   }}
@@ -201,7 +201,7 @@ export function CommunitySection() {
                 fontSize: "13px",
                 fontWeight: 400,
                 fontStyle: "italic",
-                color: "hsl(var(--muted-foreground) / 0.72)",
+                color: "hsl(var(--muted-foreground) / 0.82)",
                 lineHeight: 1.65,
               }}
             >
