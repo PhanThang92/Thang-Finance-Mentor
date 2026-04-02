@@ -810,7 +810,7 @@ function PricingSection() {
 const steps = [
   { num: "01", title: "Chọn một tỷ lệ trích cố định", body: "Bắt đầu với 5–10% từ thu nhập tháng này. Không cần hoàn hảo, chỉ cần nhất quán." },
   { num: "02", title: "Liệt kê 3 mục tiêu tiền trong 12 tháng tới", body: "Một mục tiêu bảo vệ, một mục tiêu tăng trưởng, một mục tiêu mạo hiểm có ý thức. Rõ ràng hơn là tốt hơn." },
-  { num: "03", title: "Đăng ký hoặc nhắn tin để hiểu rõ hơn", body: "Tìm hiểu cách SWC PASS hoạt động và xem liệu có phù hợp với giai đoạn anh/chị đang ở không." },
+  { num: "03", title: "Tìm hiểu cách SWC PASS hoạt động", body: "Xem liệu hệ thống này có phù hợp với giai đoạn hiện tại của anh/chị hay không, trước khi đưa ra bất kỳ quyết định nào." },
 ];
 
 function FinalCTA() {
@@ -824,9 +824,9 @@ function FinalCTA() {
   const btnSecondary: React.CSSProperties = {
     display: "inline-flex", alignItems: "center", height: "44px", padding: "0 24px",
     borderRadius: "999px", fontSize: "14px", fontWeight: 400, letterSpacing: "0.01em",
-    textDecoration: "none", background: "rgba(255,255,255,0.07)",
-    border: "1px solid rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.88)",
-    backdropFilter: "blur(8px)", transition: "background 0.22s ease",
+    textDecoration: "none", background: "transparent",
+    border: "1px solid rgba(255,255,255,0.16)", color: "rgba(255,255,255,0.65)",
+    transition: "border-color 0.22s ease, color 0.22s ease",
   };
 
   return (
@@ -836,35 +836,46 @@ function FinalCTA() {
           <div className="space-y-5 max-w-2xl">
             <motion.div variants={fadeUp}><SectionLabel dark>Bắt đầu</SectionLabel></motion.div>
             <motion.div variants={fadeUp}><SectionHeading dark>Bước đi tiếp theo không cần lớn. Chỉ cần rõ ràng.</SectionHeading></motion.div>
-            <motion.div variants={fadeUp}><AnchorLine dark>Hành động nhỏ nhất anh/chị có thể làm ngay hôm nay.</AnchorLine></motion.div>
+            <motion.div variants={fadeUp}>
+              <AnchorLine dark style={{ fontSize: "13px", color: "rgba(52,160,140,0.90)" }}>
+                Hành động nhỏ nhất anh/chị có thể làm ngay hôm nay.
+              </AnchorLine>
+            </motion.div>
           </div>
 
           <motion.div variants={stagger} style={{ display: "flex", flexDirection: "column", gap: "2rem", maxWidth: "38rem" }}>
             {steps.map(({ num, title, body }) => (
-              <motion.div key={num} variants={fadeUp} style={{ display: "flex", gap: "1.25rem" }}>
-                <div style={{ flexShrink: 0, width: "2px", background: "rgba(52,160,140,0.42)", borderRadius: "999px", marginTop: "5px" }} />
+              <motion.div key={num} variants={fadeUp} style={{ display: "flex", gap: "1.5rem" }}>
+                <div style={{ flexShrink: 0, width: "2px", background: "rgba(52,160,140,0.52)", borderRadius: "999px", marginTop: "4px" }} />
                 <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.375rem" }}>
-                    <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.13em", color: "rgba(52,160,140,0.72)" }}>{num}</span>
-                    <p style={{ fontSize: "16px", fontWeight: 600, color: "rgba(255,255,255,0.90)", letterSpacing: "-0.008em", lineHeight: 1.3 }}>{title}</p>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "0.625rem", marginBottom: "0.625rem" }}>
+                    <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.10em", color: "rgba(52,160,140,0.80)", flexShrink: 0 }}>{num}</span>
+                    <p style={{ fontSize: "16px", fontWeight: 600, color: "rgba(255,255,255,0.90)", letterSpacing: "-0.012em", lineHeight: 1.22, margin: 0 }}>{title}</p>
                   </div>
-                  <p style={{ fontSize: "14px", lineHeight: 1.85, color: "rgba(255,255,255,0.50)", fontWeight: 300 }}>{body}</p>
+                  <p style={{ fontSize: "14px", lineHeight: 1.88, color: "rgba(255,255,255,0.50)", fontWeight: 300 }}>{body}</p>
                 </div>
               </motion.div>
             ))}
           </motion.div>
 
-          <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", paddingTop: "0.5rem" }}>
-            <a href="#" style={btnPrimary}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.38)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(26,120,104,0.30)"; }}>
-              Đăng ký quan tâm
-            </a>
-            <a href="#" style={btnSecondary}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.13)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.07)"; }}>
-              Nhận thông tin
-            </a>
+          <motion.div variants={fadeUp} style={{ display: "flex", flexDirection: "column", gap: "1.75rem" }}>
+            {/* Closing reflective line */}
+            <p style={{ fontSize: "14.5px", fontStyle: "italic", fontWeight: 300, color: "rgba(255,255,255,0.38)", lineHeight: 1.78 }}>
+              Không phải bắt đầu thật lớn. Chỉ cần bắt đầu đúng.
+            </p>
+            {/* CTA buttons */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
+              <a href="#" style={btnPrimary}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.38)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(26,120,104,0.30)"; }}>
+                Đăng ký quan tâm
+              </a>
+              <a href="#" style={btnSecondary}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.28)"; (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.82)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.16)"; (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)"; }}>
+                Tìm hiểu SWC PASS
+              </a>
+            </div>
           </motion.div>
         </motion.div>
       </div>
