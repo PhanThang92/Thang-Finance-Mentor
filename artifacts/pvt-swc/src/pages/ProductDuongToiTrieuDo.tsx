@@ -345,10 +345,10 @@ function ProblemSection() {
    3. GOAL
 ══════════════════════════════════════════════════════════ */
 const goals = [
-  { title: "Hiểu đúng về đầu tư theo hướng dài hạn", body: "Không phải cổ phiếu ngắn hạn hay lãi suất hứa hẹn. Mà là cách nhìn đúng về thời gian, rủi ro và tài sản thực sự." },
-  { title: "Xây danh mục có cấu trúc: bảo vệ – tăng trưởng – mạo hiểm có ý thức", body: "Một danh mục không phải là tập hợp ngẫu nhiên. Mà là hệ thống 3 cấp độ, mỗi cấp phục vụ một mục tiêu rõ ràng." },
-  { title: "Vượt qua 4 rào cản tâm lý phổ biến để bắt đầu", body: "Không có tiền, không có kiến thức, sợ mất tiền, không có thời gian — tất cả đều có cách tiếp cận cụ thể." },
-  { title: "Kết thúc với một bước đi tiếp theo cụ thể", body: "Không phải một kế hoạch lý tưởng trên giấy. Mà là một hành động nhỏ nhưng rõ ràng — có thể thực hiện ngay tháng này." },
+  { title: "Hiểu đúng về đầu tư theo hướng dài hạn", body: "Không bắt đầu từ cổ phiếu 'nóng' hay lãi suất hứa hẹn. Mà bắt đầu từ cách nhìn đúng về thời gian, rủi ro và tài sản thực sự." },
+  { title: "Xây danh mục có cấu trúc: bảo vệ – tăng trưởng – mạo hiểm có ý thức", body: "Danh mục không phải tập hợp ngẫu nhiên. Mà là một hệ thống 3 cấp độ, mỗi phần phục vụ một mục tiêu rõ ràng." },
+  { title: "Vượt qua 4 rào cản tâm lý phổ biến khi bắt đầu", body: "Không có tiền, không có kiến thức, sợ mất tiền, không có thời gian — tất cả đều có cách tiếp cận cụ thể nếu bắt đầu đúng." },
+  { title: "Kết thúc với một bước đi tiếp theo cụ thể", body: "Không dừng ở cảm hứng. Mà kết thúc bằng một hành động nhỏ nhưng rõ ràng — có thể bắt đầu ngay trong tháng này." },
 ];
 
 function GoalSection() {
@@ -359,15 +359,33 @@ function GoalSection() {
           <div className="space-y-5 max-w-2xl">
             <motion.div variants={fadeUp}><SectionLabel dark>Mục tiêu</SectionLabel></motion.div>
             <motion.div variants={fadeUp}><SectionHeading dark>Mục tiêu thật sự của Road to $1M</SectionHeading></motion.div>
-            <motion.div variants={fadeUp}><AnchorLine dark>Không phải khóa học lý thuyết. Là những thay đổi góc nhìn có thể thực hiện ngay.</AnchorLine></motion.div>
+            <motion.div variants={fadeUp}>
+              <AnchorLine dark style={{ fontSize: "13px", color: "rgba(52,160,140,0.90)" }}>
+                Không phải khóa học lý thuyết. Là những thay đổi góc nhìn có thể thực hiện ngay.
+              </AnchorLine>
+            </motion.div>
           </div>
-          <motion.div variants={stagger} className="space-y-8">
+          <motion.div variants={stagger} className="space-y-10">
             {goals.map(({ title, body }, i) => (
-              <motion.div key={i} variants={fadeUp} style={{ display: "flex", gap: "1.25rem" }}>
-                <div style={{ flexShrink: 0, width: "2px", background: "rgba(52,160,140,0.40)", borderRadius: "999px", marginTop: "5px" }} />
-                <div style={{ paddingTop: "2px" }}>
-                  <p style={{ fontSize: "16px", fontWeight: 600, color: "rgba(255,255,255,0.90)", marginBottom: "0.5rem", letterSpacing: "-0.006em", lineHeight: 1.3 }}>{title}</p>
-                  <p style={{ fontSize: "14px", lineHeight: 1.85, color: "rgba(255,255,255,0.52)", fontWeight: 300 }}>{body}</p>
+              <motion.div key={i} variants={fadeUp} style={{ display: "flex", gap: "1.5rem" }}>
+                {/* Left accent — slightly stronger opacity to anchor each principle */}
+                <div style={{
+                  flexShrink: 0, width: "2px",
+                  background: "rgba(52,160,140,0.52)",
+                  borderRadius: "999px", marginTop: "4px",
+                }} />
+                <div style={{ paddingTop: "1px" }}>
+                  <p style={{
+                    fontSize: "16.5px", fontWeight: 600,
+                    color: "rgba(255,255,255,0.90)",
+                    marginBottom: "0.625rem",
+                    letterSpacing: "-0.010em",
+                    lineHeight: 1.25,
+                  }}>{title}</p>
+                  <p style={{
+                    fontSize: "14px", lineHeight: 1.90,
+                    color: "rgba(255,255,255,0.50)", fontWeight: 300,
+                  }}>{body}</p>
                 </div>
               </motion.div>
             ))}
