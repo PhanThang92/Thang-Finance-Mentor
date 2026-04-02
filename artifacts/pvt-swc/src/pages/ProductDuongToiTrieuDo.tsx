@@ -615,10 +615,10 @@ function KnowledgeSection() {
    7. PSYCHOLOGY
 ══════════════════════════════════════════════════════════ */
 const barriers = [
-  { num: "01", title: "Tôi không có tiền dư", body: "Không cần chờ có nhiều tiền để bắt đầu. 5% từ thu nhập hiện tại đặt đúng chỗ, đều đặn, đã là một bước đi thực sự." },
-  { num: "02", title: "Tôi không hiểu gì về đầu tư", body: "Không cần hiểu hết ngay. Cần bắt đầu từ những nguyên lý nền tảng và không để sự thiếu kiến thức trở thành lý do dừng lại." },
-  { num: "03", title: "Tôi sợ mất tiền", body: "Sợ mất tiền là hợp lý. Nhưng rủi ro không phải là kẻ thù — rủi ro không được quản lý mới là. Có hệ thống sẽ giúp anh/chị đi xa hơn mà không phải lo ngại liên tục." },
-  { num: "04", title: "Tôi không có thời gian", body: "Đầu tư dài hạn đúng nghĩa không đòi hỏi theo dõi từng giờ. Một hệ thống tốt giúp anh/chị ra quyết định ít hơn nhưng có chất lượng hơn." },
+  { num: "01", title: "Tôi không có tiền dư", body: "Không cần chờ có nhiều tiền mới bắt đầu. Một tỷ lệ nhỏ nhưng đều đặn, đặt đúng chỗ, vẫn là một bước đi thật." },
+  { num: "02", title: "Tôi không hiểu gì về đầu tư", body: "Không cần hiểu hết ngay mới được bắt đầu. Điều cần trước tiên là một nguyên lý đúng, không phải hàng chục thuật ngữ phức tạp." },
+  { num: "03", title: "Tôi sợ mất tiền", body: "Sợ mất tiền là hợp lý. Nhưng rủi ro không phải là kẻ thù — rủi ro không được quản lý mới là điều nguy hiểm. Có hệ thống giúp anh/chị đi xa hơn mà không phải lo liên tục." },
+  { num: "04", title: "Tôi không có thời gian", body: "Đầu tư dài hạn không đòi hỏi theo dõi từng giờ. Một hệ thống tốt giúp anh/chị ra ít quyết định hơn, nhưng chất lượng hơn." },
 ];
 
 function PsychologySection() {
@@ -629,18 +629,22 @@ function PsychologySection() {
           <div className="space-y-5 max-w-2xl">
             <motion.div variants={fadeUp}><SectionLabel>Tâm lý</SectionLabel></motion.div>
             <motion.div variants={fadeUp}><SectionHeading>4 rào cản tâm lý phổ biến khi bắt đầu</SectionHeading></motion.div>
-            <motion.div variants={fadeUp}><AnchorLine>Tất cả đều có thể vượt qua — bằng cách nhìn rõ hơn, không phải bằng ý chí mạnh hơn.</AnchorLine></motion.div>
+            <motion.div variants={fadeUp}>
+              <AnchorLine style={{ fontSize: "13px", color: "hsl(var(--primary) / 0.90)" }}>
+                Tất cả đều có thể vượt qua — bằng cách nhìn rõ hơn, không phải bằng ý chí mạnh hơn.
+              </AnchorLine>
+            </motion.div>
           </div>
-          <motion.div variants={stagger} style={{ display: "flex", flexDirection: "column", gap: "1.75rem" }}>
+          <motion.div variants={stagger} style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
             {barriers.map(({ num, title, body }) => (
-              <motion.div key={num} variants={fadeUp} style={{ display: "flex", gap: "1.25rem" }}>
-                <div style={{ flexShrink: 0, width: "2px", background: "hsl(var(--primary) / 0.42)", borderRadius: "999px", marginTop: "5px" }} />
+              <motion.div key={num} variants={fadeUp} style={{ display: "flex", gap: "1.5rem" }}>
+                <div style={{ flexShrink: 0, width: "2px", background: "hsl(var(--primary) / 0.52)", borderRadius: "999px", marginTop: "4px" }} />
                 <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.375rem" }}>
-                    <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.13em", color: "hsl(var(--primary) / 0.68)" }}>{num}</span>
-                    <h3 style={{ fontSize: "15.5px", fontWeight: 700, color: "hsl(var(--foreground))", lineHeight: 1.3, letterSpacing: "-0.008em" }}>{title}</h3>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "0.625rem", marginBottom: "0.625rem" }}>
+                    <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.10em", color: "hsl(var(--primary) / 0.80)", flexShrink: 0 }}>{num}</span>
+                    <h3 style={{ fontSize: "16px", fontWeight: 600, color: "hsl(var(--foreground))", lineHeight: 1.22, letterSpacing: "-0.012em", margin: 0 }}>{title}</h3>
                   </div>
-                  <p style={{ fontSize: "13.5px", lineHeight: 1.85, color: "hsl(var(--muted-foreground))", fontWeight: 400 }}>{body}</p>
+                  <p style={{ fontSize: "14px", lineHeight: 1.88, color: "hsl(var(--foreground) / 0.50)", fontWeight: 400 }}>{body}</p>
                 </div>
               </motion.div>
             ))}
