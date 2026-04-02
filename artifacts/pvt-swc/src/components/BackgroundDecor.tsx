@@ -24,7 +24,7 @@ export function BackgroundDecor() {
           top: "-8%", right: "-6%",
           width: "44rem", height: "44rem",
           borderRadius: "50%",
-          border: "1px dashed rgba(100,200,180,0.12)",
+          border: "1px dashed rgba(100,200,180,0.08)",
         }}
       />
 
@@ -37,7 +37,7 @@ export function BackgroundDecor() {
           top: "4%", right: "4%",
           width: "32rem", height: "32rem",
           borderRadius: "50%",
-          border: "1px solid rgba(100,200,180,0.09)",
+          border: "1px solid rgba(100,200,180,0.06)",
         }}
       />
 
@@ -50,7 +50,7 @@ export function BackgroundDecor() {
           top: "12%", right: "12%",
           width: "18rem", height: "18rem",
           borderRadius: "50%",
-          border: "1.5px dashed rgba(100,200,180,0.15)",
+          border: "1px dashed rgba(100,200,180,0.10)",
         }}
       />
 

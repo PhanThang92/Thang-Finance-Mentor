@@ -60,11 +60,26 @@ export function PhilosophySection() {
           </div>
 
           {/* Opening paragraphs */}
-          <motion.div variants={fadeUp} className="space-y-5 max-w-2xl">
-            <p className="text-[17px] leading-[1.9] text-white/75 font-light">
+          <motion.div variants={fadeUp} className="space-y-6 max-w-2xl">
+            <p
+              className="font-light"
+              style={{
+                fontSize: "18px",
+                lineHeight: 1.88,
+                color: "rgba(255,255,255,0.84)",
+                letterSpacing: "-0.008em",
+              }}
+            >
               Tôi tin rằng tự do tài chính không phải là đặc quyền của một số ít người may mắn.
             </p>
-            <p className="text-[16px] leading-[1.85] text-white/55 font-light">
+            <p
+              className="font-light"
+              style={{
+                fontSize: "16px",
+                lineHeight: 1.85,
+                color: "rgba(255,255,255,0.56)",
+              }}
+            >
               Nó là kết quả của một quá trình đủ dài, đủ tỉnh táo và đủ kỷ luật.
             </p>
           </motion.div>
@@ -77,7 +92,7 @@ export function PhilosophySection() {
           />
 
           {/* Belief trio */}
-          <motion.div variants={stagger} className="space-y-8">
+          <motion.div variants={stagger} className="space-y-10">
             <motion.p variants={fadeUp} className="text-white/50 text-sm font-medium tracking-wide">
               Tôi cũng tin rằng:
             </motion.p>
@@ -89,11 +104,30 @@ export function PhilosophySection() {
               >
                 <div
                   className="flex-shrink-0 w-0.5 rounded-full self-stretch mt-1"
-                  style={{ background: "rgba(52,160,140,0.35)" }}
+                  style={{ background: "rgba(52,160,140,0.46)" }}
                 />
-                <div className="space-y-1.5">
-                  <p className="text-[16px] font-semibold text-white/90">{key}</p>
-                  <p className="text-[15px] leading-[1.85] text-white/55 font-light">{body}</p>
+                <div className="space-y-2.5">
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: 600,
+                      color: "rgba(255,255,255,0.92)",
+                      letterSpacing: "-0.005em",
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {key}
+                  </p>
+                  <p
+                    className="font-light"
+                    style={{
+                      fontSize: "15px",
+                      lineHeight: 1.88,
+                      color: "rgba(255,255,255,0.60)",
+                    }}
+                  >
+                    {body}
+                  </p>
                 </div>
               </motion.div>
             ))}
