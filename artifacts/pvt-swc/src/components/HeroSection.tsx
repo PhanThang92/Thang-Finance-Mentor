@@ -97,15 +97,15 @@ export function HeroSection() {
                   src="/portrait.png"
                   alt="Phan Văn Thắng SWC"
                   className="absolute inset-0 w-full h-full object-cover"
-                  style={{ objectPosition: "50% 8%" }}
+                  style={{ objectPosition: "60% 12%" }}
                 />
 
-                {/* Left edge fade — blends dark photo bg into teal hero */}
+                {/* Left edge fade — blends into teal hero (subtle, photo bg already matches) */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background:
-                      "linear-gradient(to right, #0d2521 0%, rgba(13,37,33,0.55) 22%, transparent 48%)",
+                      "linear-gradient(to right, #0c2420 0%, rgba(12,36,32,0.70) 18%, rgba(12,36,32,0.20) 38%, transparent 60%)",
                   }}
                 />
 
