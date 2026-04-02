@@ -1,0 +1,78 @@
+Refine the hero section of the current website to make it feel more premium, elegant, and trustworthy, while keeping the existing layout structure.
+
+Goals:
+- make the hero feel more high-end
+- reduce the generic landing page feeling
+- improve visual hierarchy
+- keep the calm Vietnamese finance mentor brand tone
+- preserve the current overall composition
+
+Please update the hero section with these exact improvements:
+
+1. Improve the body text hierarchy under the main headline
+- keep the first paragraph as the main supporting text
+- make the second paragraph smaller, softer, and visually lighter
+- improve spacing and line-height for better readability
+- reduce the feeling of text heaviness
+
+Use this copy:
+
+Main supporting text:
+“Tôi chia sẻ về tư duy tài chính, đầu tư dài hạn, phát triển bản thân và cách xây dựng một hệ thống đủ vững để người bình thường có thể đi xa hơn trên hành trình tự do tài chính.”
+
+Secondary supporting text:
+“Tôi không theo đuổi những lời hứa làm giàu nhanh. Tôi tin vào một con đường thực tế hơn: hiểu tiền đúng, sống kỷ luật hơn, đầu tư tỉnh táo hơn và kiên trì đủ lâu để tài sản có cơ hội hình thành.”
+
+2. Upgrade the CTA buttons
+- make the primary button more premium and polished
+- use a slightly brighter teal with soft shadow and cleaner hover state
+- make the secondary button more refined with subtle glass / dark translucent style
+- improve border, spacing, typography, and hover transitions
+- keep both buttons elegant and calm, not flashy
+
+3. Redesign the metrics inside the portrait card
+- make them smaller, more refined, and more premium
+- reduce the “basic landing page stats” feeling
+- improve spacing and typography
+- align them beautifully inside the image card
+- make the labels more elegant and easier to read
+
+Use this exact content:
+
+First metric:
+“7+”
+“năm đầu tư dài hạn”
+
+Second metric:
+“5+”
+“năm công nghệ”
+
+4. Improve the caption under the portrait
+- make it slightly brighter and clearer
+- use medium weight typography
+- increase elegance and readability
+- make the divider lines on both sides thinner and more refined
+
+Replace the caption text with:
+“Phan Văn Thắng · Mentor tài chính dài hạn”
+
+5. Refine the portrait presentation
+- slightly improve brightness and contrast in the suit / chest / shoulder area
+- keep the face natural and premium
+- preserve the dark elegant mood
+- do not change the portrait image itself drastically
+- just improve how it is visually displayed in the card
+
+6. General polish
+- improve spacing between hero elements
+- make the whole hero feel more premium and editorial
+- preserve mobile responsiveness
+- keep the current dark teal finance background
+- do not redesign the hero from scratch
+- only refine and elevate it
+
+Important:
+The hero should feel like a premium personal brand website for a calm long-term finance mentor in Vietnam.
+Avoid flashy startup style.
+Avoid generic marketing funnel style.
+Make it elegant, grounded, and trustworthy.
