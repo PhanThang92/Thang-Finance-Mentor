@@ -43,10 +43,10 @@ export function HeroSection() {
               {...fadeUp(0.18)}
               className="text-white mb-7"
               style={{
-                fontSize: "clamp(1.6rem, 4.5vw, 2.55rem)",
+                fontSize: "clamp(1.52rem, 4.2vw, 2.42rem)",
                 fontWeight: 700,
-                lineHeight: 1.16,
-                letterSpacing: "-0.025em",
+                lineHeight: 1.22,
+                letterSpacing: "-0.024em",
               }}
             >
               Xây tài sản dài hạn{" "}
@@ -79,12 +79,12 @@ export function HeroSection() {
             {/* Secondary paragraph — whisper tier */}
             <motion.p
               {...fadeUp(0.40)}
-              className="mb-9"
+              className="mb-12"
               style={{
                 fontSize: "12.5px",
                 fontWeight: 300,
                 fontStyle: "italic",
-                color: "rgba(255,255,255,0.38)",
+                color: "rgba(255,255,255,0.40)",
                 lineHeight: 2.0,
                 maxWidth: "30rem",
               }}
@@ -181,7 +181,17 @@ export function HeroSection() {
                   className="absolute inset-0 w-full h-full object-cover"
                   style={{
                     objectPosition: "60% 10%",
-                    filter: "brightness(1.06) contrast(1.04) saturate(0.94)",
+                    filter: "brightness(1.08) contrast(1.05) saturate(0.93)",
+                  }}
+                />
+
+                {/* Suit / chest local brightness lift — face is unaffected */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(to bottom, transparent 0%, transparent 24%, rgba(255,255,255,0.045) 42%, rgba(255,255,255,0.07) 58%, rgba(255,255,255,0.03) 72%, transparent 82%)",
+                    mixBlendMode: "screen",
                   }}
                 />
 
