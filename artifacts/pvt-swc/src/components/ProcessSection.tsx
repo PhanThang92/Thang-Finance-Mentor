@@ -1,0 +1,166 @@
+import React from "react";
+import { motion } from "framer-motion";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+};
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+};
+
+const steps = [
+  {
+    num: "01",
+    title: "Chia sẻ kiến thức nền tảng",
+    desc: "Bài viết, phân tích và góc nhìn về tài chính, đầu tư và tư duy tích sản — để bạn có cơ sở đúng trước khi quyết định.",
+  },
+  {
+    num: "02",
+    title: "Làm rõ mục tiêu và nhu cầu",
+    desc: "Mỗi người có điểm xuất phát và mục tiêu khác nhau. Việc hiểu đúng bức tranh cá nhân là bước không thể bỏ qua.",
+  },
+  {
+    num: "03",
+    title: "Gợi mở hướng đi phù hợp",
+    desc: "Không áp đặt một công thức chung — mà chia sẻ các hướng tiếp cận phù hợp với từng hoàn cảnh và mục tiêu cụ thể.",
+  },
+  {
+    num: "04",
+    title: "Đồng hành dài hạn",
+    desc: "Thông qua nội dung liên tục, cộng đồng và kết nối trực tiếp — để hành trình không cô đơn và có hệ thống đỡ vững.",
+  },
+];
+
+export function ProcessSection() {
+  return (
+    <section
+      className="py-24 md:py-32"
+      style={{ background: "hsl(var(--card))" }}
+    >
+      <div className="max-w-5xl mx-auto px-5 sm:px-8">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          variants={stagger}
+          className="space-y-14"
+        >
+
+          {/* ── Header ── */}
+          <div className="max-w-2xl space-y-4">
+            <motion.div variants={fadeUp} className="flex items-center gap-3">
+              <div className="h-px w-8 bg-primary/50" />
+              <span className="section-label">Cách làm việc</span>
+            </motion.div>
+            <motion.h2
+              variants={fadeUp}
+              style={{
+                fontSize: "clamp(1.5rem, 3.4vw, 2.1rem)",
+                fontWeight: 700,
+                lineHeight: 1.22,
+                letterSpacing: "-0.020em",
+                color: "hsl(var(--foreground))",
+              }}
+            >
+              Cách tôi đồng hành cùng người theo dõi và khách hàng
+            </motion.h2>
+            <motion.p
+              variants={fadeUp}
+              style={{
+                fontSize: "15px",
+                lineHeight: 1.88,
+                fontWeight: 400,
+                color: "hsl(var(--muted-foreground))",
+                maxWidth: "38rem",
+              }}
+            >
+              Một quy trình đơn giản, rõ ràng — không phức tạp hóa, không tạo cảm giác phụ thuộc.
+            </motion.p>
+          </div>
+
+          {/* ── Steps ── */}
+          <div className="relative">
+            {/* Connector line (desktop) */}
+            <div
+              className="hidden lg:block absolute"
+              style={{
+                top: "28px",
+                left: "calc(12.5% + 20px)",
+                right: "calc(12.5% + 20px)",
+                height: "1px",
+                background: "linear-gradient(to right, hsl(var(--primary) / 0.18), hsl(var(--primary) / 0.35), hsl(var(--primary) / 0.18))",
+              }}
+            />
+
+            <motion.div
+              variants={stagger}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-5"
+            >
+              {steps.map(({ num, title, desc }) => (
+                <motion.div
+                  key={num}
+                  variants={fadeUp}
+                  className="flex flex-col items-start lg:items-center"
+                >
+                  {/* Step number circle */}
+                  <div
+                    className="mb-5 flex items-center justify-center rounded-full"
+                    style={{
+                      width: "52px",
+                      height: "52px",
+                      background: "hsl(var(--primary) / 0.08)",
+                      border: "1px solid hsl(var(--primary) / 0.22)",
+                      flexShrink: 0,
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: 700,
+                        letterSpacing: "0.04em",
+                        color: "hsl(var(--primary))",
+                      }}
+                    >
+                      {num}
+                    </span>
+                  </div>
+
+                  {/* Content */}
+                  <div className="lg:text-center">
+                    <p
+                      className="mb-2.5"
+                      style={{
+                        fontSize: "14.5px",
+                        fontWeight: 600,
+                        letterSpacing: "-0.008em",
+                        color: "hsl(var(--foreground))",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {title}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: "13px",
+                        lineHeight: 1.84,
+                        fontWeight: 400,
+                        color: "hsl(var(--muted-foreground))",
+                      }}
+                    >
+                      {desc}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+
+        </motion.div>
+      </div>
+    </section>
+  );
+}

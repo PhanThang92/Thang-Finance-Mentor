@@ -1,26 +1,24 @@
 import React from "react";
 import { HeroSection } from "@/components/HeroSection";
-import { AboutSection } from "@/components/AboutSection";
-import { AudienceSection } from "@/components/AudienceSection";
-import { ValueSection } from "@/components/ValueSection";
-import { ContentSection } from "@/components/ContentSection";
-import { FeaturedSection } from "@/components/FeaturedSection";
-import { PhilosophySection } from "@/components/PhilosophySection";
-import { CommunitySection } from "@/components/CommunitySection";
-import { LeadFormSection } from "@/components/LeadFormSection";
+import { ValueCoreSection } from "@/components/ValueCoreSection";
+import { LatestPostsSection } from "@/components/LatestPostsSection";
+import { ServicesSection } from "@/components/ServicesSection";
+import { TopicsSection } from "@/components/TopicsSection";
+import { AboutPersonSection } from "@/components/AboutPersonSection";
+import { ProcessSection } from "@/components/ProcessSection";
+import { CTASection } from "@/components/CTASection";
 
 export default function Home() {
   return (
     <>
       <HeroSection />
-      <AboutSection />
-      <AudienceSection />
-      <ValueSection />
-      <ContentSection />
-      <FeaturedSection />
-      <PhilosophySection />
-      <CommunitySection />
-      <LeadFormSection />
+      <ValueCoreSection />
+      <LatestPostsSection />
+      <ServicesSection />
+      <TopicsSection />
+      <AboutPersonSection />
+      <ProcessSection />
+      <CTASection />
     </>
   );
 }

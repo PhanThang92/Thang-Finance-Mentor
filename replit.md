@@ -101,19 +101,33 @@ Utility scripts package. Each script is a `.ts` file in `src/` with a correspond
 
 Personal brand landing page. Vietnamese only, light mode, dark-teal design system.
 
+### Homepage Structure (rebuilt)
+
+`src/pages/Home.tsx` composes 8 new section components:
+
+1. **HeroSection** — dark teal full-viewport hero, portrait, new headline & CTAs ("Khám phá bài viết" / "Tìm hiểu dịch vụ"), trust line
+2. **ValueCoreSection** — light card bg, 4 value cards with SVG icons
+3. **LatestPostsSection** — dynamic from `/api/news/posts`, featured large card + 3 smaller side cards, skeleton loader, fallback images + watermarks
+4. **ServicesSection** — dark teal bg, 3 service cards (articles / 1:1 / community)
+5. **TopicsSection** — light card bg, 6 static topic cards enriched with API categories
+6. **AboutPersonSection** — 2-col: portrait (with fade overlays) + bio text + quote + CTA
+7. **ProcessSection** — 4-step numbered process with horizontal connector on desktop
+8. **CTASection** — dark teal, "Bắt đầu từ việc hiểu đúng", 2 CTAs
+
 ### Article Fallback Image System
 
 `src/lib/postImage.ts` provides `getPostImage(post)` which returns a deterministic image per post:
 
-1. Custom `featuredImage` URL (if set)
-2. Product-based fallback pool (3 images each):
-   - `atlas` → `fallback-atlas.svg`, `fallback-atlas-2.svg`, `fallback-atlas-3.svg`
-   - `road-to-1m` → `fallback-road-to-1m.svg`, `fallback-road-to-1m-2.svg`, `fallback-road-to-1m-3.svg`
-3. Category-based fallback pool (3 images):
-   - `tu-duy-dau-tu` → `fallback-tu-duy.svg`, `fallback-tu-duy-2.svg`, `fallback-tu-duy-3.svg`
-4. Default pool (2 images): `fallback-default.svg`, `fallback-default-2.svg`
+1. Custom `featuredImageDisplay` URL (processed/cropped, takes priority)
+2. Custom `featuredImage` URL (original)
+3. Product-based fallback pool (2 images each):
+   - `atlas` → `fallback-atlas.svg`, `fallback-atlas-2.svg`
+   - `road-to-1m` → `fallback-road-to-1m.svg`, `fallback-road-to-1m-2.svg`
+4. Category-based fallback pool (2 images):
+   - `tu-duy-dau-tu` → `fallback-tu-duy.svg`, `fallback-tu-duy-2.svg`
+5. Default pool (2 images): `fallback-default.svg`, `fallback-default-2.svg`
 
-Selection is deterministic: `pool[postId % poolSize]`. Same post always shows the same image. Different posts in the same group show different images. All fallbacks live in `public/images/`.
+Selection is deterministic: `pool[postId % poolSize]`. Same post always shows the same image. Different posts in the same group show different images. All fallbacks live in `public/images/`. `getWatermarkText(post)` returns a CSS watermark string shown on fallback images via overlay div in TinTuc.tsx, TinTucArticle.tsx, and admin PostsPanel.tsx.
 
 ### Admin CMS (`/admin`)
 

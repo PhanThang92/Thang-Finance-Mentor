@@ -9,6 +9,12 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.85, delay, ease: [0.22, 1, 0.36, 1] },
 });
 
+const trustItems = [
+  "Kiến thức thực chiến",
+  "Tư duy dài hạn",
+  "Đồng hành có hệ thống",
+];
+
 export function HeroSection() {
   return (
     <section
@@ -24,7 +30,7 @@ export function HeroSection() {
           {/* ── Text Column ── */}
           <div className="flex flex-col max-w-xl">
 
-            {/* Brand label */}
+            {/* Eyebrow */}
             <motion.div {...fadeUp(0.1)} className="flex items-center gap-2.5 mb-7">
               <div
                 className="flex-shrink-0"
@@ -43,66 +49,44 @@ export function HeroSection() {
               {...fadeUp(0.18)}
               className="text-white mb-7"
               style={{
-                fontSize: "clamp(1.52rem, 4.2vw, 2.42rem)",
+                fontSize: "clamp(1.75rem, 4.8vw, 2.85rem)",
                 fontWeight: 700,
-                lineHeight: 1.22,
-                letterSpacing: "-0.024em",
+                lineHeight: 1.18,
+                letterSpacing: "-0.028em",
               }}
             >
-              Xây tài sản dài hạn{" "}
+              Xây tư duy tài chính đúng.{" "}
               <span style={{ color: "rgba(255,255,255,0.62)", fontWeight: 400 }}>
-                không bắt đầu từ may mắn.
+                Tích sản dài hạn.
               </span>
               <br />
-              <span style={{ color: "rgba(255,255,255,0.88)" }}>
-                Nó bắt đầu từ kỷ luật, tư duy đúng và một hành trình nghiêm túc.
+              <span style={{ color: "rgba(255,255,255,0.88)", fontWeight: 500 }}>
+                Đầu tư với góc nhìn thực chiến.
               </span>
             </motion.h1>
 
-            {/* Primary body paragraph */}
+            {/* Subheadline */}
             <motion.p
               {...fadeUp(0.30)}
-              className="mb-3.5"
+              className="mb-10"
               style={{
                 fontSize: "15px",
                 fontWeight: 400,
-                color: "rgba(255,255,255,0.70)",
-                lineHeight: 1.88,
+                color: "rgba(255,255,255,0.68)",
+                lineHeight: 1.92,
                 maxWidth: "32rem",
               }}
             >
-              Tôi chia sẻ về tư duy tài chính, đầu tư dài hạn, phát triển bản thân và cách xây
-              dựng một hệ thống đủ vững để người bình thường có thể đi xa hơn trên hành trình tự
-              do tài chính.
-            </motion.p>
-
-            {/* Secondary paragraph — whisper tier */}
-            <motion.p
-              {...fadeUp(0.40)}
-              className="mb-12"
-              style={{
-                fontSize: "12.5px",
-                fontWeight: 300,
-                fontStyle: "italic",
-                color: "rgba(255,255,255,0.40)",
-                lineHeight: 2.0,
-                maxWidth: "30rem",
-              }}
-            >
-              Tôi không theo đuổi những lời hứa làm giàu nhanh. Tôi tin vào một con đường thực
-              tế hơn: hiểu tiền đúng, sống kỷ luật hơn, đầu tư tỉnh táo hơn và kiên trì đủ lâu
-              để tài sản có cơ hội hình thành.
+              Chia sẻ kiến thức tài chính, đầu tư và tư duy phát triển bản thân theo hướng kỷ luật, dài hạn và bền vững.
             </motion.p>
 
             {/* Buttons */}
-            <motion.div {...fadeUp(0.50)} className="flex flex-col sm:flex-row gap-2.5">
-
-              {/* Primary */}
+            <motion.div {...fadeUp(0.45)} className="flex flex-col sm:flex-row gap-2.5 mb-9">
               <a
-                href="#noi-dung"
+                href="/tin-tuc"
                 className="inline-flex items-center justify-center rounded-full text-white transition-all"
                 style={{
-                  height: "2.625rem",
+                  height: "2.75rem",
                   padding: "0 1.875rem",
                   fontSize: "13px",
                   fontWeight: 600,
@@ -123,15 +107,14 @@ export function HeroSection() {
                 }}
                 data-testid="btn-hero-explore"
               >
-                Khám phá nội dung
+                Khám phá bài viết
               </a>
 
-              {/* Secondary */}
               <a
-                href="#lien-he"
+                href="#dich-vu"
                 className="inline-flex items-center justify-center rounded-full transition-all"
                 style={{
-                  height: "2.625rem",
+                  height: "2.75rem",
                   padding: "0 1.75rem",
                   fontSize: "13px",
                   fontWeight: 450,
@@ -154,10 +137,30 @@ export function HeroSection() {
                   el.style.borderColor = "rgba(255,255,255,0.15)";
                   el.style.color = "rgba(255,255,255,0.75)";
                 }}
-                data-testid="btn-hero-community"
+                data-testid="btn-hero-service"
               >
-                Tham gia cộng đồng
+                Tìm hiểu dịch vụ
               </a>
+            </motion.div>
+
+            {/* Trust line */}
+            <motion.div
+              {...fadeUp(0.60)}
+              className="flex flex-wrap items-center gap-x-5 gap-y-2"
+            >
+              {trustItems.map((item, i) => (
+                <React.Fragment key={item}>
+                  {i > 0 && (
+                    <span
+                      aria-hidden="true"
+                      style={{ width: "3px", height: "3px", borderRadius: "50%", background: "rgba(255,255,255,0.20)", flexShrink: 0 }}
+                    />
+                  )}
+                  <span style={{ fontSize: "11.5px", fontWeight: 400, color: "rgba(255,255,255,0.40)", letterSpacing: "0.02em" }}>
+                    {item}
+                  </span>
+                </React.Fragment>
+              ))}
             </motion.div>
           </div>
 
@@ -185,7 +188,6 @@ export function HeroSection() {
                   }}
                 />
 
-                {/* Suit / chest local brightness lift — face is unaffected */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
@@ -195,7 +197,6 @@ export function HeroSection() {
                   }}
                 />
 
-                {/* Left edge blend */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
@@ -204,7 +205,6 @@ export function HeroSection() {
                   }}
                 />
 
-                {/* Bottom fade */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
@@ -213,7 +213,6 @@ export function HeroSection() {
                   }}
                 />
 
-                {/* Top vignette */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
@@ -222,7 +221,7 @@ export function HeroSection() {
                   }}
                 />
 
-                {/* Metrics — editorial, minimal */}
+                {/* Metrics */}
                 <div className="absolute bottom-0 left-0 right-0 px-5 pb-4.5 z-10">
                   <div
                     className="mb-3"

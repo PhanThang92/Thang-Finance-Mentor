@@ -1,0 +1,400 @@
+Hãy cập nhật lại toàn bộ HOMEPAGE của website Phan Van Thang SWC theo hệ thống thương hiệu và nội dung mới dưới đây.
+
+========================
+1. MỤC TIÊU CHUNG
+========================
+Thiết kế lại homepage để website trông:
+- premium
+- hiện đại
+- tin cậy
+- rõ thương hiệu cá nhân
+- rõ định vị tài chính / đầu tư / kiến thức thực chiến
+- hỗ trợ bán niềm tin trước, chuyển đổi sau
+- ưu tiên trải nghiệm đọc tốt, dễ theo dõi, không rối
+- responsive tốt trên desktop / tablet / mobile
+
+Homepage mới phải đóng vai trò:
+1) giới thiệu rõ Phan Van Thang SWC là ai
+2) dẫn người dùng vào các nội dung giá trị như bài viết, tin tức, chia sẻ kiến thức
+3) làm nổi bật dịch vụ / định hướng đồng hành / tư vấn
+4) tăng độ tin cậy bằng thành tựu, định vị, cách làm việc
+5) tạo CTA mềm nhưng rõ ràng
+
+Không làm kiểu landing page spam bán hàng.
+Không dùng màu quá gắt.
+Không dùng hiệu ứng lòe loẹt.
+Không dùng layout cũ rời rạc.
+Ưu tiên cảm giác editorial + personal brand + financial premium.
+
+========================
+2. NHẬN DIỆN THƯƠNG HIỆU
+========================
+Tên thương hiệu hiển thị chính:
+Phan Van Thang SWC
+
+Định vị:
+- thương hiệu cá nhân trong lĩnh vực tài chính, đầu tư, tư duy tích sản, kiến thức thực chiến
+- chia sẻ góc nhìn dài hạn, kỷ luật, hệ thống
+- không hứa hẹn lợi nhuận
+- không tạo cảm giác đa cấp / phô trương / hô hào
+
+Tone giao diện:
+- calm
+- trustworthy
+- premium
+- mentor
+- executive
+- hiện đại nhưng không lạnh lẽo
+
+Gợi ý màu:
+- dark teal / deep teal làm màu chủ đạo
+- xanh tài chính trầm
+- trắng / off-white / light gray cho nền sáng
+- charcoal / dark gray cho chữ
+- có thể dùng thêm gradient teal rất nhẹ ở hero hoặc block nhấn
+- tuyệt đối tránh neon, đỏ gắt, vàng chói
+
+Typography:
+- heading mạnh, rõ, premium
+- body text dễ đọc
+- phân cấp heading / subheading / body rõ ràng
+- khoảng trắng rộng
+- bo góc vừa phải
+- card sạch, bóng nhẹ, border tinh tế
+
+========================
+3. CẤU TRÚC HOMEPAGE MỚI
+========================
+Hãy xây lại homepage theo cấu trúc sau:
+
+A. Sticky Header
+B. Hero Section hoàn toàn mới
+C. Khối định vị / giá trị cốt lõi
+D. Khối dịch vụ / hướng đồng hành
+E. Khối bài viết / tin tức nổi bật
+F. Khối chủ đề nội dung / thư viện kiến thức
+G. Khối giới thiệu ngắn về Phan Van Thang
+H. Khối quy trình làm việc / cách đồng hành
+I. Khối CTA mềm
+J. Footer mới hoàn chỉnh
+
+Tất cả section phải đồng bộ style với nhau.
+
+========================
+4. HEADER
+========================
+Thiết kế header mới:
+- sticky khi scroll
+- nền hơi blur hoặc solid nhẹ khi cuộn
+- bên trái: logo text / brand text “Phan Van Thang SWC”
+- menu ở giữa hoặc bên phải:
+  - Trang chủ
+  - Giới thiệu
+  - Bài viết
+  - Dịch vụ
+  - Liên hệ
+- nút CTA nổi bật nhưng tinh tế:
+  - “Nhận tư vấn”
+  hoặc
+  - “Kết nối cùng Thắng”
+
+Yêu cầu:
+- active state rõ
+- hover đẹp
+- mobile menu mượt, gọn, không lỗi
+- không chiếm quá nhiều chiều cao
+
+========================
+5. HERO SECTION
+========================
+Thiết kế hero mới sang trọng, rõ định vị, không quá nhiều chữ.
+
+Bố cục desktop:
+- 2 cột
+- bên trái là nội dung
+- bên phải là visual / portrait / abstract financial visual / image block cao cấp
+- nếu chưa có ảnh thật thì dùng placeholder visual premium, không dùng ảnh stock rẻ tiền
+
+Nội dung gợi ý:
+Eyebrow:
+Phan Van Thang SWC
+
+Headline lớn:
+Xây tư duy tài chính đúng.
+Tích sản dài hạn.
+Đầu tư với góc nhìn thực chiến.
+
+Subheadline:
+Chia sẻ kiến thức tài chính, đầu tư và tư duy phát triển bản thân theo hướng kỷ luật, dài hạn và bền vững.
+
+Buttons:
+- Button chính: Khám phá bài viết
+- Button phụ: Tìm hiểu dịch vụ
+
+Có thể thêm trust line ngắn dưới CTA:
+- Kiến thức thực chiến
+- Tư duy dài hạn
+- Đồng hành có hệ thống
+
+Hero cần có:
+- spacing đẹp
+- headline nổi bật nhất
+- CTA dễ bấm
+- visual cân đối
+- background có chiều sâu nhẹ
+- có thể dùng pattern chart / grid / glow teal rất nhẹ ở background
+- không dùng animation nặng
+
+========================
+6. KHỐI ĐỊNH VỊ / GIÁ TRỊ CỐT LÕI
+========================
+Tạo section ngắn ngay dưới hero để người dùng hiểu website này dành cho ai.
+
+Heading:
+Một hệ sinh thái nội dung dành cho người muốn xây nền tài chính vững chắc
+
+Subtext:
+Website tập trung vào chia sẻ góc nhìn, kinh nghiệm và hệ thống kiến thức giúp người đọc hiểu đúng hơn về tài chính, đầu tư và quá trình xây tài sản dài hạn.
+
+Hiển thị 3 hoặc 4 value cards:
+1. Tư duy tài chính đúng
+2. Đầu tư dài hạn thực chiến
+3. Kỷ luật tích sản
+4. Đồng hành bằng kiến thức và hệ thống
+
+Mỗi card:
+- icon tinh tế
+- tiêu đề rõ
+- mô tả 2 dòng
+- hover nhẹ
+- card đồng nhất chiều cao
+
+========================
+7. KHỐI DỊCH VỤ / HƯỚNG ĐỒNG HÀNH
+========================
+Tạo block làm rõ người dùng có thể nhận gì từ website / thương hiệu này.
+
+Heading:
+Những gì bạn có thể nhận được tại đây
+
+Hiển thị 3 service cards hoặc 3 experience cards:
+- Bài viết phân tích & chia sẻ góc nhìn
+- Tư vấn / kết nối 1:1 theo định hướng phù hợp
+- Cập nhật nội dung, tin tức và kiến thức chọn lọc
+
+Mỗi card có:
+- icon
+- title
+- mô tả ngắn
+- nút text link “Xem thêm”
+
+Card style:
+- premium
+- nền sáng hoặc dark section xen kẽ để có nhịp
+- không làm giống pricing table
+
+========================
+8. KHỐI BÀI VIẾT / TIN TỨC NỔI BẬT
+========================
+Đây là phần rất quan trọng theo hệ mới.
+
+Tạo section nổi bật hiển thị:
+- 1 bài featured lớn
+- 3 đến 6 bài nhỏ bên cạnh hoặc bên dưới
+- có filter tab nếu cần:
+  - Mới nhất
+  - Nổi bật
+  - Phân tích
+  - Chia sẻ
+
+Mỗi bài viết card cần có:
+- ảnh thumbnail chuẩn tỷ lệ đồng nhất
+- title
+- excerpt 2–3 dòng
+- category badge
+- ngày đăng
+- nút / text “Đọc tiếp”
+
+Yêu cầu kỹ thuật:
+- lấy dữ liệu từ hệ bài viết hiện có
+- nếu chưa có dữ liệu thì làm state đẹp cho empty / fallback
+- ảnh hiển thị cover đẹp, crop chuẩn, không méo
+- hỗ trợ watermark nếu backend đã có xử lý
+- card hover tinh tế
+- section có nút:
+  “Xem tất cả bài viết”
+
+Featured article nên lớn hơn và nổi bật hơn rõ ràng.
+
+========================
+9. KHỐI CHỦ ĐỀ NỘI DUNG / THƯ VIỆN KIẾN THỨC
+========================
+Tạo section giúp người dùng đi sâu theo chủ đề.
+
+Heading:
+Khám phá nội dung theo chủ đề
+
+Hiển thị 4–6 topic cards, ví dụ:
+- Tài chính cá nhân
+- Đầu tư dài hạn
+- Tư duy tích sản
+- Kiến thức thực chiến
+- Góc nhìn thị trường
+- Phát triển bản thân
+
+Mỗi card có:
+- icon hoặc hình minh họa abstract nhẹ
+- tên chủ đề
+- mô tả ngắn
+- số lượng bài viết nếu có dữ liệu
+- link đi tới trang danh mục / bài viết lọc theo chủ đề
+
+Thiết kế phải đẹp, gọn, dễ click.
+
+========================
+10. KHỐI GIỚI THIỆU NGẮN VỀ PHAN VAN THANG
+========================
+Tạo block giới thiệu ngắn, có thể chia 2 cột:
+- bên trái: ảnh chân dung / block visual
+- bên phải: nội dung giới thiệu
+
+Heading:
+Về Phan Van Thang SWC
+
+Nội dung:
+Phan Van Thang SWC theo đuổi hướng chia sẻ kiến thức tài chính, đầu tư và phát triển tư duy tích sản theo cách thực tế, kỷ luật và dài hạn. Mục tiêu không phải tạo ra cảm giác làm giàu nhanh, mà là giúp người đọc có góc nhìn đúng hơn để xây nền tảng tài chính bền vững.
+
+Có thể thêm 3 bullet nhỏ:
+- Góc nhìn dài hạn
+- Nội dung thực chiến, dễ áp dụng
+- Đồng hành bằng giá trị thật
+
+Thêm CTA:
+“Tìm hiểu thêm”
+
+Section này phải tăng độ tin cậy, không phô trương.
+
+========================
+11. KHỐI QUY TRÌNH / CÁCH ĐỒNG HÀNH
+========================
+Tạo section dạng 3 bước hoặc 4 bước.
+
+Heading:
+Cách tôi đồng hành cùng người theo dõi và khách hàng
+
+Các bước gợi ý:
+1. Chia sẻ kiến thức nền tảng
+2. Làm rõ mục tiêu và nhu cầu
+3. Gợi mở hướng đi phù hợp
+4. Đồng hành dài hạn bằng hệ thống nội dung và kết nối
+
+Thiết kế:
+- timeline ngang trên desktop
+- stack dọc trên mobile
+- icon + số bước rõ
+- rất sạch, hiện đại, có khoảng thở
+
+========================
+12. KHỐI CTA MỀM
+========================
+Tạo block CTA cuối trang thật đẹp, premium, không bán hàng lộ liễu.
+
+Heading:
+Bắt đầu từ việc hiểu đúng, rồi đi đường dài
+
+Subtext:
+Khám phá thêm bài viết, nội dung chia sẻ và các hướng đồng hành phù hợp với bạn.
+
+Buttons:
+- Xem bài viết mới
+- Liên hệ kết nối
+
+Block này có thể dùng nền dark teal hoặc gradient teal sang trọng để tạo điểm kết mạnh trước footer.
+
+========================
+13. FOOTER
+========================
+Thiết kế lại footer hoàn chỉnh, sạch và chuyên nghiệp.
+
+Bao gồm:
+- Brand name: Phan Van Thang SWC
+- mô tả ngắn thương hiệu
+- menu nhanh:
+  - Trang chủ
+  - Giới thiệu
+  - Bài viết
+  - Dịch vụ
+  - Liên hệ
+- thông tin liên hệ nếu có sẵn
+- social icons nếu có
+- copyright
+- dòng disclaimer ngắn:
+  Nội dung trên website mang tính chia sẻ, tham khảo và không được xem là cam kết lợi nhuận hoặc lời khuyên tài chính cá nhân hóa.
+
+Footer phải premium, dễ đọc, khoảng trắng tốt.
+
+========================
+14. YÊU CẦU UI/UX CHI TIẾT
+========================
+- responsive tốt mọi kích thước màn hình
+- khoảng trắng rộng, thoáng
+- section spacing nhất quán
+- bo góc card đồng bộ
+- shadow rất nhẹ
+- hover mượt
+- loading state đẹp
+- skeleton state cho phần bài viết nếu cần
+- hỗ trợ dark/light section xen kẽ để trang có nhịp
+- tối ưu hierarchy để người dùng đọc rõ trong 3–5 giây đầu
+- không để text block quá dài
+- không nhồi quá nhiều nội dung trong 1 section
+
+========================
+15. YÊU CẦU KỸ THUẬT
+========================
+- giữ code sạch, dễ maintain
+- tách component hợp lý
+- đặt tên component rõ ràng
+- dùng dữ liệu động cho phần bài viết nổi bật nếu hệ thống đã có CMS/admin
+- nếu chưa có đủ dữ liệu thì tạo fallback mock data dễ thay sau
+- đảm bảo ảnh responsive, lazy load nếu phù hợp
+- tối ưu tốc độ tải trang
+- không làm vỡ layout khi title bài viết dài
+- đảm bảo button, card, nav accessible tốt
+- kiểm tra mobile menu, spacing, section wrapping
+
+========================
+16. THỐNG NHẤT VỚI HỆ BÀI VIẾT MỚI
+========================
+Homepage phải đồng bộ với hệ bài viết / tin tức mới:
+- bài viết nổi bật có ảnh thumbnail đẹp
+- danh mục hiển thị rõ
+- có nơi điều hướng sang trang bài viết
+- ngôn ngữ trình bày nhất quán với màn Bài viết và màn Tạo/Sửa bài
+- hỗ trợ hệ ảnh đã upload, crop chuẩn và có watermark nếu đã triển khai backend xử lý
+
+========================
+17. NHỮNG GÌ CẦN TRÁNH
+========================
+- tránh phong cách web corporate khô cứng
+- tránh layout giống template miễn phí
+- tránh icon rẻ tiền
+- tránh quá nhiều text nhỏ
+- tránh nút CTA đỏ gắt / vàng chói
+- tránh banner quá cao làm loãng trải nghiệm
+- tránh section nào cũng giống nhau
+- tránh cảm giác “đang bán khóa học mạnh”
+- tránh làm giống website tài chính rủi ro / đa cấp / forex spam
+
+========================
+18. KẾT QUẢ MONG MUỐN
+========================
+Sau khi cập nhật xong homepage, tôi muốn thấy:
+- thương hiệu rõ hơn ngay từ 5 giây đầu
+- giao diện premium hơn bản cũ
+- bài viết / tin tức trở thành trung tâm nội dung rõ ràng
+- người dùng dễ hiểu website này nói về gì
+- có chiều sâu, có tin cậy, có CTA hợp lý
+- sẵn sàng dùng như website thương hiệu cá nhân chuyên nghiệp
+
+Hãy tiến hành refactor homepage hoàn chỉnh theo toàn bộ yêu cầu trên, cập nhật cả layout, component, style, nội dung placeholder hợp lý, và bảo đảm mọi phần hoạt động tốt trên mobile.
