@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0e2724"/>
+      <stop offset="100%" stop-color="#060e0c"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="600" y1="100" x2="600" y2="530" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Ambient glow -->
+  <ellipse cx="600" cy="280" rx="520" ry="260" fill="url(#glow)"/>
+
+  <!-- Grid lines (horizontal) -->
+  <line x1="0" y1="157" x2="1200" y2="157" stroke="rgba(52,160,140,0.06)" stroke-width="1"/>
+  <line x1="0" y1="314" x2="1200" y2="314" stroke="rgba(52,160,140,0.06)" stroke-width="1"/>
+  <line x1="0" y1="471" x2="1200" y2="471" stroke="rgba(52,160,140,0.06)" stroke-width="1"/>
+
+  <!-- Grid lines (vertical) -->
+  <line x1="300" y1="0" x2="300" y2="630" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
+  <line x1="600" y1="0" x2="600" y2="630" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
+  <line x1="900" y1="0" x2="900" y2="630" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
+
+  <!-- Decorative line chart -->
+  <polyline points="120,440 240,390 340,360 430,290 540,310 630,240 720,200 820,220 930,170 1080,130"
+    stroke="rgba(52,160,140,0.22)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Area under the line -->
+  <polygon points="120,440 240,390 340,360 430,290 540,310 630,240 720,200 820,220 930,170 1080,130 1080,530 120,530"
+    fill="rgba(52,160,140,0.04)"/>
+
+  <!-- Data nodes on line -->
+  <circle cx="430" cy="290" r="4" fill="rgba(52,160,140,0.55)"/>
+  <circle cx="430" cy="290" r="8" fill="rgba(52,160,140,0.12)"/>
+  <circle cx="630" cy="240" r="5" fill="rgba(52,160,140,0.70)"/>
+  <circle cx="630" cy="240" r="10" fill="rgba(52,160,140,0.14)"/>
+  <circle cx="930" cy="170" r="4.5" fill="rgba(52,160,140,0.60)"/>
+  <circle cx="930" cy="170" r="9" fill="rgba(52,160,140,0.12)"/>
+
+  <!-- Large decorative circles (background depth) -->
+  <circle cx="920" cy="340" r="200" stroke="rgba(52,160,140,0.05)" stroke-width="1" fill="none"/>
+  <circle cx="920" cy="340" r="140" stroke="rgba(52,160,140,0.07)" stroke-width="1" fill="none"/>
+  <circle cx="920" cy="340" r="80"  stroke="rgba(52,160,140,0.09)" stroke-width="1" fill="none"/>
+
+  <!-- Small accent dots (decorative grid) -->
+  <g fill="rgba(52,160,140,0.18)">
+    <circle cx="100" cy="120" r="2"/>
+    <circle cx="160" cy="120" r="2"/>
+    <circle cx="220" cy="120" r="2"/>
+    <circle cx="100" cy="160" r="2"/>
+    <circle cx="160" cy="160" r="2"/>
+    <circle cx="220" cy="160" r="2"/>
+    <circle cx="100" cy="200" r="2"/>
+    <circle cx="160" cy="200" r="2"/>
+    <circle cx="220" cy="200" r="2"/>
+  </g>
+
+  <!-- Bottom brand line -->
+  <line x1="0" y1="600" x2="1200" y2="600" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+
+  <!-- Label -->
+  <text x="60" y="580" font-family="system-ui, sans-serif" font-size="11" font-weight="600"
+    letter-spacing="0.18em" fill="rgba(255,255,255,0.20)" text-transform="uppercase">THẮNG SWC · TÀI CHÍNH</text>
+</svg>

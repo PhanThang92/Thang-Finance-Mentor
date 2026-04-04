@@ -1,0 +1,59 @@
+Refine the news/article system so each article supports a featured image, with smart fallback images when no image is uploaded.
+
+Goals:
+- make the news section feel more premium and visually complete
+- support uploaded featured images
+- automatically show context-appropriate fallback images when an article has no uploaded image
+- preserve the premium Thắng SWC visual style
+
+Requirements:
+
+1. Add featured image support to posts
+Each post should support:
+- featured_image
+- image preview in admin
+- upload/change/remove featured image
+
+2. Fallback image logic
+If a post has a featured_image, always use that image.
+
+If a post has no featured_image, use smart fallback images in this priority order:
+
+- if related product is `atlas` → use ATLAS fallback image
+- if related product is `road-to-1m` or `Road to $1M · SWC PASS` → use Road to $1M fallback image
+- if category is `tu-duy-dau-tu` → use Tư duy đầu tư fallback image
+- otherwise use a general premium finance-tech fallback image
+
+3. Create/use fallback image assets
+Prepare fallback visuals that match the website style:
+- premium
+- editorial
+- teal / dark teal
+- calm
+- not generic stock-photo
+- not flashy
+- consistent with Thắng SWC
+
+Fallback groups:
+- general default
+- Tư duy đầu tư
+- Road to $1M
+- ATLAS
+
+4. News list UI
+On the news listing pages, display article cards with featured image or fallback image consistently.
+Keep image ratios clean and consistent.
+
+5. Article detail page
+Support displaying the featured image (or fallback image if desired) in a premium way at the top of the article page, if the layout allows it.
+Keep the detail page calm and editorial.
+
+6. Admin UX
+In the post editor:
+- allow image upload
+- show current image preview
+- show a note explaining that if no image is uploaded, the system will use a smart default image based on category or related product
+
+Important:
+- do not use low-quality generic placeholder images
+- keep the image system premium, strategic, and consistent with the Thắng SWC brand

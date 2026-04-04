@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0b2320"/>
+      <stop offset="100%" stop-color="#050d0b"/>
+    </linearGradient>
+    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Background glow (right side, ascending) -->
+  <ellipse cx="850" cy="250" rx="380" ry="200" fill="rgba(34,145,127,0.06)"/>
+
+  <!-- Baseline -->
+  <line x1="120" y1="490" x2="1080" y2="490" stroke="rgba(52,160,140,0.15)" stroke-width="1"/>
+
+  <!-- Vertical grid lines -->
+  <line x1="120" y1="120" x2="120" y2="490" stroke="rgba(52,160,140,0.08)" stroke-width="1"/>
+
+  <!-- Horizontal ruler marks -->
+  <line x1="116" y1="390" x2="1080" y2="390" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
+  <line x1="116" y1="290" x2="1080" y2="290" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
+  <line x1="116" y1="190" x2="1080" y2="190" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
+
+  <!-- Bar chart (ascending milestones) -->
+  <!-- Bar 1 -->
+  <rect x="160" y="430" width="80" height="60" rx="3" fill="rgba(52,160,140,0.18)"/>
+  <rect x="160" y="428" width="80" height="3" rx="1" fill="rgba(52,160,140,0.55)"/>
+
+  <!-- Bar 2 -->
+  <rect x="290" y="390" width="80" height="100" rx="3" fill="rgba(52,160,140,0.22)"/>
+  <rect x="290" y="388" width="80" height="3" rx="1" fill="rgba(52,160,140,0.60)"/>
+
+  <!-- Bar 3 -->
+  <rect x="420" y="340" width="80" height="150" rx="3" fill="rgba(52,160,140,0.27)"/>
+  <rect x="420" y="338" width="80" height="3" rx="1" fill="rgba(52,160,140,0.65)"/>
+
+  <!-- Bar 4 -->
+  <rect x="550" y="275" width="80" height="215" rx="3" fill="rgba(52,160,140,0.33)"/>
+  <rect x="550" y="273" width="80" height="3" rx="1" fill="rgba(52,160,140,0.70)"/>
+
+  <!-- Bar 5 -->
+  <rect x="680" y="200" width="80" height="290" rx="3" fill="rgba(52,160,140,0.40)"/>
+  <rect x="680" y="198" width="80" height="3" rx="1" fill="rgba(52,160,140,0.78)"/>
+
+  <!-- Bar 6 (tallest — goal) -->
+  <rect x="810" y="135" width="80" height="355" rx="3" fill="rgba(52,160,140,0.50)"/>
+  <rect x="810" y="133" width="80" height="4" rx="1" fill="rgba(52,160,140,0.95)"/>
+
+  <!-- Goal label above last bar -->
+  <circle cx="850" cy="120" r="16" fill="rgba(52,160,140,0.12)" stroke="rgba(52,160,140,0.35)" stroke-width="1"/>
+  <text x="850" y="125" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="rgba(52,160,140,0.90)">$1M</text>
+
+  <!-- Ascending arrow trend line -->
+  <polyline points="200,458 330,428 460,368 590,303 720,228 850,155"
+    stroke="rgba(52,160,140,0.30)" stroke-width="1.5" stroke-dasharray="6 4" stroke-linecap="round"/>
+
+  <!-- Milestone dots on trend line -->
+  <circle cx="200" cy="458" r="3.5" fill="rgba(52,160,140,0.40)"/>
+  <circle cx="460" cy="368" r="3.5" fill="rgba(52,160,140,0.50)"/>
+  <circle cx="720" cy="228" r="3.5" fill="rgba(52,160,140,0.60)"/>
+
+  <!-- Decorative dots grid (top-left) -->
+  <g fill="rgba(52,160,140,0.15)">
+    <circle cx="970" cy="430" r="2"/><circle cx="1000" cy="430" r="2"/><circle cx="1030" cy="430" r="2"/>
+    <circle cx="970" cy="460" r="2"/><circle cx="1000" cy="460" r="2"/><circle cx="1030" cy="460" r="2"/>
+  </g>
+
+  <line x1="0" y1="600" x2="1200" y2="600" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+  <text x="60" y="580" font-family="system-ui, sans-serif" font-size="11" font-weight="600"
+    letter-spacing="0.18em" fill="rgba(255,255,255,0.20)">THẮNG SWC · ROAD TO $1M</text>
+</svg>

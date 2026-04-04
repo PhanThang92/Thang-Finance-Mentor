@@ -2,6 +2,23 @@ import React, { useEffect, useState, useCallback } from "react";
 import { adminApi, type NewsPost, type NewsCategory, type NewsProduct, type NewsTag } from "@/lib/newsApi";
 import { A, s, fmtDate, slugify } from "./shared";
 
+/* Compute preview image for admin editor */
+function getAdminPreviewImage(
+  featuredImage: string | null | undefined,
+  productId: number | null | undefined,
+  categoryId: number | null | undefined,
+  prods: NewsProduct[],
+  cats: NewsCategory[],
+): { src: string; isFallback: boolean } {
+  if (featuredImage?.trim()) return { src: featuredImage.trim(), isFallback: false };
+  const prod = prods.find((p) => p.id === productId);
+  if (prod?.slug === "atlas")      return { src: "/images/fallback-atlas.svg", isFallback: true };
+  if (prod?.slug === "road-to-1m") return { src: "/images/fallback-road-to-1m.svg", isFallback: true };
+  const cat = cats.find((c) => c.id === categoryId);
+  if (cat?.slug === "tu-duy-dau-tu") return { src: "/images/fallback-tu-duy.svg", isFallback: true };
+  return { src: "/images/fallback-default.svg", isFallback: true };
+}
+
 const EMPTY: NewsPost & { tagIds: number[] } = {
   id: 0, title: "", slug: "", excerpt: "", content: "", featuredImage: "",
   categoryId: null, productId: null, status: "draft",
@@ -235,12 +252,97 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
             </div>
           </div>
 
-          <div style={s.card}>
-            <label style={s.label}>Ảnh đại diện (URL)</label>
-            <input style={s.field} placeholder="https://..." value={form.featuredImage ?? ""} onChange={(e) => setForm((f) => ({ ...f, featuredImage: e.target.value }))} />
-          </div>
+          <ImageCard
+            featuredImage={form.featuredImage}
+            productId={form.productId}
+            categoryId={form.categoryId}
+            prods={prods}
+            cats={cats}
+            onChange={(v) => setForm((f) => ({ ...f, featuredImage: v }))}
+          />
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ── Image card with live preview ──────────────────────────────────── */
+function ImageCard({
+  featuredImage, productId, categoryId, prods, cats, onChange,
+}: {
+  featuredImage: string | null | undefined;
+  productId: number | null | undefined;
+  categoryId: number | null | undefined;
+  prods: NewsProduct[];
+  cats: NewsCategory[];
+  onChange: (v: string) => void;
+}) {
+  const { src, isFallback } = getAdminPreviewImage(featuredImage, productId, categoryId, prods, cats);
+  const [imgErr, setImgErr]  = React.useState(false);
+
+  React.useEffect(() => { setImgErr(false); }, [featuredImage]);
+
+  const fallbackLabel = React.useMemo(() => {
+    if (!isFallback) return null;
+    const prod = prods.find((p) => p.id === productId);
+    if (prod?.slug === "atlas")      return "Ảnh mặc định: ATLAS";
+    if (prod?.slug === "road-to-1m") return "Ảnh mặc định: Road to $1M";
+    const cat = cats.find((c) => c.id === categoryId);
+    if (cat?.slug === "tu-duy-dau-tu") return "Ảnh mặc định: Tư duy đầu tư";
+    return "Ảnh mặc định chung";
+  }, [isFallback, productId, categoryId, prods, cats]);
+
+  return (
+    <div style={s.card}>
+      <label style={{ ...s.label, marginBottom: "0.75rem" }}>Ảnh đại diện</label>
+
+      {/* Preview */}
+      <div style={{
+        aspectRatio: "16/9", borderRadius: "8px", overflow: "hidden", marginBottom: "0.875rem",
+        background: isFallback ? "#091e1b" : "#f3f4f6",
+        border: `1px solid ${A.border}`,
+        position: "relative",
+      }}>
+        {!imgErr
+          ? <img src={src} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} onError={() => setImgErr(true)} />
+          : (
+            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: "12px", color: A.danger }}>URL ảnh không hợp lệ</span>
+            </div>
+          )
+        }
+        {isFallback && (
+          <div style={{
+            position: "absolute", bottom: "8px", left: "8px",
+            background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)",
+            borderRadius: "4px", padding: "3px 8px",
+            fontSize: "10px", fontWeight: 600, letterSpacing: "0.08em", color: "rgba(255,255,255,0.72)",
+          }}>
+            {fallbackLabel}
+          </div>
+        )}
+      </div>
+
+      {/* URL input */}
+      <input
+        style={s.field}
+        placeholder="https://... (để trống để dùng ảnh tự động)"
+        value={featuredImage ?? ""}
+        onChange={(e) => onChange(e.target.value)}
+      />
+
+      {featuredImage && (
+        <button
+          style={{ ...s.btnDanger, marginTop: "0.5rem", fontSize: "11px", padding: "4px 10px" }}
+          onClick={() => onChange("")}
+        >
+          Xóa ảnh
+        </button>
+      )}
+
+      <p style={{ fontSize: "11px", color: A.textLight, lineHeight: 1.65, marginTop: "0.625rem" }}>
+        Nếu để trống, hệ thống tự chọn ảnh phù hợp theo sản phẩm hoặc chuyên mục. Xem preview bên trên.
+      </p>
     </div>
   );
 }

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a2220"/>
+      <stop offset="100%" stop-color="#050c0a"/>
+    </linearGradient>
+    <linearGradient id="ring" cx="50%" cy="50%" r="50%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Background large concentric rings -->
+  <circle cx="580" cy="315" r="420" stroke="rgba(52,160,140,0.04)" stroke-width="1"/>
+  <circle cx="580" cy="315" r="320" stroke="rgba(52,160,140,0.06)" stroke-width="1"/>
+  <circle cx="580" cy="315" r="220" stroke="rgba(52,160,140,0.07)" stroke-width="1"/>
+  <circle cx="580" cy="315" r="130" stroke="rgba(52,160,140,0.09)" stroke-width="1"/>
+
+  <!-- Central glow -->
+  <circle cx="580" cy="315" r="200" fill="rgba(34,145,127,0.07)"/>
+
+  <!-- Branching lines (tree / decision tree structure) -->
+  <!-- Root -->
+  <line x1="580" y1="500" x2="580" y2="380" stroke="rgba(52,160,140,0.30)" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Level 1 branches -->
+  <line x1="580" y1="380" x2="420" y2="280" stroke="rgba(52,160,140,0.24)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="580" y1="380" x2="740" y2="280" stroke="rgba(52,160,140,0.24)" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Level 2 branches (left) -->
+  <line x1="420" y1="280" x2="310" y2="200" stroke="rgba(52,160,140,0.18)" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="420" y1="280" x2="480" y2="195" stroke="rgba(52,160,140,0.18)" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Level 2 branches (right) -->
+  <line x1="740" y1="280" x2="680" y2="195" stroke="rgba(52,160,140,0.18)" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="740" y1="280" x2="860" y2="200" stroke="rgba(52,160,140,0.18)" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Level 3 branches -->
+  <line x1="310" y1="200" x2="250" y2="145" stroke="rgba(52,160,140,0.12)" stroke-width="1" stroke-linecap="round"/>
+  <line x1="310" y1="200" x2="340" y2="145" stroke="rgba(52,160,140,0.12)" stroke-width="1" stroke-linecap="round"/>
+  <line x1="860" y1="200" x2="830" y2="145" stroke="rgba(52,160,140,0.12)" stroke-width="1" stroke-linecap="round"/>
+  <line x1="860" y1="200" x2="920" y2="145" stroke="rgba(52,160,140,0.12)" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- Nodes -->
+  <circle cx="580" cy="380" r="7"  fill="rgba(52,160,140,0.65)"/>
+  <circle cx="580" cy="380" r="14" fill="rgba(52,160,140,0.12)"/>
+  <circle cx="420" cy="280" r="5.5" fill="rgba(52,160,140,0.50)"/>
+  <circle cx="740" cy="280" r="5.5" fill="rgba(52,160,140,0.50)"/>
+  <circle cx="310" cy="200" r="4"  fill="rgba(52,160,140,0.40)"/>
+  <circle cx="480" cy="195" r="4"  fill="rgba(52,160,140,0.40)"/>
+  <circle cx="680" cy="195" r="4"  fill="rgba(52,160,140,0.40)"/>
+  <circle cx="860" cy="200" r="4"  fill="rgba(52,160,140,0.40)"/>
+  <circle cx="250" cy="145" r="3"  fill="rgba(52,160,140,0.28)"/>
+  <circle cx="340" cy="145" r="3"  fill="rgba(52,160,140,0.28)"/>
+  <circle cx="830" cy="145" r="3"  fill="rgba(52,160,140,0.28)"/>
+  <circle cx="920" cy="145" r="3"  fill="rgba(52,160,140,0.28)"/>
+
+  <!-- Decorative accent dots top right -->
+  <g fill="rgba(52,160,140,0.14)">
+    <circle cx="1050" cy="100" r="2"/><circle cx="1080" cy="100" r="2"/><circle cx="1110" cy="100" r="2"/>
+    <circle cx="1050" cy="130" r="2"/><circle cx="1080" cy="130" r="2"/><circle cx="1110" cy="130" r="2"/>
+    <circle cx="1050" cy="160" r="2"/><circle cx="1080" cy="160" r="2"/><circle cx="1110" cy="160" r="2"/>
+  </g>
+
+  <line x1="0" y1="600" x2="1200" y2="600" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+  <text x="60" y="580" font-family="system-ui, sans-serif" font-size="11" font-weight="600"
+    letter-spacing="0.18em" fill="rgba(255,255,255,0.20)">THẮNG SWC · TƯ DUY ĐẦU TƯ</text>
+</svg>

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "wouter";
 import { motion } from "framer-motion";
 import { newsApi, type NewsPost } from "@/lib/newsApi";
+import { getPostImage, isFallbackImage } from "@/lib/postImage";
 
 /* ── motion ────────────────────────────────────────────────────────── */
 const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] } } };
@@ -147,6 +148,8 @@ export default function TinTucArticle() {
   }
 
   const { post, related } = data;
+  const imgSrc     = getPostImage(post);
+  const isFallback = isFallbackImage(post);
 
   return (
     <div style={{ minHeight: "100vh", background: "hsl(var(--background))" }}>
@@ -295,20 +298,37 @@ export default function TinTucArticle() {
         </div>
       </section>
 
-      {/* ── Featured image ── */}
-      {post.featuredImage && (
-        <div style={{ maxWidth: "700px", margin: "2.5rem auto 0", padding: "0 1.5rem" }}>
+      {/* ── Featured / fallback image ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+        style={{ maxWidth: isFallback ? "960px" : "700px", margin: "2.5rem auto 0", padding: "0 1.5rem" }}
+      >
+        <div style={{
+          borderRadius: isFallback ? "12px" : "10px",
+          overflow: "hidden",
+          background: isFallback ? "#091e1b" : "transparent",
+          boxShadow: isFallback
+            ? "0 2px 24px rgba(0,0,0,0.20)"
+            : "0 4px 24px rgba(10,40,35,0.10)",
+          border: isFallback ? "1px solid rgba(52,160,140,0.12)" : "none",
+          aspectRatio: "16/9",
+        }}>
           <img
-            src={post.featuredImage} alt={post.title}
+            src={imgSrc} alt={post.title}
             style={{
-              width: "100%", borderRadius: "10px", display: "block",
-              objectFit: "cover", maxHeight: "400px",
-              filter: "brightness(0.97) contrast(1.01)",
-              boxShadow: "0 4px 24px rgba(10,40,35,0.08)",
+              width: "100%", height: "100%", display: "block",
+              objectFit: "cover",
+              filter: isFallback ? "none" : "brightness(0.97) contrast(1.01)",
             }}
           />
         </div>
-      )}
+        {!isFallback && (
+          <p style={{ fontSize: "11px", color: "hsl(var(--foreground) / 0.30)", textAlign: "center", marginTop: "0.625rem", fontStyle: "italic" }}>
+            {post.title}
+          </p>
+        )}
+      </motion.div>
 
       {/* ── Article body ── */}
       <section style={{ padding: "2.75rem 0 4.5rem" }}>

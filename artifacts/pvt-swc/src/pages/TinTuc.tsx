@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { newsApi, type NewsPost, type NewsCategory, type NewsProduct, type NewsTag } from "@/lib/newsApi";
+import { getPostImage, isFallbackImage } from "@/lib/postImage";
 
 /* ── motion ──────────────────────────────────────────────────────────── */
 const stagger  = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
@@ -33,6 +34,9 @@ const filterKey = (f: Filters) => `${f.category}|${f.product}|${f.tag}|${f.searc
 
 /* ── Article card ────────────────────────────────────────────────────── */
 function ArticleCard({ post }: { post: NewsPost }) {
+  const imgSrc    = getPostImage(post);
+  const isFallback = isFallbackImage(post);
+
   return (
     <motion.div variants={fadeUp}>
       <Link href={`/tin-tuc/${post.category?.slug ?? "bai-viet"}/${post.slug}`} style={{ textDecoration: "none" }}>
@@ -43,12 +47,20 @@ function ArticleCard({ post }: { post: NewsPost }) {
             border: "1px solid hsl(var(--border) / 0.78)", borderRadius: "12px",
             overflow: "hidden", cursor: "pointer", display: "flex", flexDirection: "column", height: "100%",
           }}>
-          {post.featuredImage && (
-            <div style={{ aspectRatio: "16/9", overflow: "hidden", background: "hsl(var(--muted))", flexShrink: 0 }}>
-              <img src={post.featuredImage} alt={post.title}
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "brightness(0.96)" }} />
-            </div>
-          )}
+          {/* Featured / fallback image — always shown */}
+          <div style={{
+            aspectRatio: "16/9", overflow: "hidden",
+            background: isFallback ? "#091e1b" : "hsl(var(--muted))",
+            flexShrink: 0, position: "relative",
+          }}>
+            <img src={imgSrc} alt={post.title}
+              style={{
+                width: "100%", height: "100%", objectFit: isFallback ? "cover" : "cover",
+                display: "block",
+                filter: isFallback ? "none" : "brightness(0.96)",
+                transition: "transform 0.36s ease",
+              }} />
+          </div>
           <div style={{ padding: "1.5rem 1.625rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
               {post.category && (
