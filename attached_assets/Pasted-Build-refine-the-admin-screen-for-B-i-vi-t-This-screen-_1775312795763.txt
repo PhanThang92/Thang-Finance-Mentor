@@ -1,0 +1,88 @@
+Build/refine the admin screen for:
+“Bài viết”
+
+This screen is part of the existing Thắng SWC admin system.
+Do not redesign the whole admin.
+Keep the current clean light admin style and sidebar structure.
+
+Goal:
+Create a practical article management screen that is easy to use daily for the website’s news/content system.
+
+Requirements:
+
+1. Page header
+Show:
+- title: “Bài viết”
+- short subtitle: “Quản lý toàn bộ bài viết trong mục Tin tức”
+- primary button on the right: “+ Tạo bài mới”
+
+2. Filters/search area
+Create a clean filter bar above the table with:
+- keyword search input: search by title / slug / excerpt
+- status filter:
+  - Tất cả
+  - Draft
+  - Published
+  - Archived (if supported)
+- category filter:
+  - Tất cả
+  - Tư duy đầu tư
+  - Hệ sinh thái sản phẩm
+- related product filter:
+  - Tất cả
+  - Road to $1M · SWC PASS
+  - ATLAS
+- tag filter (optional multi-select if practical)
+
+3. Posts table
+Create a practical table with these columns:
+- Ảnh
+- Tiêu đề
+- Chuyên mục
+- Sản phẩm liên quan
+- Tags
+- Trạng thái
+- Ngày đăng
+- Cập nhật
+- Hành động
+
+4. Table row behavior
+Each row should support these actions:
+- Xem
+- Sửa
+- Nhân bản
+- Chuyển draft/published
+- Xóa
+
+Keep actions minimal and clear.
+
+5. Bulk actions
+If multiple rows are selected, support:
+- Publish
+- Chuyển draft
+- Xóa
+- Gắn category
+- Gắn tag
+
+6. UX details
+- show featured image thumbnail if available
+- if no featured image, show the smart fallback image preview
+- truncate long titles elegantly
+- make status visually clear but calm
+- keep the screen premium, clean, and operational
+- do not make it look like a generic CMS clone
+
+7. Empty states
+If there are no posts:
+- show a clear empty state
+- suggest creating the first post
+- include a “+ Tạo bài mới” action
+
+8. Keep consistency
+- preserve current admin styling
+- use light background and practical spacing
+- keep it fast, clear, and maintainable
+
+Important:
+This is a real working admin list page, not just a visual mockup.
+Make the filters, table, actions, and empty states work coherently with the existing admin system.

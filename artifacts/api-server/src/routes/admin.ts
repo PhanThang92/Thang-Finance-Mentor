@@ -123,12 +123,30 @@ router.get("/posts", async (_req, res) => {
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 
+/* Pick only the columns that belong to news_posts (strips joined fields: category, product, tags) */
+function pickPostFields(body: Record<string, unknown>) {
+  return {
+    title:          body.title          as string | undefined,
+    slug:           body.slug           as string | undefined,
+    excerpt:        body.excerpt        as string | null | undefined,
+    content:        body.content        as string | null | undefined,
+    featuredImage:  body.featuredImage  as string | null | undefined,
+    categoryId:     body.categoryId     ? Number(body.categoryId) : null,
+    productId:      body.productId      ? Number(body.productId)  : null,
+    status:         body.status         as string | undefined,
+    authorName:     body.authorName     as string | undefined,
+    seoTitle:       body.seoTitle       as string | null | undefined,
+    seoDescription: body.seoDescription as string | null | undefined,
+  };
+}
+
 router.post("/posts", async (req, res) => {
   try {
-    const { tagIds, ...body } = req.body;
+    const { tagIds, id: _id, ...body } = req.body;
+    const fields = pickPostFields(body);
     const now = new Date();
-    const publishedAt = body.status === "published" ? now : (body.publishedAt ? new Date(body.publishedAt) : null);
-    const [post] = await db.insert(newsPostsTable).values({ ...body, categoryId: body.categoryId || null, productId: body.productId || null, publishedAt, createdAt: now, updatedAt: now }).returning();
+    const publishedAt = fields.status === "published" ? now : (body.publishedAt ? new Date(body.publishedAt as string) : null);
+    const [post] = await db.insert(newsPostsTable).values({ ...fields, publishedAt, createdAt: now, updatedAt: now }).returning();
     if (Array.isArray(tagIds) && tagIds.length) {
       await db.insert(newsPostTagsTable).values(tagIds.map((tid: number) => ({ postId: post.id, tagId: tid }))).onConflictDoNothing();
     }
@@ -139,10 +157,11 @@ router.post("/posts", async (req, res) => {
 router.put("/posts/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const { tagIds, ...body } = req.body;
+    const { tagIds, id: _id, ...body } = req.body;
+    const fields = pickPostFields(body);
     const now = new Date();
-    const publishedAt = body.status === "published" && !body.publishedAt ? now : (body.publishedAt ? new Date(body.publishedAt) : null);
-    const [post] = await db.update(newsPostsTable).set({ ...body, categoryId: body.categoryId || null, productId: body.productId || null, publishedAt, updatedAt: now }).where(eq(newsPostsTable.id, id)).returning();
+    const publishedAt = fields.status === "published" && !body.publishedAt ? now : (body.publishedAt ? new Date(body.publishedAt as string) : null);
+    const [post] = await db.update(newsPostsTable).set({ ...fields, publishedAt, updatedAt: now }).where(eq(newsPostsTable.id, id)).returning();
     if (Array.isArray(tagIds)) {
       await db.delete(newsPostTagsTable).where(eq(newsPostTagsTable.postId, id));
       if (tagIds.length) await db.insert(newsPostTagsTable).values(tagIds.map((tid: number) => ({ postId: id, tagId: tid }))).onConflictDoNothing();
