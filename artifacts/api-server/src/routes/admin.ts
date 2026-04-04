@@ -24,8 +24,18 @@ router.get("/dashboard", async (_req, res) => {
     const [newLeads]       = await db.select({ count: sql<number>`count(*)::int` }).from(leadsTable).where(eq(leadsTable.status, "moi"));
 
     const recentPosts = await db.select({
-      id: newsPostsTable.id, title: newsPostsTable.title, status: newsPostsTable.status, publishedAt: newsPostsTable.publishedAt, createdAt: newsPostsTable.createdAt,
-    }).from(newsPostsTable).orderBy(desc(newsPostsTable.createdAt)).limit(5);
+      id: newsPostsTable.id,
+      title: newsPostsTable.title,
+      status: newsPostsTable.status,
+      publishedAt: newsPostsTable.publishedAt,
+      createdAt: newsPostsTable.createdAt,
+      updatedAt: newsPostsTable.updatedAt,
+      categoryName: newsCategoriesTable.name,
+    })
+      .from(newsPostsTable)
+      .leftJoin(newsCategoriesTable, eq(newsPostsTable.categoryId, newsCategoriesTable.id))
+      .orderBy(desc(newsPostsTable.updatedAt))
+      .limit(5);
 
     const recentLeads = await db.select().from(leadsTable).orderBy(desc(leadsTable.createdAt)).limit(5);
 

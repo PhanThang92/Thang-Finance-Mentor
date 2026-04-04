@@ -14,23 +14,25 @@ import Admin from "@/pages/Admin";
 
 const queryClient = new QueryClient();
 
-function Router() {
+/* Public routes — wrapped in the site Layout (Navbar + Footer) */
+function PublicRoutes() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/cong-dong" component={CongDong} />
-      <Route path="/san-pham/duong-toi-1-trieu-do" component={ProductDuongToiTrieuDo} />
-      <Route path="/san-pham/atlas" component={ProductAtlas} />
-      <Route path="/tin-tuc" component={() => <TinTuc />} />
-      <Route path="/tin-tuc/tu-duy-dau-tu" component={() => <TinTuc catSlug="tu-duy-dau-tu" />} />
-      <Route path="/tin-tuc/he-sinh-thai-san-pham" component={() => <TinTuc catSlug="he-sinh-thai-san-pham" />} />
-      <Route path="/tin-tuc/san-pham/road-to-1m" component={() => <TinTuc productSlug="road-to-1m" />} />
-      <Route path="/tin-tuc/san-pham/atlas" component={() => <TinTuc productSlug="atlas" />} />
-      <Route path="/tin-tuc/tag/:slug" component={({ params }) => <TinTuc tagSlug={params.slug} />} />
-      <Route path="/tin-tuc/:category/:slug" component={TinTucArticle} />
-      <Route path="/admin" component={Admin} />
-      <Route component={NotFound} />
-    </Switch>
+    <Layout>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/cong-dong" component={CongDong} />
+        <Route path="/san-pham/duong-toi-1-trieu-do" component={ProductDuongToiTrieuDo} />
+        <Route path="/san-pham/atlas" component={ProductAtlas} />
+        <Route path="/tin-tuc" component={() => <TinTuc />} />
+        <Route path="/tin-tuc/tu-duy-dau-tu" component={() => <TinTuc catSlug="tu-duy-dau-tu" />} />
+        <Route path="/tin-tuc/he-sinh-thai-san-pham" component={() => <TinTuc catSlug="he-sinh-thai-san-pham" />} />
+        <Route path="/tin-tuc/san-pham/road-to-1m" component={() => <TinTuc productSlug="road-to-1m" />} />
+        <Route path="/tin-tuc/san-pham/atlas" component={() => <TinTuc productSlug="atlas" />} />
+        <Route path="/tin-tuc/tag/:slug" component={({ params }) => <TinTuc tagSlug={params.slug} />} />
+        <Route path="/tin-tuc/:category/:slug" component={TinTucArticle} />
+        <Route component={NotFound} />
+      </Switch>
+    </Layout>
   );
 }
 
@@ -39,11 +41,14 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Layout>
-            <Router />
-          </Layout>
+          <Switch>
+            {/* Admin has its own shell — no public Navbar/Footer */}
+            <Route path="/admin" component={Admin} />
+            {/* All other routes get the public Layout */}
+            <Route component={PublicRoutes} />
+          </Switch>
+          <Toaster />
         </WouterRouter>
-        <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
   );

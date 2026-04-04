@@ -11,18 +11,51 @@ import { A }              from "./admin/shared";
 type Section = "dashboard" | "posts" | "taxonomy" | "products" | "leads" | "settings" | "account";
 
 interface NavItem { id: Section; label: string; icon: string; }
-const NAV_ITEMS: NavItem[] = [
-  { id: "dashboard", label: "Dashboard",        icon: "◎" },
-  { id: "posts",     label: "Bài viết",          icon: "✦" },
-  { id: "taxonomy",  label: "Chuyên mục & Tags", icon: "⊞" },
-  { id: "products",  label: "Sản phẩm",          icon: "◈" },
-  { id: "leads",     label: "Leads",             icon: "◉" },
-  { id: "settings",  label: "Cài đặt",           icon: "⚙" },
-  { id: "account",   label: "Tài khoản",         icon: "○" },
+type NavGroup = { group: string; items: NavItem[] };
+
+const NAV_STRUCTURE: NavGroup[] = [
+  {
+    group: "",
+    items: [
+      { id: "dashboard", label: "Tổng quan", icon: "◻" },
+    ],
+  },
+  {
+    group: "Nội dung",
+    items: [
+      { id: "posts",    label: "Bài viết",          icon: "≡" },
+      { id: "taxonomy", label: "Chuyên mục & Tags",  icon: "⊞" },
+    ],
+  },
+  {
+    group: "Hệ sinh thái",
+    items: [
+      { id: "products", label: "Sản phẩm", icon: "◈" },
+      { id: "leads",    label: "Leads",    icon: "◉" },
+    ],
+  },
+  {
+    group: "Hệ thống",
+    items: [
+      { id: "settings", label: "Cài đặt",   icon: "⚙" },
+      { id: "account",  label: "Tài khoản", icon: "○" },
+    ],
+  },
 ];
 
+const ALL_ITEMS: NavItem[] = NAV_STRUCTURE.flatMap((g) => g.items);
+
+const SECTION_TITLES: Record<Section, string> = {
+  dashboard: "Tổng quan",
+  posts:     "Bài viết",
+  taxonomy:  "Chuyên mục & Tags",
+  products:  "Sản phẩm",
+  leads:     "Leads",
+  settings:  "Cài đặt",
+  account:   "Tài khoản",
+};
+
 const STORAGE_KEY = "swc_admin_key";
-const DEFAULT_KEY = "swc-admin-2026";
 
 /* ── Login ────────────────────────────────────────────────────────── */
 function LoginScreen({ onLogin }: { onLogin: (key: string) => void }) {
@@ -43,8 +76,8 @@ function LoginScreen({ onLogin }: { onLogin: (key: string) => void }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: A.bg }}>
-      <div style={{ width: "360px", background: "#fff", borderRadius: "12px", border: `1px solid ${A.border}`, padding: "2.5rem 2rem", boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: A.bg, fontFamily: "'Be Vietnam Pro', sans-serif" }}>
+      <div style={{ width: "360px", background: "#fff", borderRadius: "12px", border: `1px solid ${A.border}`, padding: "2.5rem 2rem", boxShadow: "0 4px 32px rgba(0,0,0,0.07)" }}>
         <div style={{ marginBottom: "2rem", textAlign: "center" }}>
           <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: `linear-gradient(140deg, #22917f, #1a7868)`, margin: "0 auto 1rem", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ color: "#fff", fontSize: "18px", fontWeight: 700 }}>S</span>
@@ -52,11 +85,16 @@ function LoginScreen({ onLogin }: { onLogin: (key: string) => void }) {
           <p style={{ fontSize: "18px", fontWeight: 800, color: A.text, margin: "0 0 4px" }}>Thắng SWC</p>
           <p style={{ fontSize: "13px", color: A.textMuted, margin: 0 }}>Khu vực quản trị</p>
         </div>
-        {err && <div style={{ background: "rgba(193,51,51,0.07)", border: "1px solid rgba(193,51,51,0.20)", borderRadius: "7px", padding: "9px 12px", fontSize: "13px", color: A.danger, marginBottom: "1rem" }}>{err}</div>}
+        {err && (
+          <div style={{ background: "rgba(193,51,51,0.07)", border: "1px solid rgba(193,51,51,0.20)", borderRadius: "7px", padding: "9px 12px", fontSize: "13px", color: A.danger, marginBottom: "1rem" }}>
+            {err}
+          </div>
+        )}
         <div style={{ marginBottom: "1rem" }}>
           <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, display: "block", marginBottom: "6px" }}>Admin Key</label>
           <input
-            type="password" value={key} onChange={(e) => setKey(e.target.value)}
+            type="password" value={key}
+            onChange={(e) => setKey(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && attempt()}
             placeholder="••••••••••••••"
             style={{ width: "100%", height: "42px", padding: "0 12px", borderRadius: "8px", border: `1px solid ${A.border}`, fontSize: "14px", outline: "none", boxSizing: "border-box", background: A.bg }}
@@ -84,7 +122,6 @@ function AccountPanel({ adminKey, onLogout }: { adminKey: string; onLogout: () =
 
   return (
     <div style={{ maxWidth: "460px" }}>
-      <h2 style={{ fontSize: "16px", fontWeight: 700, color: A.text, margin: "0 0 1.5rem" }}>Tài khoản</h2>
       <div style={{ background: "#fff", borderRadius: "10px", border: `1px solid ${A.border}`, padding: "1.5rem", marginBottom: "1rem" }}>
         <p style={{ fontSize: "12px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1rem" }}>Admin key hiện tại</p>
         <p style={{ fontSize: "13px", color: A.text, margin: "0 0 1.5rem", background: A.bg, padding: "8px 12px", borderRadius: "7px", fontFamily: "monospace" }}>
@@ -101,7 +138,11 @@ function AccountPanel({ adminKey, onLogout }: { adminKey: string; onLogout: () =
         </button>
       </div>
       <div style={{ background: "#fff", borderRadius: "10px", border: `1px solid ${A.border}`, padding: "1.5rem" }}>
-        <p style={{ fontSize: "13px", color: A.text, margin: "0 0 1rem" }}>Để thay đổi admin key trên server, cập nhật biến môi trường <code style={{ background: A.bg, padding: "1px 5px", borderRadius: "4px" }}>ADMIN_KEY</code> và khởi động lại server.</p>
+        <p style={{ fontSize: "13px", color: A.text, margin: "0 0 1rem" }}>
+          Để thay đổi admin key trên server, cập nhật biến môi trường{" "}
+          <code style={{ background: A.bg, padding: "1px 5px", borderRadius: "4px" }}>ADMIN_KEY</code>{" "}
+          và khởi động lại server.
+        </p>
         <button onClick={onLogout} style={{ padding: "8px 20px", borderRadius: "7px", border: `1px solid rgba(193,51,51,0.30)`, cursor: "pointer", fontSize: "13px", fontWeight: 500, background: "transparent", color: A.danger }}>
           Đăng xuất
         </button>
@@ -110,19 +151,17 @@ function AccountPanel({ adminKey, onLogout }: { adminKey: string; onLogout: () =
   );
 }
 
-/* ── Main Admin ───────────────────────────────────────────────────── */
+/* ── Main Admin shell ─────────────────────────────────────────────── */
 export default function Admin() {
   const [adminKey, setAdminKey] = useState<string | null>(null);
   const [section, setSection]   = useState<Section>("dashboard");
   const [newLeads, setNewLeads] = useState(0);
 
-  /* Restore key from storage */
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) setAdminKey(stored);
   }, []);
 
-  /* Refresh new leads badge */
   useEffect(() => {
     if (!adminKey) return;
     fetch("/api/admin/dashboard", { headers: { Authorization: `Bearer ${adminKey}` } })
@@ -136,75 +175,161 @@ export default function Admin() {
   if (!adminKey) return <LoginScreen onLogin={(k) => setAdminKey(k)} />;
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", background: A.bg, fontFamily: "'Be Vietnam Pro', sans-serif" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: A.bg, fontFamily: "'Be Vietnam Pro', sans-serif" }}>
 
-      {/* ── Sidebar ── */}
-      <aside style={{
-        width: "220px", flexShrink: 0, background: "#fff",
-        borderRight: `1px solid ${A.border}`, display: "flex", flexDirection: "column",
-        position: "sticky", top: 0, height: "100vh", overflowY: "auto",
+      {/* ── Top bar ─────────────────────────────────────────────────── */}
+      <header style={{
+        height: "52px", flexShrink: 0,
+        background: "#fff", borderBottom: `1px solid ${A.border}`,
+        display: "flex", alignItems: "center",
+        padding: "0 1.25rem 0 0",
+        position: "sticky", top: 0, zIndex: 100,
       }}>
-        {/* Brand */}
-        <div style={{ padding: "1.25rem 1.25rem 1rem", borderBottom: `1px solid ${A.border}` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-            <div style={{ width: "28px", height: "28px", borderRadius: "7px", background: `linear-gradient(140deg, #22917f, #1a7868)`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <span style={{ color: "#fff", fontSize: "13px", fontWeight: 700 }}>S</span>
-            </div>
-            <div>
-              <p style={{ fontSize: "13px", fontWeight: 700, color: A.text, margin: 0, lineHeight: 1.2 }}>Thắng SWC</p>
-              <p style={{ fontSize: "10px", color: A.textMuted, margin: 0 }}>Admin</p>
-            </div>
+        {/* Brand mark — matches sidebar width */}
+        <div style={{
+          width: "220px", flexShrink: 0,
+          display: "flex", alignItems: "center", gap: "0.625rem",
+          padding: "0 1.25rem", height: "100%",
+          borderRight: `1px solid ${A.border}`,
+        }}>
+          <div style={{ width: "26px", height: "26px", borderRadius: "7px", background: "linear-gradient(140deg, #22917f, #1a7868)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <span style={{ color: "#fff", fontSize: "12px", fontWeight: 700 }}>S</span>
+          </div>
+          <div>
+            <p style={{ fontSize: "12.5px", fontWeight: 700, color: A.text, margin: 0, lineHeight: 1.2 }}>Thắng SWC</p>
+            <p style={{ fontSize: "9.5px", fontWeight: 600, color: A.primary, margin: 0, letterSpacing: "0.08em", textTransform: "uppercase" }}>Admin</p>
           </div>
         </div>
 
-        {/* Nav */}
-        <nav style={{ flex: 1, padding: "0.75rem 0.625rem" }}>
-          {NAV_ITEMS.map((item) => {
-            const active = section === item.id;
-            return (
-              <button key={item.id} onClick={() => setSection(item.id)} style={{
-                width: "100%", display: "flex", alignItems: "center", gap: "0.625rem",
-                padding: "8px 10px", borderRadius: "7px", border: "none", cursor: "pointer", textAlign: "left",
-                background: active ? `${A.primary}14` : "transparent",
-                color: active ? A.primary : A.textMuted,
-                fontWeight: active ? 600 : 400, fontSize: "13px",
-                transition: "background 0.14s ease, color 0.14s ease",
-                marginBottom: "2px",
-              }}>
-                <span style={{ fontSize: "12px", opacity: 0.8, flexShrink: 0 }}>{item.icon}</span>
-                <span style={{ flex: 1 }}>{item.label}</span>
-                {item.id === "leads" && newLeads > 0 && (
-                  <span style={{ fontSize: "10px", fontWeight: 700, background: "#dc2626", color: "#fff", padding: "1px 6px", borderRadius: "999px", lineHeight: 1.6 }}>{newLeads}</span>
-                )}
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Footer */}
-        <div style={{ padding: "0.875rem 1rem", borderTop: `1px solid ${A.border}` }}>
-          <a href="/tin-tuc" target="_blank" rel="noopener" style={{ fontSize: "11.5px", color: A.textLight, textDecoration: "none", display: "block", marginBottom: "6px" }}>→ Xem trang web</a>
-          <button onClick={logout} style={{ fontSize: "11.5px", color: A.danger, background: "none", border: "none", cursor: "pointer", padding: 0 }}>Đăng xuất</button>
-        </div>
-      </aside>
-
-      {/* ── Content ── */}
-      <main style={{ flex: 1, minWidth: 0, padding: "2rem", overflowY: "auto" }}>
-        {/* Section header breadcrumb */}
-        <div style={{ marginBottom: "1.75rem" }}>
-          <p style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textLight, margin: "0 0 2px" }}>
-            {NAV_ITEMS.find((n) => n.id === section)?.label}
+        {/* Page title */}
+        <div style={{ flex: 1, padding: "0 1.5rem" }}>
+          <p style={{ fontSize: "14px", fontWeight: 600, color: A.text, margin: 0 }}>
+            {SECTION_TITLES[section]}
           </p>
         </div>
 
-        {section === "dashboard" && <DashboardPanel adminKey={adminKey} />}
-        {section === "posts"     && <PostsPanel     adminKey={adminKey} />}
-        {section === "taxonomy"  && <TaxonomyPanel  adminKey={adminKey} />}
-        {section === "products"  && <ProductsPanel  adminKey={adminKey} />}
-        {section === "leads"     && <LeadsPanel     adminKey={adminKey} />}
-        {section === "settings"  && <SettingsPanel  adminKey={adminKey} />}
-        {section === "account"   && <AccountPanel   adminKey={adminKey} onLogout={logout} />}
-      </main>
+        {/* Right actions */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener"
+            style={{
+              fontSize: "12.5px", fontWeight: 500, color: A.textMuted, textDecoration: "none",
+              padding: "5px 12px", borderRadius: "6px", border: `1px solid ${A.border}`,
+              display: "flex", alignItems: "center", gap: "5px",
+              transition: "color 0.14s ease",
+            }}
+          >
+            <span style={{ fontSize: "10px" }}>↗</span> Xem website
+          </a>
+          <button
+            onClick={logout}
+            style={{
+              fontSize: "12.5px", fontWeight: 500, color: A.danger, background: "transparent",
+              border: `1px solid rgba(193,51,51,0.25)`, borderRadius: "6px",
+              padding: "5px 12px", cursor: "pointer",
+            }}
+          >
+            Thoát
+          </button>
+        </div>
+      </header>
+
+      {/* ── Body: sidebar + content ──────────────────────────────────── */}
+      <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden" }}>
+
+        {/* ── Sidebar ─────────────────────────────────────────────── */}
+        <aside style={{
+          width: "220px", flexShrink: 0,
+          background: "#fff", borderRight: `1px solid ${A.border}`,
+          display: "flex", flexDirection: "column",
+          position: "sticky", top: "52px", height: "calc(100vh - 52px)",
+          overflowY: "auto",
+        }}>
+          <nav style={{ flex: 1, padding: "0.875rem 0.625rem 1rem" }}>
+            {NAV_STRUCTURE.map((group, gi) => (
+              <div key={gi} style={{ marginBottom: "0.5rem" }}>
+                {/* Group label */}
+                {group.group && (
+                  <p style={{
+                    fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.14em",
+                    textTransform: "uppercase", color: A.textLight,
+                    margin: gi === 0 ? "0 0 4px 10px" : "12px 0 4px 10px",
+                  }}>
+                    {group.group}
+                  </p>
+                )}
+                {/* Group items */}
+                {group.items.map((item) => {
+                  const active = section === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setSection(item.id)}
+                      style={{
+                        width: "100%", display: "flex", alignItems: "center", gap: "0.625rem",
+                        padding: "7px 10px 7px 8px",
+                        borderRadius: "7px", border: "none", cursor: "pointer", textAlign: "left",
+                        background: active ? `${A.primary}12` : "transparent",
+                        color: active ? A.primary : A.textMuted,
+                        fontWeight: active ? 600 : 400, fontSize: "13px",
+                        transition: "background 0.12s ease, color 0.12s ease",
+                        marginBottom: "1px",
+                        position: "relative",
+                      }}
+                    >
+                      {/* Active left-border indicator */}
+                      {active && (
+                        <span style={{
+                          position: "absolute", left: 0, top: "5px", bottom: "5px",
+                          width: "3px", borderRadius: "0 2px 2px 0",
+                          background: A.primary,
+                        }} />
+                      )}
+                      <span style={{
+                        fontSize: "13px", flexShrink: 0, width: "18px", textAlign: "center",
+                        opacity: active ? 1 : 0.55,
+                      }}>
+                        {item.icon}
+                      </span>
+                      <span style={{ flex: 1 }}>{item.label}</span>
+                      {item.id === "leads" && newLeads > 0 && (
+                        <span style={{
+                          fontSize: "10px", fontWeight: 700, background: "#dc2626", color: "#fff",
+                          padding: "1px 6px", borderRadius: "999px", lineHeight: 1.6, flexShrink: 0,
+                        }}>
+                          {newLeads}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </nav>
+
+          {/* Sidebar footer — version / env */}
+          <div style={{ padding: "0.75rem 1rem", borderTop: `1px solid ${A.border}` }}>
+            <p style={{ fontSize: "10.5px", color: A.textLight, margin: 0 }}>
+              Thắng SWC Admin · 2026
+            </p>
+          </div>
+        </aside>
+
+        {/* ── Content ──────────────────────────────────────────────── */}
+        <main style={{ flex: 1, minWidth: 0, overflowY: "auto", padding: "1.75rem 2rem 3rem" }}>
+          {section === "dashboard" && (
+            <DashboardPanel adminKey={adminKey} onNavigate={setSection} />
+          )}
+          {section === "posts"     && <PostsPanel     adminKey={adminKey} />}
+          {section === "taxonomy"  && <TaxonomyPanel  adminKey={adminKey} />}
+          {section === "products"  && <ProductsPanel  adminKey={adminKey} />}
+          {section === "leads"     && <LeadsPanel     adminKey={adminKey} />}
+          {section === "settings"  && <SettingsPanel  adminKey={adminKey} />}
+          {section === "account"   && <AccountPanel   adminKey={adminKey} onLogout={logout} />}
+        </main>
+      </div>
     </div>
   );
 }

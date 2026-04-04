@@ -18,7 +18,7 @@ export interface Lead {
 export interface DashboardData {
   publishedCount: number; draftCount: number; productCount: number;
   totalLeads: number; newLeads: number;
-  recentPosts: Pick<NewsPost, "id" | "title" | "status" | "publishedAt" | "createdAt">[];
+  recentPosts: Pick<NewsPost, "id" | "title" | "status" | "publishedAt" | "createdAt" | "updatedAt"> & { categoryName: string | null }[];
   recentLeads: Lead[];
 }
 
