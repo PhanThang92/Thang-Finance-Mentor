@@ -1,0 +1,272 @@
+Add a new submenu item under the existing navbar dropdown “Sản phẩm”:
+“ATLAS”
+
+When clicked, it should navigate to a new product page route:
+`/san-pham/atlas`
+
+This new page must inherit the same shared global layout as the rest of the website:
+- same navbar
+- same footer
+- same premium visual system
+- same responsive behavior
+- same dark/light section rhythm
+
+Visual direction:
+- premium
+- calm
+- strategic
+- trustworthy
+- dark teal / executive green finance-tech mood
+- not flashy
+- not generic real estate sales page
+- not luxury-property advertising
+- editorial, mentor-like, high-trust product page
+
+Language:
+Vietnamese only
+
+Important positioning:
+ATLAS is NOT a generic real estate listing site.
+It is a next-generation digital real estate ecosystem focused on:
+- transparency
+- legal verification
+- transaction efficiency
+- liquidity
+- one-stop workflow
+- AI-assisted valuation and liquidity prediction
+- “Sell Fast”
+- DLD-linked legal checking
+- success fee 1%
+- SPV-based participation logic
+
+Build the page with these sections:
+
+1. Hero section
+Title:
+“ATLAS”
+
+Subtitle:
+“Hệ sinh thái bất động sản kỹ thuật số thế hệ mới.”
+
+Supporting text:
+“ATLAS hướng tới việc số hóa và minh bạch hóa thị trường bất động sản để giao dịch trở nên rõ ràng hơn, nhanh hơn và thanh khoản hơn — theo mô hình một cửa như thương mại điện tử.”
+
+Add one key insight line:
+“Không chỉ là đăng tin. Mà là niềm tin + pháp lý + dòng tiền + quy trình.”
+
+CTA buttons:
+- “Tìm hiểu hệ sinh thái”
+- “Đăng ký quan tâm”
+
+2. Problem section
+Title:
+“4 lỗ hổng lớn của thị trường bất động sản truyền thống”
+
+Create 4 premium problem cards:
+
+Card 1:
+“Quảng cáo giả mạo”
+Body:
+“Tin đăng ảo, hình ảnh sai lệch và thông tin không đồng nhất khiến người mua mất thời gian, mất niềm tin và khó ra quyết định.”
+
+Card 2:
+“Thiếu minh bạch”
+Body:
+“Giá có thể bị thao túng, thông tin có thể bị che giấu, và cơ chế ‘ăn chênh’ khiến giao dịch thiếu công bằng cho các bên.”
+
+Card 3:
+“Quy trình phân mảnh”
+Body:
+“Trao đổi tản mát qua nhiều ứng dụng, dữ liệu dễ thất lạc, khó đối soát và giao dịch kéo dài hơn mức cần thiết.”
+
+Card 4:
+“Pháp lý khó kiểm chứng”
+Body:
+“Khó xác minh quyền sở hữu thật và khó kiểm tra giấy phép hành nghề môi giới khiến rủi ro pháp lý luôn là một điểm nghẽn.”
+
+3. Solution section
+Title:
+“ATLAS giải bài toán này như thế nào?”
+
+Intro:
+“ATLAS được xây theo mô hình tất cả trong một — không chỉ là marketplace, mà là nền tảng hỗ trợ toàn bộ vòng đời giao dịch.”
+
+Create elegant value blocks for:
+- Thông tin tài sản
+- Tìm kiếm
+- Kết nối người mua – người bán – môi giới
+- Quy trình giao dịch
+- Pháp lý
+- Thanh toán
+- AI định giá
+- AI dự báo thanh khoản
+- Bán nhanh (Sell Fast)
+
+Add a short comparison line:
+“Zillow giống Google của bất động sản. ATLAS hướng tới một hệ sinh thái số một cửa cho toàn bộ giao dịch.”
+
+4. Core values section
+Title:
+“3 giá trị cốt lõi của ATLAS”
+
+Create 3 premium editorial blocks:
+
+Block 1 title:
+“AI định giá & Bán nhanh”
+Body:
+“ATLAS dùng AI để định giá thông minh và dự báo thời gian thanh khoản. Khi người bán cần thanh khoản gấp, hệ thống có thể đề xuất mức giá tối ưu để rút ngắn thời gian giao dịch trong trường hợp phù hợp.”
+
+Block 2 title:
+“AI + DLD: lớp bảo vệ kép”
+Body:
+“ATLAS ứng dụng AI để giám sát giao dịch, lọc tin ảo và giảm rủi ro gian lận; đồng thời liên kết với DLD để xác minh quyền sở hữu và kiểm tra thẻ hành nghề môi giới.”
+
+Block 3 title:
+“Mô hình Success Fee 1%”
+Body:
+“Không thu phí niêm yết ban đầu. Chỉ thu phí khi giao dịch thành công. Điều này giúp doanh thu gắn với kết quả thật và giảm động cơ phí ẩn hay ăn chênh.”
+
+5. Win-win-win section
+Title:
+“Mô hình win-win-win cho 3 bên”
+
+Create 3 cards:
+
+Card 1:
+“Người mua”
+Bullets:
+- Tiếp cận thông tin xác thực hơn
+- Minh bạch giá và dòng tiền
+- Có công cụ phân tích để ra quyết định
+- Chọn môi giới uy tín hơn
+
+Card 2:
+“Người bán”
+Bullets:
+- Hỗ trợ thanh khoản với Sell Fast
+- Giảm nguy cơ bị thao túng giá
+- Số hóa giấy tờ, quy trình gọn hơn
+- Giảm rủi ro lừa đảo
+
+Card 3:
+“Môi giới”
+Bullets:
+- Xây dựng danh tiếng chuyên nghiệp
+- Nhận nguồn khách hàng tiềm năng
+- Làm việc trong môi trường chính quy hơn
+- Có hệ thống tập trung để quản lý giao dịch
+
+6. UAE opportunity section
+Title:
+“Vì sao UAE là thị trường trọng điểm?”
+
+Supporting text:
+“ATLAS chọn UAE vì đây là một thị trường tăng trưởng nhanh, quy mô lớn nhưng phương thức giao dịch còn thủ công, manh mún và thiếu minh bạch.”
+
+Add 3 short blocks:
+- Quy mô thị trường lớn
+- Tăng trưởng nhanh
+- Điểm ngọt để chứng minh mô hình
+
+Add this strategy note:
+“Mục tiêu định hướng là chiếm 3–5% thị phần trong 2 năm đầu tại UAE.”
+
+7. Roadmap section
+Title:
+“Lộ trình phát triển 3 giai đoạn”
+
+Create 3 stage cards:
+
+Stage 1:
+“Xây dựng & chứng minh mô hình tại UAE”
+Body:
+“Tập trung sản phẩm lõi, xây phiên bản hoạt động đầu tiên và chứng minh mô hình ở quy mô nhỏ.”
+
+Stage 2:
+“Mở rộng tài sản & nâng cấp AI”
+Body:
+“Mở rộng người dùng, mở rộng danh mục tài sản và cập nhật thêm chức năng khi mô hình vận hành tốt.”
+
+Stage 3:
+“Quốc tế hóa”
+Body:
+“Mở rộng sang các thị trường như Singapore, Hồng Kông, Pháp và Anh khi nền tảng đã được kiểm chứng.”
+
+8. Team section
+Title:
+“Ai đứng sau dự án?”
+
+Create a clean premium team overview with these names and roles:
+- Evgenii và Alexey — đồng sáng lập, đồng sở hữu
+- Leo — CDO, có kinh nghiệm sâu về bất động sản và mạng lưới môi giới
+- Anatoli Uzlov — CEO SWC, phụ trách logic, chiến lược và tích hợp hệ sinh thái
+- đội ngũ chuyên gia, đối tác thẩm định, pháp lý và triển khai
+
+Keep this section calm and trust-oriented, not flashy.
+
+9. Investor protection section
+Title:
+“Cơ chế bảo vệ nhà đầu tư”
+
+Create elegant trust blocks for:
+- Hoàn tiền 100% nếu vòng huy động vốn không đạt chỉ tiêu tài chính ban đầu
+- Due diligence nhiều tầng
+- Skin-in-the-game của nhà sáng lập
+- Minh bạch 3 vòng gọi vốn
+- Tư vấn không áp lực
+
+Add a subtle disclaimer block:
+“Nội dung này mang tính chia sẻ góc nhìn và nguyên tắc để anh/chị tham khảo. Mỗi quyết định tham gia hay đầu tư cần dựa trên mục tiêu, khẩu vị rủi ro và sự tìm hiểu độc lập của từng người.”
+
+10. SPV section
+Title:
+“Mô hình SPV là gì?”
+
+Supporting text:
+“Trong hệ sinh thái SWC, ATLAS áp dụng cấu trúc SPV (Special Purpose Vehicle) cho từng sản phẩm đầu tư.”
+
+Create 5 explanation blocks:
+- Gộp vốn để nhiều nhà đầu tư nhỏ lẻ tham gia cơ hội lớn
+- Tách biệt rủi ro giữa các dự án
+- Quyền sở hữu minh bạch
+- Phân phối lợi nhuận theo tỷ lệ sở hữu
+- Điều hướng cấu trúc theo khu vực pháp lý
+
+Add a small note about legal regions:
+“Hoa Kỳ · Châu Âu · Nga · Quốc tế”
+
+11. FAQ section
+Title:
+“Câu hỏi thường gặp”
+
+Create a premium FAQ accordion using selected key questions:
+- Cơ chế bảo vệ nhà đầu tư của Atlas là gì?
+- Mô hình SPV bảo vệ quyền sở hữu như thế nào?
+- Tại sao chọn UAE?
+- Mức phí success fee 1% có cạnh tranh không?
+- Tính năng Sell Fast hoạt động ra sao?
+- Atlas bảo vệ giao dịch qua AI và DLD như thế nào?
+
+Use calm, readable, non-hype answers.
+
+12. Final CTA section
+Title:
+“Anh/chị đang quan tâm nhiều hơn ở góc nào?”
+
+Supporting text:
+“Công nghệ & mô hình vận hành, hay cơ chế bảo vệ & cấu trúc tham gia? Nếu anh/chị muốn, có thể bắt đầu bằng việc để lại thông tin để nhận thêm tài liệu phù hợp.”
+
+CTA buttons:
+- “Đăng ký quan tâm”
+- “Nhận thông tin”
+
+Add one final soft line:
+“Không phải mọi cơ hội đều phù hợp với mọi người. Điều quan trọng là hiểu rõ trước khi quyết định.”
+
+Important:
+- keep the page premium and strategic
+- avoid luxury-property-sales tone
+- avoid hype or speculative language
+- avoid generic startup landing page feel
+- make it feel like a serious product page within the Thắng SWC brand ecosystem
+- reuse current components and spacing rhythm where possible

@@ -83,10 +83,9 @@ export function Navbar() {
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* Derived */
-  const homeBase        = import.meta.env.BASE_URL.replace(/\/$/, "");
-  const isHome          = location === "/" || location === "";
-  const isProductPage   = location.startsWith("/san-pham");
-  const isSubItemActive = location === "/san-pham/duong-toi-1-trieu-do";
+  const homeBase      = import.meta.env.BASE_URL.replace(/\/$/, "");
+  const isHome        = location === "/" || location === "";
+  const isProductPage = location.startsWith("/san-pham");
 
   /* Conditional hrefs — hash on home page, absolute on all other pages */
   const sec = (hash: string) => isHome ? hash : `${homeBase}/${hash}`;
@@ -104,6 +103,11 @@ export function Navbar() {
           name: "Road to $1M · SWC PASS",
           desc: "Lộ trình tài chính cá nhân có hệ thống",
           href: `${homeBase}/san-pham/duong-toi-1-trieu-do`,
+        },
+        {
+          name: "ATLAS",
+          desc: "Hệ sinh thái bất động sản kỹ thuật số",
+          href: `${homeBase}/san-pham/atlas`,
         },
       ],
     },
@@ -345,8 +349,7 @@ export function Navbar() {
                         >
                           {link.items.map((item) => {
                             const itemActive =
-                              isSubItemActive &&
-                              item.href.includes("duong-toi-1-trieu-do");
+                              isProductPage && item.href.endsWith(location);
 
                             return (
                               <a
@@ -571,8 +574,7 @@ export function Navbar() {
                         }}>
                           {link.items.map((item) => {
                             const itemActive =
-                              isSubItemActive &&
-                              item.href.includes("duong-toi-1-trieu-do");
+                              isProductPage && item.href.endsWith(location);
 
                             return (
                               <a
