@@ -66,7 +66,7 @@ export function Footer() {
 
         {/* ── Main grid ── */}
         <div
-          className="py-14 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 md:gap-20 border-b"
+          className="py-16 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 md:gap-20 border-b"
           style={{ borderColor: "rgba(255,255,255,0.07)" }}
         >
 

@@ -36,7 +36,7 @@ const steps = [
 export function ProcessSection() {
   return (
     <section
-      className="py-24 md:py-32"
+      className="py-28 md:py-36"
       style={{ background: "hsl(var(--card))" }}
     >
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
@@ -108,10 +108,10 @@ export function ProcessSection() {
                   <div
                     className="mb-5 flex items-center justify-center rounded-full"
                     style={{
-                      width: "52px",
-                      height: "52px",
-                      background: "hsl(var(--primary) / 0.08)",
-                      border: "1px solid hsl(var(--primary) / 0.22)",
+                      width: "56px",
+                      height: "56px",
+                      background: "hsl(var(--primary) / 0.09)",
+                      border: "1.5px solid hsl(var(--primary) / 0.26)",
                       flexShrink: 0,
                       position: "relative",
                       zIndex: 1,
@@ -119,7 +119,7 @@ export function ProcessSection() {
                   >
                     <span
                       style={{
-                        fontSize: "13px",
+                        fontSize: "14px",
                         fontWeight: 700,
                         letterSpacing: "0.04em",
                         color: "hsl(var(--primary))",

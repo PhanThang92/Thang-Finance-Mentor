@@ -58,7 +58,7 @@ export function ValueCoreSection() {
   return (
     <section
       id="gia-tri"
-      className="py-24 md:py-32"
+      className="py-28 md:py-36"
       style={{ background: "hsl(var(--card))" }}
     >
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
@@ -111,22 +111,22 @@ export function ValueCoreSection() {
               <motion.div
                 key={title}
                 variants={fadeUp}
-                className="flex flex-col rounded-xl bg-background p-6"
+                className="flex flex-col rounded-xl bg-background p-7"
                 style={{
-                  border: "1px solid hsl(var(--border) / 0.70)",
-                  boxShadow: "0 1px 4px rgba(10,40,35,0.05)",
-                  transition: "border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease",
+                  border: "1px solid hsl(var(--border) / 0.55)",
+                  boxShadow: "0 2px 8px rgba(10,40,35,0.06), 0 1px 2px rgba(10,40,35,0.04)",
+                  transition: "border-color 0.26s ease, box-shadow 0.26s ease, transform 0.26s ease",
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = "hsl(var(--primary) / 0.30)";
-                  el.style.boxShadow = "0 4px 18px rgba(10,40,35,0.09)";
-                  el.style.transform = "translateY(-2px)";
+                  el.style.borderColor = "hsl(var(--primary) / 0.28)";
+                  el.style.boxShadow = "0 6px 22px rgba(10,40,35,0.10), 0 2px 4px rgba(10,40,35,0.05)";
+                  el.style.transform = "translateY(-3px)";
                 }}
                 onMouseLeave={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = "hsl(var(--border) / 0.70)";
-                  el.style.boxShadow = "0 1px 4px rgba(10,40,35,0.05)";
+                  el.style.borderColor = "hsl(var(--border) / 0.55)";
+                  el.style.boxShadow = "0 2px 8px rgba(10,40,35,0.06), 0 1px 2px rgba(10,40,35,0.04)";
                   el.style.transform = "translateY(0)";
                 }}
               >
@@ -134,10 +134,10 @@ export function ValueCoreSection() {
                 <div
                   className="mb-5 flex items-center justify-center rounded-lg"
                   style={{
-                    width: "44px",
-                    height: "44px",
+                    width: "48px",
+                    height: "48px",
                     background: "hsl(var(--primary) / 0.07)",
-                    border: "1px solid hsl(var(--primary) / 0.12)",
+                    border: "1px solid hsl(var(--primary) / 0.13)",
                     flexShrink: 0,
                   }}
                 >

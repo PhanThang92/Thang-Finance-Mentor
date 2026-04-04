@@ -21,7 +21,7 @@ export function AboutPersonSection() {
   return (
     <section
       id="gioi-thieu"
-      className="py-24 md:py-32 bg-background"
+      className="py-28 md:py-36 bg-background"
     >
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
         <motion.div
@@ -125,28 +125,40 @@ export function AboutPersonSection() {
             </motion.div>
 
             {/* Highlights */}
-            <motion.ul variants={stagger} className="space-y-3">
-              {highlights.map((item) => (
-                <motion.li
+            <motion.div
+              variants={stagger}
+              className="flex gap-0"
+              style={{
+                borderTop: "1px solid hsl(var(--border) / 0.55)",
+                borderBottom: "1px solid hsl(var(--border) / 0.55)",
+                paddingTop: "1.125rem",
+                paddingBottom: "1.125rem",
+              }}
+            >
+              {highlights.map((item, i) => (
+                <motion.div
                   key={item}
                   variants={fadeUp}
-                  className="flex items-start gap-3.5"
+                  className="flex-1"
+                  style={{
+                    paddingRight: "1rem",
+                    borderRight: i < highlights.length - 1 ? "1px solid hsl(var(--border) / 0.45)" : "none",
+                    marginRight: i < highlights.length - 1 ? "1rem" : "0",
+                  }}
                 >
                   <div
                     style={{
-                      marginTop: "7px",
-                      width: "5px", height: "5px",
-                      borderRadius: "50%",
-                      background: "hsl(var(--primary) / 0.65)",
-                      flexShrink: 0,
+                      width: "16px", height: "2px",
+                      background: "hsl(var(--primary) / 0.55)",
+                      marginBottom: "8px",
                     }}
                   />
-                  <span style={{ fontSize: "14.5px", lineHeight: 1.78, fontWeight: 400, color: "hsl(var(--foreground) / 0.68)" }}>
+                  <span style={{ fontSize: "13.5px", lineHeight: 1.55, fontWeight: 500, color: "hsl(var(--foreground) / 0.68)", display: "block" }}>
                     {item}
                   </span>
-                </motion.li>
+                </motion.div>
               ))}
-            </motion.ul>
+            </motion.div>
 
             {/* Quote block */}
             <motion.div

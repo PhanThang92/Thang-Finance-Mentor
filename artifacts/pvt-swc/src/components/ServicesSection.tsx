@@ -55,7 +55,7 @@ export function ServicesSection() {
   return (
     <section
       id="dich-vu"
-      className="py-24 md:py-32"
+      className="py-28 md:py-36"
       style={{ background: "linear-gradient(180deg, #0f2823 0%, #0a1f1c 100%)" }}
     >
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
@@ -112,20 +112,20 @@ export function ServicesSection() {
                 variants={fadeUp}
                 className="flex flex-col rounded-xl"
                 style={{
-                  background: "rgba(255,255,255,0.04)",
+                  background: "rgba(255,255,255,0.042)",
                   border: "1px solid rgba(255,255,255,0.08)",
-                  padding: "1.875rem",
-                  transition: "background 0.24s ease, border-color 0.24s ease, transform 0.24s ease",
+                  padding: "2.25rem",
+                  transition: "background 0.26s ease, border-color 0.26s ease, transform 0.26s ease",
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.background = "rgba(52,160,140,0.08)";
-                  el.style.borderColor = "rgba(52,160,140,0.20)";
-                  el.style.transform = "translateY(-2px)";
+                  el.style.background = "rgba(52,160,140,0.09)";
+                  el.style.borderColor = "rgba(52,160,140,0.22)";
+                  el.style.transform = "translateY(-3px)";
                 }}
                 onMouseLeave={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.background = "rgba(255,255,255,0.04)";
+                  el.style.background = "rgba(255,255,255,0.042)";
                   el.style.borderColor = "rgba(255,255,255,0.08)";
                   el.style.transform = "translateY(0)";
                 }}
@@ -134,14 +134,14 @@ export function ServicesSection() {
                 <div
                   className="mb-6"
                   style={{
-                    width: "46px",
-                    height: "46px",
+                    width: "50px",
+                    height: "50px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: "12px",
+                    borderRadius: "14px",
                     background: "rgba(52,160,140,0.12)",
-                    border: "1px solid rgba(52,160,140,0.18)",
+                    border: "1px solid rgba(52,160,140,0.20)",
                     color: "rgba(52,160,140,0.90)",
                     flexShrink: 0,
                   }}

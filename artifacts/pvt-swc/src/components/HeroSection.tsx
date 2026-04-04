@@ -49,10 +49,10 @@ export function HeroSection() {
               {...fadeUp(0.18)}
               className="text-white mb-7"
               style={{
-                fontSize: "clamp(1.75rem, 4.8vw, 2.85rem)",
+                fontSize: "clamp(2.1rem, 5.5vw, 3.4rem)",
                 fontWeight: 700,
-                lineHeight: 1.18,
-                letterSpacing: "-0.028em",
+                lineHeight: 1.16,
+                letterSpacing: "-0.034em",
               }}
             >
               Tư duy tài chính đúng.{" "}
@@ -86,14 +86,14 @@ export function HeroSection() {
                 href="/tin-tuc"
                 className="inline-flex items-center justify-center rounded-full text-white transition-all"
                 style={{
-                  height: "2.75rem",
-                  padding: "0 1.875rem",
-                  fontSize: "13px",
+                  height: "3rem",
+                  padding: "0 2rem",
+                  fontSize: "13.5px",
                   fontWeight: 600,
                   letterSpacing: "0.02em",
                   background: "linear-gradient(140deg, #22917f 0%, #1a7868 100%)",
-                  boxShadow: "0 3px 16px rgba(20,115,98,0.28), inset 0 1px 0 rgba(255,255,255,0.13)",
-                  transition: "box-shadow 0.2s ease, transform 0.2s ease",
+                  boxShadow: "0 4px 20px rgba(20,115,98,0.30), inset 0 1px 0 rgba(255,255,255,0.14)",
+                  transition: "box-shadow 0.22s ease, transform 0.22s ease",
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
@@ -114,16 +114,16 @@ export function HeroSection() {
                 href="#dich-vu"
                 className="inline-flex items-center justify-center rounded-full transition-all"
                 style={{
-                  height: "2.75rem",
-                  padding: "0 1.75rem",
-                  fontSize: "13px",
+                  height: "3rem",
+                  padding: "0 2rem",
+                  fontSize: "13.5px",
                   fontWeight: 450,
                   letterSpacing: "0.01em",
                   color: "rgba(255,255,255,0.75)",
-                  background: "rgba(255,255,255,0.055)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  backdropFilter: "blur(10px)",
-                  transition: "background 0.2s ease, border-color 0.2s ease, color 0.2s ease",
+                  background: "rgba(255,255,255,0.058)",
+                  border: "1px solid rgba(255,255,255,0.16)",
+                  backdropFilter: "blur(12px)",
+                  transition: "background 0.22s ease, border-color 0.22s ease, color 0.22s ease",
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
@@ -153,10 +153,10 @@ export function HeroSection() {
                   {i > 0 && (
                     <span
                       aria-hidden="true"
-                      style={{ width: "3px", height: "3px", borderRadius: "50%", background: "rgba(255,255,255,0.20)", flexShrink: 0 }}
+                      style={{ width: "3px", height: "3px", borderRadius: "50%", background: "rgba(255,255,255,0.26)", flexShrink: 0 }}
                     />
                   )}
-                  <span style={{ fontSize: "11.5px", fontWeight: 400, color: "rgba(255,255,255,0.40)", letterSpacing: "0.02em" }}>
+                  <span style={{ fontSize: "12px", fontWeight: 400, color: "rgba(255,255,255,0.44)", letterSpacing: "0.025em" }}>
                     {item}
                   </span>
                 </React.Fragment>
@@ -176,7 +176,7 @@ export function HeroSection() {
               {/* Image frame */}
               <div
                 className="relative w-full overflow-hidden"
-                style={{ borderRadius: "1rem", aspectRatio: "4/5" }}
+                style={{ borderRadius: "1.5rem", aspectRatio: "4/5" }}
               >
                 <img
                   src="/portrait.png"

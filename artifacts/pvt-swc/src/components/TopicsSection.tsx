@@ -105,7 +105,7 @@ export function TopicsSection() {
   return (
     <section
       id="chu-de"
-      className="py-24 md:py-32"
+      className="py-28 md:py-36"
       style={{ background: "hsl(var(--card))" }}
     >
       <div className="max-w-5xl mx-auto px-5 sm:px-8">

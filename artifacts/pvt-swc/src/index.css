@@ -113,7 +113,7 @@
   --app-font-sans: 'Be Vietnam Pro', system-ui, sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 
   --shadow-2xs: 0 1px 2px 0 rgba(10, 40, 35, 0.05);
   --shadow-xs:  0 1px 3px 0 rgba(10, 40, 35, 0.07), 0 1px 2px -1px rgba(10, 40, 35, 0.05);
@@ -154,7 +154,8 @@ html {
     @apply font-sans antialiased bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: "kern" 1, "liga" 1;
+    font-feature-settings: "kern" 1, "liga" 1, "ss01" 1;
+    text-rendering: optimizeLegibility;
   }
   h1, h2, h3, h4 {
     letter-spacing: -0.02em;
@@ -175,7 +176,11 @@ html {
     pointer-events: none;
   }
   .section-label {
-    @apply text-xs font-semibold tracking-[0.18em] uppercase text-primary;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: hsl(var(--primary) / 0.68);
   }
   .prose-body {
     @apply text-base leading-[1.85] text-muted-foreground;

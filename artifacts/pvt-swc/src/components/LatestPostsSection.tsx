@@ -109,8 +109,8 @@ function FeaturedCard({ post }: { post: NewsPost }) {
         el.style.transform = "translateY(0)";
       }}
     >
-      <PostThumb post={post} height={256} />
-      <div style={{ padding: "1.75rem 1.875rem 1.875rem" }}>
+      <PostThumb post={post} height={300} />
+      <div style={{ padding: "2rem 2.25rem 2.25rem" }}>
         {/* Badges */}
         <div className="flex flex-wrap items-center gap-2 mb-3.5">
           {post.category && (
@@ -261,7 +261,7 @@ export function LatestPostsSection() {
   const rest = published.slice(1, 4);
 
   return (
-    <section id="bai-viet" className="py-24 md:py-32 bg-background">
+    <section id="bai-viet" className="py-28 md:py-36 bg-background">
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
         <motion.div
           initial="hidden"

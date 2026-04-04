@@ -15,7 +15,7 @@ export function CTASection() {
   return (
     <section
       id="lien-he"
-      className="relative overflow-hidden py-24 md:py-32"
+      className="relative overflow-hidden py-28 md:py-36"
       style={{ background: "linear-gradient(150deg, #0d2622 0%, #102a26 45%, #091e1b 100%)" }}
     >
       {/* Ambient glow */}
