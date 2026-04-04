@@ -83,9 +83,10 @@ export function Navbar() {
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* Derived */
-  const homeBase      = import.meta.env.BASE_URL.replace(/\/$/, "");
-  const isHome        = location === "/" || location === "";
-  const isProductPage = location.startsWith("/san-pham");
+  const homeBase        = import.meta.env.BASE_URL.replace(/\/$/, "");
+  const isHome          = location === "/" || location === "";
+  const isProductPage   = location.startsWith("/san-pham");
+  const isCommunityPage = location.startsWith("/cong-dong");
 
   /* Conditional hrefs — hash on home page, absolute on all other pages */
   const sec = (hash: string) => isHome ? hash : `${homeBase}/${hash}`;
@@ -94,7 +95,7 @@ export function Navbar() {
     { name: "Trang chủ",  href: sec("#trang-chu")  },
     { name: "Giới thiệu", href: sec("#gioi-thieu") },
     { name: "Nội dung",   href: sec("#noi-dung")   },
-    { name: "Cộng đồng",  href: sec("#cong-dong")  },
+    { name: "Cộng đồng",  href: `${homeBase}/cong-dong` },
     {
       name: "Sản phẩm",
       dropdown: true,
@@ -126,8 +127,8 @@ export function Navbar() {
   useEffect(() => {
     linkRefs.current.forEach((el, i) => {
       if (!el) return;
-      /* index 4 = "Sản phẩm" trigger */
-      const isActive = i === 4 && isProductPage;
+      /* index 3 = "Cộng đồng", index 4 = "Sản phẩm" trigger */
+      const isActive = (i === 4 && isProductPage) || (i === 3 && isCommunityPage);
       el.style.color      = isActive
         ? (isScrolled ? SCROLLED.linkActive : HERO.linkActive)
         : (isScrolled ? SCROLLED.linkColor  : HERO.linkColor);
@@ -144,7 +145,7 @@ export function Navbar() {
       cta.style.borderColor = HERO.ctaBorder;
       cta.style.boxShadow   = "none";
     }
-  }, [isScrolled, isProductPage]);
+  }, [isScrolled, isProductPage, isCommunityPage]);
 
   /* ── Dropdown open / close with delay ───────────────────── */
   const openDropdown = () => {

@@ -6,7 +6,7 @@ const navLinks = [
   { name: "Trang chủ", href: "#trang-chu" },
   { name: "Giới thiệu", href: "#gioi-thieu" },
   { name: "Nội dung", href: "#noi-dung" },
-  { name: "Cộng đồng", href: "#cong-dong" },
+  { name: "Cộng đồng", href: "/cong-dong" },
   { name: "Liên hệ", href: "#lien-he" },
 ];
 
@@ -166,7 +166,7 @@ export function Footer() {
 
               {/* Cộng đồng pill — height matches icon circles */}
               <a
-                href="#cong-dong"
+                href="/cong-dong"
                 className="flex items-center gap-1.5"
                 style={{
                   height: "34px",

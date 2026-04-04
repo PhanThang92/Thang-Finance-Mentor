@@ -1,0 +1,111 @@
+Create a new page for the website called:
+“Cộng đồng”
+
+Route:
+`/cong-dong`
+
+This page should match the same premium visual system as the rest of the Thắng SWC website:
+- calm
+- trustworthy
+- mentor-like
+- premium teal / dark teal brand system
+- not salesy
+- elegant and editorial
+- fully responsive
+
+This page is not just a link to a group.
+It should act like a community hub / community gateway page.
+
+Build the page with these sections:
+
+1. Hero section
+Title:
+“Cộng đồng không phải để đông. Mà để đi đường dài đúng người.”
+
+Supporting text:
+“Tôi xây cộng đồng này như một nơi để cùng học, cùng trao đổi, cùng giữ nhịp trên hành trình tài chính, đầu tư và phát triển bản thân.”
+
+CTA buttons:
+- “Tìm hình thức phù hợp”
+- “Đăng ký tham gia”
+
+2. Why community section
+Title:
+“Vì sao một cộng đồng đúng lại quan trọng?”
+
+Include 4 value cards:
+- Đi một mình dễ mất nhịp
+- Thông tin ngoài kia nhiều nhưng rời rạc
+- Môi trường đúng giúp kỷ luật bền hơn
+- Người đồng hành đúng giúp giảm quyết định cảm tính
+
+3. Ways to join section
+Title:
+“3 cách tham gia cộng đồng”
+
+Create 3 cards:
+
+Card 1:
+Title:
+“Theo dõi cộng đồng mở”
+Text:
+“Dành cho người mới, muốn theo dõi, đọc, xem và làm quen với hệ giá trị của Thắng SWC.”
+
+Card 2:
+Title:
+“Tham gia nhóm trao đổi”
+Text:
+“Dành cho người muốn hỏi đáp, tương tác, học cùng người khác và giữ nhịp trong hành trình dài hạn.”
+
+Card 3:
+Title:
+“Đồng hành trong hệ sinh thái chuyên sâu”
+Text:
+“Dành cho người đã sẵn sàng đi sâu hơn với SWC PASS, Road to $1M, ATLAS hoặc các chương trình đồng hành khác.”
+
+4. Community values section
+Title:
+“Cộng đồng này có gì?”
+
+Include blocks for:
+- cập nhật nội dung mới
+- trao đổi tư duy đầu tư dài hạn
+- tài liệu nền tảng
+- hỏi đáp định kỳ
+- môi trường đúng để giữ nhịp
+- kết nối đúng người
+
+5. Fit section
+Title:
+“Phù hợp nếu”
+
+Bullets:
+- muốn học thật
+- muốn đi dài
+- muốn môi trường có chọn lọc
+- tôn trọng giá trị cộng đồng
+
+Add smaller block:
+“Chưa phù hợp nếu”
+Bullets:
+- chỉ tìm tín hiệu lãi nhanh
+- thích tranh cãi vô ích
+- chỉ vào để lấy thông tin rồi rời đi
+- không muốn đồng hành lâu dài
+
+6. Final CTA section
+Title:
+“Chọn nơi phù hợp để bắt đầu”
+
+Supporting text:
+“Không phải ai cũng cần cùng một mức độ đồng hành. Điều quan trọng là bắt đầu từ nơi phù hợp với giai đoạn hiện tại của mình.”
+
+CTA buttons:
+- “Vào cộng đồng mở”
+- “Đăng ký để được hướng dẫn”
+
+Important:
+- keep the tone calm and mentor-like
+- do not make it feel like a social media promo page
+- make it feel like a premium gateway into the Thắng SWC ecosystem
+- preserve shared navbar and footer
