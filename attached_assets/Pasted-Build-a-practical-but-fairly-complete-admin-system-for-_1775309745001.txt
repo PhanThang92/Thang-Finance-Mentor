@@ -1,0 +1,152 @@
+Build a practical but fairly complete admin system for the Thắng SWC website.
+
+Goal:
+Create a lightweight back-office / mini CMS so the website can be operated dynamically without editing code for most updates.
+
+This admin should manage:
+- news/articles
+- categories and tags
+- products
+- product sections
+- FAQs
+- pricing options
+- leads / form submissions
+- community settings
+- basic website settings
+
+Requirements:
+
+1. Protected admin area
+Route:
+`/admin`
+
+Include:
+- login/authentication
+- protected admin-only access
+- clean, light, practical admin UI
+
+2. Admin navigation
+Create these sections in the admin sidebar:
+
+- Dashboard
+- Bài viết
+- Chuyên mục & Tags
+- Sản phẩm
+- Leads
+- Cộng đồng
+- Cài đặt website
+- Tài khoản
+
+3. Dashboard
+Show:
+- total published posts
+- total drafts
+- total products
+- total leads
+- leads needing follow-up
+- recently published posts
+- recent form submissions
+
+4. Posts management
+Support:
+- create new post
+- edit post
+- save draft
+- publish post
+- assign category
+- assign related product
+- assign multiple tags
+- upload/select featured image
+- SEO title
+- SEO description
+- publish date
+- author name
+
+5. Categories and tags
+Support:
+- create/edit/delete categories
+- create/edit/delete tags
+- unique slugs
+- prevent duplicate tags
+- clean management UI
+
+6. Products management
+Support managing products such as:
+- Road to $1M · SWC PASS
+- ATLAS
+
+Each product should support:
+- basic info
+- hero content
+- section list
+- FAQs
+- pricing options
+- CTA settings
+- display status
+
+7. Product sections
+Create a flexible section-based structure so each product page can be edited dynamically.
+Support:
+- section title
+- subtitle
+- body/content
+- ordering
+- visible/hidden toggle
+
+8. Leads management
+Store and manage all website form submissions.
+Each lead should include:
+- name
+- email
+- phone/zalo
+- source type
+- source page
+- related product
+- message/notes
+- created at
+- status
+
+Statuses:
+- mới
+- đã liên hệ
+- đang theo dõi
+- hoàn tất
+
+Allow:
+- filtering
+- search
+- update status
+- add internal notes
+
+9. Community settings
+Support:
+- community join options
+- community links
+- community CTA copy
+- community page content blocks
+
+10. Website settings
+Support basic editable settings:
+- footer groups and links
+- social links
+- form recipient settings
+- basic navigation settings if practical
+- site-wide contact information
+
+11. Admin UX
+- light and clean interface
+- sidebar layout
+- table views for lists
+- practical forms
+- clear save/publish/update actions
+- easy to use and not overbuilt
+
+12. Security
+- protect all admin routes
+- prevent unauthorized access
+- keep structure scalable for more content and products later
+
+Important:
+- do not build an overly complex enterprise CMS
+- prioritize usability and maintainability
+- make this a serious, scalable mini CMS for the Thắng SWC ecosystem

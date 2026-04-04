@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { leadsApi } from "@/lib/newsApi";
 
 /* ── Animation presets ───────────────────────────────────── */
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.10 } } };
@@ -377,7 +378,24 @@ function FitSection() {
    6. JOIN SECTION — inline form (light)
 ══════════════════════════════════════════════════════════ */
 function JoinSection() {
-  const [sent, setSent] = useState(false);
+  const [sent, setSent]       = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [name, setName]       = useState("");
+  const [email, setEmail]     = useState("");
+  const [phone, setPhone]     = useState("");
+  const [interest, setInterest] = useState("");
+  const [message, setMessage] = useState("");
+  const [formErr, setFormErr] = useState("");
+
+  const handleSubmit = async () => {
+    if (!name.trim()) { setFormErr("Vui lòng nhập họ và tên."); return; }
+    setSubmitting(true); setFormErr("");
+    try {
+      await leadsApi.submit({ name, email, phone, sourceType: "cong-dong", sourcePage: "/cong-dong", productRef: interest || undefined, message });
+      setSent(true);
+    } catch { setFormErr("Gửi thất bại. Vui lòng thử lại."); }
+    finally { setSubmitting(false); }
+  };
 
   const fieldLabel: React.CSSProperties = {
     display: "block", fontSize: "10.5px", fontWeight: 600,
@@ -466,19 +484,19 @@ function JoinSection() {
               }}>
                 <div>
                   <label style={fieldLabel}>Họ và tên</label>
-                  <input type="text" placeholder="Nguyễn Văn A" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                  <input type="text" placeholder="Nguyễn Văn A" style={fieldBase} value={name} onChange={e => setName(e.target.value)} onFocus={focusBorder} onBlur={blurBorder} />
                 </div>
                 <div>
                   <label style={fieldLabel}>Email</label>
-                  <input type="email" placeholder="email@example.com" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                  <input type="email" placeholder="email@example.com" style={fieldBase} value={email} onChange={e => setEmail(e.target.value)} onFocus={focusBorder} onBlur={blurBorder} />
                 </div>
                 <div>
                   <label style={fieldLabel}>Số điện thoại / Zalo</label>
-                  <input type="tel" placeholder="09xx xxx xxx" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                  <input type="tel" placeholder="09xx xxx xxx" style={fieldBase} value={phone} onChange={e => setPhone(e.target.value)} onFocus={focusBorder} onBlur={blurBorder} />
                 </div>
                 <div>
                   <label style={fieldLabel}>Hình thức muốn tham gia</label>
-                  <select style={fieldSelect} defaultValue="" onFocus={focusBorder} onBlur={blurBorder}>
+                  <select style={fieldSelect} value={interest} onChange={e => setInterest(e.target.value)} onFocus={focusBorder} onBlur={blurBorder}>
                     <option value="" disabled>Chọn hình thức...</option>
                     <option value="open">Theo dõi cộng đồng mở</option>
                     <option value="group">Tham gia nhóm trao đổi</option>
@@ -490,12 +508,13 @@ function JoinSection() {
                     Ghi chú thêm{" "}
                     <span style={{ fontSize: "9px", fontWeight: 400, opacity: 0.55, letterSpacing: "0.05em" }}>(không bắt buộc)</span>
                   </label>
-                  <textarea placeholder="Anh/chị muốn chia sẻ thêm điều gì..." style={fieldTextarea} onFocus={focusBorder} onBlur={blurBorder} />
+                  <textarea placeholder="Anh/chị muốn chia sẻ thêm điều gì..." style={fieldTextarea} value={message} onChange={e => setMessage(e.target.value)} onFocus={focusBorder} onBlur={blurBorder} />
                 </div>
-                <button style={btnSubmit} onClick={() => setSent(true)}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.36)"; }}
+                {formErr && <p style={{ fontSize: "12.5px", color: "#c13333", margin: 0 }}>{formErr}</p>}
+                <button style={{ ...btnSubmit, opacity: submitting ? 0.72 : 1 }} disabled={submitting} onClick={handleSubmit}
+                  onMouseEnter={e => { if (!submitting) { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.36)"; } }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(26,120,104,0.26)"; }}>
-                  Gửi đăng ký
+                  {submitting ? "Đang gửi..." : "Gửi đăng ký"}
                 </button>
                 <p style={{ fontSize: "11.5px", fontWeight: 300, color: "hsl(var(--foreground) / 0.34)", textAlign: "center", lineHeight: 1.65, margin: 0 }}>
                   Thông tin của anh/chị được bảo mật và chỉ dùng để liên hệ hỗ trợ tham gia cộng đồng.
@@ -516,8 +535,23 @@ function JoinSection() {
 function FinalCTASection() {
   const [showForm, setShowForm]   = useState(false);
   const [formSent, setFormSent]   = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [mName, setMName]     = useState("");
+  const [mEmail, setMEmail]   = useState("");
+  const [mChoice, setMChoice] = useState("");
+  const [mErr, setMErr]       = useState("");
 
-  const closeForm = () => { setShowForm(false); setTimeout(() => setFormSent(false), 320); };
+  const closeForm = () => { setShowForm(false); setTimeout(() => { setFormSent(false); setMName(""); setMEmail(""); setMChoice(""); setMErr(""); }, 320); };
+
+  const handleModalSubmit = async () => {
+    if (!mName.trim()) { setMErr("Vui lòng nhập họ và tên."); return; }
+    setSubmitting(true); setMErr("");
+    try {
+      await leadsApi.submit({ name: mName, email: mEmail, sourceType: "cong-dong-modal", sourcePage: "/cong-dong", productRef: mChoice || undefined });
+      setFormSent(true);
+    } catch { setMErr("Gửi thất bại. Vui lòng thử lại."); }
+    finally { setSubmitting(false); }
+  };
 
   const btnPrimary: React.CSSProperties = {
     display: "inline-flex", alignItems: "center", justifyContent: "center",
@@ -654,15 +688,15 @@ function FinalCTASection() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "1.1rem" }}>
                   <div>
                     <label style={fieldLabel}>Họ và tên</label>
-                    <input type="text" placeholder="Nguyễn Văn A" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                    <input type="text" placeholder="Nguyễn Văn A" style={fieldBase} value={mName} onChange={e => setMName(e.target.value)} onFocus={focusBorder} onBlur={blurBorder} />
                   </div>
                   <div>
                     <label style={fieldLabel}>Email</label>
-                    <input type="email" placeholder="email@example.com" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                    <input type="email" placeholder="email@example.com" style={fieldBase} value={mEmail} onChange={e => setMEmail(e.target.value)} onFocus={focusBorder} onBlur={blurBorder} />
                   </div>
                   <div>
                     <label style={fieldLabel}>Hình thức quan tâm</label>
-                    <select style={fieldSelect} defaultValue="" onFocus={focusBorder} onBlur={blurBorder}>
+                    <select style={fieldSelect} value={mChoice} onChange={e => setMChoice(e.target.value)} onFocus={focusBorder} onBlur={blurBorder}>
                       <option value="" disabled>Chọn hình thức...</option>
                       <option value="open">Theo dõi cộng đồng mở</option>
                       <option value="group">Tham gia nhóm trao đổi</option>
@@ -670,10 +704,11 @@ function FinalCTASection() {
                       <option value="unsure">Chưa chắc — muốn được hướng dẫn</option>
                     </select>
                   </div>
-                  <button style={submitBtn} onClick={() => setFormSent(true)}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.42)"; }}
+                  {mErr && <p style={{ fontSize: "12.5px", color: "#f87171", margin: 0 }}>{mErr}</p>}
+                  <button style={{ ...submitBtn, opacity: submitting ? 0.72 : 1 }} disabled={submitting} onClick={handleModalSubmit}
+                    onMouseEnter={e => { if (!submitting) { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.42)"; } }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(26,120,104,0.30)"; }}>
-                    Gửi đăng ký
+                    {submitting ? "Đang gửi..." : "Gửi đăng ký"}
                   </button>
                   <p style={{ fontSize: "11.5px", fontWeight: 300, color: "rgba(255,255,255,0.26)", textAlign: "center", lineHeight: 1.65 }}>
                     Thông tin của anh/chị được bảo mật và chỉ dùng để liên hệ hỗ trợ tham gia.
