@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { adminApi, type Video, type Topic, type Series } from "@/lib/newsApi";
 import { A, s, fmtDate, slugify } from "./shared";
+import { ImageUploadField } from "./ImageUploadField";
 
 /* ── Category options ────────────────────────────────────────────────── */
 const CATEGORY_OPTIONS = ["Tài chính cá nhân", "Đầu tư dài hạn", "Tư duy tích sản", "Nổi bật", "Series"];
@@ -57,7 +58,7 @@ type Form = Partial<Video> & { categoriesInput: string };
 
 const EMPTY: Form = {
   title: "", slug: "", excerpt: "",
-  youtubeUrl: "", youtubeVideoId: "", thumbnailUrl: "", thumbnailAlt: "",
+  youtubeUrl: "", youtubeVideoId: "", thumbnailUrl: "", thumbnailAlt: "", thumbnailSmallUrl: "",
   duration: "", publishDate: null,
   featured: false, isFeaturedVideo: false, status: "draft",
   topicSlug: "", seriesSlug: "",
@@ -394,17 +395,22 @@ export function VideosPanel({ adminKey }: { adminKey: string }) {
               )}
             </div>
             <div>
-              <label style={s.label}>URL thumbnail</label>
-              <input value={form.thumbnailUrl ?? ""} onChange={(e) => setField("thumbnailUrl", e.target.value)} placeholder="https://img.youtube.com/vi/..." style={s.field} />
-              {form.thumbnailUrl && (
-                <div style={{ marginTop: "8px", position: "relative", display: "inline-block" }}>
-                  <img src={form.thumbnailUrl} alt="" style={{ maxWidth: "200px", maxHeight: "112px", objectFit: "cover", borderRadius: "7px", border: `1px solid ${A.border}`, display: "block" }} />
-                  <button onClick={() => setField("thumbnailUrl", "")} style={{ position: "absolute", top: "4px", right: "4px", background: "rgba(0,0,0,0.55)", color: "#fff", border: "none", borderRadius: "4px", padding: "2px 7px", fontSize: "11px", cursor: "pointer" }}>Xóa</button>
-                </div>
-              )}
+              <label style={s.label}>Ảnh thumbnail (16:9 · watermark tự động)</label>
+              <ImageUploadField
+                adminKey={adminKey}
+                value={form.thumbnailUrl ?? ""}
+                thumbnailValue={form.thumbnailSmallUrl ?? ""}
+                context="videos"
+                onUpload={(result) => setForm((f) => ({ ...f, thumbnailUrl: result.display, thumbnailSmallUrl: result.thumbnail }))}
+                onClear={() => setForm((f) => ({ ...f, thumbnailUrl: "", thumbnailSmallUrl: "" }))}
+              />
               {form.youtubeUrl && isValidYoutubeUrl(form.youtubeUrl) && !form.thumbnailUrl && (
-                <button type="button" onClick={() => setField("thumbnailUrl", youtubeThumbnail(form.youtubeUrl ?? ""))} style={{ ...s.btnSecondary, fontSize: "11.5px", padding: "5px 12px", marginTop: "6px" }}>
-                  Tự động lấy từ YouTube
+                <button
+                  type="button"
+                  onClick={() => setField("thumbnailUrl", youtubeThumbnail(form.youtubeUrl ?? ""))}
+                  style={{ ...s.btnSecondary, fontSize: "11.5px", padding: "5px 12px", marginTop: "8px" }}
+                >
+                  Dùng thumbnail YouTube thay thế
                 </button>
               )}
             </div>

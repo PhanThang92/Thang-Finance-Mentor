@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { adminApi, type Article, type Topic, type Series } from "@/lib/newsApi";
 import { A, s, fmtDate, slugify } from "./shared";
+import { ImageUploadField } from "./ImageUploadField";
 
 /* ── Category options ────────────────────────────────────────────────── */
 const CATEGORY_OPTIONS = [
@@ -73,7 +74,7 @@ type Form = Partial<Article> & {
 
 const EMPTY: Form = {
   title: "", slug: "", excerpt: "", content: "",
-  coverImageUrl: "", coverImageAlt: "",
+  coverImageUrl: "", coverImageAlt: "", coverThumbnailUrl: "",
   category: "", categorySlug: "",
   tagsInput: "",
   publishDate: null, featured: false, status: "draft",
@@ -88,28 +89,6 @@ function tagsToString(tags: string[] | null | undefined): string {
 }
 function stringToTags(s: string): string[] {
   return s.split(",").map((t) => t.trim()).filter(Boolean);
-}
-
-/* ── Image preview ───────────────────────────────────────────────────── */
-function ImagePreview({ url, onClear }: { url: string; onClear: () => void }) {
-  const [err, setErr] = useState(false);
-  useEffect(() => { setErr(false); }, [url]);
-  if (!url) return null;
-  return (
-    <div style={{ marginTop: "8px", position: "relative", display: "inline-block" }}>
-      {!err ? (
-        <img src={url} alt="" onError={() => setErr(true)}
-          style={{ maxWidth: "240px", maxHeight: "135px", objectFit: "cover", borderRadius: "7px", border: `1px solid ${A.border}`, display: "block" }} />
-      ) : (
-        <div style={{ width: "240px", height: "60px", borderRadius: "7px", border: `1px solid ${A.border}`, background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontSize: "11px", color: A.danger }}>URL ảnh không hợp lệ</span>
-        </div>
-      )}
-      <button onClick={onClear} style={{ position: "absolute", top: "4px", right: "4px", background: "rgba(0,0,0,0.55)", color: "#fff", border: "none", borderRadius: "4px", padding: "2px 7px", fontSize: "11px", cursor: "pointer" }}>
-        Xóa ảnh
-      </button>
-    </div>
-  );
 }
 
 /* ── Main component ──────────────────────────────────────────────────── */
@@ -408,9 +387,24 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
           <SectionHeading label="Ảnh bìa" />
           <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
             <div>
-              <label style={s.label}>URL ảnh bìa</label>
-              <input value={form.coverImageUrl ?? ""} onChange={(e) => setField("coverImageUrl", e.target.value)} placeholder="https://..." style={s.field} />
-              <ImagePreview url={form.coverImageUrl ?? ""} onClear={() => setField("coverImageUrl", "")} />
+              <label style={s.label}>Tải ảnh lên (16:9 · watermark tự động)</label>
+              <ImageUploadField
+                adminKey={adminKey}
+                value={form.coverImageUrl ?? ""}
+                thumbnailValue={form.coverThumbnailUrl ?? ""}
+                context="articles"
+                onUpload={(result) => setForm((f) => ({ ...f, coverImageUrl: result.display, coverThumbnailUrl: result.thumbnail }))}
+                onClear={() => setForm((f) => ({ ...f, coverImageUrl: "", coverThumbnailUrl: "" }))}
+              />
+            </div>
+            <div>
+              <label style={s.label}>Hoặc nhập URL thủ công</label>
+              <input
+                value={form.coverImageUrl ?? ""}
+                onChange={(e) => setField("coverImageUrl", e.target.value)}
+                placeholder="https://..."
+                style={s.field}
+              />
             </div>
             <div>
               <label style={s.label}>Alt ảnh bìa</label>

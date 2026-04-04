@@ -82,6 +82,31 @@ The admin at `/admin` now includes full CRUD for both articles and videos (the K
 
 **SEO hook** (`src/hooks/useSeoMeta.ts`): Sets `document.title`, meta description/keywords, og:title/description/image, twitter card, canonical URL, robots. Used in BaiViet, Video, KienThuc, TinTuc, CongDong pages.
 
+### Admin CMS — Image Upload Pipeline
+
+A complete media workflow is integrated into Articles and Videos forms.
+
+**Server-side** (`artifacts/api-server/src/routes/admin.ts`):
+- Upload endpoint: `POST /api/admin/upload-image` (multipart, Bearer auth, 15MB limit)
+- Accepts JPG/PNG/WebP/GIF/AVIF
+- Generates two outputs from each upload:
+  - **Display image**: 1600×900 WebP (quality 87) with watermark
+  - **Thumbnail**: 800×450 WebP (quality 82), derived from display image
+- Stored in `uploads/orig/`, `uploads/disp/`, `uploads/thumb/`; all served under `/api/uploads/`
+- Watermark: configurable by `context` param: `tu-duy-dau-tu` → "THẮNG SWC · TÀI CHÍNH"; `atlas` → "THẮNG SWC · ATLAS"; etc.
+- Returns `{ original, display, thumbnail }` URL paths
+
+**Frontend components**:
+- `src/config/mediaConfig.ts`: Centralized presets per context (articles/videos/topics/series) — aspect ratio, watermark context, file size limit
+- `src/pages/admin/CropModal.tsx`: Full-screen crop UI using `react-easy-crop` — 16:9 fixed ratio, zoom slider, canvas export to JPEG blob
+- `src/pages/admin/ImageUploadField.tsx`: Reusable upload+crop+preview widget — file validation (type + size), crop → upload → preview flow, Vietnamese status text ("Tải ảnh lên", "Đang xử lý ảnh...", etc.), "Thay ảnh" / "Xóa ảnh" buttons, thumbnail preview alongside main image
+
+**DB fields added**:
+- `articles.cover_thumbnail_url`: 800×450 thumbnail URL
+- `videos.thumbnail_small_url`: 800×450 thumbnail URL
+
+**UX flow**: Editor clicks "Tải ảnh lên" → selects file → crop modal opens → drags to adjust, zooms, clicks "Lưu ảnh" → image uploaded to server → watermarked + compressed → both display and thumbnail URLs saved to form → preview rendered inline. Manual URL fallback input remains below upload widget.
+
 # External Dependencies
 
 -   **Monorepo Tool**: pnpm workspaces

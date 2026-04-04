@@ -1,0 +1,524 @@
+Please upgrade the existing admin CMS for “Phan Van Thang SWC” by adding a professional image handling pipeline for Articles and Videos.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Build on top of the current admin CMS and Supabase/Postgres setup.
+- Preserve the premium public website design.
+- Focus on admin image workflow, storage structure, image consistency, and maintainability.
+- Do NOT redesign the full CMS unless required for this feature.
+
+GOAL:
+Add a complete media workflow inside the admin CMS so that when an editor uploads article cover images or video thumbnails, the system can:
+1. upload images cleanly
+2. crop images to the correct ratio
+3. automatically apply watermark text/logo
+4. compress/optimize images
+5. generate thumbnail versions automatically
+6. store processed files properly
+7. save the final URLs to the database
+8. make public site rendering more consistent and professional
+
+This should work for at least:
+- Articles (cover image)
+- Videos (thumbnail image)
+
+================================
+1. FEATURE SCOPE
+================================
+
+Please implement image processing support for:
+- Article cover images
+- Video thumbnail images
+
+The admin CMS should allow editors to:
+- upload an image
+- preview it
+- crop it before saving
+- apply watermark automatically
+- generate optimized output automatically
+- generate thumbnail versions automatically
+- replace existing images later if needed
+
+This should integrate with the current:
+- Articles create/edit form
+- Videos create/edit form
+- Supabase Storage
+- Supabase/Postgres content tables
+
+================================
+2. STORAGE STRATEGY
+================================
+
+Use a clean and scalable storage structure.
+
+Preferred direction:
+- Supabase Storage buckets
+or the current storage solution if already established
+
+Recommended folder logic:
+- `articles/original/`
+- `articles/processed/`
+- `articles/thumbnails/`
+- `videos/original/`
+- `videos/processed/`
+- `videos/thumbnails/`
+
+Requirements:
+- keep file organization clean
+- make replacement manageable
+- avoid filename collisions
+- use predictable file naming
+- support future cleanup/versioning if needed
+
+Suggested naming pattern:
+- content-type / size / slug-or-id / timestamp
+Example:
+- `articles/processed/vi-sao-nhieu-nguoi...-1712345678.webp`
+
+================================
+3. IMAGE TYPES TO GENERATE
+================================
+
+For each uploaded image, generate at least:
+
+A. Original upload (optional to retain)
+B. Processed main image
+C. Thumbnail image
+
+Requirements:
+- main processed image for public page usage
+- thumbnail image for listings/cards/admin previews
+- use efficient formats where appropriate (WebP preferred if supported)
+- preserve good visual quality
+- optimize for web performance
+
+Suggested outputs:
+For articles:
+- main cover image
+- thumbnail cover image
+
+For videos:
+- main thumbnail
+- card thumbnail
+
+If keeping original uploads is not necessary, processed + thumbnail is acceptable.
+
+================================
+4. CROPPING WORKFLOW
+================================
+
+Add a crop step in the admin UI before final save.
+
+Visible Vietnamese UI text examples:
+- Tải ảnh lên
+- Cắt ảnh
+- Kéo để điều chỉnh ảnh
+- Lưu ảnh
+- Hủy
+- Xem trước ảnh
+
+Requirements:
+- allow the editor to crop manually before upload finalization
+- provide fixed aspect ratio presets depending on content type
+- show live preview
+- keep UX clean and practical
+
+Suggested crop ratios:
+For article cover image:
+- 16:9
+- optionally support 4:3 if needed, but choose one main standard
+
+For video thumbnail:
+- 16:9
+
+If the site uses a different card ratio already, match that ratio consistently.
+
+Important:
+- the crop tool should help enforce a consistent visual system across the site
+- avoid distorted or stretched images
+
+================================
+5. AUTOMATIC WATERMARK
+================================
+
+Add automatic watermarking to processed output images.
+
+The watermark should be subtle, professional, and brand-consistent.
+
+Support at least one watermark mode:
+A. text watermark
+Optional B. logo watermark if brand asset exists
+
+Default text watermark suggestion:
+“Thắng SWC - Tài Chính”
+
+But make the watermark text configurable so different sections can later use variants if needed.
+
+Visible Vietnamese admin field/help text examples:
+- Bật watermark tự động
+- Nội dung watermark
+- Vị trí watermark
+- Độ mờ watermark
+
+Default behavior:
+- watermark enabled by default for public-facing uploaded images
+- editor can keep default settings unless customization is allowed
+
+Recommended watermark style:
+- subtle white or soft light text
+- medium-low opacity
+- professional and not intrusive
+- placed safely near a corner, with padding
+
+Recommended watermark positions:
+- bottom right by default
+Optional:
+- bottom left
+- top right
+- center diagonal only if ever needed, but avoid this as default
+
+Requirements:
+- watermark must not overpower the image
+- watermark should remain readable
+- watermark should survive compression
+- watermark should be consistently applied to processed public images
+- thumbnail version may also receive watermark if appropriate, or use the processed version as source
+
+================================
+6. IMAGE COMPRESSION / OPTIMIZATION
+================================
+
+Automatically compress and optimize uploaded images.
+
+Requirements:
+- reduce unnecessary file size
+- preserve good visual quality
+- support modern web-friendly output
+- avoid oversized uploads slowing the site
+
+Suggested behavior:
+- resize images to a reasonable max dimension
+- compress to WebP or equivalent optimized format when possible
+- preserve aspect ratio
+- do not upscale low-quality images
+
+Recommended strategy:
+- define max width for main image
+- define smaller dimensions for thumbnails
+- keep compression settings balanced for quality and performance
+
+Examples:
+- main image max width: around 1600px to 2000px
+- thumbnail width: around 480px to 800px depending on design usage
+
+Do not hardcode poor-quality compression.
+Aim for premium visual results with efficient file size.
+
+================================
+7. THUMBNAIL GENERATION
+================================
+
+Automatically generate thumbnail versions after crop/process.
+
+Requirements:
+- thumbnail should follow the same crop framing
+- thumbnail should be optimized for card/list usage
+- thumbnail should be stored separately
+- thumbnail URL should be saved or derivable cleanly
+
+Visible Vietnamese helper text examples:
+- Ảnh thumbnail sẽ được tạo tự động
+- Xem trước thumbnail
+
+If helpful, store both:
+- `cover_image_url`
+- `cover_thumbnail_url`
+
+And for videos:
+- `thumbnail_url`
+- `thumbnail_small_url`
+
+================================
+8. DATABASE FIELD UPDATES
+================================
+
+Update database schema if needed.
+
+For `articles`, consider fields such as:
+- cover_image_url
+- cover_image_alt
+- cover_thumbnail_url
+- cover_original_url (optional)
+
+For `videos`, consider fields such as:
+- thumbnail_url
+- thumbnail_alt
+- thumbnail_small_url
+- thumbnail_original_url (optional)
+
+Requirements:
+- preserve compatibility with existing public pages
+- migrate safely if current fields already exist
+- do not break current seeded data
+- write clear upgrade logic
+
+================================
+9. ADMIN FORM UX INTEGRATION
+================================
+
+Upgrade the Articles and Videos forms so image handling feels integrated and polished.
+
+For Articles, visible Vietnamese labels:
+- Ảnh bìa
+- Alt ảnh bìa
+- Tải ảnh lên
+- Cắt ảnh
+- Xem trước
+- Thay ảnh
+- Xóa ảnh
+
+For Videos:
+- Ảnh thumbnail
+- Alt thumbnail
+- Tải ảnh lên
+- Cắt ảnh
+- Xem trước
+- Thay ảnh
+- Xóa ảnh
+
+Recommended workflow:
+1. editor selects image
+2. crop modal opens
+3. system processes image
+4. preview shows final result
+5. URLs are saved when content is saved
+or upload can happen immediately, depending on architecture
+
+Requirements:
+- the workflow should feel clear
+- previews must be visible
+- replacement must be easy
+- avoid confusing multi-step friction
+
+================================
+10. IMAGE PREVIEW UX
+================================
+
+Add high-quality preview support.
+
+Requirements:
+- preview cropped image before final save
+- preview final processed image in form
+- show thumbnail preview if helpful
+- make image replacement intuitive
+- allow removing/resetting selected image before submission
+
+Visible Vietnamese examples:
+- Xem trước ảnh
+- Ảnh sau khi xử lý
+- Ảnh thumbnail
+- Chọn ảnh khác
+
+================================
+11. CONTENT-TYPE RULES
+================================
+
+Apply different presets depending on content type.
+
+Articles:
+- cover ratio must match article/public card layout
+- crop preset should default to that ratio
+- processed image should look good on listing + detail page
+
+Videos:
+- thumbnail ratio should default to 16:9
+- should look good in homepage video section and video library cards
+
+Requirements:
+- centralize these rules in config if possible
+- avoid repeating logic across multiple forms
+- keep the system extensible for Topics/Series in the future
+
+================================
+12. WATERMARK CONFIGURATION LAYER
+================================
+
+Create a clean config/helper for watermark settings.
+
+Possible config options:
+- enabled
+- text
+- opacity
+- font size
+- position
+- margin/padding
+- color
+- applyToArticles
+- applyToVideos
+- applyToThumbnails
+
+Suggested file example:
+- `src/config/mediaConfig.ts`
+
+Requirements:
+- avoid hardcoding watermark behavior in multiple places
+- make future changes easy
+- allow brand adjustments later
+
+================================
+13. PROCESSING IMPLEMENTATION APPROACH
+================================
+
+Use a clean image processing implementation appropriate for the current stack.
+
+Requirements:
+- perform crop + watermark + compression + thumbnail generation reliably
+- keep code maintainable
+- avoid a fragile frontend-only hack if a server-side/media-processing approach is cleaner
+- if using a library, choose a stable, reasonable option suitable for the stack
+
+Possible directions:
+- client-side crop UI + server-side processing
+or
+- client-side crop export + server-side watermark/compression
+Choose the approach that is cleanest and most reliable.
+
+Important:
+- prioritize consistent output quality
+- keep architecture safe for future admin usage
+
+================================
+14. PUBLIC SITE INTEGRATION
+================================
+
+Update public pages to use the processed image fields consistently.
+
+Requirements:
+- homepage article cards use article thumbnail if available
+- article detail page uses main processed cover image
+- video cards use processed thumbnail or small thumbnail
+- fallback gracefully if older content has only one image URL
+- preserve premium visual consistency across the public site
+
+================================
+15. IMAGE FALLBACK LOGIC
+================================
+
+Add clean fallback behavior.
+
+If no uploaded image exists:
+- use the existing premium placeholder system
+- do not break card layout
+- keep alt text handling sensible
+
+If processing fails:
+- show a clear admin error
+- do not save broken state silently
+
+Visible Vietnamese examples:
+- Không thể xử lý ảnh, vui lòng thử lại
+- Ảnh chưa được tải lên
+- Dùng ảnh mặc định
+
+================================
+16. FILE VALIDATION
+================================
+
+Add validation for uploaded files.
+
+Requirements:
+- validate file type
+- validate file size
+- reject unsupported file types
+- show clear error messages in Vietnamese
+
+Visible Vietnamese examples:
+- Định dạng ảnh không được hỗ trợ
+- Kích thước tệp quá lớn
+- Vui lòng chọn ảnh hợp lệ
+
+Suggested supported formats:
+- JPG
+- PNG
+- WebP
+
+================================
+17. OPTIONAL BULK / REUSE READINESS
+================================
+
+Do not overbuild a full media library yet, but structure the system so future media reuse is possible.
+
+Helpful possibilities:
+- reusable upload helper
+- shared image processor service
+- shared crop modal component
+- shared storage upload utility
+
+This should make it easier later to add:
+- media library
+- topic/series cover uploads
+- OG image handling
+- reusable asset manager
+
+================================
+18. ADMIN FEEDBACK / TOASTS
+================================
+
+Add clear success/error feedback during image workflow.
+
+Visible Vietnamese examples:
+- Đang tải ảnh lên...
+- Đang xử lý ảnh...
+- Đã lưu ảnh thành công
+- Đã cập nhật ảnh
+- Có lỗi khi tải ảnh, vui lòng thử lại
+
+Requirements:
+- clean toasts or inline status
+- clear progress stages if possible
+- no noisy UX
+
+================================
+19. SECURITY / STORAGE BEST PRACTICES
+================================
+
+Apply good storage and security practices.
+
+Requirements:
+- use safe storage paths
+- avoid exposing unsafe upload logic
+- validate upload inputs
+- make public URLs consistent
+- if using signed URLs internally, manage them cleanly
+- keep the system future-ready for admin auth restrictions
+
+================================
+20. DOCUMENTATION / HANDOFF
+================================
+
+Leave the upgraded media workflow understandable.
+
+Please add simple notes/comments/documentation for:
+- where image upload is handled
+- where crop logic lives
+- where watermark config is stored
+- where compression/thumbnail generation happens
+- how URLs are stored in DB
+- how to extend this later to Topics/Series/SEO OG images
+
+================================
+21. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- admin can upload article cover images and video thumbnails cleanly
+- images can be cropped before save
+- watermark is applied automatically
+- images are compressed and optimized
+- thumbnails are generated automatically
+- processed image URLs are stored correctly
+- public pages show more consistent, premium visuals
+- the media workflow feels much more professional and scalable
+
+Please implement this full image upload + crop + watermark + compression + thumbnail generation upgrade directly into the admin CMS.

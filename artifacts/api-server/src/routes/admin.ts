@@ -11,7 +11,8 @@ import { eq, sql, desc, ilike, or } from "drizzle-orm";
 const UPLOADS_DIR = path.join(process.cwd(), "uploads");
 const ORIG_DIR    = path.join(UPLOADS_DIR, "orig");
 const DISP_DIR    = path.join(UPLOADS_DIR, "disp");
-[ORIG_DIR, DISP_DIR].forEach((d) => { if (!existsSync(d)) mkdirSync(d, { recursive: true }); });
+const THUMB_DIR   = path.join(UPLOADS_DIR, "thumb");
+[ORIG_DIR, DISP_DIR, THUMB_DIR].forEach((d) => { if (!existsSync(d)) mkdirSync(d, { recursive: true }); });
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -53,6 +54,16 @@ async function processImage(buffer: Buffer, context: string): Promise<Buffer> {
     .resize(TARGET_W, TARGET_H, { fit: "cover", position: "centre" })
     .composite([{ input: wmSvg, left: wmLeft, top: wmTop, blend: "over" }])
     .webp({ quality: 87 })
+    .toBuffer();
+}
+
+const THUMB_W = 800;
+const THUMB_H = 450;
+
+async function generateThumbnail(displayBuffer: Buffer): Promise<Buffer> {
+  return sharp(displayBuffer)
+    .resize(THUMB_W, THUMB_H, { fit: "cover", position: "centre" })
+    .webp({ quality: 82 })
     .toBuffer();
 }
 
@@ -224,12 +235,17 @@ router.post("/upload-image", upload.single("image"), async (req: Request, res: R
 
     writeFileSync(path.join(ORIG_DIR, origName), req.file.buffer);
 
-    const dispBuffer = await processImage(req.file.buffer, context);
-    writeFileSync(path.join(DISP_DIR, dispName), dispBuffer);
+    const dispBuffer  = await processImage(req.file.buffer, context);
+    const thumbBuffer = await generateThumbnail(dispBuffer);
+    const thumbName   = `${id}_thumb.webp`;
+
+    writeFileSync(path.join(DISP_DIR,  dispName),  dispBuffer);
+    writeFileSync(path.join(THUMB_DIR, thumbName),  thumbBuffer);
 
     res.json({
-      original: `/api/uploads/orig/${origName}`,
-      display:  `/api/uploads/disp/${dispName}`,
+      original:  `/api/uploads/orig/${origName}`,
+      display:   `/api/uploads/disp/${dispName}`,
+      thumbnail: `/api/uploads/thumb/${thumbName}`,
     });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
@@ -346,8 +362,9 @@ function pickArticleFields(body: Record<string, unknown>) {
     slug:           body.slug          as string | undefined,
     excerpt:        body.excerpt       as string | null | undefined,
     content:        body.content       as string | null | undefined,
-    coverImageUrl:  body.coverImageUrl as string | null | undefined,
-    coverImageAlt:  body.coverImageAlt as string | null | undefined,
+    coverImageUrl:      body.coverImageUrl      as string | null | undefined,
+    coverImageAlt:      body.coverImageAlt      as string | null | undefined,
+    coverThumbnailUrl:  body.coverThumbnailUrl  as string | null | undefined,
     category:       body.category      as string | null | undefined,
     categorySlug:   body.categorySlug  as string | null | undefined,
     tags:           Array.isArray(body.tags) ? (body.tags as string[]) : (body.tags ? [body.tags as string] : null),
@@ -434,6 +451,7 @@ function pickVideoFields(body: Record<string, unknown>) {
     youtubeVideoId:    body.youtubeVideoId    as string | null | undefined,
     thumbnailUrl:      body.thumbnailUrl      as string | null | undefined,
     thumbnailAlt:      body.thumbnailAlt      as string | null | undefined,
+    thumbnailSmallUrl: body.thumbnailSmallUrl as string | null | undefined,
     thumbnailGradient: body.thumbnailGradient as string | null | undefined,
     duration:          body.duration          as string | null | undefined,
     featured:          typeof body.featured         === "boolean" ? body.featured         : undefined,

@@ -32,7 +32,7 @@ export interface DashboardData {
 export interface Article {
   id: number; title: string; slug: string;
   excerpt: string | null; content: string | null;
-  coverImageUrl: string | null; coverImageAlt: string | null;
+  coverImageUrl: string | null; coverImageAlt: string | null; coverThumbnailUrl: string | null;
   category: string | null; categorySlug: string | null;
   tags: string[] | null;
   publishDate: string | null;
@@ -52,7 +52,7 @@ export interface Video {
   id: number; title: string; slug: string;
   excerpt: string | null;
   youtubeUrl: string; youtubeVideoId: string | null;
-  thumbnailUrl: string | null; thumbnailAlt: string | null; thumbnailGradient: string | null;
+  thumbnailUrl: string | null; thumbnailAlt: string | null; thumbnailSmallUrl: string | null; thumbnailGradient: string | null;
   duration: string | null;
   publishDate: string | null;
   featured: boolean; isFeaturedVideo: boolean; status: string;
