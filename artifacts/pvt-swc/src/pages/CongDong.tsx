@@ -131,7 +131,7 @@ function Hero() {
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(26,120,104,0.30)"; }}>
               Tìm hình thức phù hợp
             </a>
-            <a href="#bat-dau" style={btnSecondary}
+            <a href="#dang-ky" style={btnSecondary}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.12)"; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.07)"; }}>
               Đăng ký tham gia
@@ -374,7 +374,144 @@ function FitSection() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   6. FINAL CTA (dark)
+   6. JOIN SECTION — inline form (light)
+══════════════════════════════════════════════════════════ */
+function JoinSection() {
+  const [sent, setSent] = useState(false);
+
+  const fieldLabel: React.CSSProperties = {
+    display: "block", fontSize: "10.5px", fontWeight: 600,
+    letterSpacing: "0.12em", textTransform: "uppercase",
+    color: "hsl(var(--foreground) / 0.38)", marginBottom: "7px",
+  };
+  const fieldBase: React.CSSProperties = {
+    width: "100%", height: "42px", padding: "0 14px",
+    background: "transparent",
+    border: "1px solid hsl(var(--border) / 0.88)", borderRadius: "8px",
+    fontSize: "13.5px", fontWeight: 400, color: "hsl(var(--foreground))",
+    outline: "none", transition: "border-color 0.22s ease", boxSizing: "border-box" as const,
+  };
+  const fieldSelect: React.CSSProperties = {
+    ...fieldBase, cursor: "pointer", appearance: "none" as const,
+    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='hsl(160%2C20%25%2C40%25)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`,
+    backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center", paddingRight: "36px",
+  };
+  const fieldTextarea: React.CSSProperties = {
+    ...fieldBase, height: "78px", padding: "10px 14px", resize: "vertical" as const, lineHeight: 1.6,
+  };
+  const focusBorder = (e: React.FocusEvent<HTMLElement>) =>
+    (e.currentTarget.style.borderColor = "hsl(var(--primary) / 0.45)");
+  const blurBorder  = (e: React.FocusEvent<HTMLElement>) =>
+    (e.currentTarget.style.borderColor = "hsl(var(--border) / 0.88)");
+  const btnSubmit: React.CSSProperties = {
+    display: "inline-flex", alignItems: "center", justifyContent: "center",
+    width: "100%", height: "46px", borderRadius: "999px",
+    fontSize: "14px", fontWeight: 500, letterSpacing: "0.01em",
+    border: "none", cursor: "pointer",
+    background: "linear-gradient(140deg, #22917f, #1a7868)", color: "#fff",
+    boxShadow: "0 4px 18px rgba(26,120,104,0.26)",
+    transition: "transform 0.22s ease, box-shadow 0.22s ease",
+  };
+
+  return (
+    <section id="dang-ky" className="py-20 sm:py-28" style={{ background: "hsl(var(--background))" }}>
+      <div className="max-w-5xl mx-auto px-5 sm:px-8">
+        <motion.div initial="hidden" whileInView="visible" viewport={VP} variants={stagger}
+          className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-12 lg:gap-20 items-start">
+
+          {/* ── Left: editorial copy ── */}
+          <div>
+            <motion.div variants={fadeUp} style={{ marginBottom: "1.25rem" }}>
+              <SectionLabel>Đăng ký tham gia</SectionLabel>
+            </motion.div>
+            <motion.div variants={fadeUp} style={{ marginBottom: "1.25rem" }}>
+              <SectionHeading>Bắt đầu từ nơi phù hợp với giai đoạn của mình</SectionHeading>
+            </motion.div>
+            <motion.p variants={fadeUp} style={{ fontSize: "13.5px", lineHeight: 1.85, fontWeight: 300, color: "hsl(var(--foreground) / 0.52)", marginBottom: "1.75rem" }}>
+              Điền thông tin bên dưới. Đội ngũ sẽ xem xét và gửi hướng dẫn tham gia phù hợp với anh/chị — không có cam kết nào cần thực hiện trước.
+            </motion.p>
+            <motion.div variants={fadeUp} style={{ display: "flex", alignItems: "flex-start", gap: "0.875rem" }}>
+              <div style={{ marginTop: "0.40rem", width: "1.75rem", height: "1.5px", background: "hsl(var(--primary) / 0.50)", borderRadius: "999px", flexShrink: 0 }} />
+              <p style={{ fontSize: "13px", fontStyle: "italic", fontWeight: 400, color: "hsl(var(--primary) / 0.80)", lineHeight: 1.68, margin: 0 }}>
+                Không phải ai cũng cần cùng một mức độ đồng hành. Điều quan trọng là bắt đầu đúng nơi.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* ── Right: inline form ── */}
+          <motion.div variants={fadeUp}>
+            {sent ? (
+              <div style={{
+                padding: "2.5rem 2rem", borderRadius: "0.875rem",
+                border: "1px solid hsl(var(--border) / 0.80)",
+                boxShadow: "0 2px 16px rgba(10,40,35,0.06)",
+                textAlign: "center",
+              }}>
+                <div style={{ width: "44px", height: "44px", borderRadius: "50%", background: "hsl(var(--primary) / 0.10)", border: "1px solid hsl(var(--primary) / 0.28)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.25rem" }}>
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M3.5 9.5L7 13l7.5-8" stroke="hsl(var(--primary))" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <p style={{ fontSize: "15.5px", fontWeight: 600, color: "hsl(var(--foreground))", marginBottom: "0.75rem", lineHeight: 1.3 }}>Thông tin đã được ghi nhận</p>
+                <p style={{ fontSize: "13.5px", fontWeight: 300, lineHeight: 1.85, color: "hsl(var(--foreground) / 0.52)", maxWidth: "30rem", margin: "0 auto" }}>
+                  Cảm ơn anh/chị. Thông tin đã được ghi nhận. Nếu phù hợp, đội ngũ sẽ gửi hướng dẫn để anh/chị vào đúng cộng đồng với giai đoạn hiện tại của mình.
+                </p>
+              </div>
+            ) : (
+              <div style={{
+                padding: "2rem", borderRadius: "0.875rem",
+                border: "1px solid hsl(var(--border) / 0.80)",
+                boxShadow: "0 2px 16px rgba(10,40,35,0.06)",
+                display: "flex", flexDirection: "column", gap: "1.1rem",
+              }}>
+                <div>
+                  <label style={fieldLabel}>Họ và tên</label>
+                  <input type="text" placeholder="Nguyễn Văn A" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                </div>
+                <div>
+                  <label style={fieldLabel}>Email</label>
+                  <input type="email" placeholder="email@example.com" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                </div>
+                <div>
+                  <label style={fieldLabel}>Số điện thoại / Zalo</label>
+                  <input type="tel" placeholder="09xx xxx xxx" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                </div>
+                <div>
+                  <label style={fieldLabel}>Hình thức muốn tham gia</label>
+                  <select style={fieldSelect} defaultValue="" onFocus={focusBorder} onBlur={blurBorder}>
+                    <option value="" disabled>Chọn hình thức...</option>
+                    <option value="open">Theo dõi cộng đồng mở</option>
+                    <option value="group">Tham gia nhóm trao đổi</option>
+                    <option value="deep">Tìm hiểu hệ sinh thái chuyên sâu</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={fieldLabel}>
+                    Ghi chú thêm{" "}
+                    <span style={{ fontSize: "9px", fontWeight: 400, opacity: 0.55, letterSpacing: "0.05em" }}>(không bắt buộc)</span>
+                  </label>
+                  <textarea placeholder="Anh/chị muốn chia sẻ thêm điều gì..." style={fieldTextarea} onFocus={focusBorder} onBlur={blurBorder} />
+                </div>
+                <button style={btnSubmit} onClick={() => setSent(true)}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.36)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(26,120,104,0.26)"; }}>
+                  Gửi đăng ký
+                </button>
+                <p style={{ fontSize: "11.5px", fontWeight: 300, color: "hsl(var(--foreground) / 0.34)", textAlign: "center", lineHeight: 1.65, margin: 0 }}>
+                  Thông tin của anh/chị được bảo mật và chỉ dùng để liên hệ hỗ trợ tham gia cộng đồng.
+                </p>
+              </div>
+            )}
+          </motion.div>
+
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   7. FINAL CTA (dark)
 ══════════════════════════════════════════════════════════ */
 function FinalCTASection() {
   const [showForm, setShowForm]   = useState(false);
@@ -562,6 +699,7 @@ export default function CongDong() {
       <WaysToJoinSection />
       <CommunityValuesSection />
       <FitSection />
+      <JoinSection />
       <FinalCTASection />
     </>
   );

@@ -449,7 +449,7 @@ export function Navbar() {
             {/* ── CTA ──────────────────────────────────── */}
             <a
               ref={ctaRef}
-              href={sec("#lien-he")}
+              href={`${homeBase}/cong-dong#dang-ky`}
               style={{
                 display:        "inline-flex",
                 alignItems:     "center",
@@ -668,7 +668,7 @@ export function Navbar() {
 
               {/* Mobile CTA */}
               <a
-                href={sec("#lien-he")}
+                href={`${homeBase}/cong-dong#dang-ky`}
                 style={{
                   marginTop:      "0.875rem",
                   display:        "flex",
