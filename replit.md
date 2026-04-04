@@ -107,6 +107,33 @@ A complete media workflow is integrated into Articles and Videos forms.
 
 **UX flow**: Editor clicks "Tải ảnh lên" → selects file → crop modal opens → drags to adjust, zooms, clicks "Lưu ảnh" → image uploaded to server → watermarked + compressed → both display and thumbnail URLs saved to form → preview rendered inline. Manual URL fallback input remains below upload widget.
 
+### Admin CMS — Media Library (Thư viện ảnh)
+
+A centralized media asset management system for all uploaded images.
+
+**Database table**: `media_assets` — tracks every processed upload with full metadata (filename, dimensions, size, URLs, watermark info, content type, alt text).
+
+**Server routes** (all require Bearer auth):
+- `GET /api/admin/media` — list assets (params: `q`, `contentType`, `sort`)
+- `GET /api/admin/media/:id` — single asset detail
+- `PUT /api/admin/media/:id` — update title, altText, tags, contentType
+- `DELETE /api/admin/media/:id` — delete, with usage check; pass `?force=1` to override
+
+**Upload pipeline upgrade**: `POST /api/admin/upload-image` now automatically creates a `media_assets` record for every upload. Accepts extra body params `contentType`, `usageContext`, `altText`, `title`. Returns `assetId` alongside image URLs.
+
+**Frontend components**:
+- `MediaPanel.tsx` — full-page library grid, search, filter by content type, sort, upload modal, detail modal (with metadata editing + delete with usage warning)
+- `MediaPickerModal.tsx` — picker modal used from within image upload fields; search + filter + click to select
+- `ImageUploadField.tsx` (updated) — new "Chọn từ thư viện ảnh" button opens MediaPickerModal; also now passes `contentType` in FormData
+
+**Admin navigation**: "Thư viện ảnh" added under new group "Thư viện" in the sidebar.
+
+**UX flows**:
+- Upload from library: "Tải ảnh mới" → crop modal → server processes → asset recorded → grid refreshes
+- Pick from library: "Chọn từ thư viện ảnh" in any form → picker modal → search/filter → click to select → inserted into form
+- Detail view: click any card → modal with large preview, metadata, edit title/alt, copy URL, delete
+- Safe delete: checks if asset.publicUrl appears in articles or videos; warns with usage list; force-delete available
+
 # External Dependencies
 
 -   **Monorepo Tool**: pnpm workspaces

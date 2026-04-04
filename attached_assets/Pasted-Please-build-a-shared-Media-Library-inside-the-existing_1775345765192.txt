@@ -1,0 +1,566 @@
+Please build a shared Media Library inside the existing admin CMS for “Phan Van Thang SWC”.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Build on top of the current admin CMS, Supabase/Postgres, Supabase Storage, and existing image processing pipeline.
+- Do NOT redesign the whole admin system.
+- Focus specifically on creating a reusable media library / asset manager for uploaded images.
+
+GOAL:
+Create a centralized Media Library in the admin CMS so editors can:
+- view uploaded images in one place
+- search and filter assets
+- reuse existing assets across Articles, Videos, Topics, Series, and future content types
+- inspect metadata
+- copy URLs
+- select assets from a media picker inside forms
+- replace or delete assets safely
+- keep media storage better organized over time
+
+This should turn media handling into a reusable system, not just a per-form upload field.
+
+================================
+1. FEATURE SCOPE
+================================
+
+Please create a dedicated Media Library module inside admin.
+
+Preferred route:
+- `/admin/media`
+
+This module should support:
+- viewing all uploaded media assets
+- filtering media by type and usage
+- searching by filename, alt text, title, or related content
+- selecting an asset from a modal/picker when editing content
+- previewing asset details
+- deleting or replacing assets where safe
+- reusing assets across multiple content entries
+
+Primary target:
+- images only for now
+
+Future-ready target:
+- could later support OG images, topic covers, series covers, banners, etc.
+
+================================
+2. ADMIN NAVIGATION
+================================
+
+Add Media Library to the admin navigation.
+
+Visible Vietnamese labels:
+- Tổng quan
+- Bài viết
+- Video
+- Chủ đề
+- Series
+- Trang chủ
+- Thư viện ảnh
+
+Requirements:
+- “Thư viện ảnh” should link to `/admin/media`
+- keep admin navigation clean and practical
+- maintain consistency with the existing admin CMS
+
+================================
+3. MEDIA LIBRARY PAGE
+================================
+
+Create a Media Library page at `/admin/media`.
+
+Visible Vietnamese text:
+
+Page title:
+Thư viện ảnh
+
+Subtext:
+Quản lý, tìm kiếm và tái sử dụng hình ảnh trong toàn bộ hệ thống nội dung.
+
+Primary actions:
+- Tải ảnh mới
+- Chọn nhiều ảnh (optional)
+- Làm mới
+
+Filters / controls:
+- Tìm ảnh...
+- Tất cả
+- Ảnh bài viết
+- Ảnh video
+- Ảnh chủ đề
+- Ảnh series
+- Có watermark
+- Không watermark
+
+Optional sort options:
+- Mới nhất
+- Cũ nhất
+- Dung lượng lớn nhất
+- Tên A-Z
+
+Requirements:
+- page should feel clean, usable, and moderately premium
+- grid layout is preferred
+- cards should be easy to scan
+- do not make it overly technical or cluttered
+
+================================
+4. MEDIA DATA MODEL
+================================
+
+Create a proper media asset model in the database.
+
+Suggested table:
+- `media_assets`
+
+Recommended fields:
+- id (uuid, primary key)
+- title (optional text)
+- filename
+- original_filename
+- file_type
+- mime_type
+- size_bytes
+- width
+- height
+- storage_path_original (optional)
+- storage_path_processed
+- storage_path_thumbnail (optional)
+- public_url
+- thumbnail_url
+- alt_text
+- watermark_enabled (boolean)
+- watermark_text (optional)
+- content_type (article / video / topic / series / shared / other)
+- usage_context (cover / thumbnail / gallery / seo / shared / other)
+- related_entity_type (optional)
+- related_entity_id (optional)
+- tags (optional)
+- uploaded_by (optional if auth supports it)
+- created_at
+- updated_at
+
+Requirements:
+- keep the schema future-ready
+- allow one asset to be reused by multiple content items if needed
+- do not lock the system into one-to-one usage only
+- preserve compatibility with the current image upload pipeline
+
+================================
+5. REUSE-READY RELATIONSHIP STRATEGY
+================================
+
+Design the media system so images can be reused, not just bound once forever.
+
+Preferred logic:
+- media assets exist independently in the library
+- content entries (articles/videos/topics/series) can reference them
+- the same image may be reused in multiple places if appropriate
+
+If needed, prepare a relationship table later such as:
+- `media_usages`
+
+But do not overcomplicate if simple reference logic is enough now.
+
+Minimum requirement:
+- media assets should not be treated as disposable form-only uploads anymore
+
+================================
+6. MEDIA GRID UI
+================================
+
+Display media assets in a clean grid.
+
+Each media card can show:
+- image preview
+- filename or title
+- dimensions
+- file size
+- content type
+- upload date
+- watermark badge if applicable
+
+Visible Vietnamese examples:
+- Có watermark
+- Không watermark
+- Ảnh bài viết
+- Ảnh video
+- Dùng chung
+
+Card actions:
+- Xem chi tiết
+- Chọn ảnh
+- Sao chép URL
+- Thay ảnh
+- Xóa
+
+Requirements:
+- clean hover state
+- selection state if used in picker mode
+- easy to scan
+- responsive grid
+- thumbnail preview should load efficiently
+
+================================
+7. MEDIA DETAIL DRAWER / MODAL
+================================
+
+Add a media detail view when clicking an asset.
+
+This can be:
+- a drawer
+or
+- a modal
+or
+- a side panel
+
+Visible Vietnamese fields:
+- Tên ảnh
+- Tên tệp
+- Kích thước
+- Dung lượng
+- Loại nội dung
+- Văn bản thay thế
+- Watermark
+- Đường dẫn công khai
+- Ngày tải lên
+
+Actions:
+- Sao chép URL
+- Sao chép đường dẫn thumbnail
+- Chỉnh sửa thông tin
+- Thay ảnh
+- Xóa ảnh
+
+Requirements:
+- preview the image larger
+- show useful metadata
+- allow quick editing of alt text/title if helpful
+- keep the UI practical and uncluttered
+
+================================
+8. MEDIA PICKER INTEGRATION
+================================
+
+Upgrade admin forms so editors can choose from the shared Media Library, not only upload new files.
+
+Use this for:
+- Article cover image
+- Video thumbnail
+- Topic cover image
+- Series cover image
+- future SEO/share image if needed
+
+Visible Vietnamese button examples:
+- Chọn từ thư viện ảnh
+- Tải ảnh mới
+- Thay ảnh
+- Gỡ ảnh
+
+Preferred UX:
+- clicking “Chọn từ thư viện ảnh” opens a media picker modal
+- editor can search/filter/select an existing asset
+- selected asset is inserted into the form
+- editor can still upload a new image if needed
+
+Requirements:
+- keep picker fast and clean
+- do not make forms confusing
+- support both reuse and new upload
+
+================================
+9. NEW UPLOAD FROM MEDIA LIBRARY
+================================
+
+Allow direct upload from the Media Library page itself.
+
+Visible Vietnamese button:
+- Tải ảnh mới
+
+Upload flow should reuse the current image processing pipeline:
+- upload
+- crop
+- watermark
+- compression
+- thumbnail generation
+- save asset record in media library
+
+Requirements:
+- media uploaded from library should appear immediately in the grid
+- metadata should be stored
+- URLs should be available for reuse
+- keep the flow consistent with article/video upload behavior
+
+================================
+10. MEDIA PROCESSING INTEGRATION
+================================
+
+Connect the existing image pipeline to the Media Library.
+
+When an image is uploaded, the system should still support:
+- crop
+- watermark
+- compression
+- processed output
+- thumbnail generation
+
+Then, instead of only saving URLs into the content form, also create/update a `media_assets` record.
+
+Requirements:
+- avoid duplicate logic
+- centralize media handling
+- make media library the canonical place for asset storage/metadata
+
+================================
+11. ALT TEXT / TITLE MANAGEMENT
+================================
+
+Support editable metadata for each media asset.
+
+Visible Vietnamese fields:
+- Tiêu đề ảnh
+- Văn bản thay thế
+- Thẻ tag
+- Ghi chú (optional)
+
+Requirements:
+- editors can update metadata after upload
+- forms can inherit alt text from media asset if useful
+- still allow per-content override if needed later
+- keep metadata editing simple
+
+================================
+12. SEARCH / FILTER / SORT
+================================
+
+Add practical media management controls.
+
+Search should support:
+- filename
+- title
+- alt text
+- tags
+
+Filters can support:
+- content type
+- watermark enabled
+- upload date range (optional)
+- used / unused (optional if easy)
+
+Visible Vietnamese filter labels:
+- Tất cả
+- Ảnh bài viết
+- Ảnh video
+- Ảnh chủ đề
+- Ảnh series
+- Dùng chung
+- Đã sử dụng
+- Chưa sử dụng
+
+Sorting:
+- Mới nhất
+- Cũ nhất
+- Tên A-Z
+- Dung lượng lớn nhất
+
+Requirements:
+- keep controls efficient
+- avoid overwhelming the page
+- preserve good mobile/tablet usability where possible
+
+================================
+13. USED / UNUSED ASSET LOGIC
+================================
+
+If practical, track whether a media asset is being used by content.
+
+Visible Vietnamese labels:
+- Đã sử dụng
+- Chưa sử dụng
+
+Requirements:
+- used status should help prevent accidental deletion
+- if a media asset is referenced by content, deletion should warn the user
+- if exact tracking is too complex now, prepare the structure for later
+
+================================
+14. SAFE DELETE LOGIC
+================================
+
+Implement safe deletion for media assets.
+
+Visible Vietnamese text examples:
+- Xóa ảnh
+- Ảnh này đang được sử dụng trong nội dung khác
+- Bạn có chắc chắn muốn xóa ảnh này?
+- Hành động này không thể hoàn tác
+
+Requirements:
+- deleting an asset should require confirmation
+- if the asset is currently used, warn clearly
+- optionally block deletion when the asset is actively referenced
+- do not leave broken image references silently
+
+Preferred behavior:
+- either prevent deletion of used assets
+or
+- require replacement before delete
+
+================================
+15. REPLACE ASSET WORKFLOW
+================================
+
+Support replacing an asset cleanly.
+
+Visible Vietnamese examples:
+- Thay ảnh
+- Tải ảnh thay thế
+- Giữ nguyên thông tin ảnh
+- Cập nhật ảnh thành công
+
+Requirements:
+- allow editor to replace the file while keeping the same media entry if appropriate
+- preserve metadata when helpful
+- avoid broken references
+- re-run the processing pipeline on replacement
+
+================================
+16. COPY URL / QUICK ACTIONS
+================================
+
+Provide practical quick actions for editors.
+
+Visible Vietnamese actions:
+- Sao chép URL
+- Sao chép URL thumbnail
+- Mở ảnh
+- Xem chi tiết
+
+Requirements:
+- fast, useful actions
+- helpful for reuse and troubleshooting
+- clear success feedback such as:
+  - Đã sao chép URL
+
+================================
+17. PUBLIC CONTENT COMPATIBILITY
+================================
+
+Make sure the shared media library works cleanly with public content rendering.
+
+Requirements:
+- article cards and detail pages can still use correct image URLs
+- video cards can still use correct thumbnails
+- older content should remain compatible
+- if an asset comes from the library, public pages should render it normally
+- fallback behavior should remain safe
+
+================================
+18. OPTIONAL MEDIA USAGE PANEL
+================================
+
+If practical, show where an image is being used.
+
+Visible Vietnamese examples:
+- Đang dùng trong
+- Bài viết
+- Video
+- Chủ đề
+- Series
+
+This can be shown in the media detail panel.
+
+Requirements:
+- this is optional but valuable
+- even a simple usage summary helps
+- do not overbuild if current architecture is not ready
+
+================================
+19. STORAGE / PERFORMANCE BEST PRACTICES
+================================
+
+Use good storage and loading practices.
+
+Requirements:
+- thumbnail grid should use optimized thumbnails, not original large images
+- public URLs should be stable
+- storage paths should remain organized
+- do not load unnecessarily large assets in admin grid
+- make media library reasonably fast
+
+================================
+20. ADMIN UX / FEEDBACK
+================================
+
+Add clear admin feedback.
+
+Visible Vietnamese examples:
+- Đang tải ảnh lên...
+- Đang xử lý ảnh...
+- Đã thêm vào thư viện ảnh
+- Đã cập nhật thông tin ảnh
+- Đã thay ảnh thành công
+- Có lỗi xảy ra, vui lòng thử lại
+
+Requirements:
+- good success/error states
+- progress feedback where useful
+- no noisy UX
+
+================================
+21. SECURITY / ACCESS CONTROL
+================================
+
+Protect the Media Library as part of the admin system.
+
+Requirements:
+- admin-only access
+- no public management access
+- safe storage operations
+- safe delete/replace behavior
+- preserve future compatibility with role-based permissions
+
+================================
+22. FILE / CODE ORGANIZATION
+================================
+
+Organize the code cleanly.
+
+Suggested areas:
+- media asset DB model / migration
+- media service functions
+- shared media picker modal
+- media detail modal/drawer
+- media library page
+- upload/replace helpers
+
+Requirements:
+- avoid duplicated upload logic
+- centralize shared media behavior
+- keep it maintainable
+
+================================
+23. DOCUMENTATION / HANDOFF
+================================
+
+Add simple notes/comments/documentation for:
+- where the media asset table is defined
+- how media upload flows into the library
+- how picker integration works
+- how safe delete is handled
+- how this can later expand into a fuller media manager
+
+================================
+24. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- the admin CMS has a real shared Media Library
+- editors can browse and reuse uploaded images
+- content forms can select from library or upload new media
+- image management becomes more centralized and scalable
+- broken/messy image workflows are reduced
+- the whole content system feels more professional and maintainable
+
+Please implement this shared Media Library directly into the admin CMS.

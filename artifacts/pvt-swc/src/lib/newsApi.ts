@@ -88,6 +88,35 @@ export interface Series {
   createdAt: string; updatedAt: string;
 }
 
+export interface MediaAsset {
+  id: number;
+  title: string | null;
+  filename: string;
+  originalFilename: string | null;
+  mimeType: string | null;
+  sizeBytes: number | null;
+  width: number | null;
+  height: number | null;
+  storagePathOriginal: string | null;
+  storagePathProcessed: string;
+  storagePathThumbnail: string | null;
+  publicUrl: string;
+  thumbnailUrl: string | null;
+  altText: string | null;
+  watermarkEnabled: boolean;
+  watermarkText: string | null;
+  contentType: string;
+  usageContext: string;
+  tags: string[] | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MediaUsages {
+  articles: { id: number; title: string }[];
+  videos:   { id: number; title: string }[];
+}
+
 export interface ContentMeta {
   topics: Topic[];
   series: Series[];
@@ -212,4 +241,20 @@ export const adminApi = {
   createSeries: (key: string, data: Partial<Series>) => mutate<{ series: Series }>("POST", "/admin/series", data, key).then((d) => d.series),
   updateSeries: (key: string, id: number, data: Partial<Series>) => mutate<{ series: Series }>("PUT", `/admin/series/${id}`, data, key).then((d) => d.series),
   deleteSeries: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/series/${id}`, undefined, key),
+
+  /* media assets */
+  getMedia: (key: string, params?: { q?: string; contentType?: string; sort?: string }) => {
+    const qs = new URLSearchParams(
+      Object.entries(params ?? {}).filter(([, v]) => !!v) as [string, string][],
+    ).toString();
+    return get<{ assets: MediaAsset[] }>(`/admin/media${qs ? `?${qs}` : ""}`, key).then((d) => d.assets);
+  },
+  getMediaAsset: (key: string, id: number) =>
+    get<{ asset: MediaAsset }>(`/admin/media/${id}`, key).then((d) => d.asset),
+  updateMediaAsset: (key: string, id: number, data: { title?: string | null; altText?: string | null; tags?: string[] | null; contentType?: string }) =>
+    mutate<{ asset: MediaAsset }>("PUT", `/admin/media/${id}`, data, key).then((d) => d.asset),
+  deleteMediaAsset: (key: string, id: number, force?: boolean) =>
+    mutate<{ ok: boolean } | { error: string; usages: MediaUsages }>(
+      "DELETE", `/admin/media/${id}${force ? "?force=1" : ""}`, undefined, key,
+    ),
 };

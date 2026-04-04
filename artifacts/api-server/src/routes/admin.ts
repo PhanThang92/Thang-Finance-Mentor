@@ -4,8 +4,8 @@ import { randomBytes } from "crypto";
 import { Router, type Request, type Response, type NextFunction } from "express";
 import multer from "multer";
 import sharp from "sharp";
-import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable } from "@workspace/db";
-import { eq, sql, desc, ilike, or } from "drizzle-orm";
+import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable } from "@workspace/db";
+import { eq, sql, desc, ilike, or, and } from "drizzle-orm";
 
 /* ── Upload dirs ─────────────────────────────────────────────────────── */
 const UPLOADS_DIR = path.join(process.cwd(), "uploads");
@@ -242,10 +242,37 @@ router.post("/upload-image", upload.single("image"), async (req: Request, res: R
     writeFileSync(path.join(DISP_DIR,  dispName),  dispBuffer);
     writeFileSync(path.join(THUMB_DIR, thumbName),  thumbBuffer);
 
+    const dispMeta       = await sharp(dispBuffer).metadata();
+    const contentTypeVal = (req.body.contentType as string | undefined) ?? "shared";
+    const usageCtxVal    = (req.body.usageContext as string | undefined) ?? "cover";
+    const altTextVal     = (req.body.altText as string | undefined) ?? null;
+    const titleVal       = (req.body.title as string | undefined) ?? null;
+
+    const [mediaAsset] = await db.insert(mediaAssetsTable).values({
+      title:                titleVal,
+      filename:             dispName,
+      originalFilename:     req.file.originalname,
+      mimeType:             "image/webp",
+      sizeBytes:            dispBuffer.length,
+      width:                dispMeta.width ?? null,
+      height:               dispMeta.height ?? null,
+      storagePathOriginal:  `orig/${origName}`,
+      storagePathProcessed: `disp/${dispName}`,
+      storagePathThumbnail: `thumb/${thumbName}`,
+      publicUrl:            `/api/uploads/disp/${dispName}`,
+      thumbnailUrl:         `/api/uploads/thumb/${thumbName}`,
+      altText:              altTextVal,
+      watermarkEnabled:     true,
+      watermarkText:        watermarkText(context),
+      contentType:          contentTypeVal,
+      usageContext:         usageCtxVal,
+    }).returning();
+
     res.json({
       original:  `/api/uploads/orig/${origName}`,
       display:   `/api/uploads/disp/${dispName}`,
       thumbnail: `/api/uploads/thumb/${thumbName}`,
+      assetId:   mediaAsset?.id ?? null,
     });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
@@ -678,6 +705,109 @@ router.put("/series/:id", async (req, res) => {
 router.delete("/series/:id", async (req, res) => {
   try {
     await db.delete(seriesTable).where(eq(seriesTable.id, Number(req.params.id)));
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+// ── Media Assets ──────────────────────────────────────────────────────────────
+
+router.get("/media", async (req, res) => {
+  try {
+    const q    = typeof req.query.q           === "string" ? req.query.q           : undefined;
+    const ct   = typeof req.query.contentType === "string" ? req.query.contentType : undefined;
+    const sort = typeof req.query.sort        === "string" ? req.query.sort        : "newest";
+
+    const whereClause = q && ct && ct !== "all"
+      ? and(
+          eq(mediaAssetsTable.contentType, ct),
+          or(ilike(mediaAssetsTable.filename, `%${q}%`), ilike(mediaAssetsTable.altText, `%${q}%`)),
+        )
+      : ct && ct !== "all"
+      ? eq(mediaAssetsTable.contentType, ct)
+      : q
+      ? or(ilike(mediaAssetsTable.filename, `%${q}%`), ilike(mediaAssetsTable.altText, `%${q}%`))
+      : undefined;
+
+    const orderCol = sort === "oldest" ? mediaAssetsTable.createdAt
+      : sort === "name"                ? mediaAssetsTable.filename
+      : sort === "size"                ? desc(mediaAssetsTable.sizeBytes)
+      :                                  desc(mediaAssetsTable.createdAt);
+
+    const assets = await db.select().from(mediaAssetsTable)
+      .where(whereClause)
+      .orderBy(orderCol)
+      .limit(200);
+
+    res.json({ assets });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.get("/media/:id", async (req, res) => {
+  try {
+    const rows = await db.select().from(mediaAssetsTable)
+      .where(eq(mediaAssetsTable.id, Number(req.params.id))).limit(1);
+    if (!rows.length) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ asset: rows[0] });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.put("/media/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const body = req.body as {
+      title?: string | null; altText?: string | null;
+      tags?: string[] | null; contentType?: string; usageContext?: string;
+    };
+    const patch: Record<string, unknown> = { updatedAt: new Date() };
+    if ("title"       in body) patch.title       = body.title;
+    if ("altText"     in body) patch.altText      = body.altText;
+    if ("tags"        in body) patch.tags         = body.tags;
+    if ("contentType" in body) patch.contentType  = body.contentType;
+    if ("usageContext" in body) patch.usageContext = body.usageContext;
+
+    const [asset] = await db.update(mediaAssetsTable)
+      .set(patch as never)
+      .where(eq(mediaAssetsTable.id, id))
+      .returning();
+    if (!asset) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ asset });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.delete("/media/:id", async (req, res) => {
+  try {
+    const id   = Number(req.params.id);
+    const rows = await db.select().from(mediaAssetsTable)
+      .where(eq(mediaAssetsTable.id, id)).limit(1);
+    if (!rows.length) { res.status(404).json({ error: "Not found" }); return; }
+    const asset = rows[0];
+
+    if (!req.query.force) {
+      const artUsage = await db
+        .select({ id: articlesTable.id, title: articlesTable.title })
+        .from(articlesTable)
+        .where(or(
+          eq(articlesTable.coverImageUrl,    asset.publicUrl),
+          eq(articlesTable.coverThumbnailUrl, asset.publicUrl),
+        ));
+      const vidUsage = await db
+        .select({ id: videosTable.id, title: videosTable.title })
+        .from(videosTable)
+        .where(or(
+          eq(videosTable.thumbnailUrl,      asset.publicUrl),
+          eq(videosTable.thumbnailSmallUrl, asset.publicUrl),
+        ));
+
+      if (artUsage.length + vidUsage.length > 0) {
+        res.status(409).json({
+          error: "Ảnh này đang được sử dụng trong nội dung khác.",
+          usages: { articles: artUsage, videos: vidUsage },
+        });
+        return;
+      }
+    }
+
+    await db.delete(mediaAssetsTable).where(eq(mediaAssetsTable.id, id));
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });

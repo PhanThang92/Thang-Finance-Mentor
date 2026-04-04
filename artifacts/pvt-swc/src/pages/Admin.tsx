@@ -11,6 +11,7 @@ import { ArticlesPanel }   from "./admin/ArticlesPanel";
 import { VideosPanel }     from "./admin/VideosPanel";
 import { TopicsPanel }     from "./admin/TopicsPanel";
 import { SeriesPanel }     from "./admin/SeriesPanel";
+import { MediaPanel }      from "./admin/MediaPanel";
 import { A }               from "./admin/shared";
 
 /* ── Types ────────────────────────────────────────────────────────── */
@@ -27,7 +28,8 @@ type Section =
   | "articles"
   | "videos"
   | "topics"
-  | "series";
+  | "series"
+  | "media";
 
 interface NavItem { id: Section; label: string; icon: string; }
 type NavGroup = { group: string; items: NavItem[] };
@@ -54,6 +56,12 @@ const NAV_STRUCTURE: NavGroup[] = [
       { id: "videos",   label: "Video",         icon: "▶" },
       { id: "topics",   label: "Chủ đề",        icon: "◈" },
       { id: "series",   label: "Series",        icon: "⋮" },
+    ],
+  },
+  {
+    group: "Thư viện",
+    items: [
+      { id: "media" as Section, label: "Thư viện ảnh", icon: "⊞" },
     ],
   },
   {
@@ -92,6 +100,7 @@ const SECTION_TITLES: Record<Section, string> = {
   videos:     "Kiến thức · Video",
   topics:     "Kiến thức · Chủ đề",
   series:     "Kiến thức · Series",
+  media:      "Thư viện ảnh",
 };
 
 const STORAGE_KEY = "swc_admin_key";
@@ -315,6 +324,7 @@ export default function Admin() {
           {section === "videos"     && <VideosPanel     adminKey={adminKey} />}
           {section === "topics"     && <TopicsPanel     adminKey={adminKey} />}
           {section === "series"     && <SeriesPanel     adminKey={adminKey} />}
+          {section === "media"      && <MediaPanel      adminKey={adminKey} />}
         </main>
       </div>
     </div>
