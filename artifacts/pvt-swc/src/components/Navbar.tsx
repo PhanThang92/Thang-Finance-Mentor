@@ -87,6 +87,7 @@ export function Navbar() {
   const isHome          = location === "/" || location === "";
   const isProductPage   = location.startsWith("/san-pham");
   const isCommunityPage = location.startsWith("/cong-dong");
+  const isTinTucPage    = location.startsWith("/tin-tuc");
 
   /* Conditional hrefs — hash on home page, absolute on all other pages */
   const sec = (hash: string) => isHome ? hash : `${homeBase}/${hash}`;
@@ -95,6 +96,7 @@ export function Navbar() {
     { name: "Trang chủ",  href: sec("#trang-chu")  },
     { name: "Giới thiệu", href: sec("#gioi-thieu") },
     { name: "Nội dung",   href: sec("#noi-dung")   },
+    { name: "Tin tức",    href: `${homeBase}/tin-tuc` },
     { name: "Cộng đồng",  href: `${homeBase}/cong-dong` },
     {
       name: "Sản phẩm",
@@ -127,8 +129,8 @@ export function Navbar() {
   useEffect(() => {
     linkRefs.current.forEach((el, i) => {
       if (!el) return;
-      /* index 3 = "Cộng đồng", index 4 = "Sản phẩm" trigger */
-      const isActive = (i === 4 && isProductPage) || (i === 3 && isCommunityPage);
+      /* index 3 = "Tin tức", index 4 = "Cộng đồng", index 5 = "Sản phẩm" trigger */
+      const isActive = (i === 5 && isProductPage) || (i === 4 && isCommunityPage) || (i === 3 && isTinTucPage);
       el.style.color      = isActive
         ? (isScrolled ? SCROLLED.linkActive : HERO.linkActive)
         : (isScrolled ? SCROLLED.linkColor  : HERO.linkColor);
@@ -145,7 +147,7 @@ export function Navbar() {
       cta.style.borderColor = HERO.ctaBorder;
       cta.style.boxShadow   = "none";
     }
-  }, [isScrolled, isProductPage, isCommunityPage]);
+  }, [isScrolled, isProductPage, isCommunityPage, isTinTucPage]);
 
   /* ── Dropdown open / close with delay ───────────────────── */
   const openDropdown = () => {

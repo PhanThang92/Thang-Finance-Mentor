@@ -1,0 +1,89 @@
+Build the “Tin tức” system for the Thắng SWC website using a database-driven structure, not hardcoded posts.
+
+Goals:
+- support 2 main news categories
+- support product-related articles
+- support tags/hashtags for filtering and search
+- make it easy to add new posts later
+- preserve the premium editorial style of the website
+
+Please implement the following:
+
+1. Create database tables / models for:
+- posts
+- categories
+- products
+- tags
+- post_tags
+
+2. Categories:
+- “Tư duy đầu tư”
+- “Hệ sinh thái sản phẩm”
+
+3. Products:
+- “Road to $1M · SWC PASS”
+- “ATLAS”
+
+4. Posts should support these fields:
+- title
+- slug
+- excerpt
+- content
+- featured_image
+- category_id
+- product_id (optional)
+- status (draft/published)
+- published_at
+- author_name
+- seo_title
+- seo_description
+- created_at
+- updated_at
+
+5. Tags system:
+- create tags table and many-to-many relation with posts
+- allow each post to have multiple tags
+- allow tags such as:
+  - tài-chính-cá-nhân
+  - lạm-phát
+  - lãi-kép
+  - road-to-1m
+  - atlas
+  - spv
+  - bất-động-sản-số
+
+6. Create these public routes:
+- `/tin-tuc`
+- `/tin-tuc/tu-duy-dau-tu`
+- `/tin-tuc/he-sinh-thai-san-pham`
+- `/tin-tuc/san-pham/road-to-1m`
+- `/tin-tuc/san-pham/atlas`
+- `/tin-tuc/tag/:slug`
+- `/tin-tuc/:category/:slug` or equivalent clean article route
+
+7. Public UI requirements:
+- premium editorial layout
+- category filters
+- product filters
+- tag filters
+- search by keyword
+- article cards with category, title, excerpt, date
+- article detail pages with tags and related articles
+
+8. Add a simple content management/admin system for adding new posts
+- route protected for admin use
+- create new post form
+- edit post form
+- save as draft
+- publish post
+- assign category
+- assign related product
+- assign multiple tags
+- upload/select featured image
+
+9. Keep everything consistent with the current shared navbar and footer.
+
+Important:
+- do not make it look like a generic blog engine
+- keep it premium, calm, and editorial
+- structure it so future product articles can easily be added
