@@ -1,0 +1,103 @@
+Build/refine the admin screen for:
+“Cộng đồng”
+
+This screen is part of the existing Thắng SWC admin system.
+Do not redesign the whole admin.
+Keep the current clean light admin style and sidebar structure.
+
+Goal:
+Create a practical admin screen to manage the Community Hub page and all community-related participation options in the Thắng SWC ecosystem.
+
+Requirements:
+
+1. Page header
+Show:
+- title: “Cộng đồng”
+- short subtitle: “Quản lý nội dung, hình thức tham gia và liên kết cộng đồng”
+- optional right-side action: “Xem trang cộng đồng”
+
+2. Use a tab-based editor
+Create these tabs:
+- Thông tin chung
+- Hình thức tham gia
+- Liên kết cộng đồng
+- CTA & Form
+
+3. Tab: Thông tin chung
+Fields:
+- Hero title
+- Hero supporting text
+- CTA button 1 text + link
+- CTA button 2 text + link
+- optional short intro / section subtitle
+
+This tab should control the top section of the public community page.
+
+4. Tab: Hình thức tham gia
+Manage the 3 participation paths shown on the public community page.
+
+Create editable items such as:
+- Theo dõi cộng đồng mở
+- Tham gia nhóm trao đổi
+- Tìm hiểu hệ sinh thái chuyên sâu
+
+Each item should support:
+- title
+- short description
+- icon or visual type if supported
+- display order
+- visible/hidden toggle
+
+Allow reordering if practical.
+
+5. Tab: Liên kết cộng đồng
+Manage external or internal community destinations.
+
+Support fields for:
+- Cộng đồng mở (link)
+- Nhóm trao đổi (link)
+- Hệ sinh thái chuyên sâu / đăng ký (link)
+- optional platform labels:
+  - Facebook
+  - Telegram
+  - Zalo
+  - Discord
+  - internal page link
+
+Keep this practical and editable.
+
+6. Tab: CTA & Form
+Manage the join/signup section used by:
+- the community page
+- the navbar CTA “Tham gia cộng đồng”
+
+Fields:
+- section title
+- section supporting text
+- form title
+- success message
+- recipient email or form destination config if practical
+
+Form options:
+- Theo dõi cộng đồng mở
+- Tham gia nhóm trao đổi
+- Tìm hiểu hệ sinh thái chuyên sâu
+
+Support:
+- visible/hidden toggle
+- editable labels
+
+7. UX details
+- keep the screen practical and easy to edit
+- make it useful for updating community structure without touching code
+- preserve light, clean admin styling
+- do not overbuild
+
+8. Keep consistency
+- preserve current admin UI system
+- integrate with existing shared database/admin structure
+- make the screen scalable for future community options
+
+Important:
+This is a real working admin screen, not just a mockup.
+It should make the community page and community CTA system easy to manage dynamically.
