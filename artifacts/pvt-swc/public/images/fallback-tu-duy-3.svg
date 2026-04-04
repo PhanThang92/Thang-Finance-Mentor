@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a2220"/>
+      <stop offset="100%" stop-color="#050c0a"/>
+    </linearGradient>
+    <radialGradient id="gA" cx="42%" cy="46%" r="28%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gB" cx="58%" cy="46%" r="28%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gC" cx="50%" cy="60%" r="28%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Large background context rings -->
+  <circle cx="600" cy="315" r="430" stroke="rgba(52,160,140,0.03)" stroke-width="1"/>
+  <circle cx="600" cy="315" r="310" stroke="rgba(52,160,140,0.04)" stroke-width="1"/>
+
+  <!-- Three overlapping circles — Risk · Time · Knowledge -->
+  <!-- Circle A (top-left) -->
+  <circle cx="490" cy="265" r="155" fill="url(#gA)" stroke="rgba(52,160,140,0.18)" stroke-width="1.2"/>
+  <!-- Circle B (top-right) -->
+  <circle cx="710" cy="265" r="155" fill="url(#gB)" stroke="rgba(52,160,140,0.18)" stroke-width="1.2"/>
+  <!-- Circle C (bottom-centre) -->
+  <circle cx="600" cy="405" r="155" fill="url(#gC)" stroke="rgba(52,160,140,0.18)" stroke-width="1.2"/>
+
+  <!-- Intersection glow — triple overlap -->
+  <circle cx="600" cy="315" r="52" fill="rgba(52,160,140,0.22)" stroke="rgba(52,160,140,0.40)" stroke-width="1"/>
+  <circle cx="600" cy="315" r="24" fill="rgba(52,160,140,0.38)"/>
+  <circle cx="600" cy="315" r="9"  fill="rgba(52,160,140,0.80)"/>
+
+  <!-- Circle labels -->
+  <text x="430" y="215" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600"
+    letter-spacing="0.14em" fill="rgba(255,255,255,0.28)">RỦI RO</text>
+  <text x="770" y="215" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600"
+    letter-spacing="0.14em" fill="rgba(255,255,255,0.28)">THỜI GIAN</text>
+  <text x="600" y="520" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600"
+    letter-spacing="0.14em" fill="rgba(255,255,255,0.28)">TRI THỨC</text>
+
+  <!-- Horizontal guide line -->
+  <line x1="0" y1="315" x2="1200" y2="315" stroke="rgba(52,160,140,0.04)" stroke-width="1"/>
+
+  <!-- Accent dots — top right -->
+  <g fill="rgba(52,160,140,0.15)">
+    <circle cx="1050" cy="90"  r="2"/><circle cx="1080" cy="90"  r="2"/><circle cx="1110" cy="90"  r="2"/>
+    <circle cx="1050" cy="120" r="2"/><circle cx="1080" cy="120" r="2"/><circle cx="1110" cy="120" r="2"/>
+    <circle cx="1050" cy="150" r="2"/><circle cx="1080" cy="150" r="2"/><circle cx="1110" cy="150" r="2"/>
+  </g>
+  <!-- Accent dots — bottom left -->
+  <g fill="rgba(52,160,140,0.12)">
+    <circle cx="90"  cy="480" r="2"/><circle cx="120" cy="480" r="2"/><circle cx="150" cy="480" r="2"/>
+    <circle cx="90"  cy="510" r="2"/><circle cx="120" cy="510" r="2"/><circle cx="150" cy="510" r="2"/>
+  </g>
+
+  <line x1="0" y1="600" x2="1200" y2="600" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+  <text x="60" y="580" font-family="system-ui, sans-serif" font-size="11" font-weight="600"
+    letter-spacing="0.18em" fill="rgba(255,255,255,0.20)">THẮNG SWC · TƯ DUY ĐẦU TƯ</text>
+</svg>

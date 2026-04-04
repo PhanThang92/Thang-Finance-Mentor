@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#091f1d"/>
+      <stop offset="100%" stop-color="#040c0b"/>
+    </linearGradient>
+    <radialGradient id="globeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.14"/>
+      <stop offset="60%" stop-color="#22917f" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Globe glow fill -->
+  <circle cx="600" cy="315" r="240" fill="url(#globeGlow)"/>
+
+  <!-- Globe outline -->
+  <circle cx="600" cy="315" r="238" stroke="rgba(52,160,140,0.18)" stroke-width="1.2"/>
+
+  <!-- Latitude lines (horizontal ellipses) -->
+  <ellipse cx="600" cy="315" rx="238" ry="8"   stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+  <ellipse cx="600" cy="235" rx="218" ry="28"  stroke="rgba(52,160,140,0.09)" stroke-width="1"/>
+  <ellipse cx="600" cy="175" rx="170" ry="25"  stroke="rgba(52,160,140,0.08)" stroke-width="1"/>
+  <ellipse cx="600" cy="130" rx="108" ry="18"  stroke="rgba(52,160,140,0.07)" stroke-width="1"/>
+  <ellipse cx="600" cy="395" rx="218" ry="28"  stroke="rgba(52,160,140,0.09)" stroke-width="1"/>
+  <ellipse cx="600" cy="455" rx="170" ry="25"  stroke="rgba(52,160,140,0.08)" stroke-width="1"/>
+  <ellipse cx="600" cy="500" rx="108" ry="18"  stroke="rgba(52,160,140,0.07)" stroke-width="1"/>
+
+  <!-- Longitude lines (vertical ellipses through poles) -->
+  <ellipse cx="600" cy="315" rx="10"  ry="238" stroke="rgba(52,160,140,0.09)" stroke-width="1"/>
+  <ellipse cx="600" cy="315" rx="80"  ry="238" stroke="rgba(52,160,140,0.08)" stroke-width="1"/>
+  <ellipse cx="600" cy="315" rx="155" ry="238" stroke="rgba(52,160,140,0.07)" stroke-width="1"/>
+  <ellipse cx="600" cy="315" rx="215" ry="238" stroke="rgba(52,160,140,0.06)" stroke-width="1"/>
+
+  <!-- Poles -->
+  <circle cx="600" cy="77"  r="4" fill="rgba(52,160,140,0.50)"/>
+  <circle cx="600" cy="553" r="4" fill="rgba(52,160,140,0.30)"/>
+
+  <!-- Equator highlight -->
+  <ellipse cx="600" cy="315" rx="238" ry="8" stroke="rgba(52,160,140,0.28)" stroke-width="1.5"/>
+
+  <!-- Globe outer atmosphere -->
+  <circle cx="600" cy="315" r="255" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
+  <circle cx="600" cy="315" r="280" stroke="rgba(52,160,140,0.03)" stroke-width="1"/>
+
+  <!-- Radiating lines from globe edge (signal lines) -->
+  <line x1="838"  y1="315" x2="980"  y2="315" stroke="rgba(52,160,140,0.14)" stroke-width="1" stroke-dasharray="4 6"/>
+  <line x1="810"  y1="235" x2="940"  y2="180" stroke="rgba(52,160,140,0.10)" stroke-width="1" stroke-dasharray="3 7"/>
+  <line x1="810"  y1="395" x2="940"  y2="450" stroke="rgba(52,160,140,0.10)" stroke-width="1" stroke-dasharray="3 7"/>
+  <line x1="362"  y1="315" x2="220"  y2="315" stroke="rgba(52,160,140,0.14)" stroke-width="1" stroke-dasharray="4 6"/>
+
+  <!-- Signal endpoint dots -->
+  <circle cx="980" cy="315" r="4" fill="rgba(52,160,140,0.40)"/>
+  <circle cx="980" cy="315" r="8" fill="rgba(52,160,140,0.10)"/>
+  <circle cx="220" cy="315" r="4" fill="rgba(52,160,140,0.35)"/>
+
+  <!-- Accent dot grid — top right -->
+  <g fill="rgba(52,160,140,0.15)">
+    <circle cx="1060" cy="80"  r="2"/><circle cx="1090" cy="80"  r="2"/><circle cx="1120" cy="80"  r="2"/>
+    <circle cx="1060" cy="110" r="2"/><circle cx="1090" cy="110" r="2"/><circle cx="1120" cy="110" r="2"/>
+    <circle cx="1060" cy="140" r="2"/><circle cx="1090" cy="140" r="2"/><circle cx="1120" cy="140" r="2"/>
+  </g>
+
+  <line x1="0" y1="600" x2="1200" y2="600" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+  <text x="60" y="580" font-family="system-ui, sans-serif" font-size="11" font-weight="600"
+    letter-spacing="0.18em" fill="rgba(255,255,255,0.20)">THẮNG SWC · ATLAS</text>
+</svg>

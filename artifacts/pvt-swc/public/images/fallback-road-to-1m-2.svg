@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0b2320"/>
+      <stop offset="100%" stop-color="#050d0b"/>
+    </linearGradient>
+    <linearGradient id="stepGlow" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0.24"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Background ascending glow -->
+  <ellipse cx="800" cy="240" rx="450" ry="220" fill="rgba(34,145,127,0.05)"/>
+
+  <!-- Grid (subtle) -->
+  <line x1="0" y1="490" x2="1200" y2="490" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+  <line x1="0" y1="390" x2="1200" y2="390" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
+  <line x1="0" y1="290" x2="1200" y2="290" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
+  <line x1="0" y1="190" x2="1200" y2="190" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
+
+  <!-- Staircase — 6 steps ascending left to right -->
+  <!-- Step 1 (lowest) -->
+  <rect x="130" y="440" width="130" height="50" rx="2" fill="rgba(52,160,140,0.14)"/>
+  <line x1="130" y1="440" x2="260" y2="440" stroke="rgba(52,160,140,0.45)" stroke-width="1.5"/>
+
+  <!-- Step 2 -->
+  <rect x="260" y="370" width="130" height="120" rx="2" fill="rgba(52,160,140,0.19)"/>
+  <line x1="260" y1="370" x2="390" y2="370" stroke="rgba(52,160,140,0.52)" stroke-width="1.5"/>
+
+  <!-- Step 3 -->
+  <rect x="390" y="300" width="130" height="190" rx="2" fill="rgba(52,160,140,0.24)"/>
+  <line x1="390" y1="300" x2="520" y2="300" stroke="rgba(52,160,140,0.58)" stroke-width="1.5"/>
+
+  <!-- Step 4 -->
+  <rect x="520" y="235" width="130" height="255" rx="2" fill="rgba(52,160,140,0.31)"/>
+  <line x1="520" y1="235" x2="650" y2="235" stroke="rgba(52,160,140,0.65)" stroke-width="1.5"/>
+
+  <!-- Step 5 -->
+  <rect x="650" y="175" width="130" height="315" rx="2" fill="rgba(52,160,140,0.38)"/>
+  <line x1="650" y1="175" x2="780" y2="175" stroke="rgba(52,160,140,0.72)" stroke-width="1.5"/>
+
+  <!-- Step 6 (peak) -->
+  <rect x="780" y="120" width="130" height="370" rx="2" fill="rgba(52,160,140,0.46)"/>
+  <line x1="780" y1="120" x2="910" y2="120" stroke="rgba(52,160,140,0.92)" stroke-width="2"/>
+
+  <!-- Milestone circle at top of peak -->
+  <circle cx="845" cy="104" r="20" fill="rgba(52,160,140,0.12)" stroke="rgba(52,160,140,0.45)" stroke-width="1.2"/>
+  <text x="845" y="108" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700"
+    fill="rgba(52,160,140,0.90)">$1M</text>
+
+  <!-- Diagonal trend arrow across steps -->
+  <polyline points="195,458 325,388 455,318 585,253 715,193 845,138"
+    stroke="rgba(52,160,140,0.28)" stroke-width="1.5" stroke-dasharray="6 5" stroke-linecap="round"/>
+
+  <!-- Milestone dots on trend line -->
+  <circle cx="195" cy="458" r="4" fill="rgba(52,160,140,0.40)"/>
+  <circle cx="455" cy="318" r="4" fill="rgba(52,160,140,0.52)"/>
+  <circle cx="715" cy="193" r="4" fill="rgba(52,160,140,0.65)"/>
+
+  <!-- Accent dots -->
+  <g fill="rgba(52,160,140,0.15)">
+    <circle cx="1000" cy="430" r="2"/><circle cx="1030" cy="430" r="2"/><circle cx="1060" cy="430" r="2"/>
+    <circle cx="1000" cy="460" r="2"/><circle cx="1030" cy="460" r="2"/><circle cx="1060" cy="460" r="2"/>
+  </g>
+  <g fill="rgba(52,160,140,0.12)">
+    <circle cx="80" cy="100" r="2"/><circle cx="110" cy="100" r="2"/><circle cx="140" cy="100" r="2"/>
+    <circle cx="80" cy="130" r="2"/><circle cx="110" cy="130" r="2"/><circle cx="140" cy="130" r="2"/>
+  </g>
+
+  <line x1="0" y1="600" x2="1200" y2="600" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+  <text x="60" y="580" font-family="system-ui, sans-serif" font-size="11" font-weight="600"
+    letter-spacing="0.18em" fill="rgba(255,255,255,0.20)">THẮNG SWC · ROAD TO $1M</text>
+</svg>

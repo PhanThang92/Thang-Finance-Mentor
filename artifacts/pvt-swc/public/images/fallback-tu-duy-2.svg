@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0b2321"/>
+      <stop offset="100%" stop-color="#050d0b"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Concentric rings — compass dial -->
+  <circle cx="600" cy="315" r="360" stroke="rgba(52,160,140,0.04)" stroke-width="1"/>
+  <circle cx="600" cy="315" r="270" stroke="rgba(52,160,140,0.06)" stroke-width="1"/>
+  <circle cx="600" cy="315" r="190" stroke="rgba(52,160,140,0.08)" stroke-width="1"/>
+  <circle cx="600" cy="315" r="115" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+
+  <!-- Radial glow centre -->
+  <circle cx="600" cy="315" r="230" fill="url(#glow)"/>
+
+  <!-- Cardinal spoke lines -->
+  <line x1="600" y1="55"  x2="600" y2="575" stroke="rgba(52,160,140,0.09)" stroke-width="1" stroke-dasharray="5 9"/>
+  <line x1="340" y1="315" x2="860" y2="315" stroke="rgba(52,160,140,0.09)" stroke-width="1" stroke-dasharray="5 9"/>
+
+  <!-- Diagonal spokes -->
+  <line x1="416" y1="131" x2="784" y2="499" stroke="rgba(52,160,140,0.05)" stroke-width="1" stroke-dasharray="3 11"/>
+  <line x1="784" y1="131" x2="416" y2="499" stroke="rgba(52,160,140,0.05)" stroke-width="1" stroke-dasharray="3 11"/>
+
+  <!-- Degree tick marks on outer ring (every 30°) -->
+  <g stroke="rgba(52,160,140,0.25)" stroke-width="1.5" stroke-linecap="round">
+    <!-- 0° top -->  <line x1="600" y1="79"  x2="600" y2="93"/>
+    <!-- 30° -->     <line x1="780" y1="124" x2="774" y2="137"/>
+    <!-- 60° -->     <line x1="911" y1="235" x2="901" y2="244"/>
+    <!-- 90° -->     <line x1="960" y1="315" x2="946" y2="315"/>
+    <!-- 120° -->    <line x1="911" y1="395" x2="901" y2="386"/>
+    <!-- 150° -->    <line x1="780" y1="506" x2="774" y2="493"/>
+    <!-- 180° -->    <line x1="600" y1="551" x2="600" y2="537"/>
+    <!-- 210° -->    <line x1="420" y1="506" x2="426" y2="493"/>
+    <!-- 240° -->    <line x1="289" y1="395" x2="299" y2="386"/>
+    <!-- 270° -->    <line x1="240" y1="315" x2="254" y2="315"/>
+    <!-- 300° -->    <line x1="289" y1="235" x2="299" y2="244"/>
+    <!-- 330° -->    <line x1="420" y1="124" x2="426" y2="137"/>
+  </g>
+
+  <!-- Compass needle — North (teal, bright) -->
+  <polygon points="600,175 591,315 600,299 609,315" fill="rgba(52,160,140,0.75)"/>
+  <!-- Compass needle — South (dim) -->
+  <polygon points="600,455 591,315 600,331 609,315" fill="rgba(52,160,140,0.18)"/>
+
+  <!-- Center pivot -->
+  <circle cx="600" cy="315" r="22" fill="rgba(52,160,140,0.08)" stroke="rgba(52,160,140,0.20)" stroke-width="1"/>
+  <circle cx="600" cy="315" r="8"  fill="rgba(52,160,140,0.55)"/>
+  <circle cx="600" cy="315" r="3.5" fill="rgba(255,255,255,0.50)"/>
+
+  <!-- North label -->
+  <text x="600" y="155" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700"
+    letter-spacing="0.20em" fill="rgba(52,160,140,0.60)">N</text>
+
+  <!-- Accent dot grid — top left -->
+  <g fill="rgba(52,160,140,0.15)">
+    <circle cx="80"  cy="80"  r="2"/><circle cx="110" cy="80"  r="2"/><circle cx="140" cy="80"  r="2"/>
+    <circle cx="80"  cy="110" r="2"/><circle cx="110" cy="110" r="2"/><circle cx="140" cy="110" r="2"/>
+    <circle cx="80"  cy="140" r="2"/><circle cx="110" cy="140" r="2"/><circle cx="140" cy="140" r="2"/>
+  </g>
+  <!-- Accent dot grid — bottom right -->
+  <g fill="rgba(52,160,140,0.12)">
+    <circle cx="1060" cy="490" r="2"/><circle cx="1090" cy="490" r="2"/><circle cx="1120" cy="490" r="2"/>
+    <circle cx="1060" cy="520" r="2"/><circle cx="1090" cy="520" r="2"/><circle cx="1120" cy="520" r="2"/>
+  </g>
+
+  <line x1="0" y1="600" x2="1200" y2="600" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+  <text x="60" y="580" font-family="system-ui, sans-serif" font-size="11" font-weight="600"
+    letter-spacing="0.18em" fill="rgba(255,255,255,0.20)">THẮNG SWC · TƯ DUY ĐẦU TƯ</text>
+</svg>

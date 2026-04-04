@@ -2,21 +2,41 @@ import React, { useEffect, useState, useCallback } from "react";
 import { adminApi, type NewsPost, type NewsCategory, type NewsProduct, type NewsTag } from "@/lib/newsApi";
 import { A, s, fmtDate, slugify } from "./shared";
 
-/* Compute preview image for admin editor */
+/* Curated fallback pools (mirrors postImage.ts) */
+const ADMIN_POOLS: Record<string, string[]> = {
+  atlas:           ["/images/fallback-atlas.svg", "/images/fallback-atlas-2.svg", "/images/fallback-atlas-3.svg"],
+  "road-to-1m":   ["/images/fallback-road-to-1m.svg", "/images/fallback-road-to-1m-2.svg", "/images/fallback-road-to-1m-3.svg"],
+  "tu-duy-dau-tu":["/images/fallback-tu-duy.svg", "/images/fallback-tu-duy-2.svg", "/images/fallback-tu-duy-3.svg"],
+  default:        ["/images/fallback-default.svg", "/images/fallback-default-2.svg"],
+};
+
+/* Compute preview image for admin editor (postId=0 → first of pool) */
 function getAdminPreviewImage(
   featuredImage: string | null | undefined,
+  postId: number | null | undefined,
   productId: number | null | undefined,
   categoryId: number | null | undefined,
   prods: NewsProduct[],
   cats: NewsCategory[],
-): { src: string; isFallback: boolean } {
-  if (featuredImage?.trim()) return { src: featuredImage.trim(), isFallback: false };
+): { src: string; isFallback: boolean; poolSize: number } {
+  if (featuredImage?.trim()) return { src: featuredImage.trim(), isFallback: false, poolSize: 1 };
+  const seed = postId ?? 0;
   const prod = prods.find((p) => p.id === productId);
-  if (prod?.slug === "atlas")      return { src: "/images/fallback-atlas.svg", isFallback: true };
-  if (prod?.slug === "road-to-1m") return { src: "/images/fallback-road-to-1m.svg", isFallback: true };
+  if (prod?.slug === "atlas") {
+    const pool = ADMIN_POOLS.atlas;
+    return { src: pool[seed % pool.length], isFallback: true, poolSize: pool.length };
+  }
+  if (prod?.slug === "road-to-1m") {
+    const pool = ADMIN_POOLS["road-to-1m"];
+    return { src: pool[seed % pool.length], isFallback: true, poolSize: pool.length };
+  }
   const cat = cats.find((c) => c.id === categoryId);
-  if (cat?.slug === "tu-duy-dau-tu") return { src: "/images/fallback-tu-duy.svg", isFallback: true };
-  return { src: "/images/fallback-default.svg", isFallback: true };
+  if (cat?.slug === "tu-duy-dau-tu") {
+    const pool = ADMIN_POOLS["tu-duy-dau-tu"];
+    return { src: pool[seed % pool.length], isFallback: true, poolSize: pool.length };
+  }
+  const pool = ADMIN_POOLS.default;
+  return { src: pool[seed % pool.length], isFallback: true, poolSize: pool.length };
 }
 
 const EMPTY: NewsPost & { tagIds: number[] } = {
@@ -254,6 +274,7 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
 
           <ImageCard
             featuredImage={form.featuredImage}
+            postId={form.id}
             productId={form.productId}
             categoryId={form.categoryId}
             prods={prods}
@@ -268,16 +289,17 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
 
 /* ── Image card with live preview ──────────────────────────────────── */
 function ImageCard({
-  featuredImage, productId, categoryId, prods, cats, onChange,
+  featuredImage, postId, productId, categoryId, prods, cats, onChange,
 }: {
   featuredImage: string | null | undefined;
+  postId: number | null | undefined;
   productId: number | null | undefined;
   categoryId: number | null | undefined;
   prods: NewsProduct[];
   cats: NewsCategory[];
   onChange: (v: string) => void;
 }) {
-  const { src, isFallback } = getAdminPreviewImage(featuredImage, productId, categoryId, prods, cats);
+  const { src, isFallback, poolSize } = getAdminPreviewImage(featuredImage, postId, productId, categoryId, prods, cats);
   const [imgErr, setImgErr]  = React.useState(false);
 
   React.useEffect(() => { setImgErr(false); }, [featuredImage]);
@@ -341,7 +363,9 @@ function ImageCard({
       )}
 
       <p style={{ fontSize: "11px", color: A.textLight, lineHeight: 1.65, marginTop: "0.625rem" }}>
-        Nếu để trống, hệ thống tự chọn ảnh phù hợp theo sản phẩm hoặc chuyên mục. Xem preview bên trên.
+        {isFallback
+          ? `Để trống = ảnh tự động (${poolSize} lựa chọn theo nhóm). Mỗi bài chọn khác nhau dựa theo ID.`
+          : "Ảnh tuỳ chỉnh đang được sử dụng. Xoá URL để quay lại ảnh tự động."}
       </p>
     </div>
   );

@@ -94,3 +94,29 @@ Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHea
 ### `scripts` (`@workspace/scripts`)
 
 Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.
+
+---
+
+## Phan Văn Thắng SWC — Frontend App (`artifacts/pvt-swc`)
+
+Personal brand landing page. Vietnamese only, light mode, dark-teal design system.
+
+### Article Fallback Image System
+
+`src/lib/postImage.ts` provides `getPostImage(post)` which returns a deterministic image per post:
+
+1. Custom `featuredImage` URL (if set)
+2. Product-based fallback pool (3 images each):
+   - `atlas` → `fallback-atlas.svg`, `fallback-atlas-2.svg`, `fallback-atlas-3.svg`
+   - `road-to-1m` → `fallback-road-to-1m.svg`, `fallback-road-to-1m-2.svg`, `fallback-road-to-1m-3.svg`
+3. Category-based fallback pool (3 images):
+   - `tu-duy-dau-tu` → `fallback-tu-duy.svg`, `fallback-tu-duy-2.svg`, `fallback-tu-duy-3.svg`
+4. Default pool (2 images): `fallback-default.svg`, `fallback-default-2.svg`
+
+Selection is deterministic: `pool[postId % poolSize]`. Same post always shows the same image. Different posts in the same group show different images. All fallbacks live in `public/images/`.
+
+### Admin CMS (`/admin`)
+
+- Login key: `swc-admin-2026` (overridable via `ADMIN_KEY` env var, stored in localStorage as `swc_admin_key`)
+- 6 panels: Dashboard, Posts CRUD, Taxonomy, Products, Leads, Settings
+- PostsPanel image card shows live 16:9 preview, pool size hint, and inline error state for broken URLs
