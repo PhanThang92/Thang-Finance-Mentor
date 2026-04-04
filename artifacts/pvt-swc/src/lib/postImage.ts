@@ -46,17 +46,16 @@ function pickFromPool(pool: readonly string[], postId?: number | null, slug?: st
 /**
  * Returns the best image URL for a post.
  * Priority:
- *   1. post.featuredImage (if set and non-empty)
- *   2. product-based pool   (atlas | road-to-1m)
- *   3. category-based pool  (tu-duy-dau-tu)
- *   4. default pool
- *
- * Within each pool the image is chosen deterministically by post ID / slug,
- * so different posts in the same group show different fallback visuals.
+ *   1. post.featuredImageDisplay (processed + watermarked upload — preferred)
+ *   2. post.featuredImage (raw URL or original upload)
+ *   3. product-based pool (atlas | road-to-1m)
+ *   4. category-based pool (tu-duy-dau-tu)
+ *   5. default pool
  */
 export function getPostImage(
-  post: Pick<NewsPost, "id" | "slug" | "featuredImage" | "product" | "category">,
+  post: Pick<NewsPost, "id" | "slug" | "featuredImage" | "featuredImageDisplay" | "product" | "category">,
 ): string {
+  if (post.featuredImageDisplay) return post.featuredImageDisplay;
   if (post.featuredImage) return post.featuredImage;
 
   const productSlug = post.product?.slug ?? "";
@@ -72,7 +71,24 @@ export function getPostImage(
   return pickFromPool(POOLS.default, post.id, post.slug);
 }
 
-/** Returns true if the image is a generated fallback (not a real photo) */
-export function isFallbackImage(post: Pick<NewsPost, "featuredImage">): boolean {
-  return !post.featuredImage;
+/** Returns true if the image is a generated fallback (not a real uploaded photo) */
+export function isFallbackImage(
+  post: Pick<NewsPost, "featuredImage" | "featuredImageDisplay">,
+): boolean {
+  return !post.featuredImageDisplay && !post.featuredImage;
+}
+
+/**
+ * Watermark text label based on post context — mirrors server processing logic.
+ * Used to overlay consistent CSS watermark text on fallback images.
+ */
+export function getWatermarkText(
+  post: Pick<NewsPost, "product" | "category">,
+): string {
+  const productSlug = post.product?.slug ?? "";
+  if (productSlug === "atlas") return "THẮNG SWC · ATLAS";
+  if (productSlug === "road-to-1m") return "THẮNG SWC · ROAD TO $1M";
+  const catSlug = post.category?.slug ?? "";
+  if (catSlug === "tu-duy-dau-tu") return "THẮNG SWC · TÀI CHÍNH";
+  return "THẮNG SWC";
 }

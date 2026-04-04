@@ -4,7 +4,8 @@ export interface NewsProduct   { id: number; name: string; slug: string; descrip
 export interface NewsTag       { id: number; name: string; slug: string; createdAt: string; }
 export interface NewsPost {
   id: number; title: string; slug: string; excerpt: string | null; content: string | null;
-  featuredImage: string | null; categoryId: number | null; productId: number | null;
+  featuredImage: string | null; featuredImageDisplay: string | null;
+  categoryId: number | null; productId: number | null;
   status: string; publishedAt: string | null; authorName: string;
   seoTitle: string | null; seoDescription: string | null;
   isFeatured: boolean; showOnHomepage: boolean; showInRelated: boolean;
@@ -90,6 +91,20 @@ export const adminApi = {
   createProduct: (key: string, data: { name: string; slug: string; description?: string }) => mutate<{ product: NewsProduct }>("POST", "/admin/products", data, key).then((d) => d.product),
   updateProduct: (key: string, id: number, data: { name: string; slug: string; description?: string }) => mutate<{ product: NewsProduct }>("PUT", `/admin/products/${id}`, data, key).then((d) => d.product),
   deleteProduct: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/products/${id}`, undefined, key),
+
+  /* image upload */
+  uploadImage: async (key: string, file: File, context?: string): Promise<{ original: string; display: string }> => {
+    const fd = new FormData();
+    fd.append("image", file);
+    if (context) fd.append("context", context);
+    const r = await fetch(`${BASE}/admin/upload-image`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}` },
+      body: fd,
+    });
+    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error((e as { error?: string }).error ?? `Upload error ${r.status}`); }
+    return r.json();
+  },
 
   /* leads */
   getLeads: (key: string, params?: { status?: string; q?: string }) => {

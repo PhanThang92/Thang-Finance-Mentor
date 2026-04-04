@@ -33,6 +33,7 @@ export const newsPostsTable = pgTable("news_posts", {
   excerpt: text("excerpt"),
   content: text("content"),
   featuredImage: text("featured_image"),
+  featuredImageDisplay: text("featured_image_display"),
   categoryId: integer("category_id").references(() => newsCategoriesTable.id),
   productId: integer("product_id").references(() => newsProductsTable.id),
   status: text("status").notNull().default("draft"),

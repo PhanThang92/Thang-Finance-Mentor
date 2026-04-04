@@ -1,0 +1,101 @@
+Refine the article/news featured image system so it becomes a complete premium workflow for the Thắng SWC website.
+
+Goals:
+- support direct image upload in the admin
+- automatically optimize uploaded images for consistent display
+- automatically apply a subtle brand watermark to displayed article images
+- preserve smart fallback images when no custom image is uploaded
+- keep everything premium, editorial, and consistent with the Thắng SWC brand
+
+Please implement these exact requirements:
+
+1. Featured image upload workflow
+In the admin post editor:
+- keep support for manual image URL if needed
+- add direct image upload from the computer
+- after upload, store the original image properly
+- show image preview
+- allow replace/remove image
+- keep the current note logic for fallback images if no image is uploaded
+
+2. Separate original image and display image
+Do not rely only on the raw original upload for frontend display.
+Instead:
+- keep the original uploaded image
+- generate processed display versions automatically for frontend use
+
+3. Auto processing for uploaded images
+When an image is uploaded:
+- automatically resize/optimize it
+- generate a clean display version for article cards and article hero use
+- keep the display result visually consistent across the site
+
+4. Auto crop / aspect ratio handling
+Apply a consistent crop/resize strategy so article images look clean and aligned.
+
+Recommended behavior:
+- use a clean article-card ratio such as 16:9 or another consistent editorial ratio
+- use a matching premium hero/article image ratio where appropriate
+- use smart center crop by default
+- keep the result elegant and not awkwardly cut
+
+If practical, support a simple focal-point or crop preview later, but for now a good automatic crop is enough.
+
+5. Automatic watermark
+When generating the display image, apply a subtle watermark overlay.
+
+Watermark style:
+- premium
+- small
+- elegant
+- uppercase
+- subtle opacity
+- consistent with the brand
+- not loud or spammy
+- placed in a tasteful lower corner area
+
+Use dynamic watermark text based on article context:
+- for investment/thought articles:
+  “THẮNG SWC · TÀI CHÍNH”
+- for Road to $1M related articles:
+  “THẮNG SWC · ROAD TO $1M”
+- for ATLAS related articles:
+  “THẮNG SWC · ATLAS”
+- otherwise:
+  “THẮNG SWC”
+
+6. Fallback image logic
+Keep the smart fallback system when no featured image is uploaded.
+
+Priority:
+- if custom uploaded image exists → use the processed + watermarked version
+- else if related product is atlas → use ATLAS fallback
+- else if related product is Road to $1M / SWC PASS → use Road to $1M fallback
+- else if category is Tư duy đầu tư → use investment/thought fallback
+- else use general fallback
+
+Also ensure fallback images can display the same subtle watermark logic so the whole news system looks consistent.
+
+7. Frontend usage
+Use the processed/watermarked display image consistently in:
+- news/article cards
+- category lists
+- related article cards
+- article detail hero image if enabled
+
+8. Admin UX
+In the post editor:
+- show current image preview
+- show upload button
+- show remove/replace actions
+- clearly explain:
+  “Nếu không tải ảnh lên, hệ thống sẽ tự dùng ảnh mặc định phù hợp theo chuyên mục hoặc sản phẩm liên quan.”
+
+9. Keep style quality high
+Important:
+- do not use ugly placeholder behavior
+- do not make the watermark too bold
+- do not distort images
+- keep everything premium, editorial, and consistent with the Thắng SWC ecosystem
+
+This should be a real working image workflow, not just a visual mockup.

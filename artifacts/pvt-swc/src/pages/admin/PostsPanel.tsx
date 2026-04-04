@@ -12,13 +12,17 @@ const ADMIN_POOLS: Record<string, string[]> = {
 
 function getAdminPreviewImage(
   featuredImage: string | null | undefined,
+  featuredImageDisplay: string | null | undefined,
   postId: number | null | undefined,
   productId: number | null | undefined,
   categoryId: number | null | undefined,
   prods: NewsProduct[],
   cats: NewsCategory[],
 ): { src: string; isFallback: boolean; poolSize: number } {
-  if (featuredImage?.trim()) return { src: featuredImage.trim(), isFallback: false, poolSize: 1 };
+  const disp = typeof featuredImageDisplay === "string" ? featuredImageDisplay.trim() : "";
+  const orig = typeof featuredImage === "string" ? featuredImage.trim() : "";
+  if (disp) return { src: disp, isFallback: false, poolSize: 1 };
+  if (orig) return { src: orig, isFallback: false, poolSize: 1 };
   const seed = postId ?? 0;
   const prod = prods.find((p) => p.id === productId);
   if (prod?.slug === "atlas") { const pool = ADMIN_POOLS.atlas; return { src: pool[seed % pool.length], isFallback: true, poolSize: pool.length }; }
@@ -31,7 +35,7 @@ function getAdminPreviewImage(
 
 /* ── Types ───────────────────────────────────────────────────────── */
 const EMPTY: NewsPost & { tagIds: number[] } = {
-  id: 0, title: "", slug: "", excerpt: "", content: "", featuredImage: "",
+  id: 0, title: "", slug: "", excerpt: "", content: "", featuredImage: "", featuredImageDisplay: "",
   categoryId: null, productId: null, status: "draft",
   publishedAt: null, authorName: "Phan Văn Thắng",
   seoTitle: "", seoDescription: "",
@@ -58,7 +62,7 @@ function StatusPill({ status }: { status: string }) {
 
 /* ── Row thumbnail ────────────────────────────────────────────────── */
 function RowThumb({ post, prods, cats }: { post: NewsPost; prods: NewsProduct[]; cats: NewsCategory[] }) {
-  const { src, isFallback } = getAdminPreviewImage(post.featuredImage, post.id, post.productId, post.categoryId, prods, cats);
+  const { src, isFallback } = getAdminPreviewImage(post.featuredImage, post.featuredImageDisplay, post.id, post.productId, post.categoryId, prods, cats);
   const [err, setErr] = useState(false);
   return (
     <div style={{
@@ -806,12 +810,14 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
           {/* Featured image */}
           <ImageCard
             featuredImage={form.featuredImage}
+            featuredImageDisplay={form.featuredImageDisplay}
             postId={form.id}
             productId={form.productId}
             categoryId={form.categoryId}
             prods={prods}
             cats={cats}
-            onChange={(v) => setForm((f) => ({ ...f, featuredImage: v }))}
+            adminKey={adminKey}
+            onChange={(patch) => setForm((f) => ({ ...f, ...patch }))}
           />
 
           {/* Display options */}
@@ -1030,74 +1036,154 @@ function MenuItem({ label, onClick, danger }: { label: string; onClick: () => vo
 }
 
 /* ── ImageCard ────────────────────────────────────────────────────── */
-function ImageCard({ featuredImage, postId, productId, categoryId, prods, cats, onChange }: {
+function ImageCard({
+  featuredImage, featuredImageDisplay,
+  postId, productId, categoryId, prods, cats, adminKey, onChange,
+}: {
   featuredImage: string | null | undefined;
+  featuredImageDisplay: string | null | undefined;
   postId: number | null | undefined;
   productId: number | null | undefined;
   categoryId: number | null | undefined;
   prods: NewsProduct[];
   cats: NewsCategory[];
-  onChange: (v: string) => void;
+  adminKey: string;
+  onChange: (patch: { featuredImage?: string | null; featuredImageDisplay?: string | null }) => void;
 }) {
-  const { src, isFallback, poolSize } = getAdminPreviewImage(featuredImage, postId, productId, categoryId, prods, cats);
-  const [imgErr, setImgErr] = React.useState(false);
-  React.useEffect(() => { setImgErr(false); }, [featuredImage]);
+  const { src, isFallback, poolSize } = getAdminPreviewImage(
+    featuredImage, featuredImageDisplay, postId, productId, categoryId, prods, cats,
+  );
+  const [imgErr,     setImgErr]     = React.useState(false);
+  const [uploading,  setUploading]  = React.useState(false);
+  const [uploadMsg,  setUploadMsg]  = React.useState("");
+  const fileRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => { setImgErr(false); }, [featuredImage, featuredImageDisplay]);
+
+  const hasCustom = !!(
+    (typeof featuredImageDisplay === "string" && featuredImageDisplay.trim()) ||
+    (typeof featuredImage === "string" && featuredImage.trim())
+  );
+
+  const uploadContext = React.useMemo(() => {
+    const prod = prods.find((p) => p.id === productId);
+    if (prod?.slug === "atlas")      return "atlas";
+    if (prod?.slug === "road-to-1m") return "road-to-1m";
+    const cat = cats.find((c) => c.id === categoryId);
+    if (cat?.slug === "tu-duy-dau-tu") return "tu-duy-dau-tu";
+    return "default";
+  }, [productId, categoryId, prods, cats]);
 
   const fallbackLabel = React.useMemo(() => {
     if (!isFallback) return null;
-    const prod = prods.find((p) => p.id === productId);
-    if (prod?.slug === "atlas") return "Mặc định: ATLAS";
-    if (prod?.slug === "road-to-1m") return "Mặc định: Road to $1M";
-    const cat = cats.find((c) => c.id === categoryId);
-    if (cat?.slug === "tu-duy-dau-tu") return "Mặc định: Tư duy đầu tư";
+    if (uploadContext === "atlas")          return "Mặc định: ATLAS";
+    if (uploadContext === "road-to-1m")     return "Mặc định: Road to $1M";
+    if (uploadContext === "tu-duy-dau-tu")  return "Mặc định: Tư duy đầu tư";
     return "Mặc định chung";
-  }, [isFallback, productId, categoryId, prods, cats]);
+  }, [isFallback, uploadContext]);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!fileRef.current) return;
+    fileRef.current.value = "";
+    if (!file) return;
+    setUploading(true); setUploadMsg("");
+    try {
+      const { original, display } = await adminApi.uploadImage(adminKey, file, uploadContext);
+      onChange({ featuredImage: original, featuredImageDisplay: display });
+      setUploadMsg("Ảnh đã được xử lý và tải lên.");
+    } catch (err) {
+      setUploadMsg(`Lỗi: ${String(err)}`);
+    } finally { setUploading(false); }
+  };
+
+  const clearImage = () => {
+    onChange({ featuredImage: "", featuredImageDisplay: "" });
+    setUploadMsg("");
+  };
+
+  const isUploadedDisplay = !!(typeof featuredImageDisplay === "string" && featuredImageDisplay.trim());
 
   return (
     <div style={s.card}>
-      <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 0.875rem" }}>Ảnh đại diện</p>
+      <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 0.875rem" }}>
+        Ảnh đại diện
+      </p>
 
+      {/* Preview */}
       <div style={{
         aspectRatio: "16/9", borderRadius: "7px", overflow: "hidden", marginBottom: "0.875rem",
         background: isFallback ? "#091e1b" : "#f3f4f6",
         border: `1px solid ${A.border}`, position: "relative",
       }}>
-        {!imgErr
-          ? <img src={src} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} onError={() => setImgErr(true)} />
-          : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: "12px", color: A.danger }}>URL ảnh không hợp lệ</span>
-            </div>
-        }
-        {isFallback && (
-          <div style={{
-            position: "absolute", bottom: "7px", left: "7px",
-            background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)",
-            borderRadius: "4px", padding: "2px 7px",
-            fontSize: "9.5px", fontWeight: 600, color: "rgba(255,255,255,0.72)",
-          }}>
+        {uploading ? (
+          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "0.5rem", background: "rgba(0,0,0,0.05)" }}>
+            <div style={{ width: "32px", height: "32px", border: `3px solid ${A.primary}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+            <span style={{ fontSize: "12px", color: A.textMuted }}>Đang xử lý ảnh...</span>
+          </div>
+        ) : !imgErr ? (
+          <img src={src} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} onError={() => setImgErr(true)} />
+        ) : (
+          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ fontSize: "12px", color: A.danger }}>URL ảnh không hợp lệ</span>
+          </div>
+        )}
+
+        {/* Badges */}
+        {!uploading && isFallback && (
+          <div style={{ position: "absolute", bottom: "7px", left: "7px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)", borderRadius: "4px", padding: "2px 7px", fontSize: "9.5px", fontWeight: 600, color: "rgba(255,255,255,0.72)" }}>
             {fallbackLabel}
+          </div>
+        )}
+        {!uploading && isUploadedDisplay && (
+          <div style={{ position: "absolute", top: "7px", right: "7px", background: `${A.primary}cc`, borderRadius: "4px", padding: "2px 8px", fontSize: "9px", fontWeight: 700, letterSpacing: "0.08em", color: "#fff" }}>
+            ĐÃ XỬ LÝ
           </div>
         )}
       </div>
 
-      <input
-        style={s.field}
-        placeholder="https://... (để trống = ảnh tự động)"
-        value={featuredImage ?? ""}
-        onChange={(e) => onChange(e.target.value)}
-      />
-
-      {featuredImage && (
-        <button style={{ ...s.btnDanger, marginTop: "0.5rem", fontSize: "11px", padding: "4px 10px" }} onClick={() => onChange("")}>
-          Xóa ảnh
+      {/* Actions row */}
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center", marginBottom: "0.75rem" }}>
+        <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleFile} />
+        <button
+          style={{ ...s.btnSecondary, padding: "7px 14px", fontSize: "12.5px" }}
+          disabled={uploading}
+          onClick={() => fileRef.current?.click()}
+        >
+          {uploading ? "Đang tải..." : hasCustom ? "Thay ảnh" : "Tải ảnh lên"}
         </button>
-      )}
+        {hasCustom && (
+          <button style={{ ...s.btnDanger, fontSize: "11.5px", padding: "6px 12px" }} onClick={clearImage}>
+            Xóa ảnh
+          </button>
+        )}
+        {uploadMsg && (
+          <span style={{ fontSize: "11px", color: uploadMsg.startsWith("Lỗi") ? A.danger : A.primary }}>
+            {uploadMsg}
+          </span>
+        )}
+      </div>
 
-      <p style={{ fontSize: "10.5px", color: A.textLight, lineHeight: 1.65, marginTop: "0.5rem" }}>
+      {/* Manual URL fallback */}
+      <div style={{ marginBottom: "0.5rem" }}>
+        <label style={{ ...s.label, fontSize: "10.5px" }}>Hoặc dán URL ảnh trực tiếp</label>
+        <input
+          style={{ ...s.field, fontSize: "12.5px" }}
+          placeholder="https://... (để trống = ảnh tự động)"
+          value={featuredImage ?? ""}
+          onChange={(e) => onChange({ featuredImage: e.target.value, featuredImageDisplay: null })}
+        />
+      </div>
+
+      <p style={{ fontSize: "10.5px", color: A.textLight, lineHeight: 1.65, margin: 0 }}>
         {isFallback
-          ? `Ảnh tự động (${poolSize} lựa chọn theo nhóm). ID bài xác định ảnh nào hiện.`
-          : "Ảnh tùy chỉnh. Xóa URL để dùng ảnh tự động."}
+          ? `Nếu không tải ảnh lên, hệ thống tự dùng ảnh mặc định phù hợp theo chuyên mục hoặc sản phẩm liên quan (${poolSize} lựa chọn).`
+          : isUploadedDisplay
+            ? "Ảnh đã được tối ưu hóa và gắn watermark tự động. Bấm Thay ảnh để đổi."
+            : "Ảnh URL tùy chỉnh. Xóa để dùng ảnh tự động."}
       </p>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

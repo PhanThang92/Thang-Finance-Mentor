@@ -1,6 +1,60 @@
+import path from "path";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { randomBytes } from "crypto";
 import { Router, type Request, type Response, type NextFunction } from "express";
+import multer from "multer";
+import sharp from "sharp";
 import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, siteSettingsTable } from "@workspace/db";
 import { eq, sql, desc, ilike, or } from "drizzle-orm";
+
+/* ── Upload dirs ─────────────────────────────────────────────────────── */
+const UPLOADS_DIR = path.join(process.cwd(), "uploads");
+const ORIG_DIR    = path.join(UPLOADS_DIR, "orig");
+const DISP_DIR    = path.join(UPLOADS_DIR, "disp");
+[ORIG_DIR, DISP_DIR].forEach((d) => { if (!existsSync(d)) mkdirSync(d, { recursive: true }); });
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 15 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (/^image\/(jpeg|jpg|png|webp|gif|avif)$/i.test(file.mimetype)) cb(null, true);
+    else cb(new Error("Only image files are allowed"));
+  },
+});
+
+/* ── Watermark ───────────────────────────────────────────────────────── */
+const TARGET_W = 1600;
+const TARGET_H = 900;
+
+function watermarkText(context: string): string {
+  if (context === "atlas")        return "THẮNG SWC · ATLAS";
+  if (context === "road-to-1m")   return "THẮNG SWC · ROAD TO $1M";
+  if (context === "tu-duy-dau-tu") return "THẮNG SWC · TÀI CHÍNH";
+  return "THẮNG SWC";
+}
+
+function buildWatermarkSvg(text: string): Buffer {
+  const W = 300, H = 30, pad = 4;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="rgba(0,0,0,0.22)" rx="3" ry="3"/>
+    <text x="${W - pad}" y="${H - 9}"
+      font-family="'Helvetica Neue',Arial,sans-serif"
+      font-size="9.5" font-weight="700" letter-spacing="1.9"
+      fill="rgba(255,255,255,0.72)" text-anchor="end">${text}</text>
+  </svg>`;
+  return Buffer.from(svg);
+}
+
+async function processImage(buffer: Buffer, context: string): Promise<Buffer> {
+  const wmSvg   = buildWatermarkSvg(watermarkText(context));
+  const wmLeft  = TARGET_W - 300 - 20;
+  const wmTop   = TARGET_H - 30  - 16;
+  return sharp(buffer)
+    .resize(TARGET_W, TARGET_H, { fit: "cover", position: "centre" })
+    .composite([{ input: wmSvg, left: wmLeft, top: wmTop, blend: "over" }])
+    .webp({ quality: 87 })
+    .toBuffer();
+}
 
 const router = Router();
 
@@ -126,11 +180,12 @@ router.get("/posts", async (_req, res) => {
 /* Pick only the columns that belong to news_posts (strips joined fields: category, product, tags) */
 function pickPostFields(body: Record<string, unknown>) {
   return {
-    title:          body.title          as string | undefined,
-    slug:           body.slug           as string | undefined,
-    excerpt:        body.excerpt        as string | null | undefined,
-    content:        body.content        as string | null | undefined,
-    featuredImage:  body.featuredImage  as string | null | undefined,
+    title:                body.title                as string | undefined,
+    slug:                 body.slug                 as string | undefined,
+    excerpt:              body.excerpt              as string | null | undefined,
+    content:              body.content              as string | null | undefined,
+    featuredImage:        body.featuredImage        as string | null | undefined,
+    featuredImageDisplay: body.featuredImageDisplay as string | null | undefined,
     categoryId:     body.categoryId     ? Number(body.categoryId) : null,
     productId:      body.productId      ? Number(body.productId)  : null,
     status:         body.status         as string | undefined,
@@ -142,6 +197,29 @@ function pickPostFields(body: Record<string, unknown>) {
     showInRelated:  typeof body.showInRelated  === "boolean" ? body.showInRelated  : undefined,
   };
 }
+
+// ── Image Upload ───────────────────────────────────────────────────────────────
+router.post("/upload-image", upload.single("image"), async (req: Request, res: Response) => {
+  try {
+    if (!req.file) { res.status(400).json({ error: "No image file provided" }); return; }
+    const context = (req.body.context as string | undefined) ?? "default";
+    const id      = randomBytes(12).toString("hex");
+    const ext     = req.file.originalname.split(".").pop()?.toLowerCase() ?? "jpg";
+
+    const origName = `${id}.${ext}`;
+    const dispName = `${id}.webp`;
+
+    writeFileSync(path.join(ORIG_DIR, origName), req.file.buffer);
+
+    const dispBuffer = await processImage(req.file.buffer, context);
+    writeFileSync(path.join(DISP_DIR, dispName), dispBuffer);
+
+    res.json({
+      original: `/api/uploads/orig/${origName}`,
+      display:  `/api/uploads/disp/${dispName}`,
+    });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
 
 router.post("/posts", async (req, res) => {
   try {

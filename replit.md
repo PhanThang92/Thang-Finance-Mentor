@@ -127,4 +127,4 @@ Selection is deterministic: `pool[postId % poolSize]`. Same post always shows th
   - **Hệ thống**: Tài khoản (AccountPanel – key management, logout)
 - Product extra fields (headline, sub, features, price, CTA, SEO) stored in `site_settings` as `product_{slug}_{field}` keys — no DB schema change needed
 - Community & settings fields all stored in `site_settings` table
-- PostsPanel image card shows live 16:9 preview, pool size hint, and inline error state for broken URLs
+- **Image upload pipeline** (complete): `POST /api/admin/upload-image` (multipart) → sharp processing to 1600×900 WebP with SVG watermark (lower-right pill, context-aware text) → saves orig + disp to `artifacts/api-server/uploads/{orig,disp}/`; `news_posts.featured_image_display` column stores the processed URL; PostsPanel ImageCard: file-upload button with spinner + "ĐÃ XỬ LÝ" badge + manual URL fallback + Xóa ảnh clear; TinTuc ArticleCard: CSS watermark overlay on fallback images only (baked-in watermark on uploaded images); `postImage.ts`: `getPostImage()` prefers `featuredImageDisplay`, `isFallbackImage()`, `getWatermarkText()` exported

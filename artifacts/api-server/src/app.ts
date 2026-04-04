@@ -1,3 +1,5 @@
+import path from "path";
+import { existsSync, mkdirSync } from "fs";
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
@@ -28,6 +30,13 @@ app.use(
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const uploadsDir = path.join(process.cwd(), "uploads");
+["orig", "disp"].forEach((sub) => {
+  const dir = path.join(uploadsDir, sub);
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+});
+app.use("/api/uploads", express.static(uploadsDir, { maxAge: "1d", etag: true }));
 
 app.use("/api", router);
 

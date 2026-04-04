@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { newsApi, type NewsPost, type NewsCategory, type NewsProduct, type NewsTag } from "@/lib/newsApi";
-import { getPostImage, isFallbackImage } from "@/lib/postImage";
+import { getPostImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
 
 /* ── motion ──────────────────────────────────────────────────────────── */
 const stagger  = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
@@ -34,8 +34,9 @@ const filterKey = (f: Filters) => `${f.category}|${f.product}|${f.tag}|${f.searc
 
 /* ── Article card ────────────────────────────────────────────────────── */
 function ArticleCard({ post }: { post: NewsPost }) {
-  const imgSrc    = getPostImage(post);
+  const imgSrc     = getPostImage(post);
   const isFallback = isFallbackImage(post);
+  const wmText     = isFallback ? getWatermarkText(post) : null;
 
   return (
     <motion.div variants={fadeUp}>
@@ -55,11 +56,23 @@ function ArticleCard({ post }: { post: NewsPost }) {
           }}>
             <img src={imgSrc} alt={post.title}
               style={{
-                width: "100%", height: "100%", objectFit: isFallback ? "cover" : "cover",
+                width: "100%", height: "100%", objectFit: "cover",
                 display: "block",
                 filter: isFallback ? "none" : "brightness(0.96)",
                 transition: "transform 0.36s ease",
               }} />
+            {wmText && (
+              <div style={{
+                position: "absolute", bottom: "8px", right: "10px",
+                background: "rgba(0,0,0,0.22)", backdropFilter: "blur(4px)",
+                borderRadius: "3px", padding: "2px 8px",
+                fontSize: "8.5px", fontWeight: 700, letterSpacing: "1.7px",
+                color: "rgba(255,255,255,0.72)", textTransform: "uppercase",
+                userSelect: "none", pointerEvents: "none",
+              }}>
+                {wmText}
+              </div>
+            )}
           </div>
           <div style={{ padding: "1.5rem 1.625rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
