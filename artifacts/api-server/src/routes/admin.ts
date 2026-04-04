@@ -4,7 +4,7 @@ import { randomBytes } from "crypto";
 import { Router, type Request, type Response, type NextFunction } from "express";
 import multer from "multer";
 import sharp from "sharp";
-import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, siteSettingsTable } from "@workspace/db";
+import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, siteSettingsTable, articlesTable, videosTable } from "@workspace/db";
 import { eq, sql, desc, ilike, or } from "drizzle-orm";
 
 /* ── Upload dirs ─────────────────────────────────────────────────────── */
@@ -76,6 +76,10 @@ router.get("/dashboard", async (_req, res) => {
     const [productCount]   = await db.select({ count: sql<number>`count(*)::int` }).from(newsProductsTable);
     const [totalLeads]     = await db.select({ count: sql<number>`count(*)::int` }).from(leadsTable);
     const [newLeads]       = await db.select({ count: sql<number>`count(*)::int` }).from(leadsTable).where(eq(leadsTable.status, "moi"));
+    const [articlesPublished] = await db.select({ count: sql<number>`count(*)::int` }).from(articlesTable).where(eq(articlesTable.status, "published"));
+    const [articlesDraft]     = await db.select({ count: sql<number>`count(*)::int` }).from(articlesTable).where(eq(articlesTable.status, "draft"));
+    const [videosPublished]   = await db.select({ count: sql<number>`count(*)::int` }).from(videosTable).where(eq(videosTable.status, "published"));
+    const [videosDraft]       = await db.select({ count: sql<number>`count(*)::int` }).from(videosTable).where(eq(videosTable.status, "draft"));
 
     const recentPosts = await db.select({
       id: newsPostsTable.id,
@@ -93,7 +97,13 @@ router.get("/dashboard", async (_req, res) => {
 
     const recentLeads = await db.select().from(leadsTable).orderBy(desc(leadsTable.createdAt)).limit(5);
 
-    res.json({ publishedCount: publishedCount.count, draftCount: draftCount.count, productCount: productCount.count, totalLeads: totalLeads.count, newLeads: newLeads.count, recentPosts, recentLeads });
+    res.json({
+      publishedCount: publishedCount.count, draftCount: draftCount.count,
+      productCount: productCount.count, totalLeads: totalLeads.count, newLeads: newLeads.count,
+      recentPosts, recentLeads,
+      articlesPublished: articlesPublished.count, articlesDraft: articlesDraft.count,
+      videosPublished: videosPublished.count, videosDraft: videosDraft.count,
+    });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 
@@ -322,6 +332,165 @@ router.put("/settings", async (req, res) => {
     const settings: Record<string, string | null> = {};
     rows.forEach((r) => { settings[r.key] = r.value; });
     res.json({ settings });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+// ── Articles CRUD ──────────────────────────────────────────────────────────────
+
+function pickArticleFields(body: Record<string, unknown>) {
+  return {
+    title:          body.title         as string | undefined,
+    slug:           body.slug          as string | undefined,
+    excerpt:        body.excerpt       as string | null | undefined,
+    content:        body.content       as string | null | undefined,
+    coverImageUrl:  body.coverImageUrl as string | null | undefined,
+    coverImageAlt:  body.coverImageAlt as string | null | undefined,
+    category:       body.category      as string | null | undefined,
+    categorySlug:   body.categorySlug  as string | null | undefined,
+    tags:           Array.isArray(body.tags) ? (body.tags as string[]) : (body.tags ? [body.tags as string] : null),
+    featured:       typeof body.featured === "boolean" ? body.featured : undefined,
+    status:         body.status        as string | undefined,
+    readingTime:    body.readingTime   as string | null | undefined,
+    topicSlug:      body.topicSlug     as string | null | undefined,
+    seriesSlug:     body.seriesSlug    as string | null | undefined,
+  };
+}
+
+router.get("/articles", async (_req, res) => {
+  try {
+    const articles = await db.select().from(articlesTable).orderBy(desc(articlesTable.updatedAt));
+    res.json({ articles });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.get("/articles/:id", async (req, res) => {
+  try {
+    const rows = await db.select().from(articlesTable).where(eq(articlesTable.id, Number(req.params.id))).limit(1);
+    if (!rows.length) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ article: rows[0] });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.post("/articles", async (req, res) => {
+  try {
+    const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
+    const now = new Date();
+    const publishDate = body.publishDate ? new Date(body.publishDate as string) : (body.status === "published" ? now : null);
+    const [article] = await db.insert(articlesTable).values({
+      ...pickArticleFields(body),
+      publishDate,
+      createdAt: now, updatedAt: now,
+    }).returning();
+    res.json({ article });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.put("/articles/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
+    const now = new Date();
+    const publishDate = body.publishDate ? new Date(body.publishDate as string) : null;
+    const [article] = await db.update(articlesTable).set({
+      ...pickArticleFields(body),
+      publishDate,
+      updatedAt: now,
+    }).where(eq(articlesTable.id, id)).returning();
+    if (!article) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ article });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.delete("/articles/:id", async (req, res) => {
+  try {
+    await db.delete(articlesTable).where(eq(articlesTable.id, Number(req.params.id)));
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+// ── Videos CRUD ────────────────────────────────────────────────────────────────
+
+function pickVideoFields(body: Record<string, unknown>) {
+  return {
+    title:             body.title             as string | undefined,
+    slug:              body.slug              as string | undefined,
+    excerpt:           body.excerpt           as string | null | undefined,
+    youtubeUrl:        body.youtubeUrl        as string | undefined,
+    youtubeVideoId:    body.youtubeVideoId    as string | null | undefined,
+    thumbnailUrl:      body.thumbnailUrl      as string | null | undefined,
+    thumbnailAlt:      body.thumbnailAlt      as string | null | undefined,
+    thumbnailGradient: body.thumbnailGradient as string | null | undefined,
+    duration:          body.duration          as string | null | undefined,
+    featured:          typeof body.featured         === "boolean" ? body.featured         : undefined,
+    isFeaturedVideo:   typeof body.isFeaturedVideo  === "boolean" ? body.isFeaturedVideo  : undefined,
+    status:            body.status            as string | undefined,
+    topicSlug:         body.topicSlug         as string | null | undefined,
+    seriesSlug:        body.seriesSlug        as string | null | undefined,
+    categories:        Array.isArray(body.categories) ? (body.categories as string[]) : (body.categories ? [body.categories as string] : null),
+  };
+}
+
+function extractYoutubeId(url: string): string | null {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("youtu.be")) return u.pathname.slice(1).split("?")[0];
+    return u.searchParams.get("v");
+  } catch { return null; }
+}
+
+router.get("/videos", async (_req, res) => {
+  try {
+    const videos = await db.select().from(videosTable).orderBy(desc(videosTable.updatedAt));
+    res.json({ videos });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.get("/videos/:id", async (req, res) => {
+  try {
+    const rows = await db.select().from(videosTable).where(eq(videosTable.id, Number(req.params.id))).limit(1);
+    if (!rows.length) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ video: rows[0] });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.post("/videos", async (req, res) => {
+  try {
+    const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
+    const now = new Date();
+    const publishDate = body.publishDate ? new Date(body.publishDate as string) : (body.status === "published" ? now : null);
+    const youtubeVideoId = body.youtubeUrl ? (extractYoutubeId(body.youtubeUrl as string) ?? (body.youtubeVideoId as string | null | undefined)) : (body.youtubeVideoId as string | null | undefined);
+    const [video] = await db.insert(videosTable).values({
+      ...pickVideoFields(body),
+      youtubeVideoId,
+      publishDate,
+      createdAt: now, updatedAt: now,
+    }).returning();
+    res.json({ video });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.put("/videos/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
+    const now = new Date();
+    const publishDate = body.publishDate ? new Date(body.publishDate as string) : null;
+    const youtubeVideoId = body.youtubeUrl ? (extractYoutubeId(body.youtubeUrl as string) ?? (body.youtubeVideoId as string | null | undefined)) : (body.youtubeVideoId as string | null | undefined);
+    const [video] = await db.update(videosTable).set({
+      ...pickVideoFields(body),
+      youtubeVideoId,
+      publishDate,
+      updatedAt: now,
+    }).where(eq(videosTable.id, id)).returning();
+    if (!video) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ video });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.delete("/videos/:id", async (req, res) => {
+  try {
+    await db.delete(videosTable).where(eq(videosTable.id, Number(req.params.id)));
+    res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 

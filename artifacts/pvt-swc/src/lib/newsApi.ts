@@ -23,6 +23,35 @@ export interface DashboardData {
   totalLeads: number; newLeads: number;
   recentPosts: Pick<NewsPost, "id" | "title" | "status" | "publishedAt" | "createdAt" | "updatedAt"> & { categoryName: string | null }[];
   recentLeads: Lead[];
+  articlesPublished: number; articlesDraft: number;
+  videosPublished: number; videosDraft: number;
+}
+
+/* ── Content types (articles + videos from KB hub) ──────────────────── */
+export interface Article {
+  id: number; title: string; slug: string;
+  excerpt: string | null; content: string | null;
+  coverImageUrl: string | null; coverImageAlt: string | null;
+  category: string | null; categorySlug: string | null;
+  tags: string[] | null;
+  publishDate: string | null;
+  featured: boolean; status: string;
+  readingTime: string | null;
+  topicSlug: string | null; seriesSlug: string | null;
+  createdAt: string; updatedAt: string;
+}
+
+export interface Video {
+  id: number; title: string; slug: string;
+  excerpt: string | null;
+  youtubeUrl: string; youtubeVideoId: string | null;
+  thumbnailUrl: string | null; thumbnailAlt: string | null; thumbnailGradient: string | null;
+  duration: string | null;
+  publishDate: string | null;
+  featured: boolean; isFeaturedVideo: boolean; status: string;
+  topicSlug: string | null; seriesSlug: string | null;
+  categories: string[] | null;
+  createdAt: string; updatedAt: string;
 }
 
 const BASE = "/api";
@@ -117,4 +146,18 @@ export const adminApi = {
   /* settings */
   getSettings: (key: string) => get<{ settings: Record<string, string | null> }>("/admin/settings", key).then((d) => d.settings),
   updateSettings: (key: string, data: Record<string, string>) => mutate<{ settings: Record<string, string | null> }>("PUT", "/admin/settings", data, key).then((d) => d.settings),
+
+  /* articles (KB hub) */
+  getArticles: (key: string) => get<{ articles: Article[] }>("/admin/articles", key).then((d) => d.articles),
+  getArticleById: (key: string, id: number) => get<{ article: Article }>(`/admin/articles/${id}`, key).then((d) => d.article),
+  createArticle: (key: string, data: Partial<Article>) => mutate<{ article: Article }>("POST", "/admin/articles", data, key).then((d) => d.article),
+  updateArticle: (key: string, id: number, data: Partial<Article>) => mutate<{ article: Article }>("PUT", `/admin/articles/${id}`, data, key).then((d) => d.article),
+  deleteArticle: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/articles/${id}`, undefined, key),
+
+  /* videos (KB hub) */
+  getVideos: (key: string) => get<{ videos: Video[] }>("/admin/videos", key).then((d) => d.videos),
+  getVideoById: (key: string, id: number) => get<{ video: Video }>(`/admin/videos/${id}`, key).then((d) => d.video),
+  createVideo: (key: string, data: Partial<Video>) => mutate<{ video: Video }>("POST", "/admin/videos", data, key).then((d) => d.video),
+  updateVideo: (key: string, id: number, data: Partial<Video>) => mutate<{ video: Video }>("PUT", `/admin/videos/${id}`, data, key).then((d) => d.video),
+  deleteVideo: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/videos/${id}`, undefined, key),
 };

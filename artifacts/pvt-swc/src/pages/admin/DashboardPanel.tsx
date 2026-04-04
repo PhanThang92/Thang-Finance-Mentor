@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { adminApi, type DashboardData, type NewsProduct } from "@/lib/newsApi";
 import { A, fmtDate, leadStatusLabel, leadStatusColor } from "./shared";
 
-type Section = "dashboard" | "posts" | "categories" | "tags" | "products" | "leads" | "community" | "settings" | "account";
+type Section = "dashboard" | "posts" | "categories" | "tags" | "products" | "leads" | "community" | "settings" | "account" | "articles" | "videos";
 
 /* ── Quick action button ─────────────────────────────────────────── */
 function QuickAction({
@@ -129,64 +129,20 @@ export function DashboardPanel({
 
       {/* ── Quick actions ─────────────────────────────────────────── */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-        <QuickAction
-          icon="＋"
-          label="Tạo bài viết mới"
-          sub="Soạn và xuất bản nội dung"
-          onClick={() => onNavigate("posts")}
-        />
-        <QuickAction
-          icon="◈"
-          label="Cập nhật sản phẩm"
-          sub="Chỉnh thông tin, giá, link"
-          onClick={() => onNavigate("products")}
-        />
-        <QuickAction
-          icon="◉"
-          label={data.newLeads > 0 ? `${data.newLeads} lead mới` : "Xem leads"}
-          sub={data.newLeads > 0 ? "Cần xử lý" : "Quản lý danh sách"}
-          onClick={() => onNavigate("leads")}
-        />
-        <QuickAction
-          icon="◎"
-          label="Cộng đồng"
-          sub="Cập nhật nội dung & liên kết"
-          onClick={() => onNavigate("community")}
-        />
+        <QuickAction icon="📄" label="Bài viết kiến thức" sub="Quản lý và xuất bản" onClick={() => onNavigate("articles")} />
+        <QuickAction icon="▶" label="Video kiến thức" sub="Thêm và chỉnh sửa video" onClick={() => onNavigate("videos")} />
+        <QuickAction icon="≡" label="Bài viết tin tức" sub="Soạn và xuất bản nội dung" onClick={() => onNavigate("posts")} />
+        <QuickAction icon="◉" label={data.newLeads > 0 ? `${data.newLeads} lead mới` : "Xem leads"} sub={data.newLeads > 0 ? "Cần xử lý" : "Quản lý danh sách"} onClick={() => onNavigate("leads")} />
       </div>
 
       {/* ── Stat cards ───────────────────────────────────────────── */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "0.875rem" }}>
-        <StatCard
-          label="Bài đã đăng"
-          value={data.publishedCount}
-          sub="Bài viết công khai"
-          accentColor={A.primary}
-        />
-        <StatCard
-          label="Bản nháp"
-          value={data.draftCount}
-          sub="Chưa xuất bản"
-          accentColor="#6b7280"
-        />
-        <StatCard
-          label="Sản phẩm"
-          value={data.productCount}
-          sub="Đang hoạt động"
-          accentColor="#7c3aed"
-        />
-        <StatCard
-          label="Tổng leads"
-          value={data.totalLeads}
-          sub="Từ tất cả nguồn"
-          accentColor="#d97706"
-        />
-        <StatCard
-          label="Leads mới"
-          value={data.newLeads}
-          sub="Chờ liên hệ"
-          accentColor={data.newLeads > 0 ? "#dc2626" : "#6b7280"}
-        />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "0.875rem" }}>
+        <StatCard label="Bài viết KB" value={(data.articlesPublished ?? 0) + (data.articlesDraft ?? 0)} sub={`${data.articlesPublished ?? 0} đã đăng · ${data.articlesDraft ?? 0} nháp`} accentColor={A.primary} />
+        <StatCard label="Video KB" value={(data.videosPublished ?? 0) + (data.videosDraft ?? 0)} sub={`${data.videosPublished ?? 0} đã đăng · ${data.videosDraft ?? 0} nháp`} accentColor="#0891b2" />
+        <StatCard label="Tin tức đăng" value={data.publishedCount} sub="Bài viết công khai" accentColor="#16a34a" />
+        <StatCard label="Nháp tin tức" value={data.draftCount} sub="Chưa xuất bản" accentColor="#6b7280" />
+        <StatCard label="Leads mới" value={data.newLeads} sub="Chờ liên hệ" accentColor={data.newLeads > 0 ? "#dc2626" : "#6b7280"} />
+        <StatCard label="Tổng leads" value={data.totalLeads} sub="Từ tất cả nguồn" accentColor="#d97706" />
       </div>
 
       {/* ── Recent panels ────────────────────────────────────────── */}

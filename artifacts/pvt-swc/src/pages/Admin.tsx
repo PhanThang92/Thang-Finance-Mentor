@@ -7,6 +7,8 @@ import { ProductsPanel }   from "./admin/ProductsPanel";
 import { LeadsPanel }      from "./admin/LeadsPanel";
 import { CommunityPanel }  from "./admin/CommunityPanel";
 import { SettingsPanel }   from "./admin/SettingsPanel";
+import { ArticlesPanel }   from "./admin/ArticlesPanel";
+import { VideosPanel }     from "./admin/VideosPanel";
 import { A }               from "./admin/shared";
 
 /* ── Types ────────────────────────────────────────────────────────── */
@@ -19,7 +21,9 @@ type Section =
   | "leads"
   | "community"
   | "settings"
-  | "account";
+  | "account"
+  | "articles"
+  | "videos";
 
 interface NavItem { id: Section; label: string; icon: string; }
 type NavGroup = { group: string; items: NavItem[] };
@@ -32,11 +36,18 @@ const NAV_STRUCTURE: NavGroup[] = [
     ],
   },
   {
-    group: "Nội dung",
+    group: "Tin tức",
     items: [
       { id: "posts",      label: "Bài viết",    icon: "≡" },
       { id: "categories", label: "Chuyên mục",  icon: "⊞" },
       { id: "tags",       label: "Tags",         icon: "#" },
+    ],
+  },
+  {
+    group: "Kiến thức",
+    items: [
+      { id: "articles", label: "Bài viết KB",  icon: "📄" },
+      { id: "videos",   label: "Video",         icon: "▶" },
     ],
   },
   {
@@ -63,7 +74,7 @@ const NAV_STRUCTURE: NavGroup[] = [
 
 const SECTION_TITLES: Record<Section, string> = {
   dashboard:  "Tổng quan",
-  posts:      "Bài viết",
+  posts:      "Bài viết (Tin tức)",
   categories: "Chuyên mục",
   tags:       "Tags",
   products:   "Sản phẩm",
@@ -71,6 +82,8 @@ const SECTION_TITLES: Record<Section, string> = {
   community:  "Cộng đồng",
   settings:   "Cài đặt",
   account:    "Tài khoản",
+  articles:   "Kiến thức · Bài viết",
+  videos:     "Kiến thức · Video",
 };
 
 const STORAGE_KEY = "swc_admin_key";
@@ -362,6 +375,8 @@ export default function Admin() {
           {section === "community"  && <CommunityPanel  adminKey={adminKey} />}
           {section === "settings"   && <SettingsPanel   adminKey={adminKey} />}
           {section === "account"    && <AccountPanel    adminKey={adminKey} onLogout={logout} />}
+          {section === "articles"   && <ArticlesPanel   adminKey={adminKey} />}
+          {section === "videos"     && <VideosPanel     adminKey={adminKey} />}
         </main>
       </div>
     </div>
