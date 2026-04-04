@@ -89,6 +89,13 @@ export function Navbar() {
   const isCommunityPage = location.startsWith("/cong-dong");
   const isTinTucPage    = location.startsWith("/tin-tuc");
 
+  /* Pages that open with a dark full-bleed hero — only these use the
+     transparent overlay navbar at the top. Every other page starts in
+     the solid/scrolled state so text is always readable against the
+     light content background. */
+  const isHeroDark      = isHome || isProductPage || isCommunityPage;
+  const effectiveScrolled = isScrolled || !isHeroDark;
+
   /* Conditional hrefs — hash on home page, absolute on all other pages */
   const sec = (hash: string) => isHome ? hash : `${homeBase}/${hash}`;
 
@@ -132,13 +139,13 @@ export function Navbar() {
       /* index 3 = "Tin tức", index 4 = "Cộng đồng", index 5 = "Sản phẩm" trigger */
       const isActive = (i === 5 && isProductPage) || (i === 4 && isCommunityPage) || (i === 3 && isTinTucPage);
       el.style.color      = isActive
-        ? (isScrolled ? SCROLLED.linkActive : HERO.linkActive)
-        : (isScrolled ? SCROLLED.linkColor  : HERO.linkColor);
+        ? (effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive)
+        : (effectiveScrolled ? SCROLLED.linkColor  : HERO.linkColor);
       el.style.fontWeight = isActive ? "500" : "400";
     });
     const cta = ctaRef.current;
     if (!cta) return;
-    if (isScrolled) {
+    if (effectiveScrolled) {
       cta.style.background  = SCROLLED.ctaBg;
       cta.style.borderColor = SCROLLED.ctaBorder;
       cta.style.boxShadow   = SCROLLED.ctaShadow;
@@ -147,7 +154,7 @@ export function Navbar() {
       cta.style.borderColor = HERO.ctaBorder;
       cta.style.boxShadow   = "none";
     }
-  }, [isScrolled, isProductPage, isCommunityPage, isTinTucPage]);
+  }, [effectiveScrolled, isProductPage, isCommunityPage, isTinTucPage]);
 
   /* ── Dropdown open / close with delay ───────────────────── */
   const openDropdown = () => {
@@ -177,9 +184,9 @@ export function Navbar() {
   useEffect(() => () => { if (closeTimerRef.current) clearTimeout(closeTimerRef.current); }, []);
 
   /* ── Color shortcuts ─────────────────────────────────────── */
-  const linkColor  = isScrolled ? SCROLLED.linkColor  : HERO.linkColor;
-  const linkHover  = isScrolled ? SCROLLED.linkHover  : HERO.linkHover;
-  const linkActive = isScrolled ? SCROLLED.linkActive : HERO.linkActive;
+  const linkColor  = effectiveScrolled ? SCROLLED.linkColor  : HERO.linkColor;
+  const linkHover  = effectiveScrolled ? SCROLLED.linkHover  : HERO.linkHover;
+  const linkActive = effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive;
 
   /* ── Base link style ─────────────────────────────────────── */
   const baseLinkStyle: React.CSSProperties = {
@@ -211,7 +218,7 @@ export function Navbar() {
           top: 0, left: 0, right: 0,
           zIndex: 50,
           transition: "background 0.42s ease, box-shadow 0.42s ease, padding 0.42s ease",
-          ...(isScrolled
+          ...(effectiveScrolled
             ? {
                 background:           "rgba(251,253,251,0.97)",
                 backdropFilter:       "blur(22px)",
@@ -240,7 +247,7 @@ export function Navbar() {
               fontSize:       "15px",
               fontWeight:     700,
               letterSpacing:  "-0.02em",
-              color:          isScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.92)",
+              color:          effectiveScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.92)",
               textDecoration: "none",
               transition:     "color 0.3s ease",
             }}
@@ -295,7 +302,7 @@ export function Navbar() {
                               left:         0,
                               right:        "14px",
                               height:       "1.5px",
-                              background:   isScrolled
+                              background:   effectiveScrolled
                                 ? "hsl(var(--primary) / 0.55)"
                                 : "rgba(255,255,255,0.46)",
                               borderRadius: "999px",
@@ -466,7 +473,7 @@ export function Navbar() {
                 color:          "#fff",
                 transition:
                   "background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease",
-                ...(isScrolled
+                ...(effectiveScrolled
                   ? {
                       background:  SCROLLED.ctaBg,
                       borderColor: SCROLLED.ctaBorder,
@@ -480,15 +487,15 @@ export function Navbar() {
               }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement;
-                el.style.background = isScrolled ? SCROLLED.ctaHoverBg : HERO.ctaHoverBg;
-                el.style.boxShadow  = isScrolled ? SCROLLED.ctaHoverShadow : "none";
-                if (!isScrolled) el.style.borderColor = HERO.ctaHoverBorder;
+                el.style.background = effectiveScrolled ? SCROLLED.ctaHoverBg : HERO.ctaHoverBg;
+                el.style.boxShadow  = effectiveScrolled ? SCROLLED.ctaHoverShadow : "none";
+                if (!effectiveScrolled) el.style.borderColor = HERO.ctaHoverBorder;
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement;
-                el.style.background  = isScrolled ? SCROLLED.ctaBg  : HERO.ctaBg;
-                el.style.borderColor = isScrolled ? SCROLLED.ctaBorder : HERO.ctaBorder;
-                el.style.boxShadow   = isScrolled ? SCROLLED.ctaShadow : "none";
+                el.style.background  = effectiveScrolled ? SCROLLED.ctaBg  : HERO.ctaBg;
+                el.style.borderColor = effectiveScrolled ? SCROLLED.ctaBorder : HERO.ctaBorder;
+                el.style.boxShadow   = effectiveScrolled ? SCROLLED.ctaShadow : "none";
               }}
             >
               Tham gia cộng đồng
@@ -499,7 +506,7 @@ export function Navbar() {
           <button
             className="md:hidden p-2 rounded-md"
             style={{
-              color:      isScrolled ? "hsl(var(--foreground))" : "rgba(255,255,255,0.88)",
+              color:      effectiveScrolled ? "hsl(var(--foreground))" : "rgba(255,255,255,0.88)",
               background: "none",
               border:     "none",
               cursor:     "pointer",
