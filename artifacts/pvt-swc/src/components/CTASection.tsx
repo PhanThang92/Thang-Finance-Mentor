@@ -72,7 +72,7 @@ export function CTASection() {
               margin: "0 auto",
             }}
           >
-            Bắt đầu từ việc hiểu đúng, rồi đi đường dài
+            Hiểu đúng trước. Đi đường dài sau.
           </motion.h2>
 
           {/* Sub text */}
@@ -87,7 +87,7 @@ export function CTASection() {
               margin: "0 auto",
             }}
           >
-            Khám phá thêm bài viết, nội dung chia sẻ và các hướng đồng hành phù hợp với bạn.
+            Khám phá thêm bài viết, chủ đề kiến thức và những hướng kết nối phù hợp với hành trình của bạn.
           </motion.p>
 
           {/* Buttons */}

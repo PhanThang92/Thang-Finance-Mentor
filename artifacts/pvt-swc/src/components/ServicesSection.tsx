@@ -19,9 +19,9 @@ const services = [
       </svg>
     ),
     title: "Bài viết phân tích & chia sẻ góc nhìn",
-    desc: "Nội dung chuyên sâu về tài chính cá nhân, đầu tư, tư duy tích sản — được viết rõ ràng, không hoa mỹ, không giật gân.",
+    desc: "Các bài viết tập trung vào tư duy tài chính, đầu tư, tích sản và những quan sát thực tế từ hành trình làm nghề.",
     link: "/tin-tuc",
-    linkText: "Đọc bài viết",
+    linkText: "Xem thêm",
   },
   {
     icon: (
@@ -30,10 +30,10 @@ const services = [
         <path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
-    title: "Kết nối 1:1 theo định hướng phù hợp",
-    desc: "Dành cho những ai muốn trao đổi cụ thể hơn về tình huống tài chính, đầu tư hoặc mục tiêu cá nhân — không phải tư vấn đại trà.",
+    title: "Hướng đồng hành phù hợp",
+    desc: "Tùy theo nhu cầu, người đọc có thể tìm hiểu thêm các hình thức kết nối, tư vấn hoặc định hướng phù hợp.",
     link: "/cong-dong",
-    linkText: "Kết nối ngay",
+    linkText: "Xem thêm",
   },
   {
     icon: (
@@ -44,10 +44,10 @@ const services = [
         <rect x="13" y="13" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.5" />
       </svg>
     ),
-    title: "Cập nhật nội dung & kiến thức chọn lọc",
-    desc: "Theo dõi hệ sinh thái nội dung gồm bài viết mới, sản phẩm học tập và cập nhật từ cộng đồng — đồng hành lâu dài qua kiến thức.",
-    link: "/cong-dong",
-    linkText: "Tham gia cộng đồng",
+    title: "Nội dung chọn lọc theo chủ đề",
+    desc: "Hệ thống nội dung được sắp xếp theo nhóm chủ đề để giúp việc theo dõi và học hỏi dễ dàng hơn.",
+    link: "/tin-tuc",
+    linkText: "Xem thêm",
   },
 ];
 
@@ -88,7 +88,7 @@ export function ServicesSection() {
                 color: "rgba(255,255,255,0.92)",
               }}
             >
-              Những gì bạn có thể nhận được tại đây
+              Những gì bạn có thể tìm thấy tại đây
             </motion.h2>
             <motion.p
               variants={fadeUp}
@@ -100,7 +100,7 @@ export function ServicesSection() {
                 maxWidth: "36rem",
               }}
             >
-              Từ bài viết phân tích đến kết nối cá nhân — mỗi hình thức đều hướng đến giá trị thực sự, không phải những lời hứa hẹn.
+              Không phải một website để hứa hẹn kết quả nhanh. Đây là nơi tổng hợp nội dung, góc nhìn và các hướng đồng hành phù hợp cho người muốn phát triển tài chính theo cách bài bản hơn.
             </motion.p>
           </div>
 

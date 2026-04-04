@@ -19,7 +19,7 @@ const values = [
       </svg>
     ),
     title: "Tư duy tài chính đúng",
-    desc: "Không phải mẹo làm giàu nhanh — mà là cách hiểu tiền, rủi ro và cơ hội theo chiều sâu thực sự.",
+    desc: "Hiểu tiền, hiểu dòng tiền và hiểu cách xây nền tảng trước khi nghĩ đến tăng trưởng.",
   },
   {
     icon: (
@@ -29,7 +29,7 @@ const values = [
       </svg>
     ),
     title: "Đầu tư dài hạn thực chiến",
-    desc: "Góc nhìn từ người đã đi qua thị trường nhiều năm, chia sẻ thực tế chứ không lý thuyết suông.",
+    desc: "Ưu tiên góc nhìn dài hạn, tính hệ thống và khả năng đi đường dài thay vì chạy theo cảm xúc ngắn hạn.",
   },
   {
     icon: (
@@ -40,7 +40,7 @@ const values = [
       </svg>
     ),
     title: "Kỷ luật tích sản",
-    desc: "Tài sản được xây bằng thói quen đúng mỗi ngày, không phải bằng một quyết định hưng phấn nhất thời.",
+    desc: "Tài sản không đến từ hưng phấn nhất thời, mà đến từ thói quen đúng được duy trì đủ lâu.",
   },
   {
     icon: (
@@ -49,8 +49,8 @@ const values = [
         <path d="M11 7V11L14 13" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    title: "Đồng hành bằng hệ thống",
-    desc: "Không chỉ chia sẻ kiến thức — mà là xây một hệ sinh thái nội dung đủ để người đọc đi xa và đi lâu.",
+    title: "Nội dung có chọn lọc",
+    desc: "Mỗi bài viết, chia sẻ hay phân tích đều hướng đến giá trị sử dụng thực tế và khả năng áp dụng lâu dài.",
   },
 ];
 
@@ -86,7 +86,7 @@ export function ValueCoreSection() {
                 color: "hsl(var(--foreground))",
               }}
             >
-              Một hệ sinh thái nội dung dành cho người muốn xây nền tài chính vững chắc
+              Xây nền tảng tài chính vững chắc bắt đầu từ cách hiểu đúng
             </motion.h2>
             <motion.p
               variants={fadeUp}
@@ -98,8 +98,7 @@ export function ValueCoreSection() {
                 maxWidth: "38rem",
               }}
             >
-              Website tập trung vào chia sẻ góc nhìn, kinh nghiệm và hệ thống kiến thức giúp người đọc
-              hiểu đúng hơn về tài chính, đầu tư và quá trình xây tài sản dài hạn.
+              Website này được xây dựng để chia sẻ những góc nhìn thực tế về tài chính, đầu tư và quá trình tích sản dài hạn — theo hướng rõ ràng hơn, kỷ luật hơn và bền vững hơn.
             </motion.p>
           </div>
 

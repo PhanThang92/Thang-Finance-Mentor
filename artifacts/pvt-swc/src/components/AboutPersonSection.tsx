@@ -12,9 +12,9 @@ const stagger = {
 };
 
 const highlights = [
-  "Góc nhìn dài hạn — không theo phong trào ngắn hạn",
-  "Nội dung thực chiến, dễ áp dụng vào cuộc sống",
-  "Đồng hành bằng giá trị thật, không hứa hẹn lợi nhuận",
+  "Góc nhìn dài hạn",
+  "Nội dung thực chiến",
+  "Ưu tiên giá trị bền vững",
 ];
 
 export function AboutPersonSection() {
@@ -115,15 +115,12 @@ export function AboutPersonSection() {
                 color: "hsl(var(--foreground))",
               }}
             >
-              Chia sẻ thực chiến, không hứa hẹn làm giàu nhanh
+              Về Phan Văn Thắng SWC
             </motion.h2>
 
             <motion.div variants={fadeUp} className="space-y-4">
               <p style={{ fontSize: "15px", lineHeight: 1.92, fontWeight: 400, color: "hsl(var(--foreground) / 0.72)" }}>
-                Phan Văn Thắng SWC theo đuổi hướng chia sẻ kiến thức tài chính, đầu tư và phát triển tư duy tích sản theo cách thực tế, kỷ luật và dài hạn.
-              </p>
-              <p style={{ fontSize: "15px", lineHeight: 1.92, fontWeight: 400, color: "hsl(var(--foreground) / 0.62)" }}>
-                Mục tiêu không phải tạo ra cảm giác làm giàu nhanh, mà là giúp người đọc có góc nhìn đúng hơn để xây nền tảng tài chính bền vững — từng bước, có hệ thống.
+                Phan Văn Thắng SWC theo đuổi hướng chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo cách thực tế, kỷ luật và dài hạn. Mục tiêu không phải tạo cảm giác làm giàu nhanh, mà là giúp người đọc có góc nhìn rõ hơn để xây nền tảng tài chính bền vững theo thời gian.
               </p>
             </motion.div>
 
@@ -164,14 +161,14 @@ export function AboutPersonSection() {
                 fontStyle: "italic",
                 color: "hsl(var(--foreground) / 0.60)",
               }}>
-                Hành trình tài chính bền vững không bắt đầu từ thị trường — nó bắt đầu từ tư duy, kỷ luật và cách mình sống mỗi ngày.
+                Đi đường dài trong tài chính luôn bắt đầu từ việc hiểu đúng.
               </p>
             </motion.div>
 
             {/* CTA */}
             <motion.div variants={fadeUp}>
               <a
-                href="#gioi-thieu"
+                href="/tin-tuc"
                 className="inline-flex items-center gap-2 group/link"
                 style={{
                   fontSize: "13px",

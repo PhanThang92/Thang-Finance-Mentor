@@ -13,23 +13,23 @@ const stagger = {
 const steps = [
   {
     num: "01",
-    title: "Chia sẻ kiến thức nền tảng",
-    desc: "Bài viết, phân tích và góc nhìn về tài chính, đầu tư và tư duy tích sản — để bạn có cơ sở đúng trước khi quyết định.",
+    title: "Chia sẻ nền tảng",
+    desc: "Thông qua bài viết, nội dung và các góc nhìn cốt lõi về tài chính, đầu tư và tư duy tích sản.",
   },
   {
     num: "02",
-    title: "Làm rõ mục tiêu và nhu cầu",
-    desc: "Mỗi người có điểm xuất phát và mục tiêu khác nhau. Việc hiểu đúng bức tranh cá nhân là bước không thể bỏ qua.",
+    title: "Giúp làm rõ vấn đề",
+    desc: "Để mỗi người hiểu mình đang thiếu điều gì trong hành trình tài chính — và cần ưu tiên điều gì trước.",
   },
   {
     num: "03",
     title: "Gợi mở hướng đi phù hợp",
-    desc: "Không áp đặt một công thức chung — mà chia sẻ các hướng tiếp cận phù hợp với từng hoàn cảnh và mục tiêu cụ thể.",
+    desc: "Dựa trên bối cảnh, nhu cầu và mục tiêu dài hạn — không áp đặt công thức chung cho tất cả.",
   },
   {
     num: "04",
-    title: "Đồng hành dài hạn",
-    desc: "Thông qua nội dung liên tục, cộng đồng và kết nối trực tiếp — để hành trình không cô đơn và có hệ thống đỡ vững.",
+    title: "Đồng hành bằng hệ thống nội dung",
+    desc: "Từng bước xây sự rõ ràng, kỷ luật và nền tảng bền vững hơn qua nội dung liên tục và cộng đồng.",
   },
 ];
 
@@ -64,7 +64,7 @@ export function ProcessSection() {
                 color: "hsl(var(--foreground))",
               }}
             >
-              Cách tôi đồng hành cùng người theo dõi và khách hàng
+              Cách tôi xây giá trị và đồng hành cùng người theo dõi
             </motion.h2>
             <motion.p
               variants={fadeUp}
@@ -76,7 +76,7 @@ export function ProcessSection() {
                 maxWidth: "38rem",
               }}
             >
-              Một quy trình đơn giản, rõ ràng — không phức tạp hóa, không tạo cảm giác phụ thuộc.
+              Không phức tạp, không tạo cảm giác phụ thuộc — chỉ là cách tiếp cận rõ ràng và thực tế hơn.
             </motion.p>
           </div>
 

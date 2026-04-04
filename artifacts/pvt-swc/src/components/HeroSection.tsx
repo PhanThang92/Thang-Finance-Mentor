@@ -10,9 +10,9 @@ const fadeUp = (delay = 0) => ({
 });
 
 const trustItems = [
-  "Kiến thức thực chiến",
   "Tư duy dài hạn",
-  "Đồng hành có hệ thống",
+  "Kiến thức thực chiến",
+  "Hệ thống nội dung chọn lọc",
 ];
 
 export function HeroSection() {
@@ -55,7 +55,7 @@ export function HeroSection() {
                 letterSpacing: "-0.028em",
               }}
             >
-              Xây tư duy tài chính đúng.{" "}
+              Tư duy tài chính đúng.{" "}
               <span style={{ color: "rgba(255,255,255,0.62)", fontWeight: 400 }}>
                 Tích sản dài hạn.
               </span>
@@ -74,10 +74,10 @@ export function HeroSection() {
                 fontWeight: 400,
                 color: "rgba(255,255,255,0.68)",
                 lineHeight: 1.92,
-                maxWidth: "32rem",
+                maxWidth: "30rem",
               }}
             >
-              Chia sẻ kiến thức tài chính, đầu tư và tư duy phát triển bản thân theo hướng kỷ luật, dài hạn và bền vững.
+              Chia sẻ kiến thức tài chính, đầu tư và phát triển bản thân theo hướng kỷ luật, dài hạn và bền vững — dành cho những người muốn xây nền tảng vững chắc thay vì tìm kiếm kết quả ngắn hạn.
             </motion.p>
 
             {/* Buttons */}
@@ -139,7 +139,7 @@ export function HeroSection() {
                 }}
                 data-testid="btn-hero-service"
               >
-                Tìm hiểu dịch vụ
+                Tìm hiểu hướng đồng hành
               </a>
             </motion.div>
 

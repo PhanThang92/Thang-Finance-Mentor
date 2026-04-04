@@ -288,8 +288,20 @@ export function LatestPostsSection() {
                   color: "hsl(var(--foreground))",
                 }}
               >
-                Góc nhìn & phân tích tài chính
+                Bài viết và chia sẻ nổi bật
               </motion.h2>
+              <motion.p
+                variants={fadeUp}
+                style={{
+                  fontSize: "15px",
+                  lineHeight: 1.88,
+                  fontWeight: 400,
+                  color: "hsl(var(--muted-foreground))",
+                  maxWidth: "36rem",
+                }}
+              >
+                Những nội dung được chọn để giúp người đọc tiếp cận rõ hơn với tư duy tài chính, đầu tư và hành trình xây tài sản dài hạn.
+              </motion.p>
             </div>
             <motion.div variants={fadeUp}>
               <a
@@ -322,11 +334,14 @@ export function LatestPostsSection() {
           {!isLoading && published.length === 0 && (
             <motion.div
               variants={fadeUp}
-              className="flex flex-col items-center justify-center text-center py-20 rounded-xl"
+              className="flex flex-col items-center justify-center text-center py-20 rounded-xl space-y-2"
               style={{ border: "1px dashed hsl(var(--border))", background: "hsl(var(--card))" }}
             >
-              <p style={{ fontSize: "15px", fontWeight: 400, color: "hsl(var(--muted-foreground))" }}>
-                Chưa có bài viết nào. Quay lại sau nhé.
+              <p style={{ fontSize: "15px", fontWeight: 500, color: "hsl(var(--foreground) / 0.70)" }}>
+                Nội dung đang được cập nhật
+              </p>
+              <p style={{ fontSize: "13.5px", fontWeight: 400, color: "hsl(var(--muted-foreground))" }}>
+                Các bài viết và chia sẻ mới sẽ sớm xuất hiện tại đây.
               </p>
             </motion.div>
           )}

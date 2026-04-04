@@ -1,0 +1,359 @@
+Tiếp tục tinh chỉnh HOMEPAGE vừa refactor cho website Phan Van Thang SWC.
+
+Lần này KHÔNG thay đổi kiến trúc tổng thể quá nhiều nếu cấu trúc hiện tại đã ổn.
+Tập trung vào:
+- nâng chất lượng nội dung chữ tiếng Việt
+- làm rõ định vị thương hiệu
+- tăng cảm giác premium, mentor, trust
+- chỉnh hierarchy thị giác
+- làm homepage có chiều sâu hơn, bớt generic hơn
+- đồng bộ tinh thần với thương hiệu cá nhân tài chính – đầu tư – kiến thức thực chiến
+
+========================
+1. MỤC TIÊU LẦN TINH CHỈNH NÀY
+========================
+Tôi muốn homepage sau khi chỉnh:
+- đọc vào thấy ngay đây là thương hiệu cá nhân nghiêm túc
+- có màu sắc “mentor tài chính thực chiến”
+- không quá bán hàng
+- không sáo rỗng
+- không chung chung kiểu template AI
+- câu chữ gọn nhưng có chiều sâu
+- nhìn premium, calm, executive, trustworthy
+- tăng cảm giác “đây là người chia sẻ góc nhìn có trải nghiệm thật”
+
+Hãy chỉnh lại copywriting và UI detail để homepage:
+- sang hơn
+- rõ hơn
+- tinh tế hơn
+- ít chất quảng cáo hơn
+- nhiều chất thương hiệu cá nhân hơn
+
+========================
+2. TINH CHỈNH HERO SECTION
+========================
+Tôi muốn hero section mạnh hơn về câu chữ.
+
+Hãy thay nội dung hero theo hướng sau:
+
+Eyebrow / label nhỏ:
+Phan Van Thang SWC
+
+Headline chính:
+Tư duy tài chính đúng.
+Tích sản dài hạn.
+Đầu tư với góc nhìn thực chiến.
+
+Subheadline:
+Chia sẻ kiến thức tài chính, đầu tư và phát triển bản thân theo hướng kỷ luật, dài hạn và bền vững — dành cho những người muốn xây nền tảng vững chắc thay vì tìm kiếm kết quả ngắn hạn.
+
+CTA buttons:
+- Button chính: Khám phá bài viết
+- Button phụ: Tìm hiểu hướng đồng hành
+
+Trust line / highlight nhỏ dưới CTA:
+- Tư duy dài hạn
+- Kiến thức thực chiến
+- Hệ thống nội dung chọn lọc
+
+Yêu cầu:
+- headline phải là điểm nhìn đầu tiên
+- khoảng cách dòng đẹp
+- không quá nhiều chữ
+- subheadline ngắn gọn, dễ đọc
+- nếu cần thì giới hạn max width để đẹp hơn
+- CTA nhìn tinh tế, premium, không phô
+
+Visual hero:
+- nếu có ảnh chân dung thì giữ tone cao cấp, không quá thương mại
+- nếu chưa có ảnh chân dung thì dùng block visual abstract tinh tế:
+  grid, chart line mờ, gradient teal, soft glow, layered cards, financial texture rất nhẹ
+- tránh ảnh stock business fake
+- tránh icon minh họa rẻ tiền
+
+========================
+3. TINH CHỈNH SECTION GIÁ TRỊ CỐT LÕI
+========================
+Thay heading section này bằng:
+
+Xây nền tảng tài chính vững chắc bắt đầu từ cách hiểu đúng
+
+Thay phần mô tả bằng:
+
+Website này được xây dựng để chia sẻ những góc nhìn thực tế về tài chính, đầu tư và quá trình tích sản dài hạn — theo hướng rõ ràng hơn, kỷ luật hơn và bền vững hơn.
+
+Card nội dung chỉnh thành 4 mục sau:
+
+1. Tư duy tài chính đúng
+Mô tả:
+Hiểu tiền, hiểu dòng tiền và hiểu cách xây nền tảng trước khi nghĩ đến tăng trưởng.
+
+2. Đầu tư dài hạn thực chiến
+Mô tả:
+Ưu tiên góc nhìn dài hạn, tính hệ thống và khả năng đi đường dài thay vì chạy theo cảm xúc ngắn hạn.
+
+3. Kỷ luật tích sản
+Mô tả:
+Tài sản không đến từ hưng phấn nhất thời, mà đến từ thói quen đúng được duy trì đủ lâu.
+
+4. Nội dung có chọn lọc
+Mô tả:
+Mỗi bài viết, chia sẻ hay phân tích đều hướng đến giá trị sử dụng thực tế và khả năng áp dụng lâu dài.
+
+Yêu cầu:
+- text trong card ngắn, dễ quét
+- card đều nhau
+- icon tối giản, cao cấp
+- hover chỉ nhẹ, không bay nhảy quá nhiều
+
+========================
+4. TINH CHỈNH KHỐI DỊCH VỤ / HƯỚNG ĐỒNG HÀNH
+========================
+Đổi heading thành:
+
+Những gì bạn có thể tìm thấy tại đây
+
+Đổi mô tả ngắn thành:
+
+Không phải một website để hứa hẹn kết quả nhanh. Đây là nơi tổng hợp nội dung, góc nhìn và các hướng đồng hành phù hợp cho người muốn phát triển tài chính theo cách bài bản hơn.
+
+3 card nội dung:
+
+Card 1
+Title:
+Bài viết phân tích & chia sẻ góc nhìn
+Description:
+Các bài viết tập trung vào tư duy tài chính, đầu tư, tích sản và những quan sát thực tế từ hành trình làm nghề.
+
+Card 2
+Title:
+Hướng đồng hành phù hợp
+Description:
+Tùy theo nhu cầu, người đọc có thể tìm hiểu thêm các hình thức kết nối, tư vấn hoặc định hướng phù hợp.
+
+Card 3
+Title:
+Nội dung chọn lọc theo chủ đề
+Description:
+Hệ thống nội dung được sắp xếp theo nhóm chủ đề để giúp việc theo dõi và học hỏi dễ dàng hơn.
+
+Link text ở cuối card:
+Xem thêm
+
+Yêu cầu:
+- card nhìn premium hơn
+- mô tả không dài dòng
+- tránh cảm giác đang bán dịch vụ mạnh
+
+========================
+5. TINH CHỈNH KHỐI BÀI VIẾT / TIN TỨC NỔI BẬT
+========================
+Đây là block quan trọng, hãy làm nổi bật hơn.
+
+Heading:
+Bài viết và chia sẻ nổi bật
+
+Subtext:
+Những nội dung được chọn để giúp người đọc tiếp cận rõ hơn với tư duy tài chính, đầu tư và hành trình xây tài sản dài hạn.
+
+Yêu cầu hiển thị:
+- 1 featured article lớn
+- dưới hoặc cạnh là các card bài viết nhỏ
+- category badge nhìn đẹp, gọn
+- ngày đăng hiển thị tinh tế
+- title tối đa 2 dòng
+- excerpt tối đa 2–3 dòng
+- card image crop đẹp, không méo
+- featured card phải thật sự nổi bật hơn phần còn lại
+
+Nút section:
+Xem tất cả bài viết
+
+Nếu chưa có dữ liệu:
+- tạo mock data tiếng Việt đúng chủ đề thương hiệu
+- dùng tiêu đề thật tự nhiên, không viết kiểu robot
+
+Ví dụ title mẫu có thể dùng:
+- Vì sao nhiều người làm nhiều năm vẫn chưa tích lũy được tài sản?
+- Đầu tư dài hạn không bắt đầu từ vốn lớn, mà từ kỷ luật
+- Khi nói về tài chính, điều quan trọng không chỉ là kiếm được bao nhiêu
+- Người mới thường nhìn vào lợi nhuận, người đi đường dài nhìn vào điều gì?
+- Xây nền tài chính cá nhân nên bắt đầu từ đâu?
+
+========================
+6. TINH CHỈNH KHỐI CHỦ ĐỀ NỘI DUNG
+========================
+Heading:
+Khám phá nội dung theo từng chủ đề
+
+Subtext:
+Đi theo từng nhóm nội dung để đọc sâu hơn, dễ chọn đúng điều mình đang cần.
+
+Các topic card:
+- Tài chính cá nhân
+- Đầu tư dài hạn
+- Tư duy tích sản
+- Góc nhìn thị trường
+- Kiến thức thực chiến
+- Phát triển bản thân
+
+Mỗi card:
+- title rõ
+- mô tả ngắn 1 câu
+- nếu có số lượng bài viết thì hiển thị nhỏ, tinh tế
+- clickable toàn card
+- icon/minh họa đồng bộ cùng style homepage
+
+========================
+7. TINH CHỈNH KHỐI GIỚI THIỆU VỀ PHAN VAN THANG SWC
+========================
+Heading:
+Về Phan Van Thang SWC
+
+Nội dung:
+Phan Van Thang SWC theo đuổi hướng chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo cách thực tế, kỷ luật và dài hạn. Mục tiêu không phải tạo cảm giác làm giàu nhanh, mà là giúp người đọc có góc nhìn rõ hơn để xây nền tảng tài chính bền vững theo thời gian.
+
+3 highlight nhỏ:
+- Góc nhìn dài hạn
+- Nội dung thực chiến
+- Ưu tiên giá trị bền vững
+
+CTA:
+Tìm hiểu thêm
+
+Yêu cầu:
+- section này phải tăng trust rõ rệt
+- hình ảnh / visual phải calm, premium
+- không làm kiểu “thành tích khoe mẽ”
+- có thể thêm quote nhỏ nếu hợp:
+  “Đi đường dài trong tài chính luôn bắt đầu từ việc hiểu đúng.”
+
+Nếu thêm quote, hãy làm rất tinh tế.
+
+========================
+8. TINH CHỈNH KHỐI QUY TRÌNH / CÁCH ĐỒNG HÀNH
+========================
+Heading:
+Cách tôi xây giá trị và đồng hành cùng người theo dõi
+
+4 bước:
+1. Chia sẻ nền tảng
+Thông qua bài viết, nội dung và các góc nhìn cốt lõi.
+
+2. Giúp làm rõ vấn đề
+Để mỗi người hiểu mình đang thiếu điều gì trong hành trình tài chính.
+
+3. Gợi mở hướng đi phù hợp
+Dựa trên bối cảnh, nhu cầu và mục tiêu dài hạn.
+
+4. Đồng hành bằng hệ thống nội dung
+Từng bước xây sự rõ ràng, kỷ luật và nền tảng bền vững hơn.
+
+Yêu cầu:
+- trình bày rất sạch
+- số bước đẹp
+- line / connector tinh tế
+- trên mobile vẫn dễ đọc
+
+========================
+9. TINH CHỈNH CTA CUỐI TRANG
+========================
+Heading:
+Hiểu đúng trước. Đi đường dài sau.
+
+Subtext:
+Khám phá thêm bài viết, chủ đề kiến thức và những hướng kết nối phù hợp với hành trình của bạn.
+
+Buttons:
+- Xem bài viết mới
+- Liên hệ kết nối
+
+Yêu cầu:
+- nền CTA premium hơn
+- có chiều sâu bằng gradient tối giản hoặc dark teal layer
+- chữ rõ
+- nút dễ bấm
+- không dùng hiệu ứng quá mạnh
+
+========================
+10. FOOTER
+========================
+Tinh chỉnh footer để sang hơn và gọn hơn.
+
+Bao gồm:
+- Phan Van Thang SWC
+- mô tả ngắn:
+Nền tảng chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn.
+- menu nhanh
+- liên hệ
+- social nếu có
+- copyright
+- disclaimer ngắn:
+Nội dung trên website mang tính chia sẻ và tham khảo, không phải cam kết lợi nhuận hay lời khuyên tài chính cá nhân hóa.
+
+Yêu cầu:
+- typography rõ
+- phân cấp tốt
+- spacing thoáng
+- footer đồng bộ toàn site
+
+========================
+11. TINH CHỈNH THỊ GIÁC TỔNG THỂ
+========================
+Hãy rà soát lại toàn homepage và chỉnh các điểm sau:
+
+- tăng khoảng trắng giữa các section nếu đang bí
+- giảm text width ở các block dài để dễ đọc hơn
+- thống nhất bo góc card
+- thống nhất shadow rất nhẹ
+- thống nhất badge / tag style
+- thống nhất button style
+- tránh section nào cũng cùng một kiểu layout
+- xen kẽ sáng / tối / nhấn nhẹ để có nhịp
+- tăng cảm giác editorial
+- giảm cảm giác template SaaS
+- giảm cảm giác web agency
+- tăng cảm giác personal brand cao cấp
+
+========================
+12. TINH CHỈNH MICROCOPY / CHI TIẾT NHỎ
+========================
+Hãy rà soát toàn bộ text nút, label, placeholder, empty state, hover state để đưa về tiếng Việt đồng bộ, tự nhiên và premium hơn.
+
+Ví dụ:
+- Read more -> Đọc tiếp
+- View all articles -> Xem tất cả bài viết
+- Explore -> Khám phá
+- Learn more -> Tìm hiểu thêm
+- Contact us -> Liên hệ kết nối
+
+Nếu có empty state bài viết:
+Heading:
+Nội dung đang được cập nhật
+Subtext:
+Các bài viết và chia sẻ mới sẽ sớm xuất hiện tại đây.
+
+========================
+13. GIỮ CODE SẠCH
+========================
+- không phá vỡ logic hiện có nếu đang ổn
+- refactor vừa đủ
+- ưu tiên component reusable
+- nội dung mock data dễ thay đổi sau
+- đảm bảo responsive thật tốt
+- không để title dài làm vỡ card
+- không để spacing bị lệch trên mobile
+
+========================
+14. KẾT QUẢ CUỐI CÙNG TÔI MUỐN
+========================
+Sau lần chỉnh này, homepage phải cho cảm giác:
+- đúng người hơn
+- đúng thương hiệu hơn
+- premium hơn
+- đáng tin hơn
+- rõ nội dung hơn
+- bớt generic hơn
+- nhìn vào là thấy định vị tài chính / đầu tư / tích sản dài hạn
+
+Hãy tiến hành tinh chỉnh trực tiếp toàn homepage theo các yêu cầu trên.

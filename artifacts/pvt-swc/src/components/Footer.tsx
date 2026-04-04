@@ -120,8 +120,7 @@ export function Footer() {
                 color: "rgba(255,255,255,0.50)",
               }}
             >
-              Chia sẻ về tư duy tài chính, đầu tư dài hạn, phát triển bản thân và hành trình xây
-              tài sản bền vững.
+              Nền tảng chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn.
             </p>
 
             {/* Social + action row */}
@@ -303,7 +302,7 @@ export function Footer() {
               flexShrink: 0,
             }}
           >
-            © 2025 Phan Văn Thắng SWC. Bảo lưu mọi quyền.
+            © 2026 Phan Văn Thắng SWC. Bảo lưu mọi quyền.
           </p>
           <p
             style={{
@@ -315,9 +314,7 @@ export function Footer() {
             }}
             className="md:text-right"
           >
-            Thông tin trên website mang tính chia sẻ, giáo dục và tham khảo. Đây không phải là cam
-            kết lợi nhuận và cũng không phải là lời khuyên đầu tư cá nhân hóa cho từng trường hợp
-            cụ thể.
+            Nội dung trên website mang tính chia sẻ và tham khảo, không phải cam kết lợi nhuận hay lời khuyên tài chính cá nhân hóa.
           </p>
         </div>
 

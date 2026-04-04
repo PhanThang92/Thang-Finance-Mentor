@@ -133,7 +133,7 @@ export function TopicsSection() {
                 color: "hsl(var(--foreground))",
               }}
             >
-              Khám phá nội dung theo chủ đề
+              Khám phá nội dung theo từng chủ đề
             </motion.h2>
             <motion.p
               variants={fadeUp}
@@ -145,7 +145,7 @@ export function TopicsSection() {
                 maxWidth: "38rem",
               }}
             >
-              Mỗi chủ đề là một hướng đi riêng trong hành trình xây tài chính bền vững.
+              Đi theo từng nhóm nội dung để đọc sâu hơn, dễ chọn đúng điều mình đang cần.
             </motion.p>
           </div>
 
