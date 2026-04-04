@@ -10,6 +10,11 @@ const navLinks = [
   { name: "Liên hệ", href: "#lien-he" },
 ];
 
+const productLinks = [
+  { name: "Road to $1M · SWC PASS", href: "/san-pham/duong-toi-1-trieu-do" },
+  { name: "ATLAS", href: "/san-pham/atlas" },
+];
+
 const socials = [
   { icon: SiYoutube, href: "#", ariaLabel: "YouTube" },
   { icon: SiFacebook, href: "#", ariaLabel: "Facebook" },
@@ -195,45 +200,92 @@ export function Footer() {
             </div>
           </div>
 
-          {/* ── Nav column ── */}
-          <div className="space-y-5">
-            <p
-              style={{
-                fontSize: "10px",
-                fontWeight: 600,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "rgba(255,255,255,0.28)",
-                lineHeight: 1,
-              }}
-            >
-              Điều hướng
-            </p>
-            <ul className="space-y-3.5">
-              {navLinks.map(({ name, href }) => (
-                <li key={name}>
-                  <a
-                    href={href}
-                    style={{
-                      fontSize: "13.5px",
-                      fontWeight: 400,
-                      letterSpacing: "0.005em",
-                      color: "rgba(255,255,255,0.48)",
-                      textDecoration: "none",
-                      transition: "color 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.86)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.48)";
-                    }}
-                  >
-                    {name}
-                  </a>
-                </li>
-              ))}
-            </ul>
+          {/* ── Nav columns ── */}
+          <div className="flex flex-col sm:flex-row gap-10 sm:gap-14">
+
+            {/* Điều hướng */}
+            <div className="space-y-5">
+              <p
+                style={{
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.28)",
+                  lineHeight: 1,
+                }}
+              >
+                Điều hướng
+              </p>
+              <ul className="space-y-3.5">
+                {navLinks.map(({ name, href }) => (
+                  <li key={name}>
+                    <a
+                      href={href}
+                      style={{
+                        fontSize: "13.5px",
+                        fontWeight: 400,
+                        letterSpacing: "0.005em",
+                        color: "rgba(255,255,255,0.48)",
+                        textDecoration: "none",
+                        transition: "color 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.86)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.48)";
+                      }}
+                    >
+                      {name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Hệ sinh thái */}
+            <div className="space-y-5">
+              <p
+                style={{
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.28)",
+                  lineHeight: 1,
+                }}
+              >
+                Hệ sinh thái
+              </p>
+              <ul className="space-y-3.5">
+                {productLinks.map(({ name, href }) => (
+                  <li key={name}>
+                    <a
+                      href={href}
+                      style={{
+                        fontSize: "13.5px",
+                        fontWeight: 400,
+                        letterSpacing: "0.005em",
+                        color: "rgba(255,255,255,0.48)",
+                        textDecoration: "none",
+                        transition: "color 0.2s ease",
+                        display: "block",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.color = "rgba(52,160,140,0.90)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.48)";
+                      }}
+                    >
+                      {name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
           </div>
         </div>
 
