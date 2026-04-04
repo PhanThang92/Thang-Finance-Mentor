@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { DashboardPanel } from "./admin/DashboardPanel";
-import { PostsPanel }     from "./admin/PostsPanel";
-import { TaxonomyPanel }  from "./admin/TaxonomyPanel";
-import { ProductsPanel }  from "./admin/ProductsPanel";
-import { LeadsPanel }     from "./admin/LeadsPanel";
-import { SettingsPanel }  from "./admin/SettingsPanel";
-import { A }              from "./admin/shared";
+import { DashboardPanel }  from "./admin/DashboardPanel";
+import { PostsPanel }      from "./admin/PostsPanel";
+import { CategoriesPanel } from "./admin/CategoriesPanel";
+import { TagsPanel }       from "./admin/TagsPanel";
+import { ProductsPanel }   from "./admin/ProductsPanel";
+import { LeadsPanel }      from "./admin/LeadsPanel";
+import { CommunityPanel }  from "./admin/CommunityPanel";
+import { SettingsPanel }   from "./admin/SettingsPanel";
+import { A }               from "./admin/shared";
 
 /* ── Types ────────────────────────────────────────────────────────── */
-type Section = "dashboard" | "posts" | "taxonomy" | "products" | "leads" | "settings" | "account";
+type Section =
+  | "dashboard"
+  | "posts"
+  | "categories"
+  | "tags"
+  | "products"
+  | "leads"
+  | "community"
+  | "settings"
+  | "account";
 
 interface NavItem { id: Section; label: string; icon: string; }
 type NavGroup = { group: string; items: NavItem[] };
@@ -23,8 +34,9 @@ const NAV_STRUCTURE: NavGroup[] = [
   {
     group: "Nội dung",
     items: [
-      { id: "posts",    label: "Bài viết",          icon: "≡" },
-      { id: "taxonomy", label: "Chuyên mục & Tags",  icon: "⊞" },
+      { id: "posts",      label: "Bài viết",    icon: "≡" },
+      { id: "categories", label: "Chuyên mục",  icon: "⊞" },
+      { id: "tags",       label: "Tags",         icon: "#" },
     ],
   },
   {
@@ -35,27 +47,36 @@ const NAV_STRUCTURE: NavGroup[] = [
     ],
   },
   {
+    group: "Vận hành",
+    items: [
+      { id: "community", label: "Cộng đồng", icon: "◎" },
+      { id: "settings",  label: "Cài đặt",   icon: "⚙" },
+    ],
+  },
+  {
     group: "Hệ thống",
     items: [
-      { id: "settings", label: "Cài đặt",   icon: "⚙" },
-      { id: "account",  label: "Tài khoản", icon: "○" },
+      { id: "account", label: "Tài khoản", icon: "○" },
     ],
   },
 ];
 
-const ALL_ITEMS: NavItem[] = NAV_STRUCTURE.flatMap((g) => g.items);
-
 const SECTION_TITLES: Record<Section, string> = {
-  dashboard: "Tổng quan",
-  posts:     "Bài viết",
-  taxonomy:  "Chuyên mục & Tags",
-  products:  "Sản phẩm",
-  leads:     "Leads",
-  settings:  "Cài đặt",
-  account:   "Tài khoản",
+  dashboard:  "Tổng quan",
+  posts:      "Bài viết",
+  categories: "Chuyên mục",
+  tags:       "Tags",
+  products:   "Sản phẩm",
+  leads:      "Leads",
+  community:  "Cộng đồng",
+  settings:   "Cài đặt",
+  account:    "Tài khoản",
 };
 
 const STORAGE_KEY = "swc_admin_key";
+
+/* Sections that use full-height edge-to-edge layout (no inner padding) */
+const FULL_HEIGHT_SECTIONS: Section[] = ["leads"];
 
 /* ── Login ────────────────────────────────────────────────────────── */
 function LoginScreen({ onLogin }: { onLogin: (key: string) => void }) {
@@ -121,9 +142,12 @@ function AccountPanel({ adminKey, onLogout }: { adminKey: string; onLogout: () =
   };
 
   return (
-    <div style={{ maxWidth: "460px" }}>
+    <div style={{ maxWidth: "480px" }}>
+      {/* Info card */}
       <div style={{ background: "#fff", borderRadius: "10px", border: `1px solid ${A.border}`, padding: "1.5rem", marginBottom: "1rem" }}>
-        <p style={{ fontSize: "12px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1rem" }}>Admin key hiện tại</p>
+        <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1rem" }}>
+          Admin key hiện tại
+        </p>
         <p style={{ fontSize: "13px", color: A.text, margin: "0 0 1.5rem", background: A.bg, padding: "8px 12px", borderRadius: "7px", fontFamily: "monospace" }}>
           {adminKey.slice(0, 4)}{"•".repeat(Math.max(0, adminKey.length - 4))}
         </p>
@@ -137,15 +161,31 @@ function AccountPanel({ adminKey, onLogout }: { adminKey: string; onLogout: () =
           Cập nhật key
         </button>
       </div>
-      <div style={{ background: "#fff", borderRadius: "10px", border: `1px solid ${A.border}`, padding: "1.5rem" }}>
-        <p style={{ fontSize: "13px", color: A.text, margin: "0 0 1rem" }}>
+
+      {/* Server env note */}
+      <div style={{ background: "#fff", borderRadius: "10px", border: `1px solid ${A.border}`, padding: "1.5rem", marginBottom: "1rem" }}>
+        <p style={{ fontSize: "13px", color: A.text, margin: "0 0 1rem", lineHeight: 1.6 }}>
           Để thay đổi admin key trên server, cập nhật biến môi trường{" "}
           <code style={{ background: A.bg, padding: "1px 5px", borderRadius: "4px" }}>ADMIN_KEY</code>{" "}
           và khởi động lại server.
         </p>
+        <p style={{ fontSize: "12px", color: A.textMuted, margin: "0 0 1rem", lineHeight: 1.6 }}>
+          Key mặc định nếu chưa cài biến môi trường: <code style={{ background: A.bg, padding: "1px 5px", borderRadius: "4px" }}>swc-admin-2026</code>
+        </p>
         <button onClick={onLogout} style={{ padding: "8px 20px", borderRadius: "7px", border: `1px solid rgba(193,51,51,0.30)`, cursor: "pointer", fontSize: "13px", fontWeight: 500, background: "transparent", color: A.danger }}>
           Đăng xuất
         </button>
+      </div>
+
+      {/* Admin users note */}
+      <div style={{ background: "#fff", borderRadius: "10px", border: `1px solid ${A.border}`, padding: "1.5rem" }}>
+        <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 0.875rem" }}>
+          Quản lý tài khoản
+        </p>
+        <p style={{ fontSize: "12.5px", color: A.textMuted, margin: 0, lineHeight: 1.65 }}>
+          Hệ thống hiện chạy với một admin key duy nhất (single-user mode). 
+          Nếu cần nhiều vai trò admin khác nhau, hãy liên hệ dev để mở rộng hệ thống xác thực.
+        </p>
       </div>
     </div>
   );
@@ -174,6 +214,8 @@ export default function Admin() {
 
   if (!adminKey) return <LoginScreen onLogin={(k) => setAdminKey(k)} />;
 
+  const isFullHeight = FULL_HEIGHT_SECTIONS.includes(section);
+
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: A.bg, fontFamily: "'Be Vietnam Pro', sans-serif" }}>
 
@@ -185,7 +227,7 @@ export default function Admin() {
         padding: "0 1.25rem 0 0",
         position: "sticky", top: 0, zIndex: 100,
       }}>
-        {/* Brand mark — matches sidebar width */}
+        {/* Brand — matches sidebar width */}
         <div style={{
           width: "220px", flexShrink: 0,
           display: "flex", alignItems: "center", gap: "0.625rem",
@@ -218,7 +260,6 @@ export default function Admin() {
               fontSize: "12.5px", fontWeight: 500, color: A.textMuted, textDecoration: "none",
               padding: "5px 12px", borderRadius: "6px", border: `1px solid ${A.border}`,
               display: "flex", alignItems: "center", gap: "5px",
-              transition: "color 0.14s ease",
             }}
           >
             <span style={{ fontSize: "10px" }}>↗</span> Xem website
@@ -236,7 +277,7 @@ export default function Admin() {
         </div>
       </header>
 
-      {/* ── Body: sidebar + content ──────────────────────────────────── */}
+      {/* ── Body ────────────────────────────────────────────────────── */}
       <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden" }}>
 
         {/* ── Sidebar ─────────────────────────────────────────────── */}
@@ -250,7 +291,6 @@ export default function Admin() {
           <nav style={{ flex: 1, padding: "0.875rem 0.625rem 1rem" }}>
             {NAV_STRUCTURE.map((group, gi) => (
               <div key={gi} style={{ marginBottom: "0.5rem" }}>
-                {/* Group label */}
                 {group.group && (
                   <p style={{
                     fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.14em",
@@ -260,7 +300,6 @@ export default function Admin() {
                     {group.group}
                   </p>
                 )}
-                {/* Group items */}
                 {group.items.map((item) => {
                   const active = section === item.id;
                   return (
@@ -275,22 +314,16 @@ export default function Admin() {
                         color: active ? A.primary : A.textMuted,
                         fontWeight: active ? 600 : 400, fontSize: "13px",
                         transition: "background 0.12s ease, color 0.12s ease",
-                        marginBottom: "1px",
-                        position: "relative",
+                        marginBottom: "1px", position: "relative",
                       }}
                     >
-                      {/* Active left-border indicator */}
                       {active && (
                         <span style={{
                           position: "absolute", left: 0, top: "5px", bottom: "5px",
-                          width: "3px", borderRadius: "0 2px 2px 0",
-                          background: A.primary,
+                          width: "3px", borderRadius: "0 2px 2px 0", background: A.primary,
                         }} />
                       )}
-                      <span style={{
-                        fontSize: "13px", flexShrink: 0, width: "18px", textAlign: "center",
-                        opacity: active ? 1 : 0.55,
-                      }}>
+                      <span style={{ fontSize: "13px", flexShrink: 0, width: "18px", textAlign: "center", opacity: active ? 1 : 0.55 }}>
                         {item.icon}
                       </span>
                       <span style={{ flex: 1 }}>{item.label}</span>
@@ -309,25 +342,26 @@ export default function Admin() {
             ))}
           </nav>
 
-          {/* Sidebar footer — version / env */}
           <div style={{ padding: "0.75rem 1rem", borderTop: `1px solid ${A.border}` }}>
-            <p style={{ fontSize: "10.5px", color: A.textLight, margin: 0 }}>
-              Thắng SWC Admin · 2026
-            </p>
+            <p style={{ fontSize: "10.5px", color: A.textLight, margin: 0 }}>Thắng SWC Admin · 2026</p>
           </div>
         </aside>
 
         {/* ── Content ──────────────────────────────────────────────── */}
-        <main style={{ flex: 1, minWidth: 0, overflowY: "auto", padding: "1.75rem 2rem 3rem" }}>
-          {section === "dashboard" && (
-            <DashboardPanel adminKey={adminKey} onNavigate={setSection} />
-          )}
-          {section === "posts"     && <PostsPanel     adminKey={adminKey} />}
-          {section === "taxonomy"  && <TaxonomyPanel  adminKey={adminKey} />}
-          {section === "products"  && <ProductsPanel  adminKey={adminKey} />}
-          {section === "leads"     && <LeadsPanel     adminKey={adminKey} />}
-          {section === "settings"  && <SettingsPanel  adminKey={adminKey} />}
-          {section === "account"   && <AccountPanel   adminKey={adminKey} onLogout={logout} />}
+        <main style={{
+          flex: 1, minWidth: 0,
+          overflowY: isFullHeight ? "hidden" : "auto",
+          padding: isFullHeight ? 0 : "1.75rem 2rem 3rem",
+        }}>
+          {section === "dashboard"  && <DashboardPanel  adminKey={adminKey} onNavigate={setSection} />}
+          {section === "posts"      && <PostsPanel      adminKey={adminKey} />}
+          {section === "categories" && <CategoriesPanel adminKey={adminKey} />}
+          {section === "tags"       && <TagsPanel       adminKey={adminKey} />}
+          {section === "products"   && <ProductsPanel   adminKey={adminKey} />}
+          {section === "leads"      && <LeadsPanel      adminKey={adminKey} />}
+          {section === "community"  && <CommunityPanel  adminKey={adminKey} />}
+          {section === "settings"   && <SettingsPanel   adminKey={adminKey} />}
+          {section === "account"    && <AccountPanel    adminKey={adminKey} onLogout={logout} />}
         </main>
       </div>
     </div>

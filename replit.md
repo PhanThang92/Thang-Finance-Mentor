@@ -118,5 +118,13 @@ Selection is deterministic: `pool[postId % poolSize]`. Same post always shows th
 ### Admin CMS (`/admin`)
 
 - Login key: `swc-admin-2026` (overridable via `ADMIN_KEY` env var, stored in localStorage as `swc_admin_key`)
-- 6 panels: Dashboard, Posts CRUD, Taxonomy, Products, Leads, Settings
+- Isolated from public site: no Navbar/Footer inside `/admin`
+- 10 navigation sections (sidebar grouped):
+  - **Tổng quan**: Dashboard (stats, quick actions, recent posts & leads, active products list)
+  - **Nội dung**: Bài viết (PostsPanel – searchable table + full editor w/ SEO), Chuyên mục (CategoriesPanel – CRUD), Tags (TagsPanel – chip view CRUD)
+  - **Hệ sinh thái**: Sản phẩm (ProductsPanel – card list + tabbed editor: basic info, page content, pricing/CTA, SEO), Leads (LeadsPanel – full-height split: list + detail pane with status timeline & notes)
+  - **Vận hành**: Cộng đồng (CommunityPanel – hero, links, CTA, benefits all in site_settings), Cài đặt (SettingsPanel – 5 tabs: Liên hệ, Mạng xã hội, Footer, SEO website, Form & CTA)
+  - **Hệ thống**: Tài khoản (AccountPanel – key management, logout)
+- Product extra fields (headline, sub, features, price, CTA, SEO) stored in `site_settings` as `product_{slug}_{field}` keys — no DB schema change needed
+- Community & settings fields all stored in `site_settings` table
 - PostsPanel image card shows live 16:9 preview, pool size hint, and inline error state for broken URLs

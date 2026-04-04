@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { adminApi, type DashboardData } from "@/lib/newsApi";
+import { adminApi, type DashboardData, type NewsProduct } from "@/lib/newsApi";
 import { A, fmtDate, leadStatusLabel, leadStatusColor } from "./shared";
 
-type Section = "dashboard" | "posts" | "taxonomy" | "products" | "leads" | "settings" | "account";
+type Section = "dashboard" | "posts" | "categories" | "tags" | "products" | "leads" | "community" | "settings" | "account";
 
 /* ── Quick action button ─────────────────────────────────────────── */
 function QuickAction({
@@ -28,8 +28,7 @@ function QuickAction({
         width: "32px", height: "32px", borderRadius: "8px",
         background: `${A.primary}14`,
         display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: "15px", flexShrink: 0,
-        color: A.primary,
+        fontSize: "15px", flexShrink: 0, color: A.primary,
       }}>
         {icon}
       </span>
@@ -89,8 +88,7 @@ function LeadPill({ status }: { status: string }) {
       display: "inline-block",
       fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
       padding: "2px 7px", borderRadius: "4px",
-      background: `${color}18`,
-      color,
+      background: `${color}18`, color,
     }}>
       {leadStatusLabel(status)}
     </span>
@@ -105,11 +103,18 @@ export function DashboardPanel({
   adminKey: string;
   onNavigate: (s: Section) => void;
 }) {
-  const [data, setData]       = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [data, setData]           = useState<DashboardData | null>(null);
+  const [products, setProducts]   = useState<NewsProduct[]>([]);
+  const [loading, setLoading]     = useState(true);
 
   useEffect(() => {
-    adminApi.getDashboard(adminKey).then(setData).catch(console.error).finally(() => setLoading(false));
+    Promise.all([
+      adminApi.getDashboard(adminKey),
+      adminApi.getMeta(adminKey),
+    ]).then(([dash, meta]) => {
+      setData(dash);
+      setProducts(meta.products);
+    }).catch(console.error).finally(() => setLoading(false));
   }, [adminKey]);
 
   if (loading) return (
@@ -141,6 +146,12 @@ export function DashboardPanel({
           label={data.newLeads > 0 ? `${data.newLeads} lead mới` : "Xem leads"}
           sub={data.newLeads > 0 ? "Cần xử lý" : "Quản lý danh sách"}
           onClick={() => onNavigate("leads")}
+        />
+        <QuickAction
+          icon="◎"
+          label="Cộng đồng"
+          sub="Cập nhật nội dung & liên kết"
+          onClick={() => onNavigate("community")}
         />
       </div>
 
@@ -197,19 +208,15 @@ export function DashboardPanel({
               Xem tất cả →
             </button>
           </div>
-
           <div style={{ padding: "0.25rem 0" }}>
             {data.recentPosts.length === 0
               ? <p style={{ fontSize: "13px", color: A.textLight, padding: "1rem 1.25rem", margin: 0 }}>Chưa có bài viết.</p>
               : data.recentPosts.map((p, i) => (
-                <div
-                  key={p.id}
-                  style={{
-                    display: "flex", alignItems: "flex-start", gap: "0.75rem",
-                    padding: "0.75rem 1.25rem",
-                    borderBottom: i < data.recentPosts.length - 1 ? `1px solid rgba(0,0,0,0.04)` : "none",
-                  }}
-                >
+                <div key={p.id} style={{
+                  display: "flex", alignItems: "flex-start", gap: "0.75rem",
+                  padding: "0.75rem 1.25rem",
+                  borderBottom: i < data.recentPosts.length - 1 ? `1px solid rgba(0,0,0,0.04)` : "none",
+                }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{
                       fontSize: "12.5px", fontWeight: 500, color: A.text, margin: "0 0 4px",
@@ -219,9 +226,7 @@ export function DashboardPanel({
                     </p>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
                       <StatusPill status={p.status} />
-                      {p.categoryName && (
-                        <span style={{ fontSize: "10.5px", color: A.textLight }}>{p.categoryName}</span>
-                      )}
+                      {p.categoryName && <span style={{ fontSize: "10.5px", color: A.textLight }}>{p.categoryName}</span>}
                     </div>
                   </div>
                   <p style={{ fontSize: "10.5px", color: A.textLight, flexShrink: 0, margin: "2px 0 0" }}>
@@ -249,19 +254,15 @@ export function DashboardPanel({
               Xem tất cả →
             </button>
           </div>
-
           <div style={{ padding: "0.25rem 0" }}>
             {data.recentLeads.length === 0
               ? <p style={{ fontSize: "13px", color: A.textLight, padding: "1rem 1.25rem", margin: 0 }}>Chưa có leads.</p>
               : data.recentLeads.map((l, i) => (
-                <div
-                  key={l.id}
-                  style={{
-                    display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem",
-                    padding: "0.75rem 1.25rem",
-                    borderBottom: i < data.recentLeads.length - 1 ? `1px solid rgba(0,0,0,0.04)` : "none",
-                  }}
-                >
+                <div key={l.id} style={{
+                  display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem",
+                  padding: "0.75rem 1.25rem",
+                  borderBottom: i < data.recentLeads.length - 1 ? `1px solid rgba(0,0,0,0.04)` : "none",
+                }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: "12.5px", fontWeight: 600, color: A.text, margin: "0 0 4px" }}>{l.name}</p>
                     <p style={{ fontSize: "11px", color: A.textMuted, margin: 0 }}>
@@ -271,9 +272,7 @@ export function DashboardPanel({
                   </div>
                   <div style={{ textAlign: "right", flexShrink: 0 }}>
                     <LeadPill status={l.status} />
-                    <p style={{ fontSize: "10.5px", color: A.textLight, margin: "4px 0 0" }}>
-                      {fmtDate(l.createdAt)}
-                    </p>
+                    <p style={{ fontSize: "10.5px", color: A.textLight, margin: "4px 0 0" }}>{fmtDate(l.createdAt)}</p>
                   </div>
                 </div>
               ))
@@ -281,6 +280,51 @@ export function DashboardPanel({
           </div>
         </div>
       </div>
+
+      {/* ── Active products ───────────────────────────────────────── */}
+      {products.length > 0 && (
+        <div style={{ background: "#fff", borderRadius: "10px", border: `1px solid ${A.border}`, overflow: "hidden" }}>
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            padding: "1rem 1.25rem 0.875rem", borderBottom: `1px solid ${A.border}`,
+          }}>
+            <p style={{ fontSize: "12px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: A.textMuted, margin: 0 }}>
+              Sản phẩm đang hoạt động
+            </p>
+            <button
+              onClick={() => onNavigate("products")}
+              style={{ fontSize: "11.5px", color: A.primary, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 500 }}
+            >
+              Quản lý →
+            </button>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 0 }}>
+            {products.map((p, i) => (
+              <div key={p.id} style={{
+                flex: "1 1 200px",
+                padding: "0.875rem 1.25rem",
+                borderRight: (i + 1) % 3 !== 0 && i < products.length - 1 ? `1px solid ${A.border}` : "none",
+                borderBottom: Math.floor(i / 3) < Math.floor((products.length - 1) / 3) ? `1px solid ${A.border}` : "none",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+                  <div style={{
+                    width: "28px", height: "28px", borderRadius: "7px",
+                    background: `${A.primary}15`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0,
+                  }}>
+                    <span style={{ fontSize: "12px", color: A.primary }}>◈</span>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "12.5px", fontWeight: 600, color: A.text, margin: 0 }}>{p.name}</p>
+                    <p style={{ fontSize: "11px", color: A.textLight, margin: 0, fontFamily: "monospace" }}>/{p.slug}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
