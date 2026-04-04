@@ -1,0 +1,525 @@
+Please refactor the website architecture for “Phan Van Thang SWC” into a cleaner hybrid content system.
+
+IMPORTANT:
+- Write implementation logic and code changes in English.
+- Keep all visible UI text in Vietnamese.
+- Do not break the premium frontend design that has already been built.
+- The goal is not only to make the site work now, but to make it scalable and maintainable later.
+
+GOAL:
+Refactor the current content/data structure so the site uses a hybrid model:
+
+1. Static structured content config for stable brand pages and reusable site copy
+2. Data collections for scalable content sections like articles, videos, topics, series, and news
+3. Clean UI mapping layer so pages render from organized data sources instead of messy hardcoded content
+
+This should make the website easier to maintain, easier to scale, and ready for future database or CMS integration.
+
+================================
+1. ARCHITECTURE STRATEGY
+================================
+
+Please reorganize the content system into 3 layers:
+
+LAYER A — STATIC / STRUCTURED CONTENT CONFIG
+Use this for content that is mostly stable and brand-controlled.
+
+Examples:
+- About page content
+- homepage CTA text
+- footer brand description
+- site-wide contact blocks
+- navigation labels and dropdown structure
+- reusable section labels / microcopy if appropriate
+
+LAYER B — CONTENT COLLECTIONS
+Use this for repeatable and scalable content.
+
+Examples:
+- articles
+- videos
+- topics
+- series
+- news
+- featured items
+
+LAYER C — UI MAPPING LAYER
+All pages and sections should render by reading from organized data/config rather than hardcoded content directly inside components.
+
+Examples:
+- homepage sections map from data
+- article listing maps from article collection
+- video library maps from video collection
+- knowledge hub maps from topics / series / featured content
+
+================================
+2. WHAT SHOULD NOT BE FULL DATABASE-DRIVEN YET
+================================
+
+Do NOT over-engineer everything into a database immediately.
+
+For now, keep the About page and stable brand sections as structured content config files, not full database-driven entities.
+
+This includes:
+- `/gioi-thieu`
+- homepage about teaser
+- homepage CTA copy
+- footer text
+- some brand statements and trust messaging
+
+These should be stored in well-structured config/data files so they are easy to edit without touching layout code.
+
+================================
+3. ABOUT PAGE CONTENT STRUCTURE
+================================
+
+Create a clean structured content source for the About page.
+
+Suggested file:
+- `src/content/aboutPageData.ts`
+or equivalent
+
+This file should contain structured sections such as:
+- hero
+- positioningIntro
+- aboutMain
+- coreValues
+- workingProcess
+- audience
+- optionalPerspective
+- finalCta
+
+Use the Vietnamese content already defined previously, but move it into a structured data object.
+
+Suggested shape example:
+- hero: eyebrow, heading, subheading, supportingText, buttons
+- positioningIntro: eyebrow, heading, paragraphs
+- aboutMain: eyebrow, heading, description, highlights, quote
+- coreValues: eyebrow, heading, items[]
+- workingProcess: eyebrow, heading, description, steps[]
+- audience: eyebrow, heading, items[]
+- optionalPerspective: eyebrow, heading, paragraph, quote
+- finalCta: heading, subheading, buttons
+
+Requirements:
+- do not hardcode these blocks directly in page components
+- page components should read from `aboutPageData`
+- keep it easy to edit later
+- keep visible text in Vietnamese
+
+================================
+4. NAVIGATION CONFIG
+================================
+
+Create a structured navigation config file.
+
+Suggested file:
+- `src/config/navigationConfig.ts`
+
+This should define:
+- primary navbar items
+- footer links
+- Kiến thức dropdown structure
+- optional mobile menu grouping
+- route targets
+
+Use the agreed menu structure:
+
+Navbar:
+- Trang chủ
+- Giới thiệu
+- Kiến thức
+- Tin tức
+- Cộng đồng
+- Sản phẩm
+- Liên hệ
+
+Kiến thức submenu:
+- Bài viết
+- Video
+- Chủ đề
+- Series nổi bật
+
+Requirements:
+- nav UI should render from config
+- footer quick links should also come from config where appropriate
+- avoid duplicating link labels across many files
+- easy to expand later
+
+================================
+5. CONTENT COLLECTION FILES
+================================
+
+Create organized collection files for scalable content.
+
+Suggested files:
+- `src/content/articlesData.ts`
+- `src/content/videosData.ts`
+- `src/content/topicsData.ts`
+- `src/content/seriesData.ts`
+- `src/content/newsData.ts`
+
+If folder naming differs, keep the same logic.
+
+Each collection should use a clean consistent structure.
+
+================================
+6. ARTICLES COLLECTION
+================================
+
+Create a structured article model.
+
+Minimum recommended fields:
+- id
+- title
+- slug
+- excerpt
+- content or contentPreview
+- coverImage
+- coverImageAlt
+- category
+- tags
+- publishDate
+- featured
+- status
+- readingTime (optional)
+- topicSlug (optional)
+- seriesSlug (optional)
+
+Use the Vietnamese mock article content already created where real data is missing.
+
+Requirements:
+- article listing page should render from this collection
+- homepage featured articles section should also read from this collection
+- support future filtering and search
+- easy to replace later with CMS/API data
+
+================================
+7. VIDEOS COLLECTION
+================================
+
+Create a structured video model.
+
+Minimum recommended fields:
+- id
+- title
+- slug
+- excerpt
+- thumbnail
+- thumbnailAlt
+- youtubeUrl
+- duration
+- publishDate
+- featured
+- status
+- topicSlug
+- seriesSlug
+- isFeaturedVideo (optional)
+
+Use the Vietnamese mock video content already created where real YouTube data is missing.
+
+Requirements:
+- homepage YouTube section should render from this collection
+- video library page should render from this collection
+- allow future direct YouTube sync or API integration
+- avoid hardcoding video cards inside page components
+
+================================
+8. TOPICS COLLECTION
+================================
+
+Create a structured topic model.
+
+Minimum fields:
+- id
+- title
+- slug
+- description
+- icon or visualKey
+- articleCount
+- videoCount
+- featured
+- order
+
+Suggested topics:
+- Tài chính cá nhân
+- Đầu tư dài hạn
+- Tư duy tích sản
+- Góc nhìn thị trường
+- Kiến thức thực chiến
+- Phát triển bản thân
+
+Requirements:
+- topic cards on homepage or knowledge hub should render from this collection
+- topic pages can be built later from this structure
+- support future aggregation from articles/videos
+
+================================
+9. SERIES COLLECTION
+================================
+
+Create a structured series model.
+
+Minimum fields:
+- id
+- title
+- slug
+- description
+- coverImage
+- coverImageAlt
+- type (article/video/mixed)
+- featured
+- order
+
+Suggested examples:
+- Con đường 1 triệu đô
+- Hành trình từ tư duy đến tự do
+- Góc nhìn đầu tư dài hạn
+
+Requirements:
+- series section on video page or knowledge hub should render from this collection
+- easy to expand later
+- do not hardcode series cards manually into layout
+
+================================
+10. NEWS COLLECTION
+================================
+
+Create a structured news/update model if the “Tin tức” section/page already exists or is planned.
+
+Minimum fields:
+- id
+- title
+- slug
+- excerpt
+- coverImage
+- publishDate
+- category
+- featured
+- status
+
+Purpose of “Tin tức”:
+- updates
+- announcements
+- activities
+- community/project/product updates
+
+Requirements:
+- keep “Tin tức” distinct from “Kiến thức”
+- data structure should reflect that distinction
+- route/page can use mock data first if needed
+
+================================
+11. SITE SETTINGS / GLOBAL BRAND CONFIG
+================================
+
+Create one global config for repeated brand-level information.
+
+Suggested file:
+- `src/config/siteConfig.ts`
+
+This can include:
+- brandName
+- brandTagline
+- footerDescription
+- contactEmail
+- hotline
+- location
+- social links
+- YouTube channel URL
+- default SEO metadata
+- optional disclaimer text
+
+Requirements:
+- footer and contact blocks should read from this source where useful
+- avoid repeating brand info in many components
+- easy to edit later
+
+================================
+12. PAGE-LEVEL DATA MAPPING
+================================
+
+Refactor page components so they map from data sources cleanly.
+
+Examples:
+
+Homepage:
+- hero may come from homepage config
+- about teaser from aboutPageData
+- featured articles from articlesData
+- topics from topicsData
+- YouTube section from videosData
+- final CTA from homepage config or shared CTA config
+
+About page:
+- all sections from aboutPageData
+
+Articles page:
+- featured article from articlesData
+- article grid from articlesData
+- topics section from topicsData
+
+Video page:
+- featured video from videosData
+- video grid from videosData
+- series section from seriesData
+
+Knowledge hub page:
+- cards from articles/videos/topics/series collections
+
+Requirements:
+- page files should focus on layout and mapping
+- content should live in data/config files
+- avoid large blocks of inline text inside UI components
+
+================================
+13. SHARED TYPES / INTERFACES
+================================
+
+If the codebase uses TypeScript, create shared types/interfaces for all content models.
+
+Suggested:
+- `Article`
+- `Video`
+- `Topic`
+- `Series`
+- `NewsItem`
+- `NavItem`
+- `FooterLink`
+- `ButtonLink`
+- `AboutPageData`
+
+Suggested location:
+- `src/types/content.ts`
+or equivalent
+
+Requirements:
+- strongly type the content objects
+- improve maintainability
+- reduce accidental structure mismatch
+
+================================
+14. PREPARE FOR FUTURE DATABASE OR CMS INTEGRATION
+================================
+
+Refactor the code so that later migration to a real database or CMS will be easy.
+
+The current step should still use local structured data files, but architecture should be future-ready.
+
+Please design with easy upgrade paths for:
+- Supabase
+- PostgreSQL
+- CMS
+- Notion-backed content sync
+- admin panel integration
+
+Requirements:
+- keep collection structure consistent
+- avoid page-specific ad-hoc data formats
+- use slugs and stable ids
+- keep route logic future-safe
+
+================================
+15. OPTIONAL CONTENT SERVICE LAYER
+================================
+
+If helpful, create a lightweight service/helper layer.
+
+Examples:
+- `getFeaturedArticles()`
+- `getLatestArticles()`
+- `getFeaturedVideos()`
+- `getVideosByTopic(slug)`
+- `getTopicBySlug(slug)`
+- `getSeriesBySlug(slug)`
+
+Requirements:
+- do not over-engineer
+- keep helper logic simple and readable
+- useful for filtering, sorting, and homepage selection
+
+================================
+16. EMPTY STATES / FALLBACK LOGIC
+================================
+
+Create clean fallback logic if any collection is empty.
+
+Example visible Vietnamese empty state:
+Heading:
+Nội dung đang được cập nhật
+
+Subtext:
+Các bài viết và chia sẻ mới sẽ sớm xuất hiện tại đây.
+
+Requirements:
+- reuse fallback patterns where possible
+- keep empty states on-brand
+- do not let missing data break layout
+
+================================
+17. FILE ORGANIZATION
+================================
+
+Please reorganize or create folders so the project is easier to maintain.
+
+Suggested structure example:
+
+- `src/config/`
+  - `siteConfig.ts`
+  - `navigationConfig.ts`
+
+- `src/content/`
+  - `aboutPageData.ts`
+  - `homepageData.ts` (optional)
+  - `articlesData.ts`
+  - `videosData.ts`
+  - `topicsData.ts`
+  - `seriesData.ts`
+  - `newsData.ts`
+
+- `src/types/`
+  - `content.ts`
+
+- `src/lib/` or `src/services/`
+  - content helper functions if needed
+
+This is a suggested pattern only.
+Adjust to the current framework structure if needed.
+
+================================
+18. DO NOT BREAK FRONTEND DESIGN
+================================
+
+This is primarily a data architecture refactor.
+Please preserve the current premium frontend design system.
+
+Do not unnecessarily redesign the site visually.
+Only make structural changes where needed to connect pages to the new organized data/config system.
+
+================================
+19. TECHNICAL REQUIREMENTS
+================================
+
+- keep code clean and maintainable
+- remove messy hardcoded content from components
+- keep visible text in Vietnamese
+- preserve responsive behavior
+- preserve route behavior
+- ensure all internal links still work
+- avoid regressions
+- keep implementation easy to understand
+
+================================
+20. FINAL EXPECTED RESULT
+================================
+
+After this refactor:
+- About page content is structured and not messy
+- navbar/footer/site-wide content is configurable
+- articles, videos, topics, series, and news use clean content collections
+- homepage and inner pages render from organized data
+- the website becomes easier to scale
+- future CMS/database integration becomes much easier
+- the project feels more mature and professionally organized
+
+Please implement this hybrid data architecture refactor directly.

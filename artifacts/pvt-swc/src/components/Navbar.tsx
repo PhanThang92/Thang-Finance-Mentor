@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
+import { NAV_ITEMS, KIEN_THUC_PATHS } from "@/config/navigationConfig";
 
 /* ── Navigation data ─────────────────────────────────────── */
 type NavDropdownItem = { name: string; desc?: string; href: string };
@@ -89,42 +90,28 @@ export function Navbar() {
   const isCommunityPage = location.startsWith("/cong-dong");
   const isTinTucPage    = location.startsWith("/tin-tuc");
   const isAboutPage     = location.startsWith("/gioi-thieu");
-  const isKienThucPage  = location.startsWith("/bai-viet")
-                       || location.startsWith("/video")
-                       || location.startsWith("/chu-de")
-                       || location.startsWith("/series")
-                       || location.startsWith("/kien-thuc");
+  const isKienThucPage  = KIEN_THUC_PATHS.some((p) => location.startsWith(p));
 
   const isHeroDark        = isHome || isProductPage || isCommunityPage || isAboutPage;
   const effectiveScrolled = isScrolled || !isHeroDark;
 
-  const navLinks: NavItem[] = [
-    { name: "Trang chủ",  href: isHome ? "#trang-chu" : `${homeBase}/` },
-    { name: "Giới thiệu", href: `${homeBase}/gioi-thieu` },
-    {
-      name: "Kiến thức",
-      dropdown: true,
-      dropdownKey: "kien-thuc",
-      items: [
-        { name: "Bài viết",       desc: "Những bài chia sẻ và phân tích chuyên sâu",    href: `${homeBase}/bai-viet` },
-        { name: "Video",          desc: "Thư viện video từ kênh YouTube",               href: `${homeBase}/video` },
-        { name: "Chủ đề",         desc: "Khám phá nội dung theo từng nhóm kiến thức",   href: `${homeBase}/chu-de` },
-        { name: "Series nổi bật", desc: "Theo dõi các chuỗi nội dung chính",            href: `${homeBase}/series` },
-      ],
-    },
-    { name: "Tin tức",   href: `${homeBase}/tin-tuc` },
-    { name: "Cộng đồng", href: `${homeBase}/cong-dong` },
-    {
-      name: "Sản phẩm",
-      dropdown: true,
-      dropdownKey: "san-pham",
-      items: [
-        { name: "Road to $1M · SWC PASS", desc: "Lộ trình tài chính cá nhân có hệ thống", href: `${homeBase}/san-pham/duong-toi-1-trieu-do` },
-        { name: "ATLAS",                   desc: "Hệ sinh thái bất động sản kỹ thuật số",  href: `${homeBase}/san-pham/atlas` },
-      ],
-    },
-    { name: "Liên hệ", href: isHome ? "#lien-he" : `${homeBase}/#lien-he` },
-  ];
+  const navLinks: NavItem[] = NAV_ITEMS.map((item) => {
+    if (item.dropdownKey) {
+      return {
+        name:        item.name,
+        dropdown:    true as const,
+        dropdownKey: item.dropdownKey,
+        items: (item.items ?? []).map((sub) => ({
+          name: sub.name,
+          desc: sub.desc,
+          href: `${homeBase}${sub.path}`,
+        })),
+      };
+    }
+    if (item.path === "/" && isHome)         return { name: item.name, href: "#trang-chu" };
+    if (item.path === "/#lien-he" && isHome) return { name: item.name, href: "#lien-he" };
+    return { name: item.name, href: `${homeBase}${item.path ?? "/"}` };
+  });
 
   /* ── Scroll ──────────────────────────────────────────────── */
   useEffect(() => {

@@ -142,3 +142,43 @@ Selection is deterministic: `pool[postId % poolSize]`. Same post always shows th
 - Product extra fields (headline, sub, features, price, CTA, SEO) stored in `site_settings` as `product_{slug}_{field}` keys — no DB schema change needed
 - Community & settings fields all stored in `site_settings` table
 - **Image upload pipeline** (complete): `POST /api/admin/upload-image` (multipart) → sharp processing to 1600×900 WebP with SVG watermark (lower-right pill, context-aware text) → saves orig + disp to `artifacts/api-server/uploads/{orig,disp}/`; `news_posts.featured_image_display` column stores the processed URL; PostsPanel ImageCard: file-upload button with spinner + "ĐÃ XỬ LÝ" badge + manual URL fallback + Xóa ảnh clear; TinTuc ArticleCard: CSS watermark overlay on fallback images only (baked-in watermark on uploaded images); `postImage.ts`: `getPostImage()` prefers `featuredImageDisplay`, `isFallbackImage()`, `getWatermarkText()` exported
+
+### Content Architecture (3-Layer Hybrid System)
+
+#### Layer A — Static / Structured Config
+Stable brand-level content that rarely changes. Edit here, not inside components.
+
+- `src/config/siteConfig.ts` — brandName, tagline, footerDescription, contactEmail, youtubeUrl, facebookUrl, social links, default SEO, disclaimer. **`YOUTUBE_CHANNEL_URL` is exported here — single source of truth.**
+- `src/config/navigationConfig.ts` — `NAV_ITEMS` (all 7 navbar items + dropdown structures), `FOOTER_NAV_LINKS`, `FOOTER_KIEN_THUC_LINKS`, `FOOTER_PRODUCT_LINKS`, `KIEN_THUC_PATHS` (paths that activate Kiến thức nav item).
+- `src/content/aboutPageData.tsx` — All Vietnamese text for `/gioi-thieu`: hero, aboutMain (highlights, quote), coreValues (with JSX icons), audienceSection, finalCta.
+
+#### Layer B — Content Collections
+Repeatable/scalable content. Each collection uses typed models (see `src/types/content.ts`).
+
+- `src/content/videosData.ts` — 7 VideoItems (1 featured + 6 grid). Exports `getFeaturedVideo()`, `getHomepageVideos(n)`, `getVideosByCategory(cat)`, `searchVideos(q)`.
+- `src/content/seriesData.ts` — 3 SeriesItems. Exports `getFeaturedSeries()`, `getSeriesBySlug(slug)`.
+- `src/content/topicsData.tsx` — 6 TopicItems with JSX icons. Exports `getFeaturedTopics()`, `getTopicBySlug(slug)`.
+- `src/content/articlesData.ts` — Mock ArticleItems (production data comes from `/api/news`).
+- `src/content/newsData.ts` — Mock NewsItems (production data comes from `/api/news`).
+
+#### Layer C — UI Mapping
+Pages read from data/config rather than hardcoding content.
+
+- `Navbar.tsx` → imports `NAV_ITEMS`, `KIEN_THUC_PATHS` from navigationConfig
+- `Footer.tsx` → imports link arrays from navigationConfig; social URLs from siteConfig
+- `GioiThieu.tsx` → imports all section content from aboutPageData
+- `TopicsSection.tsx` → imports `TOPICS` from topicsData
+- `YoutubeSection.tsx` → imports `YOUTUBE_CHANNEL_URL` from siteConfig; video data from videosData
+- `Video.tsx` (page) → imports video data from videosData; series from seriesData; YouTube URL from siteConfig
+
+#### Shared Types
+`src/types/content.ts` — TypeScript interfaces for `VideoItem`, `SeriesItem`, `TopicItem`, `ArticleItem`, `NewsItem`, `NavItemConfig`, `FooterLinkItem`, `SocialLink`, `CoreValue`, and all about-page section types.
+
+#### Service / Helper Layer
+`src/lib/contentHelpers.ts` — re-exports all collection helpers + `formatDateVN()` and `estimateReadingTime()`.
+
+#### Upgrade Path
+To migrate to a real database (Supabase / PostgreSQL / CMS):
+1. Replace exports in `videosData.ts`, `seriesData.ts`, etc. with `async` API/DB fetch functions that return the same typed objects.
+2. Update calling components to handle async (add Suspense or React Query).
+3. No changes needed to component layout or navigation config.

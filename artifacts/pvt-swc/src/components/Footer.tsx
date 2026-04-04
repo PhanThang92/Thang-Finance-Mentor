@@ -1,32 +1,16 @@
 import React from "react";
 import { Mail, Users } from "lucide-react";
 import { SiYoutube, SiFacebook } from "react-icons/si";
+import { FOOTER_NAV_LINKS, FOOTER_KIEN_THUC_LINKS, FOOTER_PRODUCT_LINKS } from "@/config/navigationConfig";
+import { siteConfig } from "@/config/siteConfig";
 
-const navLinks = [
-  { name: "Trang chủ",  href: "/" },
-  { name: "Giới thiệu", href: "/gioi-thieu" },
-  { name: "Kiến thức",  href: "/kien-thuc" },
-  { name: "Tin tức",    href: "/tin-tuc" },
-  { name: "Cộng đồng",  href: "/cong-dong" },
-  { name: "Sản phẩm",  href: "/san-pham/duong-toi-1-trieu-do" },
-  { name: "Liên hệ",   href: "/#lien-he" },
-];
-
-const kienThucLinks = [
-  { name: "Bài viết",       href: "/bai-viet" },
-  { name: "Video",          href: "/video" },
-  { name: "Chủ đề",         href: "/chu-de" },
-  { name: "Series nổi bật", href: "/series" },
-];
-
-const productLinks = [
-  { name: "Road to $1M · SWC PASS", href: "/san-pham/duong-toi-1-trieu-do" },
-  { name: "ATLAS", href: "/san-pham/atlas" },
-];
+const navLinks     = FOOTER_NAV_LINKS;
+const kienThucLinks = FOOTER_KIEN_THUC_LINKS;
+const productLinks  = FOOTER_PRODUCT_LINKS;
 
 const socials = [
-  { icon: SiYoutube, href: "#", ariaLabel: "YouTube" },
-  { icon: SiFacebook, href: "#", ariaLabel: "Facebook" },
+  { icon: SiYoutube, href: siteConfig.youtubeUrl, ariaLabel: "YouTube" },
+  { icon: SiFacebook, href: siteConfig.facebookUrl, ariaLabel: "Facebook" },
 ];
 
 const iconButtonBase: React.CSSProperties = {

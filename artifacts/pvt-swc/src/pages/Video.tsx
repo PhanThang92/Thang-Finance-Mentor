@@ -2,7 +2,14 @@ import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Play, Search } from "lucide-react";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
-import { YOUTUBE_CHANNEL_URL } from "@/components/YoutubeSection";
+import { YOUTUBE_CHANNEL_URL } from "@/config/siteConfig";
+import {
+  getFeaturedVideo,
+  getVideosByCategory,
+  searchVideos,
+} from "@/content/videosData";
+import { getFeaturedSeries } from "@/content/seriesData";
+import type { VideoItem, SeriesItem, VideoCategory } from "@/types/content";
 
 /* ── Animation ── */
 const fadeUp = {
@@ -11,113 +18,14 @@ const fadeUp = {
 };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 
-/* ── Types ── */
-type FilterKey = "all" | "featured" | "tai-chinh" | "dau-tu" | "tu-duy" | "series";
-
-/* ── Data ── */
-const FEATURED_VIDEO = {
-  id: "f1",
-  title: "Đầu tư dài hạn bắt đầu từ đâu nếu bạn chưa có nhiều vốn?",
-  description:
-    "Một góc nhìn dành cho những người mới bắt đầu hành trình tích sản và muốn đi đường dài bằng sự kỷ luật thay vì cảm xúc.",
-  duration: "15 phút",
-  badge: "Video nổi bật",
-  gradient: "linear-gradient(145deg, #0c2622 0%, #124540 55%, #1a6258 100%)",
-  categories: ["featured", "dau-tu"],
-  href: YOUTUBE_CHANNEL_URL,
-};
-
-const VIDEOS = [
-  {
-    id: "v1",
-    title: "Vì sao kiếm nhiều hơn vẫn chưa chắc vững hơn về tài chính?",
-    description: "Hiểu khác biệt giữa thu nhập cao và nền tảng tài chính vững.",
-    duration: "12 phút",
-    gradient: "linear-gradient(145deg, #0d1e2e 0%, #1a3550 55%, #1e4060 100%)",
-    categories: ["tai-chinh"],
-    href: YOUTUBE_CHANNEL_URL,
-  },
-  {
-    id: "v2",
-    title: "Người mới đầu tư nên nhìn vào điều gì trước lợi nhuận?",
-    description: "Một cách tiếp cận thực tế hơn để giảm rủi ro khi bắt đầu.",
-    duration: "10 phút",
-    gradient: "linear-gradient(145deg, #1a200d 0%, #2d3b18 55%, #374720 100%)",
-    categories: ["dau-tu"],
-    href: YOUTUBE_CHANNEL_URL,
-  },
-  {
-    id: "v3",
-    title: "Tích sản là quá trình của kỷ luật, không phải cảm hứng",
-    description: "Xây tài sản bền vững thường bắt đầu từ những nguyên tắc nhỏ nhưng lặp lại đủ lâu.",
-    duration: "9 phút",
-    gradient: "linear-gradient(145deg, #1e1a0a 0%, #3a2e12 55%, #44381a 100%)",
-    categories: ["tu-duy", "featured"],
-    href: YOUTUBE_CHANNEL_URL,
-  },
-  {
-    id: "v4",
-    title: "Không phải cứ cố hơn là tài chính sẽ tốt hơn",
-    description: "Đôi khi điều cần thay đổi không phải là nỗ lực, mà là cấu trúc.",
-    duration: "14 phút",
-    gradient: "linear-gradient(145deg, #0d162a 0%, #1a2a4a 55%, #1e3255 100%)",
-    categories: ["tai-chinh", "tu-duy"],
-    href: YOUTUBE_CHANNEL_URL,
-  },
-  {
-    id: "v5",
-    title: "Muốn đi đường dài trong đầu tư, trước hết cần bình tĩnh",
-    description: "Tâm lý là một phần của chất lượng quyết định tài chính.",
-    duration: "11 phút",
-    gradient: "linear-gradient(145deg, #1a0e18 0%, #341a30 55%, #3e2038 100%)",
-    categories: ["dau-tu", "tu-duy"],
-    href: YOUTUBE_CHANNEL_URL,
-  },
-  {
-    id: "v6",
-    title: "Hiểu đúng về tích sản trước khi nghĩ đến tự do tài chính",
-    description: "Tự do tài chính không bắt đầu từ khát vọng lớn, mà từ nền tảng đủ rõ.",
-    duration: "16 phút",
-    gradient: "linear-gradient(145deg, #0a1e18 0%, #143328 55%, #1a4032 100%)",
-    categories: ["tu-duy", "featured"],
-    href: YOUTUBE_CHANNEL_URL,
-  },
-];
-
-const SERIES_LIST = [
-  {
-    id: "s1",
-    title: "Con đường 1 triệu đô",
-    description: "Hành trình xây dựng nền tảng tài chính vững chắc qua từng giai đoạn — từ tích lũy ban đầu đến đầu tư có chiến lược.",
-    count: "5 video",
-    gradient: "linear-gradient(135deg, #0c2622 0%, #1a5a4e 100%)",
-    href: YOUTUBE_CHANNEL_URL,
-  },
-  {
-    id: "s2",
-    title: "Hành trình từ tư duy đến tự do",
-    description: "Chuỗi nội dung về tư duy tài chính đúng — yếu tố nền tảng trước khi bắt đầu bất kỳ bước đầu tư nào.",
-    count: "4 video",
-    gradient: "linear-gradient(135deg, #0e1e2e 0%, #1e3c58 100%)",
-    href: YOUTUBE_CHANNEL_URL,
-  },
-  {
-    id: "s3",
-    title: "Góc nhìn đầu tư dài hạn",
-    description: "Phân tích và chia sẻ về chiến lược đầu tư dài hạn qua góc nhìn thực chiến, dựa trên nguyên tắc, không phải cảm xúc.",
-    count: "6 video",
-    gradient: "linear-gradient(135deg, #1e1a0a 0%, #3e3418 100%)",
-    href: YOUTUBE_CHANNEL_URL,
-  },
-];
-
-const FILTERS: { key: FilterKey; label: string }[] = [
-  { key: "all",     label: "Tất cả" },
+/* ── Filter config ── */
+const FILTERS: { key: VideoCategory | "all"; label: string }[] = [
+  { key: "all",      label: "Tất cả" },
   { key: "featured", label: "Nổi bật" },
   { key: "tai-chinh", label: "Tài chính cá nhân" },
-  { key: "dau-tu",  label: "Đầu tư dài hạn" },
-  { key: "tu-duy",  label: "Tư duy tích sản" },
-  { key: "series",  label: "Series" },
+  { key: "dau-tu",   label: "Đầu tư dài hạn" },
+  { key: "tu-duy",   label: "Tư duy tích sản" },
+  { key: "series",   label: "Series" },
 ];
 
 /* ── Thumbnail ── */
@@ -137,57 +45,35 @@ function Thumbnail({
     <div style={{ position: "relative", background: gradient, height: h, flexShrink: 0, overflow: "hidden" }}>
       <div
         style={{
-          position: "absolute",
-          inset: 0,
+          position: "absolute", inset: 0,
           backgroundImage:
             "repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,0.016) 28px, rgba(255,255,255,0.016) 29px), repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(255,255,255,0.016) 28px, rgba(255,255,255,0.016) 29px)",
         }}
       />
       <div
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "60%",
-          height: "60%",
-          borderRadius: "50%",
+          position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+          width: "60%", height: "60%", borderRadius: "50%",
           background: "radial-gradient(circle, rgba(255,255,255,0.055) 0%, transparent 70%)",
         }}
       />
-      {/* Play button */}
       <div
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: large ? "50px" : "38px",
-          height: large ? "50px" : "38px",
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.14)",
-          border: "1px solid rgba(255,255,255,0.24)",
-          backdropFilter: "blur(8px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+          width: large ? "50px" : "38px", height: large ? "50px" : "38px",
+          borderRadius: "50%", background: "rgba(255,255,255,0.14)",
+          border: "1px solid rgba(255,255,255,0.24)", backdropFilter: "blur(8px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
         }}
       >
         <Play size={large ? 19 : 14} fill="rgba(255,255,255,0.88)" stroke="none" style={{ marginLeft: "2px" }} />
       </div>
-      {/* Duration */}
       <div
         style={{
-          position: "absolute",
-          bottom: "10px",
-          right: "10px",
-          background: "rgba(0,0,0,0.52)",
-          backdropFilter: "blur(6px)",
-          borderRadius: "4px",
-          padding: "2px 7px",
-          fontSize: "10px",
-          fontWeight: 500,
-          color: "rgba(255,255,255,0.86)",
+          position: "absolute", bottom: "10px", right: "10px",
+          background: "rgba(0,0,0,0.52)", backdropFilter: "blur(6px)",
+          borderRadius: "4px", padding: "2px 7px",
+          fontSize: "10px", fontWeight: 500, color: "rgba(255,255,255,0.86)",
         }}
       >
         {duration}
@@ -195,18 +81,11 @@ function Thumbnail({
       {badge && (
         <div
           style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            background: "rgba(52,160,140,0.88)",
-            backdropFilter: "blur(6px)",
-            borderRadius: "4px",
-            padding: "2px 8px",
-            fontSize: "9.5px",
-            fontWeight: 600,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "#fff",
+            position: "absolute", top: "10px", left: "10px",
+            background: "rgba(52,160,140,0.88)", backdropFilter: "blur(6px)",
+            borderRadius: "4px", padding: "2px 8px",
+            fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.08em",
+            textTransform: "uppercase", color: "#fff",
           }}
         >
           {badge}
@@ -217,60 +96,44 @@ function Thumbnail({
 }
 
 /* ── Video card ── */
-function VideoCard({ title, description, duration, gradient, href }: typeof VIDEOS[0]) {
+function VideoCard({ title, excerpt, duration, thumbnailGradient, youtubeUrl }: VideoItem) {
   const [hovered, setHovered] = React.useState(false);
   return (
     <motion.a
       variants={fadeUp}
-      href={href}
+      href={youtubeUrl}
       target="_blank"
       rel="noopener noreferrer"
       style={{
         background: "hsl(var(--card))",
         border: `1px solid ${hovered ? "hsl(var(--primary) / 0.22)" : "hsl(var(--border) / 0.55)"}`,
-        borderRadius: "12px",
-        overflow: "hidden",
-        textDecoration: "none",
-        display: "flex",
-        flexDirection: "column",
-        boxShadow: hovered
-          ? "0 6px 24px rgba(10,40,35,0.10), 0 2px 4px rgba(10,40,35,0.05)"
-          : "0 2px 8px rgba(10,40,35,0.05)",
+        borderRadius: "12px", overflow: "hidden", textDecoration: "none",
+        display: "flex", flexDirection: "column",
+        boxShadow: hovered ? "0 6px 24px rgba(10,40,35,0.10), 0 2px 4px rgba(10,40,35,0.05)" : "0 2px 8px rgba(10,40,35,0.05)",
         transform: hovered ? "translateY(-3px)" : "translateY(0)",
         transition: "border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease",
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <Thumbnail gradient={gradient} duration={duration} />
+      <Thumbnail gradient={thumbnailGradient} duration={duration} />
       <div style={{ padding: "1.1rem 1.2rem 1.4rem", flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
         <p
           style={{
-            fontSize: "13.5px",
-            fontWeight: 600,
-            lineHeight: 1.52,
-            letterSpacing: "-0.010em",
-            color: "hsl(var(--foreground))",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
+            fontSize: "13.5px", fontWeight: 600, lineHeight: 1.52, letterSpacing: "-0.010em",
+            color: "hsl(var(--foreground))", display: "-webkit-box",
+            WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
           }}
         >
           {title}
         </p>
         <p
           style={{
-            fontSize: "12px",
-            color: "hsl(var(--muted-foreground))",
-            lineHeight: 1.72,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
+            fontSize: "12px", color: "hsl(var(--muted-foreground))", lineHeight: 1.72,
+            display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
           }}
         >
-          {description}
+          {excerpt}
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "4px", color: "hsl(var(--primary))", fontSize: "11.5px", fontWeight: 500 }}>
           <Play size={10} fill="hsl(var(--primary))" stroke="none" />
@@ -281,24 +144,84 @@ function VideoCard({ title, description, duration, gradient, href }: typeof VIDE
   );
 }
 
-/* ── Main component ── */
+/* ── Series card ── */
+function SeriesCard({ title, description, count, coverGradient, youtubeUrl }: SeriesItem) {
+  return (
+    <motion.a
+      variants={fadeUp}
+      href={youtubeUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: "flex", flexDirection: "column", borderRadius: "14px", overflow: "hidden",
+        textDecoration: "none", border: "1px solid hsl(var(--border) / 0.55)",
+        background: "hsl(var(--card))", boxShadow: "0 2px 8px rgba(10,40,35,0.05)",
+        transition: "border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease",
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLElement;
+        el.style.borderColor = "hsl(var(--primary) / 0.22)";
+        el.style.boxShadow   = "0 6px 22px rgba(10,40,35,0.10)";
+        el.style.transform   = "translateY(-3px)";
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLElement;
+        el.style.borderColor = "hsl(var(--border) / 0.55)";
+        el.style.boxShadow   = "0 2px 8px rgba(10,40,35,0.05)";
+        el.style.transform   = "translateY(0)";
+      }}
+    >
+      <div style={{ height: "90px", background: coverGradient, position: "relative", overflow: "hidden" }}>
+        <div
+          style={{
+            position: "absolute", inset: 0,
+            backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.014) 20px, rgba(255,255,255,0.014) 21px)",
+          }}
+        />
+        <div style={{ position: "absolute", bottom: "12px", left: "14px" }}>
+          <span style={{ fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.55)", background: "rgba(0,0,0,0.30)", padding: "2px 7px", borderRadius: "3px" }}>
+            {count}
+          </span>
+        </div>
+      </div>
+      <div style={{ padding: "1.1rem 1.2rem 1.4rem", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
+        <p style={{ fontSize: "14px", fontWeight: 700, letterSpacing: "-0.012em", lineHeight: 1.38, color: "hsl(var(--foreground))" }}>
+          {title}
+        </p>
+        <p style={{ fontSize: "12px", color: "hsl(var(--muted-foreground))", lineHeight: 1.78 }}>
+          {description}
+        </p>
+        <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "4px", color: "hsl(var(--primary))", fontSize: "12px", fontWeight: 500 }}>
+          <span>Xem series</span>
+          <ArrowRight size={11} strokeWidth={2} />
+        </div>
+      </div>
+    </motion.a>
+  );
+}
+
+/* ── Empty state ── */
+function EmptyState() {
+  return (
+    <div style={{ textAlign: "center", padding: "4rem 0", color: "hsl(var(--muted-foreground))", fontSize: "14px" }}>
+      <p style={{ fontWeight: 500, marginBottom: "6px" }}>Nội dung đang được cập nhật</p>
+      <p style={{ fontSize: "13px" }}>Các video mới sẽ sớm xuất hiện tại đây.</p>
+    </div>
+  );
+}
+
+/* ── Main page ── */
 export default function VideoLibrary() {
-  const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState<VideoCategory | "all">("all");
+  const [searchQuery,  setSearchQuery]  = useState("");
+
+  const featuredVideo = getFeaturedVideo();
+  const seriesList    = getFeaturedSeries();
 
   const filteredVideos = useMemo(() => {
-    let list = VIDEOS;
     if (activeFilter === "series") return [];
-    if (activeFilter !== "all") {
-      list = list.filter((v) => v.categories.includes(activeFilter));
-    }
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(
-        (v) => v.title.toLowerCase().includes(q) || v.description.toLowerCase().includes(q)
-      );
-    }
-    return list;
+    if (searchQuery.trim()) return searchVideos(searchQuery);
+    return getVideosByCategory(activeFilter === "all" ? undefined : activeFilter);
   }, [activeFilter, searchQuery]);
 
   React.useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, []);
@@ -308,11 +231,7 @@ export default function VideoLibrary() {
       {/* ── Hero ── */}
       <section
         className="relative overflow-hidden"
-        style={{
-          background: "linear-gradient(150deg, #0d2622 0%, #102a26 45%, #091e1b 100%)",
-          paddingTop: "clamp(5.5rem, 14vw, 9rem)",
-          paddingBottom: "clamp(3.5rem, 9vw, 5.5rem)",
-        }}
+        style={{ background: "linear-gradient(150deg, #0d2622 0%, #102a26 45%, #091e1b 100%)", paddingTop: "clamp(5.5rem, 14vw, 9rem)", paddingBottom: "clamp(3.5rem, 9vw, 5.5rem)" }}
       >
         <BackgroundDecor />
         <div className="max-w-5xl mx-auto px-5 sm:px-8 relative z-10">
@@ -323,11 +242,7 @@ export default function VideoLibrary() {
                 Thư viện video
               </span>
             </motion.div>
-            <motion.h1
-              variants={fadeUp}
-              className="text-white"
-              style={{ fontSize: "clamp(1.9rem, 4.8vw, 3rem)", fontWeight: 700, lineHeight: 1.14, letterSpacing: "-0.030em" }}
-            >
+            <motion.h1 variants={fadeUp} className="text-white" style={{ fontSize: "clamp(1.9rem, 4.8vw, 3rem)", fontWeight: 700, lineHeight: 1.14, letterSpacing: "-0.030em" }}>
               Video chia sẻ về tài chính, đầu tư và tư duy tích sản
             </motion.h1>
             <motion.p variants={fadeUp} style={{ fontSize: "16px", color: "rgba(255,255,255,0.60)", lineHeight: 1.8 }}>
@@ -341,17 +256,8 @@ export default function VideoLibrary() {
       </section>
 
       {/* ── Filter toolbar ── */}
-      <div
-        style={{
-          background: "hsl(var(--background))",
-          borderBottom: "1px solid hsl(var(--border) / 0.5)",
-          position: "sticky",
-          top: "64px",
-          zIndex: 40,
-        }}
-      >
+      <div style={{ background: "hsl(var(--background))", borderBottom: "1px solid hsl(var(--border) / 0.5)", position: "sticky", top: "64px", zIndex: 40 }}>
         <div className="max-w-5xl mx-auto px-5 sm:px-8 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          {/* Filter chips */}
           <div className="flex items-center gap-2 flex-wrap flex-1">
             {FILTERS.map(({ key, label }) => {
               const active = activeFilter === key;
@@ -360,18 +266,12 @@ export default function VideoLibrary() {
                   key={key}
                   onClick={() => setActiveFilter(key)}
                   style={{
-                    height: "2rem",
-                    padding: "0 0.875rem",
-                    borderRadius: "999px",
-                    fontSize: "12px",
-                    fontWeight: active ? 600 : 400,
-                    cursor: "pointer",
+                    height: "2rem", padding: "0 0.875rem", borderRadius: "999px",
+                    fontSize: "12px", fontWeight: active ? 600 : 400, cursor: "pointer",
                     border: `1px solid ${active ? "hsl(var(--primary) / 0.5)" : "hsl(var(--border))"}`,
                     background: active ? "hsl(var(--primary) / 0.10)" : "transparent",
                     color: active ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))",
-                    transition: "all 0.18s ease",
-                    letterSpacing: "0.005em",
-                    whiteSpace: "nowrap",
+                    transition: "all 0.18s ease", letterSpacing: "0.005em", whiteSpace: "nowrap",
                   }}
                 >
                   {label}
@@ -379,62 +279,28 @@ export default function VideoLibrary() {
               );
             })}
           </div>
-          {/* Search */}
           <div style={{ position: "relative", flexShrink: 0 }}>
-            <Search
-              size={13}
-              style={{
-                position: "absolute",
-                left: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "hsl(var(--muted-foreground))",
-                pointerEvents: "none",
-              }}
-            />
+            <Search size={13} style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "hsl(var(--muted-foreground))", pointerEvents: "none" }} />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm video theo từ khóa..."
-              style={{
-                height: "2rem",
-                paddingLeft: "28px",
-                paddingRight: "12px",
-                borderRadius: "999px",
-                fontSize: "12px",
-                border: "1px solid hsl(var(--border))",
-                background: "hsl(var(--muted) / 0.3)",
-                color: "hsl(var(--foreground))",
-                outline: "none",
-                width: "200px",
-                transition: "border-color 0.18s ease, width 0.24s ease",
-              }}
-              onFocus={(e) => {
-                (e.target as HTMLInputElement).style.borderColor = "hsl(var(--primary) / 0.5)";
-                (e.target as HTMLInputElement).style.width = "240px";
-              }}
-              onBlur={(e) => {
-                (e.target as HTMLInputElement).style.borderColor = "hsl(var(--border))";
-                (e.target as HTMLInputElement).style.width = "200px";
-              }}
+              style={{ height: "2rem", paddingLeft: "28px", paddingRight: "12px", borderRadius: "999px", fontSize: "12px", border: "1px solid hsl(var(--border))", background: "hsl(var(--muted) / 0.3)", color: "hsl(var(--foreground))", outline: "none", width: "200px", transition: "border-color 0.18s ease, width 0.24s ease" }}
+              onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = "hsl(var(--primary) / 0.5)"; (e.target as HTMLInputElement).style.width = "240px"; }}
+              onBlur={(e)  => { (e.target as HTMLInputElement).style.borderColor = "hsl(var(--border))"; (e.target as HTMLInputElement).style.width = "200px"; }}
             />
           </div>
         </div>
       </div>
 
-      {/* ── Main content ── */}
+      {/* ── Content ── */}
       <div className="bg-background">
         <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 md:py-24 space-y-20">
 
-          {/* ── Featured video ── */}
-          {(activeFilter === "all" || activeFilter === "featured") && !searchQuery && (
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-60px" }}
-              variants={stagger}
-            >
+          {/* Featured video */}
+          {featuredVideo && (activeFilter === "all" || activeFilter === "featured") && !searchQuery && (
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
               <motion.div variants={fadeUp} className="flex items-center gap-2.5 mb-7">
                 <div style={{ width: "1.5rem", height: "0.5px", background: "rgba(200,158,76,0.65)", flexShrink: 0 }} />
                 <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.20em", textTransform: "uppercase", color: "rgba(200,158,76,0.78)" }}>
@@ -443,43 +309,23 @@ export default function VideoLibrary() {
               </motion.div>
               <motion.a
                 variants={fadeUp}
-                href={FEATURED_VIDEO.href}
+                href={featuredVideo.youtubeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  background: "hsl(var(--card))",
-                  border: "1px solid hsl(var(--border) / 0.55)",
-                  borderRadius: "16px",
-                  overflow: "hidden",
-                  textDecoration: "none",
-                  boxShadow: "0 2px 12px rgba(10,40,35,0.07)",
-                  transition: "border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease",
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = "hsl(var(--primary) / 0.25)";
-                  el.style.boxShadow = "0 8px 32px rgba(10,40,35,0.12)";
-                  el.style.transform = "translateY(-3px)";
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = "hsl(var(--border) / 0.55)";
-                  el.style.boxShadow = "0 2px 12px rgba(10,40,35,0.07)";
-                  el.style.transform = "translateY(0)";
-                }}
+                style={{ display: "flex", flexDirection: "column", background: "hsl(var(--card))", border: "1px solid hsl(var(--border) / 0.55)", borderRadius: "16px", overflow: "hidden", textDecoration: "none", boxShadow: "0 2px 12px rgba(10,40,35,0.07)", transition: "border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease" }}
+                onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "hsl(var(--primary) / 0.25)"; el.style.boxShadow = "0 8px 32px rgba(10,40,35,0.12)"; el.style.transform = "translateY(-3px)"; }}
+                onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "hsl(var(--border) / 0.55)"; el.style.boxShadow = "0 2px 12px rgba(10,40,35,0.07)"; el.style.transform = "translateY(0)"; }}
               >
                 <div className="flex flex-col md:flex-row">
                   <div style={{ flex: "0 0 clamp(240px, 42%, 380px)" }}>
-                    <Thumbnail gradient={FEATURED_VIDEO.gradient} duration={FEATURED_VIDEO.duration} badge={FEATURED_VIDEO.badge} large />
+                    <Thumbnail gradient={featuredVideo.thumbnailGradient} duration={featuredVideo.duration} badge="Video nổi bật" large />
                   </div>
                   <div style={{ padding: "clamp(1.5rem, 3vw, 2.25rem)", display: "flex", flexDirection: "column", justifyContent: "center", gap: "14px" }}>
                     <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)", fontWeight: 700, letterSpacing: "-0.022em", lineHeight: 1.38, color: "hsl(var(--foreground))" }}>
-                      {FEATURED_VIDEO.title}
+                      {featuredVideo.title}
                     </p>
                     <p style={{ fontSize: "14px", color: "hsl(var(--muted-foreground))", lineHeight: 1.85 }}>
-                      {FEATURED_VIDEO.description}
+                      {featuredVideo.excerpt}
                     </p>
                     <div style={{ display: "flex", alignItems: "center", gap: "7px", color: "hsl(var(--primary))", fontSize: "13px", fontWeight: 600 }}>
                       <Play size={14} fill="hsl(var(--primary))" stroke="none" />
@@ -491,37 +337,22 @@ export default function VideoLibrary() {
             </motion.div>
           )}
 
-          {/* ── Video grid ── */}
+          {/* Video grid */}
           {activeFilter !== "series" && (
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-60px" }}
-              variants={stagger}
-            >
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
               {filteredVideos.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {filteredVideos.map((v) => (
-                    <VideoCard key={v.id} {...v} />
-                  ))}
+                  {filteredVideos.map((v) => <VideoCard key={v.id} {...v} />)}
                 </div>
               ) : (
-                <div style={{ textAlign: "center", padding: "4rem 0", color: "hsl(var(--muted-foreground))", fontSize: "14px" }}>
-                  Không tìm thấy video phù hợp. Thử từ khóa khác hoặc chọn danh mục khác.
-                </div>
+                <EmptyState />
               )}
             </motion.div>
           )}
 
-          {/* ── Series section ── */}
+          {/* Series */}
           {(activeFilter === "all" || activeFilter === "series") && !searchQuery && (
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-60px" }}
-              variants={stagger}
-              className="space-y-8"
-            >
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} className="space-y-8">
               <div className="space-y-3">
                 <motion.div variants={fadeUp} className="flex items-center gap-2.5">
                   <div style={{ width: "1.5rem", height: "0.5px", background: "rgba(200,158,76,0.65)", flexShrink: 0 }} />
@@ -529,172 +360,37 @@ export default function VideoLibrary() {
                     Series nổi bật
                   </span>
                 </motion.div>
-                <motion.h2
-                  variants={fadeUp}
-                  style={{ fontSize: "clamp(1.25rem, 3vw, 1.65rem)", fontWeight: 700, letterSpacing: "-0.022em", lineHeight: 1.28, color: "hsl(var(--foreground))" }}
-                >
+                <motion.h2 variants={fadeUp} style={{ fontSize: "clamp(1.25rem, 3vw, 1.65rem)", fontWeight: 700, letterSpacing: "-0.022em", lineHeight: 1.28, color: "hsl(var(--foreground))" }}>
                   Theo dõi nội dung theo từng hành trình rõ ràng hơn
                 </motion.h2>
               </div>
               <motion.div variants={stagger} className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                {SERIES_LIST.map(({ id, title, description, count, gradient, href }) => (
-                  <motion.a
-                    key={id}
-                    variants={fadeUp}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      borderRadius: "14px",
-                      overflow: "hidden",
-                      textDecoration: "none",
-                      border: "1px solid hsl(var(--border) / 0.55)",
-                      background: "hsl(var(--card))",
-                      boxShadow: "0 2px 8px rgba(10,40,35,0.05)",
-                      transition: "border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.borderColor = "hsl(var(--primary) / 0.22)";
-                      el.style.boxShadow = "0 6px 22px rgba(10,40,35,0.10)";
-                      el.style.transform = "translateY(-3px)";
-                    }}
-                    onMouseLeave={(e) => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.borderColor = "hsl(var(--border) / 0.55)";
-                      el.style.boxShadow = "0 2px 8px rgba(10,40,35,0.05)";
-                      el.style.transform = "translateY(0)";
-                    }}
-                  >
-                    {/* Gradient banner */}
-                    <div style={{ height: "90px", background: gradient, position: "relative", overflow: "hidden" }}>
-                      <div
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.014) 20px, rgba(255,255,255,0.014) 21px)",
-                        }}
-                      />
-                      <div style={{ position: "absolute", bottom: "12px", left: "14px" }}>
-                        <span style={{ fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.55)", background: "rgba(0,0,0,0.30)", padding: "2px 7px", borderRadius: "3px" }}>
-                          {count}
-                        </span>
-                      </div>
-                    </div>
-                    {/* Text */}
-                    <div style={{ padding: "1.1rem 1.2rem 1.4rem", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
-                      <p style={{ fontSize: "14px", fontWeight: 700, letterSpacing: "-0.012em", lineHeight: 1.38, color: "hsl(var(--foreground))" }}>
-                        {title}
-                      </p>
-                      <p style={{ fontSize: "12px", color: "hsl(var(--muted-foreground))", lineHeight: 1.78 }}>
-                        {description}
-                      </p>
-                      <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "4px", color: "hsl(var(--primary))", fontSize: "12px", fontWeight: 500 }}>
-                        <span>Xem series</span>
-                        <ArrowRight size={11} strokeWidth={2} />
-                      </div>
-                    </div>
-                  </motion.a>
-                ))}
+                {seriesList.map((s) => <SeriesCard key={s.id} {...s} />)}
               </motion.div>
             </motion.div>
           )}
+
         </div>
       </div>
 
       {/* ── CTA block ── */}
-      <section
-        className="relative overflow-hidden py-24 md:py-32"
-        style={{ background: "linear-gradient(150deg, #0d2622 0%, #102a26 45%, #091e1b 100%)" }}
-      >
+      <section className="relative overflow-hidden py-24 md:py-32" style={{ background: "linear-gradient(150deg, #0d2622 0%, #102a26 45%, #091e1b 100%)" }}>
         <BackgroundDecor />
-        {/* top rule */}
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: "linear-gradient(90deg, transparent 0%, rgba(52,160,140,0.22) 35%, rgba(52,160,140,0.22) 65%, transparent 100%)" }} />
         <div className="max-w-4xl mx-auto px-5 sm:px-8 text-center relative z-10">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            variants={stagger}
-            className="space-y-7"
-          >
-            <motion.h2
-              variants={fadeUp}
-              style={{ fontSize: "clamp(1.5rem, 4vw, 2.4rem)", fontWeight: 700, letterSpacing: "-0.025em", lineHeight: 1.22, color: "rgba(255,255,255,0.92)", maxWidth: "34rem", margin: "0 auto" }}
-            >
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="space-y-7">
+            <motion.h2 variants={fadeUp} style={{ fontSize: "clamp(1.5rem, 4vw, 2.4rem)", fontWeight: 700, letterSpacing: "-0.025em", lineHeight: 1.22, color: "rgba(255,255,255,0.92)", maxWidth: "34rem", margin: "0 auto" }}>
               Tiếp tục theo dõi và học theo cách phù hợp với bạn
             </motion.h2>
-            <motion.p
-              variants={fadeUp}
-              style={{ fontSize: "15px", color: "rgba(255,255,255,0.50)", lineHeight: 1.88, maxWidth: "28rem", margin: "0 auto" }}
-            >
+            <motion.p variants={fadeUp} style={{ fontSize: "15px", color: "rgba(255,255,255,0.50)", lineHeight: 1.88, maxWidth: "28rem", margin: "0 auto" }}>
               Khám phá thêm bài viết, video và các chủ đề được chọn lọc để xây nền tảng tài chính vững hơn theo thời gian.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-              <a
-                href="/tin-tuc"
-                className="inline-flex items-center gap-2"
-                style={{
-                  height: "2.875rem",
-                  padding: "0 2rem",
-                  borderRadius: "999px",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  color: "#fff",
-                  textDecoration: "none",
-                  background: "linear-gradient(140deg, #22917f 0%, #1a7868 100%)",
-                  boxShadow: "0 3px 18px rgba(20,115,98,0.30), inset 0 1px 0 rgba(255,255,255,0.12)",
-                  transition: "box-shadow 0.2s ease, transform 0.2s ease",
-                  whiteSpace: "nowrap",
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.boxShadow = "0 5px 24px rgba(20,115,98,0.42), inset 0 1px 0 rgba(255,255,255,0.16)";
-                  el.style.transform = "translateY(-1px)";
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.boxShadow = "0 3px 18px rgba(20,115,98,0.30), inset 0 1px 0 rgba(255,255,255,0.12)";
-                  el.style.transform = "translateY(0)";
-                }}
-              >
+              <a href="/tin-tuc" className="inline-flex items-center gap-2" style={{ height: "2.875rem", padding: "0 2rem", borderRadius: "999px", fontSize: "13px", fontWeight: 600, color: "#fff", textDecoration: "none", background: "linear-gradient(140deg, #22917f 0%, #1a7868 100%)", boxShadow: "0 3px 18px rgba(20,115,98,0.30), inset 0 1px 0 rgba(255,255,255,0.12)", transition: "box-shadow 0.2s ease, transform 0.2s ease", whiteSpace: "nowrap" }} onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.boxShadow = "0 5px 24px rgba(20,115,98,0.42), inset 0 1px 0 rgba(255,255,255,0.16)"; el.style.transform = "translateY(-1px)"; }} onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.boxShadow = "0 3px 18px rgba(20,115,98,0.30), inset 0 1px 0 rgba(255,255,255,0.12)"; el.style.transform = "translateY(0)"; }}>
                 Xem bài viết
                 <ArrowRight size={14} strokeWidth={2} />
               </a>
-              <a
-                href={YOUTUBE_CHANNEL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2"
-                style={{
-                  height: "2.875rem",
-                  padding: "0 1.875rem",
-                  borderRadius: "999px",
-                  fontSize: "13px",
-                  fontWeight: 500,
-                  color: "rgba(255,255,255,0.78)",
-                  textDecoration: "none",
-                  background: "rgba(255,255,255,0.055)",
-                  border: "1px solid rgba(255,255,255,0.14)",
-                  backdropFilter: "blur(10px)",
-                  transition: "background 0.2s ease, border-color 0.2s ease, color 0.2s ease",
-                  whiteSpace: "nowrap",
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.background = "rgba(255,255,255,0.09)";
-                  el.style.borderColor = "rgba(255,255,255,0.22)";
-                  el.style.color = "rgba(255,255,255,0.92)";
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.background = "rgba(255,255,255,0.055)";
-                  el.style.borderColor = "rgba(255,255,255,0.14)";
-                  el.style.color = "rgba(255,255,255,0.78)";
-                }}
-              >
+              <a href={YOUTUBE_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2" style={{ height: "2.875rem", padding: "0 1.875rem", borderRadius: "999px", fontSize: "13px", fontWeight: 500, color: "rgba(255,255,255,0.78)", textDecoration: "none", background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.14)", backdropFilter: "blur(10px)", transition: "background 0.2s ease, border-color 0.2s ease, color 0.2s ease", whiteSpace: "nowrap" }} onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.background = "rgba(255,255,255,0.09)"; el.style.borderColor = "rgba(255,255,255,0.22)"; el.style.color = "rgba(255,255,255,0.92)"; }} onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.background = "rgba(255,255,255,0.055)"; el.style.borderColor = "rgba(255,255,255,0.14)"; el.style.color = "rgba(255,255,255,0.78)"; }}>
                 Xem kênh YouTube
               </a>
             </motion.div>

@@ -3,6 +3,13 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
 import { ProcessSection } from "@/components/ProcessSection";
+import {
+  aboutHero,
+  aboutMain,
+  coreValues,
+  audienceSection,
+  aboutCta,
+} from "@/content/aboutPageData";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -120,12 +127,6 @@ function GioiThieuHero() {
 }
 
 /* ── B. Full About Section ───────────────────────────────── */
-const highlights = [
-  "Góc nhìn dài hạn",
-  "Nội dung thực chiến",
-  "Ưu tiên giá trị bền vững",
-];
-
 function GioiThieuAboutSection() {
   return (
     <section className="py-28 md:py-36 bg-background">
@@ -174,15 +175,15 @@ function GioiThieuAboutSection() {
                 paddingBottom: "1.125rem",
               }}
             >
-              {highlights.map((item, i) => (
+              {aboutMain.highlights.map((item, i) => (
                 <motion.div
                   key={item}
                   variants={fadeUp}
                   className="flex-1"
                   style={{
                     paddingRight: "1rem",
-                    borderRight: i < highlights.length - 1 ? "1px solid hsl(var(--border) / 0.45)" : "none",
-                    marginRight: i < highlights.length - 1 ? "1rem" : "0",
+                    borderRight: i < aboutMain.highlights.length - 1 ? "1px solid hsl(var(--border) / 0.45)" : "none",
+                    marginRight: i < aboutMain.highlights.length - 1 ? "1rem" : "0",
                   }}
                 >
                   <div style={{ width: "16px", height: "2px", background: "hsl(var(--primary) / 0.55)", marginBottom: "8px" }} />
@@ -256,48 +257,6 @@ function GioiThieuAboutSection() {
 }
 
 /* ── C. Core Values Section ──────────────────────────────── */
-const coreValues = [
-  {
-    title: "Rõ hơn trước khi nhanh hơn",
-    desc: "Tôi ưu tiên giúp người đọc hiểu đúng bản chất vấn đề trước khi nghĩ đến kết quả nhanh.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-        <circle cx="11" cy="11" r="8.5" stroke="hsl(var(--primary))" strokeWidth="1.5" />
-        <path d="M8 11l2 2 4-4" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
-  },
-  {
-    title: "Dài hạn hơn ngắn hạn",
-    desc: "Những gì có giá trị bền vững thường cần thời gian, kỷ luật và sự chọn lọc.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-        <path d="M3 17L8 11L12 14L17 7L20 9" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="20" cy="9" r="1.5" fill="hsl(var(--primary))" />
-      </svg>
-    ),
-  },
-  {
-    title: "Thực tế hơn khẩu hiệu",
-    desc: "Nội dung cần gần với đời sống, có khả năng áp dụng và tạo ra thay đổi thật.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-        <path d="M4 6h16M4 10h12M4 14h8M4 18h10" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    title: "Giá trị hơn hứa hẹn",
-    desc: "Mục tiêu không phải tạo cảm giác hào hứng nhất thời, mà là xây nền tảng đáng tin cậy theo thời gian.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-        <path d="M11 2L13.5 8H20L14.75 12L16.75 18L11 14.25L5.25 18L7.25 12L2 8H8.5L11 2Z"
-          stroke="hsl(var(--primary))" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      </svg>
-    ),
-  },
-];
-
 function GioiThieuValuesSection() {
   return (
     <section
@@ -386,13 +345,6 @@ function GioiThieuValuesSection() {
 }
 
 /* ── E. "Dành cho ai" Section ────────────────────────────── */
-const audienceItems = [
-  "Người muốn hiểu tài chính cá nhân rõ hơn",
-  "Người quan tâm đầu tư dài hạn thay vì chạy theo xu hướng ngắn hạn",
-  "Người muốn tích sản theo cách kỷ luật và thực tế hơn",
-  "Người cần một hệ nội dung chọn lọc để đi đường dài",
-];
-
 function GioiThieuAudienceSection() {
   return (
     <section
@@ -432,7 +384,7 @@ function GioiThieuAudienceSection() {
             variants={stagger}
             className="grid grid-cols-1 sm:grid-cols-2 gap-4"
           >
-            {audienceItems.map((item) => (
+            {audienceSection.items.map((item) => (
               <motion.div
                 key={item}
                 variants={fadeUp}
