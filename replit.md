@@ -57,13 +57,30 @@ Articles and Videos are stored in PostgreSQL (`articles` and `videos` tables) an
 
 The admin at `/admin` now includes full CRUD for both articles and videos (the KB hub content). Auth: `ADMIN_KEY` env var, default `swc-admin-2026`, stored in localStorage.
 
-**New sidebar sections** (group "Kiến thức"): "Bài viết KB" and "Video".
+**Sidebar nav groups**: "" (Tổng quan), "Tin tức" (posts/categories/tags), "Kiến thức" (articles/videos/topics/series), "Hệ sinh thái" (products/leads), "Vận hành" (community/settings), "Hệ thống" (account).
 
-**ArticlesPanel** (`src/pages/admin/ArticlesPanel.tsx`): list+form, keyword search, status/featured filters, auto-slug, category dropdown, comma-tag input, cover image URL preview, publish/draft save, inline featured star, inline status toggle, confirm-before-delete.
+**ArticlesPanel** (`src/pages/admin/ArticlesPanel.tsx`): list+form with filters (status/featured/homepage), topic+series dropdowns (loaded from content-meta API), SEO collapsible section (title/description/keywords/og-fields/noindex/canonical), showOnHomepage toggle, displayOrder field, auto-slug.
 
-**VideosPanel** (`src/pages/admin/VideosPanel.tsx`): same pattern + YouTube URL validation + auto YouTube ID extraction + auto thumbnail from YouTube + category chips, isFeaturedVideo toggle (for homepage hero card).
+**VideosPanel** (`src/pages/admin/VideosPanel.tsx`): same pattern + YouTube URL validation + auto thumbnail + category chips + topic/series dropdowns + SEO section + showOnHomepage + displayOrder.
 
-**New API routes** (`/api/admin/articles` and `/api/admin/videos`, full CRUD, auth-protected): GET list, GET /:id, POST, PUT /:id, DELETE /:id. Dashboard endpoint updated with content counts.
+**TopicsPanel** (`src/pages/admin/TopicsPanel.tsx`): full CRUD for `topics` table — title, slug, description, shortDescription, iconKey, featured star, displayOrder, status (active/hidden), seoTitle/seoDescription.
+
+**SeriesPanel** (`src/pages/admin/SeriesPanel.tsx`): full CRUD for `series` table — title, slug, description, type (article/video/mixed), coverImageUrl/Alt, featured star, displayOrder, status, seoTitle/seoDescription.
+
+**DB Schema additions** (`lib/db/src/schema/content.ts`):
+- `articles`: +seoTitle, seoDescription, seoKeywords, ogTitle, ogDescription, ogImageUrl, canonicalUrl, noindex, showOnHomepage, displayOrder, topicSlug, seriesSlug
+- `videos`: same SEO+homepage fields added
+- New `topics` table: id, title, slug, description, shortDescription, iconKey, featured, displayOrder, status, seoTitle, seoDescription, createdAt, updatedAt
+- New `series` table: id, title, slug, description, shortDescription, coverImageUrl, coverImageAlt, type, featured, displayOrder, status, seoTitle, seoDescription, createdAt, updatedAt
+
+**New API routes**:
+- `/api/admin/content-meta` (GET): returns active topics+series for dropdowns
+- `/api/admin/topics` (full CRUD): GET list, GET /:id, POST, PUT /:id, DELETE /:id
+- `/api/admin/series` (full CRUD): same pattern
+- Dashboard updated with topicsCount, seriesCount
+- Public content routes (`/api/content/articles`, `/api/content/videos`) return all SEO fields via `db.select()`
+
+**SEO hook** (`src/hooks/useSeoMeta.ts`): Sets `document.title`, meta description/keywords, og:title/description/image, twitter card, canonical URL, robots. Used in BaiViet, Video, KienThuc, TinTuc, CongDong pages.
 
 # External Dependencies
 

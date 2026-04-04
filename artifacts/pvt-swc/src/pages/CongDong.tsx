@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { leadsApi } from "@/lib/newsApi";
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 
 /* ── Animation presets ───────────────────────────────────── */
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.10 } } };
@@ -727,6 +728,13 @@ function FinalCTASection() {
    PAGE EXPORT
 ══════════════════════════════════════════════════════════ */
 export default function CongDong() {
+  useSeoMeta({
+    title: "Cộng Đồng",
+    description: "Tham gia cộng đồng học hỏi, chia sẻ và cùng nhau xây dựng tư duy đầu tư, tài chính bền vững cùng Phan Văn Thắng SWC.",
+    keywords: "cộng đồng đầu tư, tài chính cá nhân, học hỏi tích sản, Phan Văn Thắng SWC",
+    canonicalUrl: "https://thangswc.com/cong-dong",
+  });
+
   return (
     <>
       <Hero />

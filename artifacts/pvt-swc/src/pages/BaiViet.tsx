@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Search, Clock } from "lucide-react";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 import {
   getPublishedArticles,
   getFeaturedArticles,
@@ -136,6 +137,13 @@ export default function BaiViet() {
   const [articles,       setArticles]       = useState<Article[]>([]);
   const [featured,       setFeatured]       = useState<Article[]>([]);
   const [loading,        setLoading]        = useState(true);
+
+  useSeoMeta({
+    title: "Kho Kiến Thức – Bài Viết",
+    description: "Bài viết chuyên sâu về tư duy đầu tư, tài chính cá nhân và hành trình tích sản dài hạn từ Phan Văn Thắng SWC.",
+    keywords: "bài viết đầu tư, tài chính cá nhân, tư duy tích sản, Phan Văn Thắng SWC",
+    canonicalUrl: "https://thangswc.com/bai-viet",
+  });
 
   useEffect(() => {
     let cancelled = false;

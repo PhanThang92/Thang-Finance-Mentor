@@ -4,7 +4,7 @@ import { randomBytes } from "crypto";
 import { Router, type Request, type Response, type NextFunction } from "express";
 import multer from "multer";
 import sharp from "sharp";
-import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, siteSettingsTable, articlesTable, videosTable } from "@workspace/db";
+import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable } from "@workspace/db";
 import { eq, sql, desc, ilike, or } from "drizzle-orm";
 
 /* ── Upload dirs ─────────────────────────────────────────────────────── */
@@ -80,6 +80,8 @@ router.get("/dashboard", async (_req, res) => {
     const [articlesDraft]     = await db.select({ count: sql<number>`count(*)::int` }).from(articlesTable).where(eq(articlesTable.status, "draft"));
     const [videosPublished]   = await db.select({ count: sql<number>`count(*)::int` }).from(videosTable).where(eq(videosTable.status, "published"));
     const [videosDraft]       = await db.select({ count: sql<number>`count(*)::int` }).from(videosTable).where(eq(videosTable.status, "draft"));
+    const [topicsCount]       = await db.select({ count: sql<number>`count(*)::int` }).from(topicsTable);
+    const [seriesCount]       = await db.select({ count: sql<number>`count(*)::int` }).from(seriesTable);
 
     const recentPosts = await db.select({
       id: newsPostsTable.id,
@@ -103,6 +105,7 @@ router.get("/dashboard", async (_req, res) => {
       recentPosts, recentLeads,
       articlesPublished: articlesPublished.count, articlesDraft: articlesDraft.count,
       videosPublished: videosPublished.count, videosDraft: videosDraft.count,
+      topicsCount: topicsCount.count, seriesCount: seriesCount.count,
     });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
@@ -353,6 +356,18 @@ function pickArticleFields(body: Record<string, unknown>) {
     readingTime:    body.readingTime   as string | null | undefined,
     topicSlug:      body.topicSlug     as string | null | undefined,
     seriesSlug:     body.seriesSlug    as string | null | undefined,
+    /* SEO */
+    seoTitle:       body.seoTitle        as string | null | undefined,
+    seoDescription: body.seoDescription  as string | null | undefined,
+    seoKeywords:    body.seoKeywords     as string | null | undefined,
+    ogTitle:        body.ogTitle         as string | null | undefined,
+    ogDescription:  body.ogDescription   as string | null | undefined,
+    ogImageUrl:     body.ogImageUrl      as string | null | undefined,
+    canonicalUrl:   body.canonicalUrl    as string | null | undefined,
+    noindex:        typeof body.noindex  === "boolean" ? body.noindex  : undefined,
+    /* Homepage */
+    showOnHomepage: typeof body.showOnHomepage === "boolean" ? body.showOnHomepage : undefined,
+    displayOrder:   typeof body.displayOrder   === "number"  ? body.displayOrder   : undefined,
   };
 }
 
@@ -427,8 +442,31 @@ function pickVideoFields(body: Record<string, unknown>) {
     topicSlug:         body.topicSlug         as string | null | undefined,
     seriesSlug:        body.seriesSlug        as string | null | undefined,
     categories:        Array.isArray(body.categories) ? (body.categories as string[]) : (body.categories ? [body.categories as string] : null),
+    /* SEO */
+    seoTitle:          body.seoTitle       as string | null | undefined,
+    seoDescription:    body.seoDescription as string | null | undefined,
+    seoKeywords:       body.seoKeywords    as string | null | undefined,
+    ogTitle:           body.ogTitle        as string | null | undefined,
+    ogDescription:     body.ogDescription  as string | null | undefined,
+    ogImageUrl:        body.ogImageUrl     as string | null | undefined,
+    canonicalUrl:      body.canonicalUrl   as string | null | undefined,
+    noindex:           typeof body.noindex  === "boolean" ? body.noindex  : undefined,
+    /* Homepage */
+    showOnHomepage:    typeof body.showOnHomepage === "boolean" ? body.showOnHomepage : undefined,
+    displayOrder:      typeof body.displayOrder   === "number"  ? body.displayOrder   : undefined,
   };
 }
+
+// ── Content Meta (topics + series dropdowns for article/video forms) ────────
+router.get("/content-meta", async (_req, res) => {
+  try {
+    const [topics, series] = await Promise.all([
+      db.select().from(topicsTable).where(eq(topicsTable.status, "active")).orderBy(topicsTable.displayOrder, topicsTable.title),
+      db.select().from(seriesTable).where(eq(seriesTable.status, "active")).orderBy(seriesTable.displayOrder, seriesTable.title),
+    ]);
+    res.json({ topics, series });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
 
 function extractYoutubeId(url: string): string | null {
   try {
@@ -490,6 +528,138 @@ router.put("/videos/:id", async (req, res) => {
 router.delete("/videos/:id", async (req, res) => {
   try {
     await db.delete(videosTable).where(eq(videosTable.id, Number(req.params.id)));
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+// ── Topics CRUD ─────────────────────────────────────────────────────────────
+
+function pickTopicFields(body: Record<string, unknown>) {
+  return {
+    title:            body.title            as string | undefined,
+    slug:             body.slug             as string | undefined,
+    description:      body.description      as string | null | undefined,
+    shortDescription: body.shortDescription as string | null | undefined,
+    iconKey:          body.iconKey          as string | null | undefined,
+    featured:         typeof body.featured      === "boolean" ? body.featured      : undefined,
+    displayOrder:     typeof body.displayOrder  === "number"  ? body.displayOrder  : undefined,
+    status:           body.status           as string | undefined,
+    seoTitle:         body.seoTitle         as string | null | undefined,
+    seoDescription:   body.seoDescription   as string | null | undefined,
+  };
+}
+
+router.get("/topics", async (_req, res) => {
+  try {
+    const topics = await db.select().from(topicsTable).orderBy(topicsTable.displayOrder, topicsTable.title);
+    res.json({ topics });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.get("/topics/:id", async (req, res) => {
+  try {
+    const rows = await db.select().from(topicsTable).where(eq(topicsTable.id, Number(req.params.id))).limit(1);
+    if (!rows.length) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ topic: rows[0] });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.post("/topics", async (req, res) => {
+  try {
+    const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
+    const now = new Date();
+    const [topic] = await db.insert(topicsTable).values({
+      ...pickTopicFields(body) as never,
+      createdAt: now, updatedAt: now,
+    }).returning();
+    res.json({ topic });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.put("/topics/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
+    const now = new Date();
+    const [topic] = await db.update(topicsTable).set({
+      ...pickTopicFields(body) as never,
+      updatedAt: now,
+    }).where(eq(topicsTable.id, id)).returning();
+    if (!topic) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ topic });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.delete("/topics/:id", async (req, res) => {
+  try {
+    await db.delete(topicsTable).where(eq(topicsTable.id, Number(req.params.id)));
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+// ── Series CRUD ─────────────────────────────────────────────────────────────
+
+function pickSeriesFields(body: Record<string, unknown>) {
+  return {
+    title:            body.title            as string | undefined,
+    slug:             body.slug             as string | undefined,
+    description:      body.description      as string | null | undefined,
+    shortDescription: body.shortDescription as string | null | undefined,
+    coverImageUrl:    body.coverImageUrl    as string | null | undefined,
+    coverImageAlt:    body.coverImageAlt    as string | null | undefined,
+    type:             body.type             as string | undefined,
+    featured:         typeof body.featured      === "boolean" ? body.featured      : undefined,
+    displayOrder:     typeof body.displayOrder  === "number"  ? body.displayOrder  : undefined,
+    status:           body.status           as string | undefined,
+    seoTitle:         body.seoTitle         as string | null | undefined,
+    seoDescription:   body.seoDescription   as string | null | undefined,
+  };
+}
+
+router.get("/series", async (_req, res) => {
+  try {
+    const series = await db.select().from(seriesTable).orderBy(seriesTable.displayOrder, seriesTable.title);
+    res.json({ series });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.get("/series/:id", async (req, res) => {
+  try {
+    const rows = await db.select().from(seriesTable).where(eq(seriesTable.id, Number(req.params.id))).limit(1);
+    if (!rows.length) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ series: rows[0] });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.post("/series", async (req, res) => {
+  try {
+    const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
+    const now = new Date();
+    const [series] = await db.insert(seriesTable).values({
+      ...pickSeriesFields(body) as never,
+      createdAt: now, updatedAt: now,
+    }).returning();
+    res.json({ series });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.put("/series/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
+    const now = new Date();
+    const [series] = await db.update(seriesTable).set({
+      ...pickSeriesFields(body) as never,
+      updatedAt: now,
+    }).where(eq(seriesTable.id, id)).returning();
+    if (!series) { res.status(404).json({ error: "Not found" }); return; }
+    res.json({ series });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.delete("/series/:id", async (req, res) => {
+  try {
+    await db.delete(seriesTable).where(eq(seriesTable.id, Number(req.params.id)));
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });

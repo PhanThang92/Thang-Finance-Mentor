@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -65,6 +66,13 @@ const hubs = [
 ];
 
 export default function KienThuc() {
+  useSeoMeta({
+    title: "Kho Kiến Thức",
+    description: "Tổng hợp bài viết, video và tài nguyên về tư duy đầu tư, tài chính cá nhân và hành trình tích sản dài hạn từ Phan Văn Thắng SWC.",
+    keywords: "kiến thức đầu tư, tài chính cá nhân, tư duy tích sản, Phan Văn Thắng SWC",
+    canonicalUrl: "https://thangswc.com/kien-thuc",
+  });
+
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);

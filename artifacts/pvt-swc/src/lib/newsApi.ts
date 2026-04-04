@@ -25,6 +25,7 @@ export interface DashboardData {
   recentLeads: Lead[];
   articlesPublished: number; articlesDraft: number;
   videosPublished: number; videosDraft: number;
+  topicsCount: number; seriesCount: number;
 }
 
 /* ── Content types (articles + videos from KB hub) ──────────────────── */
@@ -38,6 +39,12 @@ export interface Article {
   featured: boolean; status: string;
   readingTime: string | null;
   topicSlug: string | null; seriesSlug: string | null;
+  /* SEO */
+  seoTitle: string | null; seoDescription: string | null; seoKeywords: string | null;
+  ogTitle: string | null; ogDescription: string | null; ogImageUrl: string | null;
+  canonicalUrl: string | null; noindex: boolean;
+  /* Homepage */
+  showOnHomepage: boolean; displayOrder: number;
   createdAt: string; updatedAt: string;
 }
 
@@ -51,7 +58,39 @@ export interface Video {
   featured: boolean; isFeaturedVideo: boolean; status: string;
   topicSlug: string | null; seriesSlug: string | null;
   categories: string[] | null;
+  /* SEO */
+  seoTitle: string | null; seoDescription: string | null; seoKeywords: string | null;
+  ogTitle: string | null; ogDescription: string | null; ogImageUrl: string | null;
+  canonicalUrl: string | null; noindex: boolean;
+  /* Homepage */
+  showOnHomepage: boolean; displayOrder: number;
   createdAt: string; updatedAt: string;
+}
+
+export interface Topic {
+  id: number; title: string; slug: string;
+  description: string | null; shortDescription: string | null;
+  iconKey: string | null;
+  featured: boolean; displayOrder: number;
+  status: string;
+  seoTitle: string | null; seoDescription: string | null;
+  createdAt: string; updatedAt: string;
+}
+
+export interface Series {
+  id: number; title: string; slug: string;
+  description: string | null; shortDescription: string | null;
+  coverImageUrl: string | null; coverImageAlt: string | null;
+  type: string;
+  featured: boolean; displayOrder: number;
+  status: string;
+  seoTitle: string | null; seoDescription: string | null;
+  createdAt: string; updatedAt: string;
+}
+
+export interface ContentMeta {
+  topics: Topic[];
+  series: Series[];
 }
 
 const BASE = "/api";
@@ -99,6 +138,7 @@ export const adminApi = {
   /* meta */
   getMeta: (key: string) => get<{ categories: NewsCategory[]; products: NewsProduct[]; tags: NewsTag[] }>("/admin/meta", key),
   getDashboard: (key: string) => get<DashboardData>("/admin/dashboard", key),
+  getContentMeta: (key: string) => get<ContentMeta>("/admin/content-meta", key),
 
   /* posts */
   getPosts: (key: string) => get<{ posts: NewsPost[] }>("/admin/posts", key).then((d) => d.posts),
@@ -160,4 +200,16 @@ export const adminApi = {
   createVideo: (key: string, data: Partial<Video>) => mutate<{ video: Video }>("POST", "/admin/videos", data, key).then((d) => d.video),
   updateVideo: (key: string, id: number, data: Partial<Video>) => mutate<{ video: Video }>("PUT", `/admin/videos/${id}`, data, key).then((d) => d.video),
   deleteVideo: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/videos/${id}`, undefined, key),
+
+  /* topics */
+  getTopics: (key: string) => get<{ topics: Topic[] }>("/admin/topics", key).then((d) => d.topics),
+  createTopic: (key: string, data: Partial<Topic>) => mutate<{ topic: Topic }>("POST", "/admin/topics", data, key).then((d) => d.topic),
+  updateTopic: (key: string, id: number, data: Partial<Topic>) => mutate<{ topic: Topic }>("PUT", `/admin/topics/${id}`, data, key).then((d) => d.topic),
+  deleteTopic: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/topics/${id}`, undefined, key),
+
+  /* series */
+  getSeries: (key: string) => get<{ series: Series[] }>("/admin/series", key).then((d) => d.series),
+  createSeries: (key: string, data: Partial<Series>) => mutate<{ series: Series }>("POST", "/admin/series", data, key).then((d) => d.series),
+  updateSeries: (key: string, id: number, data: Partial<Series>) => mutate<{ series: Series }>("PUT", `/admin/series/${id}`, data, key).then((d) => d.series),
+  deleteSeries: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/series/${id}`, undefined, key),
 };

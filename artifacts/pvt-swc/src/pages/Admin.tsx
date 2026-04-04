@@ -9,6 +9,8 @@ import { CommunityPanel }  from "./admin/CommunityPanel";
 import { SettingsPanel }   from "./admin/SettingsPanel";
 import { ArticlesPanel }   from "./admin/ArticlesPanel";
 import { VideosPanel }     from "./admin/VideosPanel";
+import { TopicsPanel }     from "./admin/TopicsPanel";
+import { SeriesPanel }     from "./admin/SeriesPanel";
 import { A }               from "./admin/shared";
 
 /* ── Types ────────────────────────────────────────────────────────── */
@@ -23,7 +25,9 @@ type Section =
   | "settings"
   | "account"
   | "articles"
-  | "videos";
+  | "videos"
+  | "topics"
+  | "series";
 
 interface NavItem { id: Section; label: string; icon: string; }
 type NavGroup = { group: string; items: NavItem[] };
@@ -46,8 +50,10 @@ const NAV_STRUCTURE: NavGroup[] = [
   {
     group: "Kiến thức",
     items: [
-      { id: "articles", label: "Bài viết KB",  icon: "📄" },
+      { id: "articles", label: "Bài viết KB",  icon: "≡" },
       { id: "videos",   label: "Video",         icon: "▶" },
+      { id: "topics",   label: "Chủ đề",        icon: "◈" },
+      { id: "series",   label: "Series",        icon: "⋮" },
     ],
   },
   {
@@ -84,11 +90,12 @@ const SECTION_TITLES: Record<Section, string> = {
   account:    "Tài khoản",
   articles:   "Kiến thức · Bài viết",
   videos:     "Kiến thức · Video",
+  topics:     "Kiến thức · Chủ đề",
+  series:     "Kiến thức · Series",
 };
 
 const STORAGE_KEY = "swc_admin_key";
 
-/* Sections that use full-height edge-to-edge layout (no inner padding) */
 const FULL_HEIGHT_SECTIONS: Section[] = ["leads"];
 
 /* ── Login ────────────────────────────────────────────────────────── */
@@ -156,11 +163,8 @@ function AccountPanel({ adminKey, onLogout }: { adminKey: string; onLogout: () =
 
   return (
     <div style={{ maxWidth: "480px" }}>
-      {/* Info card */}
       <div style={{ background: "#fff", borderRadius: "10px", border: `1px solid ${A.border}`, padding: "1.5rem", marginBottom: "1rem" }}>
-        <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1rem" }}>
-          Admin key hiện tại
-        </p>
+        <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1rem" }}>Admin key hiện tại</p>
         <p style={{ fontSize: "13px", color: A.text, margin: "0 0 1.5rem", background: A.bg, padding: "8px 12px", borderRadius: "7px", fontFamily: "monospace" }}>
           {adminKey.slice(0, 4)}{"•".repeat(Math.max(0, adminKey.length - 4))}
         </p>
@@ -175,7 +179,6 @@ function AccountPanel({ adminKey, onLogout }: { adminKey: string; onLogout: () =
         </button>
       </div>
 
-      {/* Server env note */}
       <div style={{ background: "#fff", borderRadius: "10px", border: `1px solid ${A.border}`, padding: "1.5rem", marginBottom: "1rem" }}>
         <p style={{ fontSize: "13px", color: A.text, margin: "0 0 1rem", lineHeight: 1.6 }}>
           Để thay đổi admin key trên server, cập nhật biến môi trường{" "}
@@ -183,20 +186,17 @@ function AccountPanel({ adminKey, onLogout }: { adminKey: string; onLogout: () =
           và khởi động lại server.
         </p>
         <p style={{ fontSize: "12px", color: A.textMuted, margin: "0 0 1rem", lineHeight: 1.6 }}>
-          Key mặc định nếu chưa cài biến môi trường: <code style={{ background: A.bg, padding: "1px 5px", borderRadius: "4px" }}>swc-admin-2026</code>
+          Key mặc định: <code style={{ background: A.bg, padding: "1px 5px", borderRadius: "4px" }}>swc-admin-2026</code>
         </p>
         <button onClick={onLogout} style={{ padding: "8px 20px", borderRadius: "7px", border: `1px solid rgba(193,51,51,0.30)`, cursor: "pointer", fontSize: "13px", fontWeight: 500, background: "transparent", color: A.danger }}>
           Đăng xuất
         </button>
       </div>
 
-      {/* Admin users note */}
       <div style={{ background: "#fff", borderRadius: "10px", border: `1px solid ${A.border}`, padding: "1.5rem" }}>
-        <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 0.875rem" }}>
-          Quản lý tài khoản
-        </p>
+        <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 0.875rem" }}>Quản lý tài khoản</p>
         <p style={{ fontSize: "12.5px", color: A.textMuted, margin: 0, lineHeight: 1.65 }}>
-          Hệ thống hiện chạy với một admin key duy nhất (single-user mode). 
+          Hệ thống hiện chạy với một admin key duy nhất (single-user mode).
           Nếu cần nhiều vai trò admin khác nhau, hãy liên hệ dev để mở rộng hệ thống xác thực.
         </p>
       </div>
@@ -233,20 +233,8 @@ export default function Admin() {
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: A.bg, fontFamily: "'Be Vietnam Pro', sans-serif" }}>
 
       {/* ── Top bar ─────────────────────────────────────────────────── */}
-      <header style={{
-        height: "52px", flexShrink: 0,
-        background: "#fff", borderBottom: `1px solid ${A.border}`,
-        display: "flex", alignItems: "center",
-        padding: "0 1.25rem 0 0",
-        position: "sticky", top: 0, zIndex: 100,
-      }}>
-        {/* Brand — matches sidebar width */}
-        <div style={{
-          width: "220px", flexShrink: 0,
-          display: "flex", alignItems: "center", gap: "0.625rem",
-          padding: "0 1.25rem", height: "100%",
-          borderRight: `1px solid ${A.border}`,
-        }}>
+      <header style={{ height: "52px", flexShrink: 0, background: "#fff", borderBottom: `1px solid ${A.border}`, display: "flex", alignItems: "center", padding: "0 1.25rem 0 0", position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ width: "220px", flexShrink: 0, display: "flex", alignItems: "center", gap: "0.625rem", padding: "0 1.25rem", height: "100%", borderRight: `1px solid ${A.border}` }}>
           <div style={{ width: "26px", height: "26px", borderRadius: "7px", background: "linear-gradient(140deg, #22917f, #1a7868)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             <span style={{ color: "#fff", fontSize: "12px", fontWeight: 700 }}>S</span>
           </div>
@@ -255,36 +243,14 @@ export default function Admin() {
             <p style={{ fontSize: "9.5px", fontWeight: 600, color: A.primary, margin: 0, letterSpacing: "0.08em", textTransform: "uppercase" }}>Admin</p>
           </div>
         </div>
-
-        {/* Page title */}
         <div style={{ flex: 1, padding: "0 1.5rem" }}>
-          <p style={{ fontSize: "14px", fontWeight: 600, color: A.text, margin: 0 }}>
-            {SECTION_TITLES[section]}
-          </p>
+          <p style={{ fontSize: "14px", fontWeight: 600, color: A.text, margin: 0 }}>{SECTION_TITLES[section]}</p>
         </div>
-
-        {/* Right actions */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <a
-            href="/"
-            target="_blank"
-            rel="noopener"
-            style={{
-              fontSize: "12.5px", fontWeight: 500, color: A.textMuted, textDecoration: "none",
-              padding: "5px 12px", borderRadius: "6px", border: `1px solid ${A.border}`,
-              display: "flex", alignItems: "center", gap: "5px",
-            }}
-          >
+          <a href="/" target="_blank" rel="noopener" style={{ fontSize: "12.5px", fontWeight: 500, color: A.textMuted, textDecoration: "none", padding: "5px 12px", borderRadius: "6px", border: `1px solid ${A.border}`, display: "flex", alignItems: "center", gap: "5px" }}>
             <span style={{ fontSize: "10px" }}>↗</span> Xem website
           </a>
-          <button
-            onClick={logout}
-            style={{
-              fontSize: "12.5px", fontWeight: 500, color: A.danger, background: "transparent",
-              border: `1px solid rgba(193,51,51,0.25)`, borderRadius: "6px",
-              padding: "5px 12px", cursor: "pointer",
-            }}
-          >
+          <button onClick={logout} style={{ fontSize: "12.5px", fontWeight: 500, color: A.danger, background: "transparent", border: `1px solid rgba(193,51,51,0.25)`, borderRadius: "6px", padding: "5px 12px", cursor: "pointer" }}>
             Thoát
           </button>
         </div>
@@ -294,59 +260,34 @@ export default function Admin() {
       <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden" }}>
 
         {/* ── Sidebar ─────────────────────────────────────────────── */}
-        <aside style={{
-          width: "220px", flexShrink: 0,
-          background: "#fff", borderRight: `1px solid ${A.border}`,
-          display: "flex", flexDirection: "column",
-          position: "sticky", top: "52px", height: "calc(100vh - 52px)",
-          overflowY: "auto",
-        }}>
+        <aside style={{ width: "220px", flexShrink: 0, background: "#fff", borderRight: `1px solid ${A.border}`, display: "flex", flexDirection: "column", position: "sticky", top: "52px", height: "calc(100vh - 52px)", overflowY: "auto" }}>
           <nav style={{ flex: 1, padding: "0.875rem 0.625rem 1rem" }}>
             {NAV_STRUCTURE.map((group, gi) => (
               <div key={gi} style={{ marginBottom: "0.5rem" }}>
                 {group.group && (
-                  <p style={{
-                    fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.14em",
-                    textTransform: "uppercase", color: A.textLight,
-                    margin: gi === 0 ? "0 0 4px 10px" : "12px 0 4px 10px",
-                  }}>
+                  <p style={{ fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: A.textLight, margin: gi === 0 ? "0 0 4px 10px" : "12px 0 4px 10px" }}>
                     {group.group}
                   </p>
                 )}
                 {group.items.map((item) => {
                   const active = section === item.id;
                   return (
-                    <button
-                      key={item.id}
-                      onClick={() => setSection(item.id)}
-                      style={{
-                        width: "100%", display: "flex", alignItems: "center", gap: "0.625rem",
-                        padding: "7px 10px 7px 8px",
-                        borderRadius: "7px", border: "none", cursor: "pointer", textAlign: "left",
-                        background: active ? `${A.primary}12` : "transparent",
-                        color: active ? A.primary : A.textMuted,
-                        fontWeight: active ? 600 : 400, fontSize: "13px",
-                        transition: "background 0.12s ease, color 0.12s ease",
-                        marginBottom: "1px", position: "relative",
-                      }}
-                    >
+                    <button key={item.id} onClick={() => setSection(item.id)} style={{
+                      width: "100%", display: "flex", alignItems: "center", gap: "0.625rem",
+                      padding: "7px 10px 7px 8px", borderRadius: "7px", border: "none", cursor: "pointer", textAlign: "left",
+                      background: active ? `${A.primary}12` : "transparent",
+                      color: active ? A.primary : A.textMuted,
+                      fontWeight: active ? 600 : 400, fontSize: "13px",
+                      transition: "background 0.12s ease, color 0.12s ease",
+                      marginBottom: "1px", position: "relative",
+                    }}>
                       {active && (
-                        <span style={{
-                          position: "absolute", left: 0, top: "5px", bottom: "5px",
-                          width: "3px", borderRadius: "0 2px 2px 0", background: A.primary,
-                        }} />
+                        <span style={{ position: "absolute", left: 0, top: "5px", bottom: "5px", width: "3px", borderRadius: "0 2px 2px 0", background: A.primary }} />
                       )}
-                      <span style={{ fontSize: "13px", flexShrink: 0, width: "18px", textAlign: "center", opacity: active ? 1 : 0.55 }}>
-                        {item.icon}
-                      </span>
+                      <span style={{ fontSize: "13px", flexShrink: 0, width: "18px", textAlign: "center", opacity: active ? 1 : 0.55 }}>{item.icon}</span>
                       <span style={{ flex: 1 }}>{item.label}</span>
                       {item.id === "leads" && newLeads > 0 && (
-                        <span style={{
-                          fontSize: "10px", fontWeight: 700, background: "#dc2626", color: "#fff",
-                          padding: "1px 6px", borderRadius: "999px", lineHeight: 1.6, flexShrink: 0,
-                        }}>
-                          {newLeads}
-                        </span>
+                        <span style={{ fontSize: "10px", fontWeight: 700, background: "#dc2626", color: "#fff", padding: "1px 6px", borderRadius: "999px", lineHeight: 1.6, flexShrink: 0 }}>{newLeads}</span>
                       )}
                     </button>
                   );
@@ -354,18 +295,13 @@ export default function Admin() {
               </div>
             ))}
           </nav>
-
           <div style={{ padding: "0.75rem 1rem", borderTop: `1px solid ${A.border}` }}>
             <p style={{ fontSize: "10.5px", color: A.textLight, margin: 0 }}>Thắng SWC Admin · 2026</p>
           </div>
         </aside>
 
         {/* ── Content ──────────────────────────────────────────────── */}
-        <main style={{
-          flex: 1, minWidth: 0,
-          overflowY: isFullHeight ? "hidden" : "auto",
-          padding: isFullHeight ? 0 : "1.75rem 2rem 3rem",
-        }}>
+        <main style={{ flex: 1, minWidth: 0, overflowY: isFullHeight ? "hidden" : "auto", padding: isFullHeight ? 0 : "1.75rem 2rem 3rem" }}>
           {section === "dashboard"  && <DashboardPanel  adminKey={adminKey} onNavigate={setSection} />}
           {section === "posts"      && <PostsPanel      adminKey={adminKey} />}
           {section === "categories" && <CategoriesPanel adminKey={adminKey} />}
@@ -377,6 +313,8 @@ export default function Admin() {
           {section === "account"    && <AccountPanel    adminKey={adminKey} onLogout={logout} />}
           {section === "articles"   && <ArticlesPanel   adminKey={adminKey} />}
           {section === "videos"     && <VideosPanel     adminKey={adminKey} />}
+          {section === "topics"     && <TopicsPanel     adminKey={adminKey} />}
+          {section === "series"     && <SeriesPanel     adminKey={adminKey} />}
         </main>
       </div>
     </div>

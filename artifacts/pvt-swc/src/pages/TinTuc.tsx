@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { newsApi, type NewsPost, type NewsCategory, type NewsProduct, type NewsTag } from "@/lib/newsApi";
 import { getPostImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 
 /* ── motion ──────────────────────────────────────────────────────────── */
 const stagger  = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
@@ -200,6 +201,13 @@ function ContextChip({ label, onRemove }: { label: string; onRemove: () => void 
 
 /* ── Page ────────────────────────────────────────────────────────────── */
 export default function TinTuc({ catSlug, productSlug, tagSlug }: { catSlug?: string; productSlug?: string; tagSlug?: string }) {
+  useSeoMeta({
+    title: "Tin Tức & Góc Nhìn",
+    description: "Tin tức, phân tích và góc nhìn về thị trường tài chính, đầu tư và kinh tế từ Phan Văn Thắng SWC.",
+    keywords: "tin tức tài chính, thị trường đầu tư, phân tích kinh tế, Phan Văn Thắng SWC",
+    canonicalUrl: "https://thangswc.com/tin-tuc",
+  });
+
   const [filters, setFilters] = useState<Filters>({
     ...DEFAULT_FILTERS,
     category: catSlug    ?? null,

@@ -1,0 +1,665 @@
+Please upgrade the existing admin CMS for “Phan Van Thang SWC” into a more complete and scalable content management system.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Build on top of the existing admin CMS, Supabase/Postgres integration, and current public website architecture.
+- Do NOT rebuild everything from scratch if the current structure is already usable.
+- Focus on upgrading the content model, admin usability, SEO readiness, homepage featured control, and future scalability.
+
+GOAL:
+Enhance the current mini admin CMS so it can manage a more mature publishing workflow for:
+- Articles
+- Videos
+- Topics
+- Series
+- Homepage featured content logic
+- Basic SEO metadata
+
+The new admin CMS should support:
+1. richer content modeling
+2. stronger organization
+3. better homepage control
+4. SEO-friendly publishing
+5. future-ready extensibility
+
+Do NOT turn this into an overbuilt enterprise CMS.
+Keep it clean, practical, and maintainable.
+
+================================
+1. UPGRADE SCOPE
+================================
+
+Please extend the current admin CMS to include:
+
+A. SEO fields for Articles and Videos
+B. Topic management
+C. Series management
+D. Homepage featured content control
+E. Better content relationships
+F. Better admin usability
+
+This should work together with the current:
+- Supabase/Postgres backend
+- public homepage
+- Articles page
+- Video page
+- About page and other static sections
+
+================================
+2. CONTENT MODEL EXPANSION
+================================
+
+Please expand the data architecture so that Articles and Videos can be linked more cleanly to:
+- Topics
+- Series
+- Homepage featured states
+- SEO metadata
+
+Refactor existing flat fields if necessary, but do so carefully to avoid breaking the current app.
+
+If the current structure already includes:
+- topic_slug
+- series_slug
+keep compatibility where possible, but improve the architecture for long-term use.
+
+================================
+3. SEO FIELDS FOR ARTICLES
+================================
+
+Extend the `articles` content model and admin form to support SEO fields.
+
+Add fields such as:
+- seo_title
+- seo_description
+- seo_keywords (optional)
+- og_title (optional)
+- og_description (optional)
+- og_image_url (optional)
+- canonical_url (optional)
+- noindex (boolean, optional)
+
+Visible Vietnamese admin labels:
+- Tiêu đề SEO
+- Mô tả SEO
+- Từ khóa SEO
+- Tiêu đề Open Graph
+- Mô tả Open Graph
+- Ảnh chia sẻ
+- Canonical URL
+- Không lập chỉ mục
+
+Requirements:
+- keep this section clearly grouped in the admin form
+- make it collapsible if helpful
+- allow fallback behavior:
+  - if SEO title is empty, use article title
+  - if SEO description is empty, use excerpt
+- preserve clean UX
+- do not make the form too intimidating
+
+================================
+4. SEO FIELDS FOR VIDEOS
+================================
+
+Extend the `videos` content model and admin form to support SEO fields.
+
+Add fields such as:
+- seo_title
+- seo_description
+- seo_keywords (optional)
+- og_title (optional)
+- og_description (optional)
+- og_image_url (optional)
+- canonical_url (optional)
+- noindex (boolean, optional)
+
+Visible Vietnamese admin labels:
+- Tiêu đề SEO
+- Mô tả SEO
+- Từ khóa SEO
+- Tiêu đề Open Graph
+- Mô tả Open Graph
+- Ảnh chia sẻ
+- Canonical URL
+- Không lập chỉ mục
+
+Requirements:
+- support fallback behavior from title/excerpt/thumbnail
+- group SEO settings clearly
+- keep the UI clean and practical
+
+================================
+5. TOPICS MANAGEMENT
+================================
+
+Add a new admin section for managing Topics.
+
+Preferred admin routes:
+- `/admin/topics`
+- `/admin/topics/new`
+- `/admin/topics/[id]`
+
+Topic model should support fields such as:
+- id
+- title
+- slug
+- description
+- short_description (optional)
+- icon_key or visual_key (optional)
+- featured (boolean)
+- display_order
+- status (active / hidden)
+- seo_title (optional)
+- seo_description (optional)
+- created_at
+- updated_at
+
+Visible Vietnamese admin labels:
+- Tên chủ đề
+- Đường dẫn tĩnh
+- Mô tả
+- Mô tả ngắn
+- Biểu tượng / khóa hình ảnh
+- Chủ đề nổi bật
+- Thứ tự hiển thị
+- Trạng thái
+- Tiêu đề SEO
+- Mô tả SEO
+
+Visible Vietnamese list page text:
+Page title:
+Quản lý chủ đề
+
+Primary button:
+Tạo chủ đề mới
+
+Columns:
+- Tên chủ đề
+- Đường dẫn
+- Trạng thái
+- Nổi bật
+- Thứ tự
+- Hành động
+
+Requirements:
+- topics should be manageable independently
+- articles/videos can later reference topics cleanly
+- support search and filtering
+- allow ordering
+- allow active/hidden state
+
+================================
+6. SERIES MANAGEMENT
+================================
+
+Add a new admin section for managing Series.
+
+Preferred admin routes:
+- `/admin/series`
+- `/admin/series/new`
+- `/admin/series/[id]`
+
+Series model should support fields such as:
+- id
+- title
+- slug
+- description
+- short_description (optional)
+- cover_image_url
+- cover_image_alt
+- type (article / video / mixed)
+- featured (boolean)
+- display_order
+- status (active / hidden)
+- seo_title (optional)
+- seo_description (optional)
+- created_at
+- updated_at
+
+Visible Vietnamese admin labels:
+- Tên series
+- Đường dẫn tĩnh
+- Mô tả
+- Mô tả ngắn
+- Ảnh bìa
+- Alt ảnh bìa
+- Loại series
+- Series nổi bật
+- Thứ tự hiển thị
+- Trạng thái
+- Tiêu đề SEO
+- Mô tả SEO
+
+Visible Vietnamese list page text:
+Page title:
+Quản lý series
+
+Primary button:
+Tạo series mới
+
+Columns:
+- Tên series
+- Loại
+- Trạng thái
+- Nổi bật
+- Thứ tự
+- Hành động
+
+Requirements:
+- support article/video/mixed series
+- make series reusable for homepage and content pages
+- support clean ordering
+- allow future expansion
+
+================================
+7. RELATIONSHIPS BETWEEN CONTENT
+================================
+
+Improve how Articles and Videos connect to Topics and Series.
+
+Requirements:
+- article form should support selecting a Topic
+- article form should support selecting a Series
+- video form should support selecting a Topic
+- video form should support selecting a Series
+
+Visible Vietnamese field labels:
+- Chủ đề
+- Series
+
+Preferred admin UX:
+- searchable select if available
+- otherwise clear dropdown select
+- easy to understand and maintain
+
+Database expectations:
+- use topic_id / series_id relationships if appropriate
+- or maintain slug-based compatibility if migration risk is high
+- choose the cleaner long-term structure while minimizing breakage
+
+================================
+8. HOMEPAGE FEATURED CONTENT CONTROL
+================================
+
+Add better admin control for homepage featured content.
+
+Current site needs to support homepage sections such as:
+- featured article
+- featured article list
+- featured video
+- featured topics
+- featured series
+
+Please implement a manageable strategy for homepage content control.
+
+Option A:
+Use booleans + ordering fields on each content type
+
+Option B:
+Create a dedicated `homepage_featured` or `homepage_sections` config table
+
+Choose the cleaner solution for the current scale, but keep it maintainable.
+
+Minimum requirements:
+- control which Article is featured on homepage
+- control which Videos are featured on homepage
+- control which Topics are highlighted
+- control which Series are highlighted
+- support display ordering where needed
+
+Visible Vietnamese admin labels/examples:
+- Hiển thị ở trang chủ
+- Nội dung nổi bật trang chủ
+- Thứ tự nổi bật
+- Bài viết nổi bật chính
+- Video nổi bật chính
+
+Requirements:
+- homepage should not rely on arbitrary hardcoded logic anymore
+- admin should be able to change featured homepage content without editing code
+- keep the logic clear and not fragile
+
+================================
+9. FEATURED HOME CONTROL PANEL
+================================
+
+If helpful, create a dedicated admin page for homepage content control.
+
+Suggested route:
+- `/admin/homepage`
+
+This page can manage:
+- featured hero article/video if applicable
+- homepage featured article slots
+- homepage featured video slots
+- homepage topic highlights
+- homepage series highlights
+
+Visible Vietnamese page title:
+Điều khiển nội dung trang chủ
+
+Possible sections:
+- Bài viết nổi bật
+- Video nổi bật
+- Chủ đề nổi bật
+- Series nổi bật
+
+Requirements:
+- keep the page practical
+- avoid making it overly technical
+- drag/drop ordering is optional if easy
+- otherwise use manual order fields or selection controls
+
+================================
+10. ARTICLE FORM UPGRADE
+================================
+
+Upgrade the article create/edit form to include:
+- basic content fields
+- SEO fields
+- Topic selection
+- Series selection
+- featured homepage controls if appropriate
+- better organization
+
+Suggested form sections:
+1. Thông tin chính
+2. Nội dung
+3. Phân loại
+4. Hiển thị
+5. SEO
+
+Visible Vietnamese fields:
+- Tiêu đề
+- Đường dẫn tĩnh
+- Mô tả ngắn
+- Nội dung
+- Ảnh bìa
+- Alt ảnh bìa
+- Danh mục
+- Thẻ tag
+- Ngày đăng
+- Thời gian đọc
+- Chủ đề
+- Series
+- Trạng thái
+- Bài viết nổi bật
+- Hiển thị ở trang chủ
+- Thứ tự nổi bật
+- Tiêu đề SEO
+- Mô tả SEO
+- ...
+
+Requirements:
+- better grouping
+- collapsible advanced sections if needed
+- clearer publishing flow
+- strong validation
+- no clutter
+
+================================
+11. VIDEO FORM UPGRADE
+================================
+
+Upgrade the video create/edit form to include:
+- basic video fields
+- SEO fields
+- Topic selection
+- Series selection
+- featured homepage controls if appropriate
+
+Suggested form sections:
+1. Thông tin chính
+2. Liên kết & thumbnail
+3. Phân loại
+4. Hiển thị
+5. SEO
+
+Visible Vietnamese fields:
+- Tiêu đề
+- Đường dẫn tĩnh
+- Mô tả ngắn
+- Link YouTube
+- Ảnh thumbnail
+- Alt thumbnail
+- Thời lượng
+- Ngày đăng
+- Chủ đề
+- Series
+- Trạng thái
+- Video nổi bật
+- Hiển thị ở trang chủ
+- Thứ tự nổi bật
+- Tiêu đề SEO
+- Mô tả SEO
+- ...
+
+Requirements:
+- clean layout
+- no unnecessary complexity
+- practical validation for YouTube URL and slug uniqueness
+
+================================
+12. LIST PAGE IMPROVEMENTS
+================================
+
+Upgrade admin list pages for:
+- Articles
+- Videos
+- Topics
+- Series
+
+Add useful columns and filters.
+
+Examples for Articles/Videos:
+- title
+- topic
+- series
+- status
+- featured
+- homepage visibility
+- publish date
+- updated at
+
+Visible Vietnamese filter labels:
+- Tất cả
+- Đã xuất bản
+- Bản nháp
+- Nổi bật
+- Hiển thị trang chủ
+- Theo chủ đề
+- Theo series
+
+Requirements:
+- make list pages more useful without being overloaded
+- support quick edits/toggles if helpful
+- maintain readability
+
+================================
+13. SEO PREVIEW / HELPER UX
+================================
+
+If practical, add a lightweight SEO preview/helper section in the form.
+
+Visible Vietnamese text examples:
+- Xem trước SEO
+- Tiêu đề hiển thị trên công cụ tìm kiếm
+- Mô tả hiển thị trên công cụ tìm kiếm
+
+Requirements:
+- do not overbuild
+- simple preview is enough
+- help the admin understand how metadata will be used
+
+================================
+14. PUBLIC PAGE SEO INTEGRATION
+================================
+
+Make sure the public site uses the new SEO fields.
+
+Requirements:
+- article detail pages use article SEO metadata if available
+- video pages or video library detail routes use video SEO metadata if available
+- topic pages can use topic SEO metadata if built
+- series pages can use series SEO metadata if built
+- if metadata fields are empty, fall back gracefully to title/excerpt/default image
+
+Do not break existing routes or rendering.
+
+================================
+15. DATABASE / SCHEMA UPDATES
+================================
+
+Update Supabase/Postgres schema cleanly.
+
+This may include:
+- new columns on `articles`
+- new columns on `videos`
+- new `topics` table
+- new `series` table
+- optional homepage featured control table/config structure
+
+Requirements:
+- add migrations clearly
+- preserve existing data if possible
+- do not destroy current seeded content
+- write safe upgrade logic
+
+================================
+16. SERVICE LAYER UPDATES
+================================
+
+Update the service/data access layer to support:
+- CRUD for Topics
+- CRUD for Series
+- improved CRUD for Articles and Videos
+- homepage featured queries
+- SEO-aware public fetches
+
+Examples:
+- getTopics()
+- getFeaturedTopics()
+- getSeries()
+- getFeaturedSeries()
+- getHomepageFeaturedArticles()
+- getHomepageFeaturedVideos()
+- getHomepageConfig()
+
+Requirements:
+- keep service logic clean
+- separate from UI
+- future-ready for CMS growth
+
+================================
+17. ADMIN NAVIGATION UPGRADE
+================================
+
+Upgrade the admin navigation to include:
+
+Visible Vietnamese labels:
+- Tổng quan
+- Bài viết
+- Video
+- Chủ đề
+- Series
+- Trang chủ
+
+Optional:
+- Cài đặt
+
+Requirements:
+- keep the admin nav clear
+- preserve practicality
+- support future extension
+
+================================
+18. HOMEPAGE CONTROL LOGIC
+================================
+
+Please make homepage rendering more intentional.
+
+Homepage should be able to query:
+- main featured article
+- secondary featured articles
+- main featured video
+- secondary featured videos
+- highlighted topics
+- highlighted series
+
+Requirements:
+- avoid random selection from all published content
+- admin selections should drive homepage content
+- if a required featured slot is empty, fall back gracefully using latest published content
+
+================================
+19. FUTURE-READY EXTENSIONS
+================================
+
+Keep the architecture ready for future additions such as:
+- Tin tức admin
+- custom homepage blocks
+- SEO for static pages
+- reusable CTA management
+- author profiles
+- media library
+
+Do not implement all of these now unless very lightweight.
+Just avoid painting the codebase into a corner.
+
+================================
+20. VALIDATION / UX QUALITY
+================================
+
+Maintain strong admin UX:
+- clear validation messages in Vietnamese
+- slug uniqueness checks
+- YouTube URL validation
+- safe delete confirmation
+- practical success/error toasts
+- clean save/publish flows
+
+Examples:
+- Đã lưu bản nháp
+- Đã xuất bản thành công
+- Đường dẫn đã tồn tại
+- Vui lòng nhập tiêu đề
+- Có lỗi xảy ra, vui lòng thử lại
+
+================================
+21. SECURITY / ACCESS
+================================
+
+Preserve and extend admin protection:
+- keep admin routes protected
+- ensure write operations are not exposed publicly
+- update Supabase policies if needed
+- keep structure safe for future editor/admin role separation
+
+================================
+22. DOCUMENTATION / HANDOFF
+================================
+
+Leave the upgraded CMS in a clear, maintainable state.
+
+Please add simple notes/comments/documentation for:
+- schema changes
+- new tables/fields
+- how homepage featured logic works
+- how topics and series relate to articles/videos
+- how SEO metadata is used on public pages
+
+================================
+23. FINAL EXPECTED RESULT
+================================
+
+After this upgrade:
+- the admin CMS feels significantly more mature
+- Articles and Videos support SEO metadata
+- Topics and Series are manageable in admin
+- homepage featured content can be controlled intentionally
+- content relationships are cleaner
+- the public site becomes more scalable and SEO-ready
+- the system stays practical and maintainable
+
+Please implement this CMS upgrade directly on top of the existing admin system.

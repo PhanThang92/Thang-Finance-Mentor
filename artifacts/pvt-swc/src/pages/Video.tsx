@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Play, Search } from "lucide-react";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 import { YOUTUBE_CHANNEL_URL } from "@/config/siteConfig";
 import {
   getFeaturedVideo,
@@ -237,6 +238,13 @@ export default function VideoLibrary() {
   const [featuredVideo, setFeaturedVideo] = useState<Video | null>(null);
   const [allVideos,    setAllVideos]    = useState<Video[]>([]);
   const [loading,      setLoading]      = useState(true);
+
+  useSeoMeta({
+    title: "Kho Kiến Thức – Video",
+    description: "Thư viện video về tư duy đầu tư, tài chính cá nhân và hành trình tích sản dài hạn từ Phan Văn Thắng SWC.",
+    keywords: "video đầu tư, tài chính cá nhân, tư duy tích sản, Phan Văn Thắng SWC",
+    canonicalUrl: "https://thangswc.com/video",
+  });
 
   const seriesList = getFeaturedSeries();
 
