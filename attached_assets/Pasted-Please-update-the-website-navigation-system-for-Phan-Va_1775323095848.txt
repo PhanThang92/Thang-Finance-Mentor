@@ -1,0 +1,253 @@
+Please update the website navigation system for “Phan Van Thang SWC” by replacing the current menu item “Nội dung” with a clearer and more strategic knowledge hub item: “Kiến thức”.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- Maintain the premium visual system already used across the site.
+- The navigation must feel clearer, more scalable, and more aligned with a serious personal finance / investing mentor brand.
+
+GOAL:
+The current menu item “Nội dung” is too generic and overlaps conceptually with “Tin tức”.
+Please replace it with “Kiến thức” and turn it into a more meaningful content hub.
+
+The new navigation system should:
+- reduce ambiguity
+- make the menu more intuitive
+- better reflect the long-term content strategy
+- support both articles and YouTube/video content
+- remain clean and premium
+
+================================
+1. MAIN NAVBAR UPDATE
+================================
+
+Update the main navbar items to:
+
+- Trang chủ
+- Giới thiệu
+- Kiến thức
+- Tin tức
+- Cộng đồng
+- Sản phẩm
+- Liên hệ
+
+Requirements:
+- Replace “Nội dung” with “Kiến thức”
+- Keep overall navbar styling premium and consistent
+- Preserve hover states, active states, sticky behavior, and mobile usability
+- Ensure spacing still looks balanced after the label change
+
+================================
+2. DEFINE THE ROLE OF “KIẾN THỨC”
+================================
+
+“Kiến thức” should become the main content hub for long-form and learning-oriented content.
+
+It should represent:
+- Bài viết
+- Video
+- Chủ đề
+- Series nổi bật
+
+This means:
+- “Kiến thức” is the knowledge hub
+- “Tin tức” remains for updates, announcements, recent activities, or short-form news-like content
+- “Kiến thức” should feel deeper and more curated than “Tin tức”
+
+================================
+3. DESKTOP DROPDOWN FOR “KIẾN THỨC”
+================================
+
+Create a premium dropdown or mega-dropdown for “Kiến thức”.
+
+Visible Vietnamese menu items inside the dropdown:
+
+Column / group 1:
+- Bài viết
+- Video
+- Chủ đề
+- Series nổi bật
+
+Optional descriptions:
+- Bài viết — Những bài chia sẻ và phân tích chuyên sâu
+- Video — Thư viện video từ kênh YouTube
+- Chủ đề — Khám phá nội dung theo từng nhóm kiến thức
+- Series nổi bật — Theo dõi các chuỗi nội dung chính
+
+Route suggestions:
+- Bài viết -> `/bai-viet`
+- Video -> `/video` or `/thu-vien-video`
+- Chủ đề -> `/chu-de`
+- Series nổi bật -> `/series`
+
+Requirements:
+- dropdown should feel premium, not like a default browser menu
+- elegant spacing
+- soft border / subtle shadow
+- good hover feedback
+- not overcrowded
+- should work naturally with the rest of the navbar
+
+If a mega-dropdown is too heavy for the current system, use a refined standard dropdown.
+
+================================
+4. MOBILE NAVIGATION UPDATE
+================================
+
+Update the mobile navigation so “Kiến thức” is also clear and easy to use.
+
+Requirements:
+- support expandable submenu for “Kiến thức”
+- submenu items:
+  - Bài viết
+  - Video
+  - Chủ đề
+  - Series nổi bật
+- maintain clean spacing and premium mobile menu styling
+- avoid clutter
+- preserve touch friendliness
+
+================================
+5. ROUTING AND LINK LOGIC
+================================
+
+Update routing and internal navigation so the new menu structure is functional.
+
+Use or prepare these routes:
+- `/bai-viet`
+- `/video` or `/thu-vien-video`
+- `/chu-de`
+- `/series`
+
+If some routes are not fully built yet:
+- create placeholder pages or safe fallback pages
+- avoid broken links
+- each placeholder page should still match the premium site system
+
+================================
+6. FOOTER UPDATE
+================================
+
+Update the footer quick links or footer structure where relevant.
+
+Recommended visible Vietnamese footer links:
+- Trang chủ
+- Giới thiệu
+- Kiến thức
+- Tin tức
+- Cộng đồng
+- Sản phẩm
+- Liên hệ
+
+Optional footer sublinks under “Kiến thức”:
+- Bài viết
+- Video
+- Chủ đề
+- Series nổi bật
+
+Requirements:
+- footer should stay clean and not overloaded
+- preserve premium consistency
+
+================================
+7. CREATE A SIMPLE “KIẾN THỨC” LANDING PAGE IF HELPFUL
+================================
+
+If the site architecture benefits from it, create a landing page for `/kien-thuc`.
+
+This page should act as a content hub and gateway to:
+- Bài viết
+- Video
+- Chủ đề
+- Series nổi bật
+
+Visible Vietnamese text suggestion:
+
+Eyebrow:
+Kiến thức
+
+Heading:
+Thư viện nội dung và tri thức thực chiến
+
+Subheading:
+Nơi tổng hợp bài viết, video, chủ đề và các chuỗi nội dung giúp bạn tiếp cận tài chính, đầu tư và tư duy tích sản theo hướng rõ ràng hơn, thực tế hơn và dài hạn hơn.
+
+Cards:
+- Bài viết
+- Video
+- Chủ đề
+- Series nổi bật
+
+Requirements:
+- premium card-based layout
+- simple, clean, clear
+- consistent with homepage and article page
+- strong readability
+- useful as a content gateway
+
+================================
+8. KEEP “TIN TỨC” DISTINCT
+================================
+
+Please make sure “Tin tức” remains conceptually separate from “Kiến thức”.
+
+“TIN TỨC” should represent:
+- cập nhật mới
+- thông báo
+- hoạt động
+- tin ngắn
+- update cộng đồng / sản phẩm / dự án nếu phù hợp
+
+“KIẾN THỨC” should represent:
+- bài viết chuyên sâu
+- video
+- nội dung học và phát triển
+- series nội dung
+- khám phá theo chủ đề
+
+This distinction should be clear in structure and wording.
+
+================================
+9. DESIGN REQUIREMENTS
+================================
+
+Keep the full navigation and dropdown system aligned with the premium brand direction:
+- calm
+- trustworthy
+- editorial
+- financial mentor
+- personal brand
+- dark teal / soft teal / off-white / charcoal palette
+- refined typography
+- subtle hover states
+- elegant transitions
+
+Avoid:
+- generic SaaS dropdown styling
+- overly dense mega menus
+- flashy or noisy interactions
+
+================================
+10. TECHNICAL REQUIREMENTS
+================================
+
+- keep code clean and reusable
+- use structured nav config data if possible
+- support future expansion
+- ensure links work correctly
+- ensure active states are accurate
+- preserve accessibility
+- maintain mobile responsiveness
+
+================================
+11. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- “Nội dung” is removed
+- “Kiến thức” becomes a clear, strategic knowledge hub
+- navbar is more intuitive
+- users better understand where to find articles, videos, and long-form learning content
+- the website feels more mature and scalable
+
+Please implement this navigation update directly.

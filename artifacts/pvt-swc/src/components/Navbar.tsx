@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
 
-/* ── Navigation data ────────────────────────────────────── */
+/* ── Navigation data ─────────────────────────────────────── */
+type NavDropdownItem = { name: string; desc?: string; href: string };
 type NavItem =
-  | { name: string; href: string; dropdown?: false }
+  | { name: string; href: string; dropdownKey?: never; dropdown?: false }
   | {
       name: string;
       href?: never;
       dropdown: true;
-      items: { name: string; desc?: string; href: string }[];
+      dropdownKey: string;
+      items: NavDropdownItem[];
     };
 
-/* ── Per-state design tokens ────────────────────────────── */
+/* ── Per-state design tokens ──────────────────────────────── */
 const HERO = {
   linkColor:      "rgba(255,255,255,0.70)",
   linkHover:      "rgba(255,255,255,0.92)",
@@ -34,7 +36,6 @@ const SCROLLED = {
   ctaHoverShadow: "0 3px 16px rgba(10,40,35,0.22)",
 } as const;
 
-/* ── Keyframe animation (injected once) ─────────────────── */
 const DROPDOWN_STYLE = `
   @keyframes pvt-dd-in {
     from { opacity: 0; transform: translateX(-50%) translateY(-5px); }
@@ -42,7 +43,6 @@ const DROPDOWN_STYLE = `
   }
 `;
 
-/* ── Chevron SVG ─────────────────────────────────────────── */
 function Chevron({ open }: { open: boolean }) {
   return (
     <svg
@@ -68,18 +68,18 @@ function Chevron({ open }: { open: boolean }) {
   );
 }
 
-/* ── Component ───────────────────────────────────────────── */
+/* ── Component ────────────────────────────────────────────── */
 export function Navbar() {
-  const [location]            = useLocation();
-  const [isScrolled,          setIsScrolled]          = useState(false);
-  const [isMobileMenuOpen,    setIsMobileMenuOpen]    = useState(false);
-  const [isSanPhamOpen,       setIsSanPhamOpen]       = useState(false);
-  const [isMobileSanPhamOpen, setIsMobileSanPhamOpen] = useState(false);
+  const [location]             = useLocation();
+  const [isScrolled,           setIsScrolled]           = useState(false);
+  const [isMobileMenuOpen,     setIsMobileMenuOpen]     = useState(false);
+  const [openDropdownKey,      setOpenDropdownKey]      = useState<string | null>(null);
+  const [openMobileDropdownKey, setOpenMobileDropdownKey] = useState<string | null>(null);
 
   /* Refs */
   const linkRefs      = useRef<(HTMLElement | null)[]>([]);
   const ctaRef        = useRef<HTMLAnchorElement | null>(null);
-  const dropdownEl    = useRef<HTMLLIElement | null>(null);
+  const dropdownRefs  = useRef<Map<string, HTMLLIElement>>(new Map());
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* Derived */
@@ -89,23 +89,44 @@ export function Navbar() {
   const isCommunityPage = location.startsWith("/cong-dong");
   const isTinTucPage    = location.startsWith("/tin-tuc");
   const isAboutPage     = location.startsWith("/gioi-thieu");
+  const isKienThucPage  = location.startsWith("/bai-viet")
+                       || location.startsWith("/video")
+                       || location.startsWith("/chu-de")
+                       || location.startsWith("/series")
+                       || location.startsWith("/kien-thuc");
 
-  /* Pages that open with a dark full-bleed hero — only these use the
-     transparent overlay navbar at the top. Every other page starts in
-     the solid/scrolled state so text is always readable against the
-     light content background. */
-  const isHeroDark      = isHome || isProductPage || isCommunityPage || isAboutPage;
+  const isHeroDark        = isHome || isProductPage || isCommunityPage || isAboutPage;
   const effectiveScrolled = isScrolled || !isHeroDark;
 
   const navLinks: NavItem[] = [
     { name: "Trang chủ",  href: isHome ? "#trang-chu" : `${homeBase}/` },
     { name: "Giới thiệu", href: `${homeBase}/gioi-thieu` },
-    { name: "Bài viết",   href: `${homeBase}/tin-tuc` },
-    { name: "Dịch vụ",   href: isHome ? "#dich-vu" : `${homeBase}/#dich-vu` },
-    { name: "Liên hệ",   href: isHome ? "#lien-he" : `${homeBase}/#lien-he` },
+    {
+      name: "Kiến thức",
+      dropdown: true,
+      dropdownKey: "kien-thuc",
+      items: [
+        { name: "Bài viết",       desc: "Những bài chia sẻ và phân tích chuyên sâu",    href: `${homeBase}/bai-viet` },
+        { name: "Video",          desc: "Thư viện video từ kênh YouTube",               href: `${homeBase}/video` },
+        { name: "Chủ đề",         desc: "Khám phá nội dung theo từng nhóm kiến thức",   href: `${homeBase}/chu-de` },
+        { name: "Series nổi bật", desc: "Theo dõi các chuỗi nội dung chính",            href: `${homeBase}/series` },
+      ],
+    },
+    { name: "Tin tức",   href: `${homeBase}/tin-tuc` },
+    { name: "Cộng đồng", href: `${homeBase}/cong-dong` },
+    {
+      name: "Sản phẩm",
+      dropdown: true,
+      dropdownKey: "san-pham",
+      items: [
+        { name: "Road to $1M · SWC PASS", desc: "Lộ trình tài chính cá nhân có hệ thống", href: `${homeBase}/san-pham/duong-toi-1-trieu-do` },
+        { name: "ATLAS",                   desc: "Hệ sinh thái bất động sản kỹ thuật số",  href: `${homeBase}/san-pham/atlas` },
+      ],
+    },
+    { name: "Liên hệ", href: isHome ? "#lien-he" : `${homeBase}/#lien-he` },
   ];
 
-  /* ── Scroll ─────────────────────────────────────────────── */
+  /* ── Scroll ──────────────────────────────────────────────── */
   useEffect(() => {
     const fn = () => setIsScrolled(window.scrollY > 48);
     fn();
@@ -113,12 +134,16 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  /* ── Imperative color sync ───────────────────────────────── */
+  /* ── Imperative color sync ────────────────────────────────── */
   useEffect(() => {
     linkRefs.current.forEach((el, i) => {
       if (!el) return;
-      /* index 1 = "Giới thiệu", index 2 = "Bài viết" */
-      const isActive = (i === 1 && isAboutPage) || (i === 2 && isTinTucPage);
+      const isActive =
+        (i === 1 && isAboutPage)    ||
+        (i === 2 && isKienThucPage) ||
+        (i === 3 && isTinTucPage)   ||
+        (i === 4 && isCommunityPage)||
+        (i === 5 && isProductPage);
       el.style.color      = isActive
         ? (effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive)
         : (effectiveScrolled ? SCROLLED.linkColor  : HERO.linkColor);
@@ -135,41 +160,46 @@ export function Navbar() {
       cta.style.borderColor = HERO.ctaBorder;
       cta.style.boxShadow   = "none";
     }
-  }, [effectiveScrolled, isAboutPage, isTinTucPage]);
+  }, [effectiveScrolled, isAboutPage, isKienThucPage, isTinTucPage, isCommunityPage, isProductPage]);
 
-  /* ── Dropdown open / close with delay ───────────────────── */
-  const openDropdown = () => {
+  /* ── Generic dropdown open / close ───────────────────────── */
+  const openDropdown = useCallback((key: string) => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
       closeTimerRef.current = null;
     }
-    setIsSanPhamOpen(true);
-  };
-  const scheduleClose = () => {
-    closeTimerRef.current = setTimeout(() => setIsSanPhamOpen(false), 180);
-  };
+    setOpenDropdownKey(key);
+  }, []);
 
-  /* ── Outside-click ───────────────────────────────────────── */
+  const scheduleClose = useCallback(() => {
+    closeTimerRef.current = setTimeout(() => setOpenDropdownKey(null), 180);
+  }, []);
+
+  /* ── Outside-click closes all dropdowns ──────────────────── */
   useEffect(() => {
-    if (!isSanPhamOpen) return;
+    if (!openDropdownKey) return;
     const fn = (e: MouseEvent) => {
-      if (dropdownEl.current && !dropdownEl.current.contains(e.target as Node)) {
-        setIsSanPhamOpen(false);
-      }
+      const target = e.target as Node;
+      let inside = false;
+      dropdownRefs.current.forEach((el) => {
+        if (el && el.contains(target)) inside = true;
+      });
+      if (!inside) setOpenDropdownKey(null);
     };
     document.addEventListener("mousedown", fn);
     return () => document.removeEventListener("mousedown", fn);
-  }, [isSanPhamOpen]);
+  }, [openDropdownKey]);
 
-  /* Cleanup */
-  useEffect(() => () => { if (closeTimerRef.current) clearTimeout(closeTimerRef.current); }, []);
+  /* Cleanup timers */
+  useEffect(() => () => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+  }, []);
 
-  /* ── Color shortcuts ─────────────────────────────────────── */
+  /* ── Color shortcuts ──────────────────────────────────────── */
   const linkColor  = effectiveScrolled ? SCROLLED.linkColor  : HERO.linkColor;
   const linkHover  = effectiveScrolled ? SCROLLED.linkHover  : HERO.linkHover;
-  const linkActive = effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive;
 
-  /* ── Base link style ─────────────────────────────────────── */
+  /* ── Base link style ──────────────────────────────────────── */
   const baseLinkStyle: React.CSSProperties = {
     fontSize:       "13px",
     fontWeight:     400,
@@ -187,10 +217,8 @@ export function Navbar() {
     whiteSpace:     "nowrap",
   };
 
-  /* ─────────────────────────────────────────────────────────── */
   return (
     <>
-      {/* Inject keyframe once */}
       <style>{DROPDOWN_STYLE}</style>
 
       <nav
@@ -221,7 +249,7 @@ export function Navbar() {
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8 flex items-center justify-between">
 
-          {/* ── Logo ─────────────────────────────────────── */}
+          {/* ── Logo ──────────────────────────────────────── */}
           <a
             href={`${homeBase}/`}
             style={{
@@ -236,23 +264,30 @@ export function Navbar() {
             Thắng SWC
           </a>
 
-          {/* ── Desktop nav ──────────────────────────────── */}
+          {/* ── Desktop nav ───────────────────────────────── */}
           <div className="hidden md:flex items-center gap-6">
-            <ul className="flex gap-6" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+            <ul className="flex gap-5" style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {navLinks.map((link, i) => {
 
                 /* ── Dropdown item ─────────────────────── */
                 if (link.dropdown) {
-                  const triggerColor = isProductPage
-                    ? (isSanPhamOpen ? linkHover : linkActive)
-                    : (isSanPhamOpen ? linkHover : linkColor);
+                  const key       = link.dropdownKey;
+                  const isOpen    = openDropdownKey === key;
+                  const isActive  = (key === "kien-thuc" && isKienThucPage)
+                                 || (key === "san-pham"   && isProductPage);
+                  const triggerColor = isActive
+                    ? (isOpen ? linkHover : (effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive))
+                    : (isOpen ? linkHover : linkColor);
 
                   return (
                     <li
                       key={link.name}
-                      ref={dropdownEl}
+                      ref={(el) => {
+                        if (el) dropdownRefs.current.set(key, el);
+                        else dropdownRefs.current.delete(key);
+                      }}
                       style={{ position: "relative" }}
-                      onMouseEnter={openDropdown}
+                      onMouseEnter={() => openDropdown(key)}
                       onMouseLeave={scheduleClose}
                     >
                       {/* Trigger */}
@@ -261,9 +296,9 @@ export function Navbar() {
                         style={{
                           ...baseLinkStyle,
                           color:      triggerColor,
-                          fontWeight: isProductPage ? 500 : 400,
+                          fontWeight: isActive ? 500 : 400,
                         }}
-                        onClick={() => isSanPhamOpen ? setIsSanPhamOpen(false) : openDropdown()}
+                        onClick={() => isOpen ? setOpenDropdownKey(null) : openDropdown(key)}
                         onMouseEnter={(e) => {
                           (e.currentTarget as HTMLElement).style.color = linkHover;
                         }}
@@ -274,7 +309,7 @@ export function Navbar() {
                         {link.name}
 
                         {/* Active underline */}
-                        {isProductPage && !isSanPhamOpen && (
+                        {isActive && !isOpen && (
                           <span
                             aria-hidden="true"
                             style={{
@@ -291,18 +326,10 @@ export function Navbar() {
                           />
                         )}
 
-                        <Chevron open={isSanPhamOpen} />
+                        <Chevron open={isOpen} />
                       </button>
 
-                      {/*
-                        ── Invisible hover bridge ───────────────────────────
-                        Absolutely positioned descendant that fills the visual
-                        gap between the trigger bottom and the panel top.
-                        Because it is a descendant of <li>, the browser's
-                        native mouseleave event will NOT fire on <li> while
-                        the cursor passes through this area, eliminating the
-                        accidental-close problem without any timers.
-                      */}
+                      {/* Invisible hover bridge */}
                       <div
                         aria-hidden="true"
                         style={{
@@ -310,23 +337,23 @@ export function Navbar() {
                           top:      "100%",
                           left:     "-24px",
                           right:    "-24px",
-                          height:   "12px",   /* safely covers the 6px gap */
+                          height:   "12px",
                           zIndex:   99,
                         }}
                       />
 
-                      {/* ── Dropdown panel ───────────────── */}
-                      {isSanPhamOpen && (
+                      {/* Dropdown panel */}
+                      {isOpen && (
                         <div
                           role="menu"
-                          onMouseEnter={openDropdown}
+                          onMouseEnter={() => openDropdown(key)}
                           onMouseLeave={scheduleClose}
                           style={{
                             position:             "absolute",
                             top:                  "calc(100% + 6px)",
                             left:                 "50%",
                             transform:            "translateX(-50%)",
-                            minWidth:             "268px",
+                            minWidth:             "272px",
                             background:           "rgba(251,253,251,0.99)",
                             backdropFilter:       "blur(24px)",
                             WebkitBackdropFilter: "blur(24px)",
@@ -340,7 +367,8 @@ export function Navbar() {
                         >
                           {link.items.map((item) => {
                             const itemActive =
-                              isProductPage && item.href.endsWith(location);
+                              (key === "san-pham"  && isProductPage   && item.href.endsWith(location)) ||
+                              (key === "kien-thuc" && isKienThucPage  && item.href.endsWith(location));
 
                             return (
                               <a
@@ -359,26 +387,19 @@ export function Navbar() {
                                       : "transparent"
                                   }`,
                                   background: itemActive
-                                    ? "hsl(var(--primary) / 0.055)"
+                                    ? "hsl(var(--primary) / 0.04)"
                                     : "transparent",
-                                  borderRadius: "0 0.5rem 0.5rem 0",
-                                  margin:       "0 0.375rem 0 0",
                                 }}
                                 onMouseEnter={(e) => {
                                   const el = e.currentTarget as HTMLElement;
-                                  el.style.background   = "hsl(var(--primary) / 0.08)";
-                                  el.style.borderColor  = "hsl(var(--primary))";
+                                  el.style.background  = "hsl(var(--primary) / 0.05)";
+                                  el.style.borderColor = "hsl(var(--primary) / 0.45)";
                                 }}
                                 onMouseLeave={(e) => {
                                   const el = e.currentTarget as HTMLElement;
-                                  el.style.background  = itemActive
-                                    ? "hsl(var(--primary) / 0.055)"
-                                    : "transparent";
-                                  el.style.borderColor = itemActive
-                                    ? "hsl(var(--primary))"
-                                    : "transparent";
+                                  el.style.background  = itemActive ? "hsl(var(--primary) / 0.04)" : "transparent";
+                                  el.style.borderColor = itemActive ? "hsl(var(--primary))" : "transparent";
                                 }}
-                                onClick={() => setIsSanPhamOpen(false)}
                               >
                                 <span style={{
                                   display:       "block",
@@ -415,7 +436,7 @@ export function Navbar() {
                   );
                 }
 
-                /* ── Plain link ────────────────────────── */
+                /* ── Plain link ─────────────────────────── */
                 return (
                   <li key={link.name}>
                     <a
@@ -436,7 +457,7 @@ export function Navbar() {
               })}
             </ul>
 
-            {/* ── CTA ──────────────────────────────────── */}
+            {/* ── CTA ───────────────────────────────────── */}
             <a
               ref={ctaRef}
               href={`${homeBase}/cong-dong#dang-ky`}
@@ -483,7 +504,7 @@ export function Navbar() {
             </a>
           </div>
 
-          {/* ── Mobile hamburger ─────────────────────────── */}
+          {/* ── Mobile hamburger ──────────────────────────── */}
           <button
             className="md:hidden p-2 rounded-md"
             style={{
@@ -500,7 +521,7 @@ export function Navbar() {
           </button>
         </div>
 
-        {/* ── Mobile drawer ────────────────────────────────── */}
+        {/* ── Mobile drawer ─────────────────────────────────── */}
         {isMobileMenuOpen && (
           <div
             className="md:hidden absolute top-full left-0 w-full"
@@ -515,8 +536,13 @@ export function Navbar() {
             <div className="max-w-6xl mx-auto px-5 py-4 flex flex-col">
               {navLinks.map((link) => {
 
-                /* ── Mobile dropdown ─────────────────────── */
+                /* ── Mobile dropdown ──────────────────── */
                 if (link.dropdown) {
+                  const key        = link.dropdownKey;
+                  const isMobOpen  = openMobileDropdownKey === key;
+                  const isActive   = (key === "kien-thuc" && isKienThucPage)
+                                  || (key === "san-pham"   && isProductPage);
+
                   return (
                     <React.Fragment key={link.name}>
                       <button
@@ -526,9 +552,9 @@ export function Navbar() {
                           justifyContent: "space-between",
                           width:          "100%",
                           fontSize:       "14px",
-                          fontWeight:     isProductPage ? 500 : 400,
+                          fontWeight:     isActive ? 500 : 400,
                           letterSpacing:  "0.010em",
-                          color:          isProductPage
+                          color:          isActive
                             ? "hsl(var(--primary))"
                             : "hsl(var(--foreground) / 0.68)",
                           padding:        "0.72rem 0",
@@ -536,20 +562,22 @@ export function Navbar() {
                           borderTop:      "none",
                           borderLeft:     "none",
                           borderRight:    "none",
-                          borderBottom:   isMobileSanPhamOpen
+                          borderBottom:   isMobOpen
                             ? "none"
                             : "1px solid hsl(var(--border) / 0.38)",
                           cursor:         "pointer",
                         }}
-                        onClick={() => setIsMobileSanPhamOpen((v) => !v)}
+                        onClick={() =>
+                          setOpenMobileDropdownKey((prev) => prev === key ? null : key)
+                        }
                       >
                         <span>{link.name}</span>
                         <span style={{
-                          color:      isProductPage
+                          color:      isActive
                             ? "hsl(var(--primary) / 0.65)"
                             : "hsl(var(--foreground) / 0.40)",
                           transition: "transform 0.22s ease",
-                          transform:  isMobileSanPhamOpen ? "rotate(180deg)" : "rotate(0deg)",
+                          transform:  isMobOpen ? "rotate(180deg)" : "rotate(0deg)",
                           display:    "inline-flex",
                         }}>
                           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
@@ -558,14 +586,15 @@ export function Navbar() {
                         </span>
                       </button>
 
-                      {isMobileSanPhamOpen && (
+                      {isMobOpen && (
                         <div style={{
                           borderBottom: "1px solid hsl(var(--border) / 0.38)",
                           padding:      "0.25rem 0 0.5rem",
                         }}>
                           {link.items.map((item) => {
                             const itemActive =
-                              isProductPage && item.href.endsWith(location);
+                              (key === "san-pham"  && isProductPage  && item.href.endsWith(location)) ||
+                              (key === "kien-thuc" && isKienThucPage && item.href.endsWith(location));
 
                             return (
                               <a
@@ -582,16 +611,16 @@ export function Navbar() {
                                       ? "hsl(var(--primary))"
                                       : "hsl(var(--primary) / 0.30)"
                                   }`,
-                                  marginLeft:  "0.25rem",
+                                  marginLeft:   "0.25rem",
                                   borderRadius: "0 0.375rem 0.375rem 0",
-                                  background:  itemActive
+                                  background:   itemActive
                                     ? "hsl(var(--primary) / 0.05)"
                                     : "transparent",
-                                  transition: "background 0.16s ease",
+                                  transition:   "background 0.16s ease",
                                 }}
                                 onClick={() => {
                                   setIsMobileMenuOpen(false);
-                                  setIsMobileSanPhamOpen(false);
+                                  setOpenMobileDropdownKey(null);
                                 }}
                               >
                                 <div>
@@ -627,28 +656,27 @@ export function Navbar() {
                   );
                 }
 
-                /* ── Plain mobile link ───────────────────── */
+                /* ── Plain mobile link ────────────────── */
                 return (
                   <a
                     key={link.name}
                     href={link.href}
                     style={{
-                      fontSize:      "14px",
-                      fontWeight:    400,
-                      letterSpacing: "0.010em",
-                      color:         "hsl(var(--foreground) / 0.68)",
-                      padding:       "0.72rem 0",
-                      borderBottom:  "1px solid hsl(var(--border) / 0.38)",
+                      fontSize:       "14px",
+                      fontWeight:     400,
+                      letterSpacing:  "0.010em",
+                      color:          "hsl(var(--foreground) / 0.68)",
+                      padding:        "0.72rem 0",
+                      borderBottom:   "1px solid hsl(var(--border) / 0.38)",
                       textDecoration: "none",
-                      transition:    "color 0.18s ease",
+                      transition:     "color 0.18s ease",
                     }}
                     onClick={() => setIsMobileMenuOpen(false)}
                     onMouseEnter={(e) => {
                       (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary))";
                     }}
                     onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.color =
-                        "hsl(var(--foreground) / 0.68)";
+                      (e.currentTarget as HTMLElement).style.color = "hsl(var(--foreground) / 0.68)";
                     }}
                   >
                     {link.name}

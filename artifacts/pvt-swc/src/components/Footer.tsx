@@ -5,9 +5,18 @@ import { SiYoutube, SiFacebook } from "react-icons/si";
 const navLinks = [
   { name: "Trang chủ",  href: "/" },
   { name: "Giới thiệu", href: "/gioi-thieu" },
-  { name: "Bài viết",   href: "/tin-tuc" },
-  { name: "Dịch vụ",   href: "/#dich-vu" },
+  { name: "Kiến thức",  href: "/kien-thuc" },
+  { name: "Tin tức",    href: "/tin-tuc" },
+  { name: "Cộng đồng",  href: "/cong-dong" },
+  { name: "Sản phẩm",  href: "/san-pham/duong-toi-1-trieu-do" },
   { name: "Liên hệ",   href: "/#lien-he" },
+];
+
+const kienThucLinks = [
+  { name: "Bài viết",       href: "/bai-viet" },
+  { name: "Video",          href: "/video" },
+  { name: "Chủ đề",         href: "/chu-de" },
+  { name: "Series nổi bật", href: "/series" },
 ];
 
 const productLinks = [
@@ -218,6 +227,47 @@ export function Footer() {
               </p>
               <ul className="space-y-3.5">
                 {navLinks.map(({ name, href }) => (
+                  <li key={name}>
+                    <a
+                      href={href}
+                      style={{
+                        fontSize: "13.5px",
+                        fontWeight: 400,
+                        letterSpacing: "0.005em",
+                        color: "rgba(255,255,255,0.48)",
+                        textDecoration: "none",
+                        transition: "color 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.86)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.48)";
+                      }}
+                    >
+                      {name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Kiến thức */}
+            <div className="space-y-5">
+              <p
+                style={{
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.28)",
+                  lineHeight: 1,
+                }}
+              >
+                Kiến thức
+              </p>
+              <ul className="space-y-3.5">
+                {kienThucLinks.map(({ name, href }) => (
                   <li key={name}>
                     <a
                       href={href}

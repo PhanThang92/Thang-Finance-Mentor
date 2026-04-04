@@ -12,6 +12,11 @@ import TinTuc from "@/pages/TinTuc";
 import TinTucArticle from "@/pages/TinTucArticle";
 import Admin from "@/pages/Admin";
 import GioiThieu from "@/pages/GioiThieu";
+import KienThuc from "@/pages/KienThuc";
+import BaiViet from "@/pages/BaiViet";
+import Video from "@/pages/Video";
+import ChuDe from "@/pages/ChuDe";
+import Series from "@/pages/Series";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +30,11 @@ function PublicRoutes() {
         <Route path="/san-pham/duong-toi-1-trieu-do" component={ProductDuongToiTrieuDo} />
         <Route path="/san-pham/atlas" component={ProductAtlas} />
         <Route path="/gioi-thieu" component={GioiThieu} />
+        <Route path="/kien-thuc" component={KienThuc} />
+        <Route path="/bai-viet" component={BaiViet} />
+        <Route path="/video" component={Video} />
+        <Route path="/chu-de" component={ChuDe} />
+        <Route path="/series" component={Series} />
         <Route path="/tin-tuc" component={() => <TinTuc />} />
         <Route path="/tin-tuc/tu-duy-dau-tu" component={() => <TinTuc catSlug="tu-duy-dau-tu" />} />
         <Route path="/tin-tuc/he-sinh-thai-san-pham" component={() => <TinTuc catSlug="he-sinh-thai-san-pham" />} />
