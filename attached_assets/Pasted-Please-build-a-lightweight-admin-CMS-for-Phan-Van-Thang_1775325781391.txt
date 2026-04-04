@@ -1,0 +1,576 @@
+Please build a lightweight admin CMS for “Phan Van Thang SWC” to manage Articles and Videos using the existing Supabase/Postgres setup.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Preserve the premium frontend public site design.
+- The admin area should be clean, practical, and efficient, but it does NOT need to match the public website aesthetic exactly.
+- Prioritize usability, maintainability, and content workflow clarity.
+
+GOAL:
+Create a simple internal admin panel that allows content management for:
+1. Articles
+2. Videos
+
+This admin CMS should support:
+- create
+- edit
+- delete
+- draft / published status
+- featured toggle
+- image/thumbnail management
+- slug handling
+- list filtering/search
+- future expansion to Topics / Series / News
+
+Do NOT overbuild a full enterprise CMS.
+Keep it focused, fast, and useful.
+
+================================
+1. ADMIN SCOPE
+================================
+
+Please create an admin area for managing:
+- Articles
+- Videos
+
+Preferred route structure:
+- `/admin`
+- `/admin/articles`
+- `/admin/articles/new`
+- `/admin/articles/[id]` or `/admin/articles/edit/[id]`
+- `/admin/videos`
+- `/admin/videos/new`
+- `/admin/videos/[id]` or `/admin/videos/edit/[id]`
+
+If the current framework prefers a different route style, keep the same logic.
+
+================================
+2. AUTH / ACCESS CONTROL
+================================
+
+Protect the admin area so it is not public.
+
+Use a lightweight and appropriate approach based on the current stack.
+
+Preferred direction:
+- Supabase Auth if already available
+or
+- simple protected admin access if auth is already partially set up
+
+Requirements:
+- public users must not access admin content management pages
+- content editing routes should be protected
+- do not expose admin controls on public pages
+
+If a full auth system is not ready yet:
+- implement a simple but structured protected admin gate
+- keep it future-ready for proper role-based auth later
+
+================================
+3. ADMIN DASHBOARD HOME
+================================
+
+Create a simple admin dashboard landing page at `/admin`.
+
+Visible Vietnamese text:
+
+Heading:
+Quản trị nội dung
+
+Subtext:
+Quản lý bài viết, video và trạng thái hiển thị nội dung trên website.
+
+Quick action cards:
+- Quản lý bài viết
+- Quản lý video
+- Tạo bài viết mới
+- Tạo video mới
+
+Optional stats:
+- Tổng số bài viết
+- Tổng số video
+- Bài viết đang xuất bản
+- Video đang xuất bản
+- Bản nháp
+
+Requirements:
+- simple and clean
+- high readability
+- no clutter
+- practical admin layout
+- responsive enough for laptop/tablet use
+
+================================
+4. ARTICLES LIST PAGE
+================================
+
+Create an admin Articles list page.
+
+Visible Vietnamese text:
+
+Page title:
+Quản lý bài viết
+
+Primary button:
+Tạo bài viết mới
+
+Table / list columns:
+- Tiêu đề
+- Danh mục
+- Ngày đăng
+- Trạng thái
+- Nổi bật
+- Hành động
+
+Filters / controls:
+- Tìm kiếm bài viết...
+- Tất cả
+- Đã xuất bản
+- Bản nháp
+- Nổi bật
+
+Row actions:
+- Sửa
+- Xóa
+- Xem trước
+- Đổi trạng thái
+- Bật/Tắt nổi bật
+
+Requirements:
+- support search by title
+- support filter by status
+- support filter by featured
+- use pagination if needed
+- keep the layout clean and efficient
+- if table is too heavy on mobile, switch to card/list layout
+
+================================
+5. ARTICLE CREATE / EDIT FORM
+================================
+
+Create a reusable form for creating and editing articles.
+
+Visible Vietnamese field labels:
+
+- Tiêu đề
+- Đường dẫn tĩnh
+- Mô tả ngắn
+- Nội dung
+- Ảnh bìa
+- Alt ảnh bìa
+- Danh mục
+- Thẻ tag
+- Ngày đăng
+- Thời gian đọc
+- Chủ đề
+- Series
+- Trạng thái
+- Bài viết nổi bật
+
+Buttons:
+- Lưu bản nháp
+- Xuất bản
+- Cập nhật bài viết
+- Hủy
+
+Suggested behavior:
+- auto-generate slug from title, but allow manual edit
+- validate required fields
+- featured toggle available
+- status select: draft / published
+- publish date editable
+- tags input should be practical, not clunky
+
+Content editor:
+- use a textarea first if rich editor is not ready
+- if a lightweight rich text editor already fits the stack, use it
+- do not overcomplicate with a heavy editor unless necessary
+
+Requirements:
+- good form spacing
+- clear validation messages
+- support create and edit mode
+- easy to maintain
+- preserve Vietnamese text correctly
+
+================================
+6. VIDEO LIST PAGE
+================================
+
+Create an admin Videos list page.
+
+Visible Vietnamese text:
+
+Page title:
+Quản lý video
+
+Primary button:
+Tạo video mới
+
+Table / list columns:
+- Tiêu đề
+- Thời lượng
+- Ngày đăng
+- Trạng thái
+- Nổi bật
+- Hành động
+
+Filters / controls:
+- Tìm kiếm video...
+- Tất cả
+- Đã xuất bản
+- Bản nháp
+- Nổi bật
+
+Row actions:
+- Sửa
+- Xóa
+- Xem video
+- Đổi trạng thái
+- Bật/Tắt nổi bật
+
+Requirements:
+- support search by title
+- support filter by status
+- support filter by featured
+- clean list view
+- easy to scan
+
+================================
+7. VIDEO CREATE / EDIT FORM
+================================
+
+Create a reusable form for creating and editing videos.
+
+Visible Vietnamese field labels:
+
+- Tiêu đề
+- Đường dẫn tĩnh
+- Mô tả ngắn
+- Link YouTube
+- Ảnh thumbnail
+- Alt thumbnail
+- Thời lượng
+- Ngày đăng
+- Chủ đề
+- Series
+- Trạng thái
+- Video nổi bật
+
+Buttons:
+- Lưu bản nháp
+- Xuất bản
+- Cập nhật video
+- Hủy
+
+Suggested behavior:
+- auto-generate slug from title
+- allow manual slug adjustment
+- validate YouTube URL
+- allow featured toggle
+- status select: draft / published
+- easy form reuse between create/edit
+
+Requirements:
+- form should be simple and clean
+- avoid unnecessary complexity
+- maintain clear validation
+
+================================
+8. IMAGE / THUMBNAIL MANAGEMENT
+================================
+
+Support image handling for:
+- article cover image
+- video thumbnail
+
+Preferred direction:
+- use Supabase Storage if suitable
+- support image upload and saving public URL
+- preview uploaded image in the form
+
+Visible Vietnamese helper text examples:
+- Tải ảnh lên
+- Chọn ảnh khác
+- Xóa ảnh
+- Xem trước ảnh
+
+Requirements:
+- clean upload experience
+- show preview
+- save resulting URL to DB
+- support existing image edit/replacement
+- validate file type and size if possible
+- do not make image handling confusing
+
+================================
+9. STATUS / PUBLISHING WORKFLOW
+================================
+
+Implement a practical content workflow.
+
+Required statuses:
+- draft
+- published
+
+Admin behavior:
+- content can be saved as draft
+- content can be published
+- published items appear on public pages
+- draft items do not appear publicly
+- toggling status should update public visibility cleanly
+
+Featured behavior:
+- admin can toggle featured on/off
+- homepage uses featured logic if applicable
+
+Optional:
+- archive status if easy to support
+But not required in this phase.
+
+================================
+10. DELETE / SAFETY UX
+================================
+
+Add safe delete handling.
+
+Visible Vietnamese text examples:
+- Xóa bài viết
+- Xóa video
+- Bạn có chắc chắn muốn xóa nội dung này?
+- Hành động này không thể hoàn tác.
+
+Requirements:
+- confirmation required before delete
+- delete flow should be explicit
+- preserve clean UX
+- avoid accidental destructive actions
+
+If soft delete is easy to support, that is acceptable.
+If not, regular delete is okay but confirmation is required.
+
+================================
+11. TOASTS / FEEDBACK STATES
+================================
+
+Add clear UI feedback for admin actions.
+
+Visible Vietnamese examples:
+- Đã lưu bản nháp
+- Đã xuất bản bài viết
+- Đã cập nhật nội dung
+- Đã xóa thành công
+- Có lỗi xảy ra, vui lòng thử lại
+
+Requirements:
+- use clean toast or inline success/error states
+- no noisy notifications
+- easy to understand
+- good UX during save/update/delete
+
+================================
+12. VALIDATION RULES
+================================
+
+Implement practical form validation.
+
+Articles minimum validation:
+- title required
+- slug required
+- content required for publish
+- category recommended
+- excerpt recommended
+
+Videos minimum validation:
+- title required
+- slug required
+- YouTube URL required
+- excerpt recommended
+
+Rules:
+- published content should meet stricter validation than draft
+- duplicate slug should be prevented or handled clearly
+- invalid YouTube URL should show error
+- required field messages should be in Vietnamese
+
+================================
+13. DATABASE CONNECTION
+================================
+
+Connect all admin forms and list pages to the existing Supabase/Postgres tables.
+
+Use the existing tables:
+- `articles`
+- `videos`
+
+Support operations:
+- create
+- update
+- delete
+- fetch list
+- fetch single item by id
+- filter/query by status/featured/title
+
+Requirements:
+- keep DB access layer clean
+- separate UI from data logic
+- preserve compatibility with public content fetchers
+
+================================
+14. CONTENT SERVICE LAYER
+================================
+
+If not already done, create admin-friendly service helpers such as:
+
+Articles:
+- createArticle()
+- updateArticle()
+- deleteArticle()
+- getAdminArticles()
+- getArticleById()
+
+Videos:
+- createVideo()
+- updateVideo()
+- deleteVideo()
+- getAdminVideos()
+- getVideoById()
+
+Requirements:
+- keep logic clean and reusable
+- avoid putting DB logic directly inside UI components
+- prepare for future extension
+
+================================
+15. SLUG HANDLING
+================================
+
+Implement strong slug behavior.
+
+Requirements:
+- auto-generate slug from title on create
+- allow manual edit
+- enforce uniqueness
+- show friendly validation if slug already exists
+
+Visible helper labels:
+- Tự tạo từ tiêu đề
+- Chỉnh sửa đường dẫn
+- Đường dẫn đã tồn tại
+
+================================
+16. PREVIEW / VIEW LINKS
+================================
+
+Where possible, add preview/view links.
+
+For articles:
+- “Xem trước” or “Xem bài viết”
+
+For videos:
+- “Xem video”
+
+Behavior:
+- if content is published, admin can open public route
+- if draft preview is not implemented yet, at least provide clean published-view logic
+
+Do not overbuild preview mode unless it is easy.
+
+================================
+17. ADMIN UI STRUCTURE
+================================
+
+The admin design should be:
+- simple
+- clean
+- readable
+- efficient
+- not overloaded
+
+Suggested layout:
+- sidebar or top nav with:
+  - Tổng quan
+  - Bài viết
+  - Video
+- clean content area
+- clear page titles
+- practical action buttons
+
+Visible Vietnamese nav labels:
+- Tổng quan
+- Bài viết
+- Video
+
+Avoid:
+- flashy dashboard design
+- generic template clutter
+- unnecessary widgets
+
+================================
+18. RESPONSIVENESS
+================================
+
+Make the admin panel reasonably responsive.
+
+Requirements:
+- desktop/laptop first
+- tablet acceptable
+- mobile should still work for quick edits if possible
+- forms must not break on smaller screens
+- tables can transform into cards on small screens if needed
+
+================================
+19. FUTURE-READY EXTENSIBILITY
+================================
+
+Structure the admin panel so it can later expand to manage:
+- Topics
+- Series
+- Tin tức
+- Featured homepage blocks
+- SEO metadata
+
+Do not implement all of these now unless it is very lightweight.
+Just keep the architecture clean enough to support them later.
+
+================================
+20. SECURITY / BEST PRACTICES
+================================
+
+Apply good practices:
+- protect admin routes
+- do not expose unsafe write operations publicly
+- use environment variables correctly
+- respect Supabase security model
+- keep write operations behind authenticated/protected logic
+
+If RLS policies need adjustment for admin writes, handle them properly.
+
+================================
+21. DOCUMENTATION / HANDOFF
+================================
+
+Leave the project in a clear state.
+
+Add simple comments or documentation for:
+- where admin routes live
+- how admin auth/protection works
+- where article/video service functions live
+- how image upload works
+- how to add future collections later
+
+================================
+22. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- there is a functional internal admin CMS
+- articles can be created, edited, published, unpublished, featured, and deleted
+- videos can be created, edited, published, unpublished, featured, and deleted
+- image upload/thumbnail workflow works
+- admin pages are protected
+- public pages stay connected to live content
+- the system becomes practically usable for ongoing content operations
+
+Please implement this mini admin CMS directly.

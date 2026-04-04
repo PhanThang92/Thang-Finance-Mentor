@@ -2,8 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 import { YOUTUBE_CHANNEL_URL } from "@/config/siteConfig";
-import { getFeaturedVideo, getHomepageVideos } from "@/content/videosData";
-import type { VideoItem } from "@/types/content";
+import { getFeaturedVideo, getHomepageVideos, videoGradient, type Video } from "@/lib/videos";
 
 /* ── Animation ── */
 const fadeUp = {
@@ -21,7 +20,7 @@ function Thumbnail({
 }: {
   gradient: string;
   large?: boolean;
-  duration: string;
+  duration: string | null;
   badge?: string;
 }) {
   const height = large ? "clamp(180px, 22vw, 260px)" : "120px";
@@ -50,16 +49,18 @@ function Thumbnail({
       >
         <Play size={large ? 18 : 14} fill="rgba(255,255,255,0.88)" stroke="none" style={{ marginLeft: "2px" }} />
       </div>
-      <div
-        style={{
-          position: "absolute", bottom: "10px", right: "10px",
-          background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)",
-          borderRadius: "4px", padding: "2px 7px",
-          fontSize: "10px", fontWeight: 500, color: "rgba(255,255,255,0.85)",
-        }}
-      >
-        {duration}
-      </div>
+      {duration && (
+        <div
+          style={{
+            position: "absolute", bottom: "10px", right: "10px",
+            background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)",
+            borderRadius: "4px", padding: "2px 7px",
+            fontSize: "10px", fontWeight: 500, color: "rgba(255,255,255,0.85)",
+          }}
+        >
+          {duration}
+        </div>
+      )}
       {badge && (
         <div
           style={{
@@ -102,12 +103,44 @@ function onLeave(e: React.MouseEvent<HTMLElement>) {
   el.style.transform   = "translateY(0)";
 }
 
+/* ── Skeleton ── */
+function SkeletonCard({ large = false }: { large?: boolean }) {
+  const h = large ? "clamp(180px, 22vw, 260px)" : "120px";
+  return (
+    <div style={{ ...cardStyle, gap: 0, cursor: "default" }}>
+      <div style={{ background: "hsl(var(--muted) / 0.4)", height: h, borderRadius: "10px", animation: "pulse 1.5s ease-in-out infinite" }} />
+      <div style={{ padding: "1rem 1.1rem 1.25rem", display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div style={{ height: "13px", background: "hsl(var(--muted) / 0.4)", borderRadius: "4px", width: "80%", animation: "pulse 1.5s ease-in-out infinite" }} />
+        <div style={{ height: "11px", background: "hsl(var(--muted) / 0.3)", borderRadius: "4px", width: "60%", animation: "pulse 1.5s ease-in-out infinite" }} />
+      </div>
+    </div>
+  );
+}
+
 /* ── Component ── */
 export function YoutubeSection() {
-  const featuredVideo   = getFeaturedVideo();
-  const secondaryVideos = getHomepageVideos(3);
+  const [featuredVideo,   setFeaturedVideo]   = React.useState<Video | null>(null);
+  const [secondaryVideos, setSecondaryVideos] = React.useState<Video[]>([]);
+  const [loading,         setLoading]         = React.useState(true);
 
-  if (!featuredVideo) return null;
+  React.useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      const [featured, secondary] = await Promise.all([
+        getFeaturedVideo(),
+        getHomepageVideos(3),
+      ]);
+      if (!cancelled) {
+        setFeaturedVideo(featured);
+        setSecondaryVideos(secondary);
+        setLoading(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, []);
+
+  if (!loading && !featuredVideo) return null;
 
   return (
     <section
@@ -166,59 +199,71 @@ export function YoutubeSection() {
           </div>
 
           {/* Featured card */}
-          <motion.a
-            variants={fadeUp}
-            href={featuredVideo.youtubeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ ...cardStyle, marginBottom: "16px" }}
-            onMouseEnter={onEnter}
-            onMouseLeave={onLeave}
-          >
-            <div className="flex flex-col md:flex-row">
-              <div style={{ minWidth: 0, flex: "0 0 clamp(220px, 40%, 340px)" }}>
-                <Thumbnail gradient={featuredVideo.thumbnailGradient} large duration={featuredVideo.duration} badge="Video nổi bật" />
-              </div>
-              <div style={{ padding: "clamp(1.25rem, 3vw, 2rem)", display: "flex", flexDirection: "column", justifyContent: "center", gap: "12px" }}>
-                <p style={{ fontSize: "18px", fontWeight: 700, letterSpacing: "-0.018em", lineHeight: 1.38, color: "hsl(var(--foreground))" }}>
-                  {featuredVideo.title}
-                </p>
-                <p style={{ fontSize: "13.5px", color: "hsl(var(--muted-foreground))", lineHeight: 1.82, fontWeight: 400 }}>
-                  {featuredVideo.excerpt}
-                </p>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "hsl(var(--primary))", fontSize: "12.5px", fontWeight: 500, marginTop: "4px" }}>
-                  <Play size={12} fill="hsl(var(--primary))" stroke="none" />
-                  <span>Xem video</span>
+          {loading ? (
+            <div style={{ marginBottom: "16px" }}>
+              <SkeletonCard large />
+            </div>
+          ) : featuredVideo && (
+            <motion.a
+              variants={fadeUp}
+              href={featuredVideo.youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ ...cardStyle, marginBottom: "16px" }}
+              onMouseEnter={onEnter}
+              onMouseLeave={onLeave}
+            >
+              <div className="flex flex-col md:flex-row">
+                <div style={{ minWidth: 0, flex: "0 0 clamp(220px, 40%, 340px)" }}>
+                  <Thumbnail gradient={videoGradient(featuredVideo)} large duration={featuredVideo.duration} badge="Video nổi bật" />
+                </div>
+                <div style={{ padding: "clamp(1.25rem, 3vw, 2rem)", display: "flex", flexDirection: "column", justifyContent: "center", gap: "12px" }}>
+                  <p style={{ fontSize: "18px", fontWeight: 700, letterSpacing: "-0.018em", lineHeight: 1.38, color: "hsl(var(--foreground))" }}>
+                    {featuredVideo.title}
+                  </p>
+                  <p style={{ fontSize: "13.5px", color: "hsl(var(--muted-foreground))", lineHeight: 1.82, fontWeight: 400 }}>
+                    {featuredVideo.excerpt}
+                  </p>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "hsl(var(--primary))", fontSize: "12.5px", fontWeight: 500, marginTop: "4px" }}>
+                    <Play size={12} fill="hsl(var(--primary))" stroke="none" />
+                    <span>Xem video</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.a>
+            </motion.a>
+          )}
 
           {/* Supporting cards */}
-          <motion.div variants={stagger} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {secondaryVideos.map((v: VideoItem) => (
-              <motion.a
-                key={v.id}
-                variants={fadeUp}
-                href={v.youtubeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ ...cardStyle }}
-                onMouseEnter={onEnter}
-                onMouseLeave={onLeave}
-              >
-                <Thumbnail gradient={v.thumbnailGradient} duration={v.duration} />
-                <div style={{ padding: "1rem 1.1rem 1.25rem" }}>
-                  <p style={{ fontSize: "13px", fontWeight: 600, lineHeight: 1.52, letterSpacing: "-0.010em", color: "hsl(var(--foreground))", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", marginBottom: "6px" }}>
-                    {v.title}
-                  </p>
-                  <p style={{ fontSize: "12px", color: "hsl(var(--muted-foreground))", lineHeight: 1.72, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                    {v.excerpt}
-                  </p>
-                </div>
-              </motion.a>
-            ))}
-          </motion.div>
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[0, 1, 2].map((i) => <SkeletonCard key={i} />)}
+            </div>
+          ) : (
+            <motion.div variants={stagger} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {secondaryVideos.map((v) => (
+                <motion.a
+                  key={v.id}
+                  variants={fadeUp}
+                  href={v.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ ...cardStyle }}
+                  onMouseEnter={onEnter}
+                  onMouseLeave={onLeave}
+                >
+                  <Thumbnail gradient={videoGradient(v)} duration={v.duration} />
+                  <div style={{ padding: "1rem 1.1rem 1.25rem" }}>
+                    <p style={{ fontSize: "13px", fontWeight: 600, lineHeight: 1.52, letterSpacing: "-0.010em", color: "hsl(var(--foreground))", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", marginBottom: "6px" }}>
+                      {v.title}
+                    </p>
+                    <p style={{ fontSize: "12px", color: "hsl(var(--muted-foreground))", lineHeight: 1.72, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      {v.excerpt}
+                    </p>
+                  </div>
+                </motion.a>
+              ))}
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </section>

@@ -177,8 +177,58 @@ Pages read from data/config rather than hardcoding content.
 #### Service / Helper Layer
 `src/lib/contentHelpers.ts` — re-exports all collection helpers + `formatDateVN()` and `estimateReadingTime()`.
 
-#### Upgrade Path
-To migrate to a real database (Supabase / PostgreSQL / CMS):
-1. Replace exports in `videosData.ts`, `seriesData.ts`, etc. with `async` API/DB fetch functions that return the same typed objects.
-2. Update calling components to handle async (add Suspense or React Query).
-3. No changes needed to component layout or navigation config.
+#### Upgrade Path (for remaining static content)
+To migrate Topics or Series to a real database:
+1. Add a new Drizzle table in `lib/db/src/schema/content.ts` (already exists for articles/videos).
+2. Add API routes in `artifacts/api-server/src/routes/content.ts`.
+3. Create a seed script in `scripts/src/`.
+4. Replace the static data file with an async fetch lib file (matching the pattern of `src/lib/articles.ts` and `src/lib/videos.ts`).
+
+---
+
+### Database-Backed Content (Phase 1 — Articles + Videos)
+
+Articles and Videos are stored in PostgreSQL and served via the Express API.
+
+#### Tables (in `lib/db/src/schema/content.ts`)
+
+- `articles` — id, title, slug (unique), excerpt, content, cover_image_url, cover_image_alt, category, category_slug, tags (text[]), publish_date, featured, status (draft/published/archived), reading_time, topic_slug, series_slug, created_at, updated_at
+- `videos` — id, title, slug (unique), excerpt, youtube_url, youtube_video_id, thumbnail_url, thumbnail_alt, thumbnail_gradient, duration, publish_date, featured, is_featured_video, status, topic_slug, series_slug, categories (text[]), created_at, updated_at
+
+Both tables exported from `lib/db/src/schema/index.ts`.
+
+#### API Routes (`artifacts/api-server/src/routes/content.ts`, mounted at `/api/content`)
+
+- `GET /api/content/articles` — list with ?q=, ?category=, ?featured=true, ?status=published, ?limit=
+- `GET /api/content/articles/:slug` — single article + related articles
+- `GET /api/content/videos` — list with ?q=, ?category=, ?is_featured_video=true, ?featured=true, ?status=published, ?limit=
+- `GET /api/content/videos/:slug` — single video
+
+Publishing logic: only `status = published` records are returned by default. Pass `?status=all` for future admin use.
+
+#### Seeding
+
+Seed script: `scripts/src/seed-content.ts`
+- Run: `pnpm --filter @workspace/scripts run seed:content`
+- Idempotent: uses `ON CONFLICT (slug) DO NOTHING` — safe to re-run
+- Seeds 6 articles and 7 videos from the original mock data
+
+Initial seed was also executed directly via SQL for the first run.
+
+#### Frontend Access Layer
+
+- `artifacts/pvt-swc/src/lib/articles.ts` — `getPublishedArticles()`, `getFeaturedArticles()`, `getArticleBySlug()`, `searchArticles()`, `formatArticleDate()`
+- `artifacts/pvt-swc/src/lib/videos.ts` — `getPublishedVideos()`, `getFeaturedVideo()`, `getHomepageVideos()`, `getVideosByCategory()`, `searchVideos()`, `getVideoBySlug()`, `videoGradient()`, `formatVideoDate()`
+
+All fetch functions return empty arrays / null on failure — UI always renders gracefully.
+
+#### Pages Updated to Use Live DB Data
+
+- `YoutubeSection.tsx` — async loads featured video + 3 supporting videos from `/api/content/videos`; shows skeleton while loading
+- `Video.tsx` (page) — async loads all videos + featured video; client-side filter by category/search
+- `BaiViet.tsx` (page) — full article listing page with featured strip + all-articles grid; category filters + keyword search; was previously a placeholder
+
+#### Remaining Static Content (not yet DB-backed)
+- Series (static in `src/content/seriesData.ts`) — used in the Video page
+- Topics (static in `src/content/topicsData.tsx`) — used in TopicsSection
+- About page data (`src/content/aboutPageData.tsx`) — by design, rarely changes

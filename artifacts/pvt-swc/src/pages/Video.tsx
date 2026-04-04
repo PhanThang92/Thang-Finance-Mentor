@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Play, Search } from "lucide-react";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
@@ -7,9 +7,11 @@ import {
   getFeaturedVideo,
   getVideosByCategory,
   searchVideos,
-} from "@/content/videosData";
+  videoGradient,
+  type Video,
+} from "@/lib/videos";
 import { getFeaturedSeries } from "@/content/seriesData";
-import type { VideoItem, SeriesItem, VideoCategory } from "@/types/content";
+import type { SeriesItem } from "@/types/content";
 
 /* ── Animation ── */
 const fadeUp = {
@@ -19,7 +21,7 @@ const fadeUp = {
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 
 /* ── Filter config ── */
-const FILTERS: { key: VideoCategory | "all"; label: string }[] = [
+const FILTERS: { key: string; label: string }[] = [
   { key: "all",      label: "Tất cả" },
   { key: "featured", label: "Nổi bật" },
   { key: "tai-chinh", label: "Tài chính cá nhân" },
@@ -36,7 +38,7 @@ function Thumbnail({
   large = false,
 }: {
   gradient: string;
-  duration: string;
+  duration: string | null;
   badge?: string;
   large?: boolean;
 }) {
@@ -68,16 +70,18 @@ function Thumbnail({
       >
         <Play size={large ? 19 : 14} fill="rgba(255,255,255,0.88)" stroke="none" style={{ marginLeft: "2px" }} />
       </div>
-      <div
-        style={{
-          position: "absolute", bottom: "10px", right: "10px",
-          background: "rgba(0,0,0,0.52)", backdropFilter: "blur(6px)",
-          borderRadius: "4px", padding: "2px 7px",
-          fontSize: "10px", fontWeight: 500, color: "rgba(255,255,255,0.86)",
-        }}
-      >
-        {duration}
-      </div>
+      {duration && (
+        <div
+          style={{
+            position: "absolute", bottom: "10px", right: "10px",
+            background: "rgba(0,0,0,0.52)", backdropFilter: "blur(6px)",
+            borderRadius: "4px", padding: "2px 7px",
+            fontSize: "10px", fontWeight: 500, color: "rgba(255,255,255,0.86)",
+          }}
+        >
+          {duration}
+        </div>
+      )}
       {badge && (
         <div
           style={{
@@ -96,12 +100,12 @@ function Thumbnail({
 }
 
 /* ── Video card ── */
-function VideoCard({ title, excerpt, duration, thumbnailGradient, youtubeUrl }: VideoItem) {
+function VideoCard({ video }: { video: Video }) {
   const [hovered, setHovered] = React.useState(false);
   return (
     <motion.a
       variants={fadeUp}
-      href={youtubeUrl}
+      href={video.youtubeUrl}
       target="_blank"
       rel="noopener noreferrer"
       style={{
@@ -116,7 +120,7 @@ function VideoCard({ title, excerpt, duration, thumbnailGradient, youtubeUrl }: 
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <Thumbnail gradient={thumbnailGradient} duration={duration} />
+      <Thumbnail gradient={videoGradient(video)} duration={video.duration} />
       <div style={{ padding: "1.1rem 1.2rem 1.4rem", flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
         <p
           style={{
@@ -125,7 +129,7 @@ function VideoCard({ title, excerpt, duration, thumbnailGradient, youtubeUrl }: 
             WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
           }}
         >
-          {title}
+          {video.title}
         </p>
         <p
           style={{
@@ -133,7 +137,7 @@ function VideoCard({ title, excerpt, duration, thumbnailGradient, youtubeUrl }: 
             display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
           }}
         >
-          {excerpt}
+          {video.excerpt}
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "4px", color: "hsl(var(--primary))", fontSize: "11.5px", fontWeight: 500 }}>
           <Play size={10} fill="hsl(var(--primary))" stroke="none" />
@@ -200,29 +204,73 @@ function SeriesCard({ title, description, count, coverGradient, youtubeUrl }: Se
   );
 }
 
+/* ── Skeleton ── */
+function VideoSkeleton() {
+  return (
+    <div style={{
+      background: "hsl(var(--card))", border: "1px solid hsl(var(--border) / 0.55)",
+      borderRadius: "12px", overflow: "hidden", display: "flex", flexDirection: "column",
+    }}>
+      <div style={{ height: "160px", background: "hsl(var(--muted) / 0.4)", animation: "pulse 1.5s ease-in-out infinite" }} />
+      <div style={{ padding: "1.1rem 1.2rem 1.4rem", display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div style={{ height: "13px", background: "hsl(var(--muted) / 0.4)", borderRadius: "4px", width: "85%", animation: "pulse 1.5s ease-in-out infinite" }} />
+        <div style={{ height: "11px", background: "hsl(var(--muted) / 0.3)", borderRadius: "4px", width: "65%", animation: "pulse 1.5s ease-in-out infinite" }} />
+      </div>
+    </div>
+  );
+}
+
 /* ── Empty state ── */
-function EmptyState() {
+function EmptyState({ message = "Các video mới sẽ sớm xuất hiện tại đây." }: { message?: string }) {
   return (
     <div style={{ textAlign: "center", padding: "4rem 0", color: "hsl(var(--muted-foreground))", fontSize: "14px" }}>
       <p style={{ fontWeight: 500, marginBottom: "6px" }}>Nội dung đang được cập nhật</p>
-      <p style={{ fontSize: "13px" }}>Các video mới sẽ sớm xuất hiện tại đây.</p>
+      <p style={{ fontSize: "13px" }}>{message}</p>
     </div>
   );
 }
 
 /* ── Main page ── */
 export default function VideoLibrary() {
-  const [activeFilter, setActiveFilter] = useState<VideoCategory | "all">("all");
+  const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery,  setSearchQuery]  = useState("");
+  const [featuredVideo, setFeaturedVideo] = useState<Video | null>(null);
+  const [allVideos,    setAllVideos]    = useState<Video[]>([]);
+  const [loading,      setLoading]      = useState(true);
 
-  const featuredVideo = getFeaturedVideo();
-  const seriesList    = getFeaturedSeries();
+  const seriesList = getFeaturedSeries();
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      const [featured, all] = await Promise.all([
+        getFeaturedVideo(),
+        getVideosByCategory(),
+      ]);
+      if (!cancelled) {
+        setFeaturedVideo(featured);
+        setAllVideos(all);
+        setLoading(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, []);
 
   const filteredVideos = useMemo(() => {
     if (activeFilter === "series") return [];
-    if (searchQuery.trim()) return searchVideos(searchQuery);
-    return getVideosByCategory(activeFilter === "all" ? undefined : activeFilter);
-  }, [activeFilter, searchQuery]);
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      return allVideos.filter(
+        (v) => v.title.toLowerCase().includes(q) || (v.excerpt ?? "").toLowerCase().includes(q)
+      );
+    }
+    if (activeFilter === "all") return allVideos.filter((v) => !v.isFeaturedVideo);
+    if (activeFilter === "featured") return allVideos.filter((v) => v.featured);
+    return allVideos.filter(
+      (v) => !v.isFeaturedVideo && (v.categories ?? []).includes(activeFilter)
+    );
+  }, [activeFilter, searchQuery, allVideos]);
 
   React.useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, []);
 
@@ -299,7 +347,7 @@ export default function VideoLibrary() {
         <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 md:py-24 space-y-20">
 
           {/* Featured video */}
-          {featuredVideo && (activeFilter === "all" || activeFilter === "featured") && !searchQuery && (
+          {(activeFilter === "all" || activeFilter === "featured") && !searchQuery && (
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
               <motion.div variants={fadeUp} className="flex items-center gap-2.5 mb-7">
                 <div style={{ width: "1.5rem", height: "0.5px", background: "rgba(200,158,76,0.65)", flexShrink: 0 }} />
@@ -307,45 +355,53 @@ export default function VideoLibrary() {
                   Video nổi bật
                 </span>
               </motion.div>
-              <motion.a
-                variants={fadeUp}
-                href={featuredVideo.youtubeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: "flex", flexDirection: "column", background: "hsl(var(--card))", border: "1px solid hsl(var(--border) / 0.55)", borderRadius: "16px", overflow: "hidden", textDecoration: "none", boxShadow: "0 2px 12px rgba(10,40,35,0.07)", transition: "border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease" }}
-                onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "hsl(var(--primary) / 0.25)"; el.style.boxShadow = "0 8px 32px rgba(10,40,35,0.12)"; el.style.transform = "translateY(-3px)"; }}
-                onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "hsl(var(--border) / 0.55)"; el.style.boxShadow = "0 2px 12px rgba(10,40,35,0.07)"; el.style.transform = "translateY(0)"; }}
-              >
-                <div className="flex flex-col md:flex-row">
-                  <div style={{ flex: "0 0 clamp(240px, 42%, 380px)" }}>
-                    <Thumbnail gradient={featuredVideo.thumbnailGradient} duration={featuredVideo.duration} badge="Video nổi bật" large />
-                  </div>
-                  <div style={{ padding: "clamp(1.5rem, 3vw, 2.25rem)", display: "flex", flexDirection: "column", justifyContent: "center", gap: "14px" }}>
-                    <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)", fontWeight: 700, letterSpacing: "-0.022em", lineHeight: 1.38, color: "hsl(var(--foreground))" }}>
-                      {featuredVideo.title}
-                    </p>
-                    <p style={{ fontSize: "14px", color: "hsl(var(--muted-foreground))", lineHeight: 1.85 }}>
-                      {featuredVideo.excerpt}
-                    </p>
-                    <div style={{ display: "flex", alignItems: "center", gap: "7px", color: "hsl(var(--primary))", fontSize: "13px", fontWeight: 600 }}>
-                      <Play size={14} fill="hsl(var(--primary))" stroke="none" />
-                      <span>Xem video</span>
+              {loading ? (
+                <div style={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border) / 0.55)", borderRadius: "16px", overflow: "hidden", height: "220px", animation: "pulse 1.5s ease-in-out infinite" }} />
+              ) : featuredVideo ? (
+                <motion.a
+                  variants={fadeUp}
+                  href={featuredVideo.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "flex", flexDirection: "column", background: "hsl(var(--card))", border: "1px solid hsl(var(--border) / 0.55)", borderRadius: "16px", overflow: "hidden", textDecoration: "none", boxShadow: "0 2px 12px rgba(10,40,35,0.07)", transition: "border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease" }}
+                  onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "hsl(var(--primary) / 0.25)"; el.style.boxShadow = "0 8px 32px rgba(10,40,35,0.12)"; el.style.transform = "translateY(-3px)"; }}
+                  onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "hsl(var(--border) / 0.55)"; el.style.boxShadow = "0 2px 12px rgba(10,40,35,0.07)"; el.style.transform = "translateY(0)"; }}
+                >
+                  <div className="flex flex-col md:flex-row">
+                    <div style={{ flex: "0 0 clamp(240px, 42%, 380px)" }}>
+                      <Thumbnail gradient={videoGradient(featuredVideo)} duration={featuredVideo.duration} badge="Video nổi bật" large />
+                    </div>
+                    <div style={{ padding: "clamp(1.5rem, 3vw, 2.25rem)", display: "flex", flexDirection: "column", justifyContent: "center", gap: "14px" }}>
+                      <p style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)", fontWeight: 700, letterSpacing: "-0.022em", lineHeight: 1.38, color: "hsl(var(--foreground))" }}>
+                        {featuredVideo.title}
+                      </p>
+                      <p style={{ fontSize: "14px", color: "hsl(var(--muted-foreground))", lineHeight: 1.85 }}>
+                        {featuredVideo.excerpt}
+                      </p>
+                      <div style={{ display: "flex", alignItems: "center", gap: "7px", color: "hsl(var(--primary))", fontSize: "13px", fontWeight: 600 }}>
+                        <Play size={14} fill="hsl(var(--primary))" stroke="none" />
+                        <span>Xem video</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.a>
+                </motion.a>
+              ) : null}
             </motion.div>
           )}
 
           {/* Video grid */}
           {activeFilter !== "series" && (
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
-              {filteredVideos.length > 0 ? (
+              {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {filteredVideos.map((v) => <VideoCard key={v.id} {...v} />)}
+                  {[0, 1, 2, 3, 4, 5].map((i) => <VideoSkeleton key={i} />)}
+                </div>
+              ) : filteredVideos.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {filteredVideos.map((v) => <VideoCard key={v.id} video={v} />)}
                 </div>
               ) : (
-                <EmptyState />
+                <EmptyState message="Không có video phù hợp với bộ lọc này." />
               )}
             </motion.div>
           )}
@@ -386,7 +442,7 @@ export default function VideoLibrary() {
               Khám phá thêm bài viết, video và các chủ đề được chọn lọc để xây nền tảng tài chính vững hơn theo thời gian.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-              <a href="/tin-tuc" className="inline-flex items-center gap-2" style={{ height: "2.875rem", padding: "0 2rem", borderRadius: "999px", fontSize: "13px", fontWeight: 600, color: "#fff", textDecoration: "none", background: "linear-gradient(140deg, #22917f 0%, #1a7868 100%)", boxShadow: "0 3px 18px rgba(20,115,98,0.30), inset 0 1px 0 rgba(255,255,255,0.12)", transition: "box-shadow 0.2s ease, transform 0.2s ease", whiteSpace: "nowrap" }} onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.boxShadow = "0 5px 24px rgba(20,115,98,0.42), inset 0 1px 0 rgba(255,255,255,0.16)"; el.style.transform = "translateY(-1px)"; }} onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.boxShadow = "0 3px 18px rgba(20,115,98,0.30), inset 0 1px 0 rgba(255,255,255,0.12)"; el.style.transform = "translateY(0)"; }}>
+              <a href="/bai-viet" className="inline-flex items-center gap-2" style={{ height: "2.875rem", padding: "0 2rem", borderRadius: "999px", fontSize: "13px", fontWeight: 600, color: "#fff", textDecoration: "none", background: "linear-gradient(140deg, #22917f 0%, #1a7868 100%)", boxShadow: "0 3px 18px rgba(20,115,98,0.30), inset 0 1px 0 rgba(255,255,255,0.12)", transition: "box-shadow 0.2s ease, transform 0.2s ease", whiteSpace: "nowrap" }} onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.boxShadow = "0 5px 24px rgba(20,115,98,0.42), inset 0 1px 0 rgba(255,255,255,0.16)"; el.style.transform = "translateY(-1px)"; }} onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.boxShadow = "0 3px 18px rgba(20,115,98,0.30), inset 0 1px 0 rgba(255,255,255,0.12)"; el.style.transform = "translateY(0)"; }}>
                 Xem bài viết
                 <ArrowRight size={14} strokeWidth={2} />
               </a>

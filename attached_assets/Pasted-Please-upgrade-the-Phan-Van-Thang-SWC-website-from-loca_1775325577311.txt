@@ -1,0 +1,433 @@
+Please upgrade the “Phan Van Thang SWC” website from local mock content to a real database-backed content system for Articles and Videos using Supabase/Postgres.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Preserve the premium frontend design already built.
+- Do not redesign the website visually unless required for data integration.
+- This task should focus on database architecture, backend integration, clean data flow, and maintainability.
+
+GOAL:
+Move the Articles and Videos sections from local mock data files into a real Supabase/Postgres-backed content system.
+
+This should support:
+- scalable content storage
+- future admin/CMS workflows
+- homepage featured content
+- article listing page
+- video library page
+- filtering and search
+- easy future expansion to Topics / Series / News
+- compatibility with the hybrid architecture already created
+
+================================
+1. SCOPE OF THIS IMPLEMENTATION
+================================
+
+Please database-enable these content types first:
+
+1. Articles
+2. Videos
+
+Do NOT fully database-enable the About page in this step.
+Do NOT overbuild a full CMS dashboard yet unless it is necessary for basic content management.
+
+Keep the brand/static pages on structured config as before.
+Only move Articles and Videos to Supabase/Postgres in this phase.
+
+================================
+2. DATABASE CHOICE
+================================
+
+Use Supabase with PostgreSQL as the backend.
+
+Implementation expectations:
+- create database tables
+- define schemas clearly
+- set up the Supabase client
+- connect frontend pages to live data
+- preserve fallback behavior where useful
+- keep the code clean and future-ready
+
+If the project already has Supabase installed, reuse the current setup.
+If not, add a clean Supabase integration.
+
+================================
+3. DATABASE TABLES TO CREATE
+================================
+
+Please create at least these core tables:
+
+A. `articles`
+B. `videos`
+
+Optionally prepare relational support for:
+- `topics`
+- `series`
+
+If topics/series are not fully implemented yet, structure the tables so they can be added cleanly later.
+
+================================
+4. ARTICLES TABLE STRUCTURE
+================================
+
+Create an `articles` table with fields similar to:
+
+- id (uuid, primary key)
+- title (text, required)
+- slug (text, unique, required)
+- excerpt (text)
+- content (text or rich content field depending on current stack)
+- cover_image_url (text)
+- cover_image_alt (text)
+- category (text)
+- tags (text[] or jsonb if appropriate)
+- publish_date (timestamp or date)
+- featured (boolean, default false)
+- status (text, e.g. draft / published / archived)
+- reading_time (text or integer)
+- topic_slug (text, nullable)
+- series_slug (text, nullable)
+- created_at
+- updated_at
+
+Requirements:
+- slug must be unique
+- status should support at least draft and published
+- featured should support homepage and listing featured logic
+- structure should support future article detail page integration
+
+================================
+5. VIDEOS TABLE STRUCTURE
+================================
+
+Create a `videos` table with fields similar to:
+
+- id (uuid, primary key)
+- title (text, required)
+- slug (text, unique, required)
+- excerpt (text)
+- youtube_url (text, required)
+- thumbnail_url (text)
+- thumbnail_alt (text)
+- duration (text or integer)
+- publish_date (timestamp or date)
+- featured (boolean, default false)
+- status (text, e.g. draft / published / archived)
+- topic_slug (text, nullable)
+- series_slug (text, nullable)
+- created_at
+- updated_at
+
+Optional:
+- youtube_video_id (text)
+- is_featured_video (boolean)
+
+Requirements:
+- slug must be unique
+- youtube_url must be stored cleanly
+- structure should support homepage featured video logic and full video library page
+- keep future YouTube sync in mind
+
+================================
+6. OPTIONAL TOPICS AND SERIES PREPARATION
+================================
+
+Prepare the architecture so Topics and Series can be added later cleanly.
+
+At minimum:
+- allow topic_slug and series_slug fields in articles/videos
+- keep the naming consistent
+- avoid locking the app into a flat structure
+
+If helpful, create optional reference tables:
+- `topics`
+- `series`
+
+But do not overcomplicate if not needed yet.
+
+================================
+7. SUPABASE PROJECT SETUP
+================================
+
+Please set up the Supabase integration cleanly.
+
+Requirements:
+- use environment variables for:
+  - Supabase URL
+  - Supabase anon key
+- do not hardcode secrets
+- keep config clean
+- add or update a dedicated Supabase client file
+
+Suggested:
+- `src/lib/supabase.ts`
+or framework-appropriate equivalent
+
+Ensure:
+- connection is reusable
+- structure is clean
+- future server-side or API route usage is possible
+
+================================
+8. MIGRATION / SEED STRATEGY
+================================
+
+Use the existing mock/local data as the source for initial seeding.
+
+Please:
+- take the current article mock data and insert it into the `articles` table
+- take the current video mock data and insert it into the `videos` table
+
+Create a clean seeding strategy such as:
+- SQL seed
+- script-based seed
+- Supabase seed helper
+- migration + insert script
+
+Requirements:
+- keep the current Vietnamese titles/content
+- preserve slugs where possible
+- ensure seeded content renders correctly in the frontend
+- avoid duplicate inserts if the seed runs multiple times, or document the behavior clearly
+
+================================
+9. CONTENT ACCESS LAYER
+================================
+
+Refactor the frontend so it no longer reads article/video listing content directly from local data files.
+
+Instead, create a clean content access layer.
+
+Examples:
+- `getPublishedArticles()`
+- `getFeaturedArticles()`
+- `getArticleBySlug(slug)`
+- `searchArticles(query)`
+- `getPublishedVideos()`
+- `getFeaturedVideos()`
+- `getVideoBySlug(slug)`
+
+Requirements:
+- keep data-fetching logic separate from UI layout
+- use reusable helper/service functions
+- preserve future compatibility with server components, API routes, or client fetch patterns depending on the framework
+
+================================
+10. FRONTEND PAGES TO CONNECT
+================================
+
+Connect these pages/sections to Supabase data:
+
+A. Homepage
+- featured articles section
+- featured video / YouTube section if already built
+
+B. Articles Listing Page
+- article grid
+- featured article block
+- filter/search behavior if supported
+
+C. Video Library Page
+- featured video block
+- video grid
+- filtering/search if supported
+
+D. Article Detail Page
+- if already built or partially built, connect it by slug
+
+E. Video Detail or Outbound Video Link Handling
+- if there is a video detail page, connect by slug
+- if not, ensure cards link properly to YouTube or the chosen route
+
+================================
+11. FALLBACK BEHAVIOR
+================================
+
+Please preserve graceful fallback behavior.
+
+Requirements:
+- if Supabase returns no records, show a clean empty state in Vietnamese:
+  - Heading: “Nội dung đang được cập nhật”
+  - Subtext: “Các bài viết và chia sẻ mới sẽ sớm xuất hiện tại đây.”
+- do not let the UI break if the DB is empty
+- if the Supabase connection fails in development, optionally allow temporary fallback to local mock data only if helpful and clearly isolated
+- production-facing structure should prioritize database-backed content
+
+================================
+12. FILTERING AND SEARCH SUPPORT
+================================
+
+Prepare Articles and Videos for filtering and search.
+
+Articles should support:
+- keyword search
+- category filter
+- featured vs all
+- newest sorting
+
+Videos should support:
+- keyword search
+- topic/category filter
+- featured vs all
+- newest sorting
+
+Requirements:
+- if full backend search is not implemented yet, build clean query logic using Supabase filters where possible
+- keep the architecture clean for future advanced filtering
+- preserve the premium UI already designed
+
+================================
+13. STATUS AND PUBLISHING LOGIC
+================================
+
+Implement publishing logic clearly.
+
+Only show content with:
+- status = published
+
+Homepage, listing pages, and public detail pages should not show drafts by default.
+
+Featured logic:
+- homepage featured article should prefer published + featured = true
+- homepage featured video should prefer published + featured = true
+
+If no featured item exists:
+- gracefully fall back to the latest published item
+
+================================
+14. ADMIN-READY DATA DESIGN
+================================
+
+Even if a full admin dashboard is not built yet, please structure the system so it is ready for future admin management.
+
+This means:
+- clean schemas
+- draft/published status
+- stable slugs
+- created_at / updated_at
+- reusable fetch functions
+- clear validation expectations
+- fields suitable for future admin forms
+
+================================
+15. TYPE SAFETY
+================================
+
+If the project uses TypeScript, define clean shared types for DB-backed content.
+
+Examples:
+- Article
+- Video
+- ArticleStatus
+- VideoStatus
+
+Requirements:
+- keep the types aligned with the Supabase schema
+- reduce data mismatch bugs
+- improve maintainability
+
+================================
+16. FILE / FOLDER ORGANIZATION
+================================
+
+Please organize files cleanly.
+
+Suggested example structure:
+
+- `src/lib/supabase.ts`
+- `src/lib/articles.ts`
+- `src/lib/videos.ts`
+- `src/types/content.ts`
+- `src/content/` for remaining static content only
+- `supabase/` or equivalent for migrations / seeds if supported
+
+Adjust to the current framework, but keep the architecture clean.
+
+================================
+17. SECURITY / BEST PRACTICES
+================================
+
+Apply good Supabase/Postgres practices:
+- environment variables for keys
+- no secret exposure in client code beyond what is appropriate for anon access
+- use Row Level Security if needed
+- define clear read access for published content
+- keep the public content access safe
+- structure for future authenticated admin/editor access later
+
+If helpful, create basic public read policies for:
+- published articles
+- published videos
+
+Do not overbuild auth in this step unless required.
+
+================================
+18. SEO / ROUTING READINESS
+================================
+
+Ensure the DB-backed article and video data still work well with route-based pages.
+
+Requirements:
+- article slugs support article detail pages
+- video slugs support library/detail routing if applicable
+- preserve SEO-friendly URLs
+- do not break existing internal links if routes already exist
+
+================================
+19. KEEP VISUAL CONSISTENCY
+================================
+
+This is a backend/data architecture upgrade.
+Do not weaken the premium frontend style.
+
+Keep:
+- homepage sections visually intact
+- article cards visually intact
+- video cards visually intact
+- filters and CTA styling intact
+
+Only change UI where necessary for dynamic data and loading states.
+
+================================
+20. OPTIONAL BASIC CONTENT MANAGEMENT HELPERS
+================================
+
+If helpful, create simple helper functions or utilities for future management:
+
+Examples:
+- `createArticlePayload()`
+- `createVideoPayload()`
+- slug generation helper
+- publish date formatting helper
+- featured selection helper
+
+Do not build a full CMS yet unless it is lightweight and clearly useful.
+
+================================
+21. DOCUMENTATION / HANDOFF
+================================
+
+Please leave the project in a state where it is easy to understand.
+
+Add or update simple documentation/comments for:
+- where Supabase is configured
+- where the tables are defined/migrated
+- where seeding happens
+- where article/video fetching is handled
+- how to replace seeded data with real content later
+
+================================
+22. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- Articles and Videos are stored in Supabase/Postgres
+- existing mock content is seeded into the database
+- homepage, articles page, and video page read from live DB-backed content
+- featured logic works cleanly
+- draft vs published logic is respected
+- architecture stays compatible with the hybrid content system
+- the site becomes scalable and ready for future CMS/admin workflows
+
+Please implement this Articles + Videos database migration and Supabase integration directly.
