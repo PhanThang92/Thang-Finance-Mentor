@@ -1,0 +1,121 @@
+Build/refine the admin screen for:
+“Sản phẩm”
+
+This screen is part of the existing Thắng SWC admin system.
+Do not redesign the whole admin.
+Keep the current clean light admin style and sidebar structure.
+
+Goal:
+Create a practical product management screen to manage product pages in the Thắng SWC ecosystem, including Road to $1M · SWC PASS and ATLAS.
+
+Requirements:
+
+1. Page header
+Show:
+- title: “Sản phẩm”
+- short subtitle: “Quản lý các sản phẩm trong hệ sinh thái Thắng SWC”
+- primary button on the right: “+ Tạo sản phẩm” (if new products will be added later)
+
+2. Products list view
+Create a clean grid or list of product cards.
+Each product card should show:
+- product name
+- slug
+- short description
+- status (visible/hidden/draft if supported)
+- number of sections
+- number of FAQs
+- number of pricing options
+- last updated date
+- action button: “Chỉnh sửa”
+
+Start with existing products:
+- Road to $1M · SWC PASS
+- ATLAS
+
+3. Product editor structure
+When opening a product, create a practical tab-based editor with these tabs:
+- Thông tin chung
+- Hero
+- Sections
+- FAQ
+- Pricing
+- CTA
+- SEO
+
+4. Tab: Thông tin chung
+Fields:
+- Tên sản phẩm
+- Slug
+- Mô tả ngắn
+- Trạng thái hiển thị
+- Ảnh đại diện / thumbnail
+- Thứ tự hiển thị trong menu/footer if practical
+
+5. Tab: Hero
+Fields:
+- Label nhỏ
+- Headline
+- Subtitle
+- Insight line
+- CTA 1 text + link
+- CTA 2 text + link
+
+6. Tab: Sections
+Create a flexible section-based editor.
+Each section should support:
+- section key / type
+- title
+- subtitle
+- body/content
+- order
+- visible/hidden toggle
+
+Allow reordering sections if practical.
+
+7. Tab: FAQ
+Support:
+- list existing FAQs
+- add new FAQ
+- edit question/answer
+- reorder FAQs
+- visible/hidden toggle
+
+8. Tab: Pricing
+Support:
+- package/option name
+- price
+- supporting text
+- badge/highlight text
+- CTA text
+- order
+- visible/hidden toggle
+
+9. Tab: CTA
+Support final CTA section editing:
+- title
+- supporting text
+- button 1 text + link
+- button 2 text + link
+- small closing line
+
+10. Tab: SEO
+Fields:
+- SEO title
+- SEO description
+- OG image if practical
+
+11. UX details
+- keep the product editor practical and structured
+- make it easy to edit real product pages without touching code
+- preserve premium admin simplicity
+- do not overbuild into an enterprise CMS
+
+12. Keep consistency
+- preserve current admin styling
+- keep layout light, fast, and maintainable
+- integrate with existing products database structure
+
+Important:
+This is a real working product management screen, not just a visual mockup.
+It should be usable for maintaining current product pages and scalable for future products.
