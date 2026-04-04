@@ -180,7 +180,7 @@ export function AboutPersonSection() {
             {/* CTA */}
             <motion.div variants={fadeUp}>
               <a
-                href="/tin-tuc"
+                href="/gioi-thieu"
                 className="inline-flex items-center gap-2 group/link"
                 style={{
                   fontSize: "13px",

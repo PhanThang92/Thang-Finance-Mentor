@@ -1,0 +1,397 @@
+Please restructure the website information architecture for “Phan Van Thang SWC” to separate the About content into its own dedicated page.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- Maintain the same premium brand system already established across the site.
+- Update homepage, About page, navbar, footer, and all related navigation links consistently.
+
+GOAL:
+The website has grown larger, so the homepage should stay focused and lighter, while the deeper “About” content should move to a dedicated page.
+
+The new structure should:
+- make homepage clearer and more conversion-friendly
+- make the About content more complete and trustworthy
+- improve navigation clarity
+- preserve the premium, calm, trustworthy, editorial, personal-brand feel
+
+================================
+1. NEW INFORMATION ARCHITECTURE
+================================
+
+Please separate the current deep About content from the homepage and create a dedicated page:
+
+New page route:
+`/gioi-thieu`
+
+This page should contain the long-form introduction and trust-building content.
+
+The homepage should keep only a short introduction preview section and link users to the full About page.
+
+================================
+2. HOMEPAGE CHANGES
+================================
+
+Please update the homepage as follows:
+
+A. KEEP a short About preview section only
+This section should remain on the homepage, but in shorter form.
+
+Visible Vietnamese content:
+
+Eyebrow:
+Về Phan Văn Thắng SWC
+
+Heading:
+Về Phan Văn Thắng SWC
+
+Description:
+Phan Van Thang SWC theo đuổi hướng chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo cách thực tế, kỷ luật và dài hạn. Mục tiêu không phải tạo cảm giác làm giàu nhanh, mà là giúp người đọc có góc nhìn rõ hơn để xây nền tảng tài chính bền vững theo thời gian.
+
+Highlights:
+- Góc nhìn dài hạn
+- Nội dung thực chiến
+- Ưu tiên giá trị bền vững
+
+Quote:
+Đi đường dài trong tài chính luôn bắt đầu từ việc hiểu đúng.
+
+CTA:
+Tìm hiểu thêm
+
+IMPORTANT:
+- This CTA must link to `/gioi-thieu`
+- Keep this section compact
+- Reduce visual weight so it works as a teaser, not a full About page
+- Do not keep too much long-form content here
+
+B. REMOVE or MOVE the full “Cách tôi xây giá trị và đồng hành cùng người theo dõi” section from the homepage
+This section is more suitable for the dedicated About page.
+Remove it from homepage to make homepage shorter and more focused.
+
+If needed, replace it on homepage with a much shorter teaser block such as:
+
+Eyebrow:
+Cách đồng hành
+
+Heading:
+Một cách tiếp cận rõ ràng, thực tế và dài hạn
+
+Description:
+Tôi chọn cách xây giá trị thông qua nội dung, sự rõ ràng và những định hướng phù hợp hơn với từng giai đoạn.
+
+CTA:
+Xem thêm
+
+This CTA should also link to `/gioi-thieu`
+
+Only include this shorter teaser if it helps the homepage flow. Otherwise remove the full section entirely.
+
+================================
+3. CREATE DEDICATED ABOUT PAGE
+================================
+
+Create a full premium About page at `/gioi-thieu`.
+
+This page should feel:
+- premium
+- editorial
+- calm
+- trustworthy
+- thoughtful
+- personal brand driven
+- more in-depth than the homepage
+
+Suggested page structure:
+
+A. Page hero
+B. Brand introduction / positioning
+C. Full “Về Phan Văn Thắng SWC” section
+D. Core values / working principles
+E. “Cách tôi xây giá trị và đồng hành cùng người theo dõi” section
+F. Optional “Ai phù hợp với nội dung này” section
+G. Final CTA block
+H. Footer
+
+================================
+4. ABOUT PAGE HERO
+================================
+
+Create a dedicated hero for the About page.
+
+Visible Vietnamese text:
+
+Eyebrow:
+Giới thiệu
+
+Heading:
+Phan Van Thang SWC
+
+Subheading:
+Chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn.
+
+Optional supporting text:
+Không theo đuổi những lời hứa ngắn hạn. Ưu tiên sự rõ ràng, nền tảng vững và hành trình đi đường dài.
+
+Requirements:
+- premium layout
+- elegant spacing
+- can include portrait or refined visual block
+- consistent with homepage design language
+- not too tall
+- highly readable
+
+================================
+5. FULL ABOUT SECTION
+================================
+
+Move and expand the current About content into this page.
+
+Visible Vietnamese content:
+
+Eyebrow:
+Về Phan Văn Thắng SWC
+
+Heading:
+Về Phan Văn Thắng SWC
+
+Description:
+Phan Van Thang SWC theo đuổi hướng chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo cách thực tế, kỷ luật và dài hạn. Mục tiêu không phải tạo cảm giác làm giàu nhanh, mà là giúp người đọc có góc nhìn rõ hơn để xây nền tảng tài chính bền vững theo thời gian.
+
+Highlights:
+- Góc nhìn dài hạn
+- Nội dung thực chiến
+- Ưu tiên giá trị bền vững
+
+Quote:
+Đi đường dài trong tài chính luôn bắt đầu từ việc hiểu đúng.
+
+Requirements:
+- This can use the same visual style as the section currently shown in the screenshot
+- portrait on one side, content on the other is acceptable
+- improve spacing, alignment, and typography if needed
+- keep it premium and calm
+
+================================
+6. CORE VALUES / PRINCIPLES SECTION
+================================
+
+Add a section that helps explain the philosophy more clearly.
+
+Visible Vietnamese text:
+
+Eyebrow:
+Giá trị cốt lõi
+
+Heading:
+Những nguyên tắc tôi ưu tiên khi xây nội dung và đồng hành
+
+Cards or items:
+1. Rõ hơn trước khi nhanh hơn
+Mô tả:
+Tôi ưu tiên giúp người đọc hiểu đúng bản chất vấn đề trước khi nghĩ đến kết quả nhanh.
+
+2. Dài hạn hơn ngắn hạn
+Mô tả:
+Những gì có giá trị bền vững thường cần thời gian, kỷ luật và sự chọn lọc.
+
+3. Thực tế hơn khẩu hiệu
+Mô tả:
+Nội dung cần gần với đời sống, có khả năng áp dụng và tạo ra thay đổi thật.
+
+4. Giá trị hơn hứa hẹn
+Mô tả:
+Mục tiêu không phải tạo cảm giác hào hứng nhất thời, mà là xây nền tảng đáng tin cậy theo thời gian.
+
+Requirements:
+- premium cards
+- concise text
+- clear hierarchy
+- consistent with homepage card system
+
+================================
+7. MOVE “CÁCH TÔI XÂY GIÁ TRỊ...” SECTION TO ABOUT PAGE
+================================
+
+Move the current section from the homepage into the About page.
+
+Visible Vietnamese content:
+
+Eyebrow:
+Cách làm việc
+
+Heading:
+Cách tôi xây giá trị và đồng hành cùng người theo dõi
+
+Description:
+Không phức tạp, không tạo cảm giác phụ thuộc — chỉ là cách tiếp cận rõ ràng và thực tế hơn.
+
+4 steps:
+
+01
+Chia sẻ nền tảng
+Thông qua bài viết, nội dung và các góc nhìn cốt lõi về tài chính, đầu tư và tư duy tích sản.
+
+02
+Giúp làm rõ vấn đề
+Để mỗi người hiểu mình đang thiếu điều gì trong hành trình tài chính và cần ưu tiên điều gì trước.
+
+03
+Gợi mở hướng đi phù hợp
+Dựa trên bối cảnh, nhu cầu và mục tiêu dài hạn — không áp đặt công thức chung cho tất cả.
+
+04
+Đồng hành bằng hệ thống nội dung
+Từng bước xây sự rõ ràng, kỷ luật và nền tảng bền vững hơn qua nội dung liên tục và cộng đồng.
+
+Requirements:
+- The screenshot-style timeline layout is acceptable here
+- Improve it if needed:
+  - better spacing
+  - better mobile stacking
+  - cleaner connector line
+  - more balanced text width
+- On mobile, convert to vertical stacked step cards if horizontal timeline becomes weak
+
+================================
+8. OPTIONAL SECTION: WHO THIS IS FOR
+================================
+
+Add one more section if it improves clarity.
+
+Visible Vietnamese text:
+
+Eyebrow:
+Dành cho ai
+
+Heading:
+Phù hợp với những người đang muốn xây nền tài chính vững hơn
+
+Items:
+- Người muốn hiểu tài chính cá nhân rõ hơn
+- Người quan tâm đầu tư dài hạn thay vì chạy theo xu hướng ngắn hạn
+- Người muốn tích sản theo cách kỷ luật và thực tế hơn
+- Người cần một hệ nội dung chọn lọc để đi đường dài
+
+Requirements:
+- could be a 2-column checklist or premium card grid
+- keep it simple and elegant
+
+================================
+9. FINAL CTA ON ABOUT PAGE
+================================
+
+Add a final CTA block at the bottom of the About page.
+
+Visible Vietnamese text:
+
+Heading:
+Bắt đầu từ việc hiểu đúng, rồi đi đường dài
+
+Subtext:
+Khám phá thêm bài viết, chủ đề nội dung và những hướng kết nối phù hợp với hành trình của bạn.
+
+Buttons:
+- Xem bài viết
+- Liên hệ kết nối
+
+Links:
+- “Xem bài viết” -> `/bai-viet`
+- “Liên hệ kết nối” -> `/lien-he` or current contact route
+
+================================
+10. UPDATE NAVBAR
+================================
+
+Update the main navbar on all pages so navigation is consistent.
+
+Visible Vietnamese nav items:
+- Trang chủ
+- Giới thiệu
+- Bài viết
+- Dịch vụ
+- Liên hệ
+
+Requirements:
+- “Giới thiệu” must link to `/gioi-thieu`
+- remove any outdated homepage anchor links pointing to old About sections if no longer needed
+- preserve active states correctly per page
+- keep styling the same as the premium header system
+
+================================
+11. UPDATE FOOTER
+================================
+
+Update footer links across the website.
+
+Visible Vietnamese quick links:
+- Trang chủ
+- Giới thiệu
+- Bài viết
+- Dịch vụ
+- Liên hệ
+
+Requirements:
+- “Giới thiệu” must link to `/gioi-thieu`
+- any footer CTA or text links that previously pointed to homepage About sections should now point to `/gioi-thieu`
+- keep footer visually consistent with the homepage
+
+================================
+12. UPDATE INTERNAL LINKS
+================================
+
+Audit and update all relevant links across the site.
+
+Please ensure:
+- homepage “Tìm hiểu thêm” in About preview links to `/gioi-thieu`
+- any “Xem thêm” or “Tìm hiểu thêm” button related to brand introduction or process links to `/gioi-thieu`
+- old section anchor navigation is removed if no longer appropriate
+- avoid broken links
+
+================================
+13. DESIGN CONSISTENCY
+================================
+
+The new About page and homepage adjustments must stay consistent with the new design system:
+- premium
+- calm
+- trustworthy
+- editorial
+- personal brand
+- financial mentor
+- dark teal / soft teal / off-white / charcoal palette
+- refined typography
+- subtle shadows
+- elegant spacing
+- responsive behavior
+
+Do not make the About page look like a corporate CV page.
+Do not make it feel like a cheap “about us” template.
+It should feel personal, thoughtful, and high-trust.
+
+================================
+14. TECHNICAL REQUIREMENTS
+================================
+
+- keep code clean and reusable
+- move repeated content into organized data/config structures if helpful
+- update routes properly
+- ensure all navbar/footer links work
+- ensure homepage is lighter after this change
+- preserve responsive behavior
+- keep visible text in Vietnamese
+- maintain accessibility and semantic structure
+
+================================
+15. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- homepage becomes cleaner and more focused
+- About content has its own dedicated page
+- navigation becomes clearer
+- trust-building content is better organized
+- users can understand the brand more deeply when needed
+- the whole website feels more mature and scalable
+
+Please implement this restructuring directly.

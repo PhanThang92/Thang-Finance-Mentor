@@ -3,12 +3,11 @@ import { Mail, Users } from "lucide-react";
 import { SiYoutube, SiFacebook } from "react-icons/si";
 
 const navLinks = [
-  { name: "Trang chủ", href: "#trang-chu" },
-  { name: "Giới thiệu", href: "#gioi-thieu" },
-  { name: "Nội dung", href: "#noi-dung" },
-  { name: "Tin tức", href: "/tin-tuc" },
-  { name: "Cộng đồng", href: "/cong-dong" },
-  { name: "Liên hệ", href: "#lien-he" },
+  { name: "Trang chủ",  href: "/" },
+  { name: "Giới thiệu", href: "/gioi-thieu" },
+  { name: "Bài viết",   href: "/tin-tuc" },
+  { name: "Dịch vụ",   href: "/#dich-vu" },
+  { name: "Liên hệ",   href: "/#lien-he" },
 ];
 
 const productLinks = [

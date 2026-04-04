@@ -88,40 +88,21 @@ export function Navbar() {
   const isProductPage   = location.startsWith("/san-pham");
   const isCommunityPage = location.startsWith("/cong-dong");
   const isTinTucPage    = location.startsWith("/tin-tuc");
+  const isAboutPage     = location.startsWith("/gioi-thieu");
 
   /* Pages that open with a dark full-bleed hero — only these use the
      transparent overlay navbar at the top. Every other page starts in
      the solid/scrolled state so text is always readable against the
      light content background. */
-  const isHeroDark      = isHome || isProductPage || isCommunityPage;
+  const isHeroDark      = isHome || isProductPage || isCommunityPage || isAboutPage;
   const effectiveScrolled = isScrolled || !isHeroDark;
 
-  /* Conditional hrefs — hash on home page, absolute on all other pages */
-  const sec = (hash: string) => isHome ? hash : `${homeBase}/${hash}`;
-
   const navLinks: NavItem[] = [
-    { name: "Trang chủ",  href: sec("#trang-chu")  },
-    { name: "Giới thiệu", href: sec("#gioi-thieu") },
-    { name: "Nội dung",   href: sec("#noi-dung")   },
-    { name: "Tin tức",    href: `${homeBase}/tin-tuc` },
-    { name: "Cộng đồng",  href: `${homeBase}/cong-dong` },
-    {
-      name: "Sản phẩm",
-      dropdown: true,
-      items: [
-        {
-          name: "Road to $1M · SWC PASS",
-          desc: "Lộ trình tài chính cá nhân có hệ thống",
-          href: `${homeBase}/san-pham/duong-toi-1-trieu-do`,
-        },
-        {
-          name: "ATLAS",
-          desc: "Hệ sinh thái bất động sản kỹ thuật số",
-          href: `${homeBase}/san-pham/atlas`,
-        },
-      ],
-    },
-    { name: "Liên hệ", href: sec("#lien-he") },
+    { name: "Trang chủ",  href: isHome ? "#trang-chu" : `${homeBase}/` },
+    { name: "Giới thiệu", href: `${homeBase}/gioi-thieu` },
+    { name: "Bài viết",   href: `${homeBase}/tin-tuc` },
+    { name: "Dịch vụ",   href: isHome ? "#dich-vu" : `${homeBase}/#dich-vu` },
+    { name: "Liên hệ",   href: isHome ? "#lien-he" : `${homeBase}/#lien-he` },
   ];
 
   /* ── Scroll ─────────────────────────────────────────────── */
@@ -136,8 +117,8 @@ export function Navbar() {
   useEffect(() => {
     linkRefs.current.forEach((el, i) => {
       if (!el) return;
-      /* index 3 = "Tin tức", index 4 = "Cộng đồng", index 5 = "Sản phẩm" trigger */
-      const isActive = (i === 5 && isProductPage) || (i === 4 && isCommunityPage) || (i === 3 && isTinTucPage);
+      /* index 1 = "Giới thiệu", index 2 = "Bài viết" */
+      const isActive = (i === 1 && isAboutPage) || (i === 2 && isTinTucPage);
       el.style.color      = isActive
         ? (effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive)
         : (effectiveScrolled ? SCROLLED.linkColor  : HERO.linkColor);
@@ -154,7 +135,7 @@ export function Navbar() {
       cta.style.borderColor = HERO.ctaBorder;
       cta.style.boxShadow   = "none";
     }
-  }, [effectiveScrolled, isProductPage, isCommunityPage, isTinTucPage]);
+  }, [effectiveScrolled, isAboutPage, isTinTucPage]);
 
   /* ── Dropdown open / close with delay ───────────────────── */
   const openDropdown = () => {

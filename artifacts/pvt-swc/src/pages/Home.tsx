@@ -5,7 +5,6 @@ import { LatestPostsSection } from "@/components/LatestPostsSection";
 import { ServicesSection } from "@/components/ServicesSection";
 import { TopicsSection } from "@/components/TopicsSection";
 import { AboutPersonSection } from "@/components/AboutPersonSection";
-import { ProcessSection } from "@/components/ProcessSection";
 import { CTASection } from "@/components/CTASection";
 
 export default function Home() {
@@ -17,7 +16,6 @@ export default function Home() {
       <ServicesSection />
       <TopicsSection />
       <AboutPersonSection />
-      <ProcessSection />
       <CTASection />
     </>
   );
