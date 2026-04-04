@@ -1,0 +1,430 @@
+Please integrate YouTube content into the “Phan Van Thang SWC” website in a premium and strategic way.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- Maintain the same premium design system as the homepage, About page, and Articles page.
+- The YouTube integration should feel like part of a serious knowledge ecosystem, not like a random embedded video block.
+
+GOAL:
+The website already represents a personal brand around finance, investing, long-term thinking, and practical knowledge.
+There is also a YouTube channel about investing.
+Please integrate YouTube into the website in a structured and high-trust way.
+
+This work should include:
+1. a premium YouTube section on the homepage
+2. a dedicated Video Library page
+3. strong internal linking between homepage, Kiến thức hub, and the Video Library
+
+================================
+1. HOMEPAGE YOUTUBE SECTION
+================================
+
+Add a dedicated YouTube section to the homepage.
+
+This section should be placed in a suitable position such as:
+- after the featured knowledge/content sections
+- or before the final CTA block
+- wherever it fits best in the homepage rhythm
+
+Visible Vietnamese content:
+
+Eyebrow:
+Kênh YouTube
+
+Heading:
+Theo dõi các chia sẻ đầu tư và tư duy tích sản trên YouTube
+
+Subheading:
+Những video được xây dựng để giúp người xem hiểu rõ hơn về tài chính, đầu tư dài hạn và quá trình xây nền tảng tài sản bền vững.
+
+CTA buttons:
+- Xem kênh YouTube
+- Xem thư viện video
+
+Requirements:
+- premium section layout
+- can feature 1 highlighted video + 2 or 3 supporting videos
+- or 3 equal premium video cards if more balanced
+- elegant thumbnails
+- refined spacing
+- no cluttered YouTube feed look
+- preserve calm editorial feel
+
+Links:
+- “Xem kênh YouTube” should point to the real YouTube channel URL if available
+- “Xem thư viện video” should point to `/video` or `/thu-vien-video`
+
+================================
+2. HOMEPAGE VIDEO CARD CONTENT
+================================
+
+If real YouTube data is not yet connected, create elegant mock video cards with Vietnamese titles.
+
+Suggested mock content:
+
+Featured video:
+Title:
+Đầu tư dài hạn bắt đầu từ đâu nếu bạn chưa có nhiều vốn?
+
+Description:
+Một góc nhìn dành cho những người mới bắt đầu hành trình tích sản và muốn đi đường dài bằng sự kỷ luật thay vì cảm xúc.
+
+Secondary videos:
+1.
+Title:
+Vì sao kiếm nhiều hơn vẫn chưa chắc vững hơn về tài chính?
+Description:
+Hiểu khác biệt giữa thu nhập cao và nền tảng tài chính vững.
+
+2.
+Title:
+Người mới đầu tư nên nhìn vào điều gì trước lợi nhuận?
+Description:
+Một cách tiếp cận thực tế hơn để giảm rủi ro khi bắt đầu.
+
+3.
+Title:
+Tích sản là quá trình của kỷ luật, không phải cảm hứng
+Description:
+Xây tài sản bền vững thường bắt đầu từ những nguyên tắc nhỏ nhưng lặp lại đủ lâu.
+
+Optional metadata:
+- 12 phút
+- 18 phút
+- 9 phút
+- Video mới
+
+Requirements:
+- thumbnails should match the premium site visual system
+- no random YouTube embed wall
+- cards must feel curated
+
+================================
+3. CREATE A DEDICATED VIDEO LIBRARY PAGE
+================================
+
+Create a dedicated page for the video library at route:
+
+Preferred:
+`/video`
+or
+`/thu-vien-video`
+
+Choose one route consistently and update all internal links accordingly.
+
+This page should function as the main website destination for YouTube/video content.
+
+================================
+4. VIDEO LIBRARY PAGE STRUCTURE
+================================
+
+Build the page with the following structure:
+
+A. Page hero
+B. Filter / browse toolbar
+C. Featured video block
+D. Video grid
+E. Series / playlist section
+F. Soft CTA block
+G. Footer
+
+================================
+5. VIDEO LIBRARY PAGE HERO
+================================
+
+Visible Vietnamese content:
+
+Eyebrow:
+Thư viện video
+
+Heading:
+Video chia sẻ về tài chính, đầu tư và tư duy tích sản
+
+Subheading:
+Tổng hợp các video giúp người xem tiếp cận tài chính và đầu tư theo hướng thực tế, kỷ luật và dài hạn hơn.
+
+Optional supporting text:
+Theo dõi các nội dung được chọn lọc từ kênh YouTube để học, suy ngẫm và xây nền tảng vững hơn theo thời gian.
+
+Requirements:
+- premium intro section
+- consistent with Articles page hero
+- not too tall
+- readable width
+- can include subtle abstract visual or video-themed editorial texture
+
+================================
+6. VIDEO FILTER / BROWSE TOOLBAR
+================================
+
+Add a refined browse/filter section.
+
+Visible Vietnamese labels:
+- Tất cả
+- Mới nhất
+- Nổi bật
+- Tài chính cá nhân
+- Đầu tư dài hạn
+- Tư duy tích sản
+- Series
+
+Optional search placeholder:
+Tìm video theo từ khóa...
+
+Requirements:
+- premium chips/tabs
+- clear active state
+- elegant mobile wrapping
+- consistent with article page filters
+
+================================
+7. FEATURED VIDEO BLOCK
+================================
+
+Add one highlighted featured video block.
+
+Visible Vietnamese label:
+Video nổi bật
+
+Mock content:
+Title:
+Đầu tư dài hạn bắt đầu từ đâu nếu bạn chưa có nhiều vốn?
+
+Description:
+Một góc nhìn dành cho những người mới bắt đầu hành trình tích sản và muốn đi đường dài bằng sự kỷ luật thay vì cảm xúc.
+
+Metadata:
+- 15 phút
+- Video nổi bật
+
+CTA:
+Xem video
+
+Requirements:
+- premium large layout
+- thumbnail + text
+- can support embedded video preview if architecture allows
+- otherwise use thumbnail card that links out cleanly
+- image / thumbnail system must stay premium and consistent
+
+================================
+8. VIDEO GRID
+================================
+
+Create a premium video grid below the featured block.
+
+Use Vietnamese mock titles if real data is not yet connected:
+
+1.
+Title:
+Vì sao kiếm nhiều hơn vẫn chưa chắc vững hơn về tài chính?
+Description:
+Hiểu khác biệt giữa thu nhập cao và nền tảng tài chính vững.
+Meta:
+12 phút
+
+2.
+Title:
+Người mới đầu tư nên nhìn vào điều gì trước lợi nhuận?
+Description:
+Một cách tiếp cận thực tế hơn để giảm rủi ro khi bắt đầu.
+Meta:
+10 phút
+
+3.
+Title:
+Tích sản là quá trình của kỷ luật, không phải cảm hứng
+Description:
+Xây tài sản bền vững thường bắt đầu từ những nguyên tắc nhỏ nhưng lặp lại đủ lâu.
+Meta:
+9 phút
+
+4.
+Title:
+Không phải cứ cố hơn là tài chính sẽ tốt hơn
+Description:
+Đôi khi điều cần thay đổi không phải là nỗ lực, mà là cấu trúc.
+Meta:
+14 phút
+
+5.
+Title:
+Muốn đi đường dài trong đầu tư, trước hết cần bình tĩnh
+Description:
+Tâm lý là một phần của chất lượng quyết định tài chính.
+Meta:
+11 phút
+
+6.
+Title:
+Hiểu đúng về tích sản trước khi nghĩ đến tự do tài chính
+Description:
+Tự do tài chính không bắt đầu từ khát vọng lớn, mà từ nền tảng đủ rõ.
+Meta:
+16 phút
+
+Requirements:
+- responsive grid
+- strong card consistency
+- elegant thumbnails
+- title clamp
+- subtle hover state
+- not too dense
+- keep the layout premium and readable
+
+================================
+9. SERIES / PLAYLIST SECTION
+================================
+
+Add a section that highlights video series or playlists.
+
+Visible Vietnamese content:
+
+Eyebrow:
+Series nổi bật
+
+Heading:
+Theo dõi nội dung theo từng hành trình rõ ràng hơn
+
+Suggested series cards:
+- Con đường 1 triệu đô
+- Hành trình từ tư duy đến tự do
+- Góc nhìn đầu tư dài hạn
+
+Each card can include:
+- title
+- short description
+- CTA: Xem series
+
+Requirements:
+- premium card-based layout
+- simple but valuable
+- this section should help organize the YouTube content strategically
+
+================================
+10. SOFT CTA BLOCK
+================================
+
+Add a final CTA block near the bottom.
+
+Visible Vietnamese text:
+
+Heading:
+Tiếp tục theo dõi và học theo cách phù hợp với bạn
+
+Subheading:
+Khám phá thêm bài viết, video và các chủ đề được chọn lọc để xây nền tảng tài chính vững hơn theo thời gian.
+
+Buttons:
+- Xem bài viết
+- Xem kênh YouTube
+
+Requirements:
+- premium dark teal / gradient system
+- calm, elegant, not salesy
+- align with homepage and About page CTA blocks
+
+================================
+11. KIẾN THỨC HUB INTEGRATION
+================================
+
+Please integrate the video library into the broader “Kiến thức” ecosystem.
+
+Requirements:
+- “Kiến thức” dropdown should include “Video”
+- “Video” should link to the new video library page
+- if a `/kien-thuc` landing page exists, include a premium card linking to the video library
+- maintain logical navigation between:
+  - Kiến thức
+  - Bài viết
+  - Video
+  - Chủ đề
+  - Series
+
+================================
+12. YOUTUBE CHANNEL LINKING
+================================
+
+If the real YouTube channel URL is already available, use it for:
+- homepage CTA “Xem kênh YouTube”
+- video page CTA “Xem kênh YouTube”
+
+If not available yet:
+- create clean placeholder link handling
+- make it easy to replace later
+
+Please also consider:
+- external link behavior
+- safe target handling if opening YouTube in a new tab
+
+================================
+13. IMAGE / THUMBNAIL SYSTEM
+================================
+
+Video thumbnails should feel aligned with the website brand.
+
+Requirements:
+- no messy auto-generated YouTube wall styling
+- use clean thumbnail cards
+- keep image ratios consistent
+- use object-fit cover
+- support placeholder thumbnails if real video thumbnails are not connected yet
+- preserve premium tone:
+  - dark teal
+  - charcoal
+  - calm
+  - editorial
+  - finance mentor
+  - trustworthy
+
+================================
+14. OPTIONAL YOUTUBE DATA INTEGRATION
+================================
+
+If the current architecture supports dynamic data fetching, prepare the structure to support:
+- video title
+- thumbnail
+- description
+- duration
+- publish date
+- category / series
+- YouTube link
+
+If real integration is not ready:
+- keep mock data in a clean structured object
+- make future replacement easy
+
+================================
+15. FOOTER / INTERNAL LINKS
+================================
+
+Ensure internal links across the site are updated:
+- homepage YouTube section links correctly
+- Kiến thức dropdown links correctly
+- footer can optionally include a “Video” quick link if appropriate
+- no broken routes
+
+================================
+16. TECHNICAL REQUIREMENTS
+================================
+
+- keep code clean and reusable
+- use structured data for mock videos and series
+- preserve responsive quality
+- maintain accessibility
+- avoid layout breaks with long Vietnamese titles
+- keep performance reasonable
+
+================================
+17. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- YouTube becomes a valuable part of the website ecosystem
+- homepage gains a strong trust-building video section
+- the website has a premium dedicated video library page
+- navigation between articles, videos, topics, and series becomes clearer
+- the site feels like a serious knowledge platform, not just a static personal site
+
+Please implement this YouTube integration directly.
