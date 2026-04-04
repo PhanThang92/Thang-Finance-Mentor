@@ -6,7 +6,9 @@ export interface NewsPost {
   id: number; title: string; slug: string; excerpt: string | null; content: string | null;
   featuredImage: string | null; categoryId: number | null; productId: number | null;
   status: string; publishedAt: string | null; authorName: string;
-  seoTitle: string | null; seoDescription: string | null; createdAt: string; updatedAt: string;
+  seoTitle: string | null; seoDescription: string | null;
+  isFeatured: boolean; showOnHomepage: boolean; showInRelated: boolean;
+  createdAt: string; updatedAt: string;
   category?: NewsCategory | null; product?: NewsProduct | null; tags?: NewsTag[];
 }
 export interface Lead {

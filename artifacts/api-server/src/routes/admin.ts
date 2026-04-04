@@ -137,6 +137,9 @@ function pickPostFields(body: Record<string, unknown>) {
     authorName:     body.authorName     as string | undefined,
     seoTitle:       body.seoTitle       as string | null | undefined,
     seoDescription: body.seoDescription as string | null | undefined,
+    isFeatured:     typeof body.isFeatured    === "boolean" ? body.isFeatured    : undefined,
+    showOnHomepage: typeof body.showOnHomepage === "boolean" ? body.showOnHomepage : undefined,
+    showInRelated:  typeof body.showInRelated  === "boolean" ? body.showInRelated  : undefined,
   };
 }
 

@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { relations } from "drizzle-orm";
@@ -40,6 +40,9 @@ export const newsPostsTable = pgTable("news_posts", {
   authorName: text("author_name").notNull().default("Phan Văn Thắng"),
   seoTitle: text("seo_title"),
   seoDescription: text("seo_description"),
+  isFeatured: boolean("is_featured").notNull().default(false),
+  showOnHomepage: boolean("show_on_homepage").notNull().default(false),
+  showInRelated: boolean("show_in_related").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });

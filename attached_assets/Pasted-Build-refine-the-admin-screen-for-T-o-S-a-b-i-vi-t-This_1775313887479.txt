@@ -1,0 +1,117 @@
+Build/refine the admin screen for:
+“Tạo / Sửa bài viết”
+
+This screen is part of the existing Thắng SWC admin system.
+Do not redesign the whole admin.
+Keep the current clean light admin style and sidebar structure.
+
+Goal:
+Create a practical article editor screen that allows creating, editing, drafting, and publishing premium news/content posts for the website.
+
+Requirements:
+
+1. Page header
+Show:
+- breadcrumb: “Bài viết / Tạo mới” or “Bài viết / Chỉnh sửa”
+- main title:
+  - “Tạo bài viết mới” for create
+  - “Chỉnh sửa bài viết” for edit
+- right-side action buttons:
+  - “Lưu nháp”
+  - “Xem trước”
+  - “Đăng bài” or “Cập nhật”
+
+2. Two-column layout
+Use a practical 2-column editor layout:
+
+LEFT column = main content
+RIGHT column = metadata/settings
+
+3. Left column content blocks
+
+A. Basic info
+Fields:
+- Tiêu đề bài viết
+- Slug URL
+
+B. Excerpt
+Field:
+- Mô tả ngắn / excerpt
+
+C. Main content editor
+Field:
+- Nội dung bài viết
+Use a practical rich text editor if possible.
+
+Support:
+- heading
+- paragraph
+- bullet list
+- quote
+- link
+- image block if available
+
+D. Related articles (optional)
+Allow selecting a few related articles manually if practical.
+
+4. Right column metadata blocks
+
+A. Publishing/status
+Fields:
+- Trạng thái:
+  - Draft
+  - Published
+  - Archived (optional)
+- Ngày đăng
+- Tác giả
+
+B. Classification
+Fields:
+- Chuyên mục
+- Sản phẩm liên quan (optional)
+- Tags (multi-select)
+
+C. Featured image
+Support:
+- upload featured image
+- preview current image
+- remove/replace image
+
+Add this note:
+“Nếu không tải ảnh lên, hệ thống sẽ dùng ảnh mặc định phù hợp theo chuyên mục hoặc sản phẩm liên quan.”
+
+D. SEO
+Fields:
+- SEO title
+- SEO description
+
+E. Display options
+Optional toggles:
+- Bài nổi bật
+- Hiển thị ở trang chủ
+- Hiển thị trong bài liên quan
+
+5. Validation / usability
+- require title
+- prevent duplicate slug if possible
+- show clean validation messages
+- preserve unsaved work if practical
+- make save/publish actions clear
+
+6. Preview logic
+“Xem trước” should open a preview version or preview route if practical.
+
+7. Editing behavior
+- if editing an existing post, preload all current data
+- preserve tags/category/product relations
+- preserve current featured image or fallback logic
+
+8. Keep admin style
+- light, clean, practical admin design
+- premium but simple
+- easy to use daily
+- not overbuilt
+
+Important:
+This is a real working article editor screen, not just a visual mockup.
+It should integrate with the existing posts/categories/tags/products database structure and admin system.

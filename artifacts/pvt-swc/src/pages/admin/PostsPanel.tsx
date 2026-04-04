@@ -34,7 +34,9 @@ const EMPTY: NewsPost & { tagIds: number[] } = {
   id: 0, title: "", slug: "", excerpt: "", content: "", featuredImage: "",
   categoryId: null, productId: null, status: "draft",
   publishedAt: null, authorName: "Phan Văn Thắng",
-  seoTitle: "", seoDescription: "", createdAt: "", updatedAt: "", tagIds: [],
+  seoTitle: "", seoDescription: "",
+  isFeatured: false, showOnHomepage: false, showInRelated: true,
+  createdAt: "", updatedAt: "", tagIds: [],
 };
 type PostForm = typeof EMPTY;
 
@@ -176,13 +178,49 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
 
   const isFiltered = q || fStatus !== "all" || fCat !== "all" || fProd !== "all";
 
+  /* ── Markdown editor ref ── */
+  const contentRef = React.useRef<HTMLTextAreaElement>(null);
+
+  const insertAtCursor = useCallback((before: string, after = "") => {
+    const ta = contentRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const val = ta.value;
+    const selected = val.slice(start, end);
+    const next = val.slice(0, start) + before + selected + after + val.slice(end);
+    setForm((f) => ({ ...f, content: next }));
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.setSelectionRange(start + before.length, start + before.length + selected.length);
+    });
+  }, []);
+
+  const insertLinePrefix = useCallback((prefix: string) => {
+    const ta = contentRef.current;
+    if (!ta) return;
+    const val = ta.value;
+    const start = ta.selectionStart;
+    const lineStart = val.lastIndexOf("\n", start - 1) + 1;
+    const next = val.slice(0, lineStart) + prefix + val.slice(lineStart);
+    setForm((f) => ({ ...f, content: next }));
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.setSelectionRange(start + prefix.length, start + prefix.length);
+    });
+  }, []);
+
   /* ── Actions ── */
   const newPost = () => { setForm(EMPTY); setErr(""); setView("form"); };
 
   const editPost = (p: NewsPost) => {
-    setForm({ ...p, excerpt: p.excerpt ?? "", content: p.content ?? "", featuredImage: p.featuredImage ?? "",
+    setForm({
+      ...p,
+      excerpt: p.excerpt ?? "", content: p.content ?? "", featuredImage: p.featuredImage ?? "",
       seoTitle: p.seoTitle ?? "", seoDescription: p.seoDescription ?? "",
-      tagIds: (p.tags ?? []).map((t) => t.id) });
+      isFeatured: p.isFeatured ?? false, showOnHomepage: p.showOnHomepage ?? false, showInRelated: p.showInRelated ?? true,
+      tagIds: (p.tags ?? []).map((t) => t.id),
+    });
     setErr(""); setView("form");
   };
 
@@ -452,99 +490,208 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
   }
 
   /* ─────────────── FORM VIEW ─────────────── */
+  const isEdit = form.id > 0;
+  const canPreview = !!form.slug.trim();
+  const publishLabel = isEdit ? (form.status === "published" ? "Cập nhật" : "Xuất bản") : "Đăng bài";
+
   return (
     <div>
-      <div style={s.sectionHeader}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.875rem" }}>
-          <button style={{ ...s.btnGhost, padding: "4px 10px" }} onClick={() => setView("list")}>← Danh sách</button>
-          <div>
-            <h2 style={{ ...s.sectionTitle, margin: "0 0 1px" }}>{form.id ? "Chỉnh sửa bài viết" : "Tạo bài viết mới"}</h2>
-            {form.id > 0 && <p style={{ fontSize: "11.5px", color: A.textMuted, margin: 0 }}>{form.slug}</p>}
-          </div>
+
+      {/* ── Breadcrumb + header ── */}
+      <div style={{ marginBottom: "1.25rem" }}>
+        {/* Breadcrumb */}
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+          <button
+            onClick={() => setView("list")}
+            style={{ fontSize: "12.5px", color: A.textMuted, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          >
+            Bài viết
+          </button>
+          <span style={{ fontSize: "12px", color: A.textLight }}>/</span>
+          <span style={{ fontSize: "12.5px", color: A.text, fontWeight: 500 }}>
+            {isEdit ? "Chỉnh sửa" : "Tạo mới"}
+          </span>
         </div>
-        <div style={{ display: "flex", gap: "0.625rem", alignItems: "center" }}>
-          {err && <span style={{ fontSize: "12px", color: A.danger, maxWidth: "260px" }}>{err}</span>}
-          {form.id > 0 && (
-            <a href={`/tin-tuc/${form.slug}`} target="_blank" rel="noopener" style={{ fontSize: "12.5px", color: A.textMuted, textDecoration: "none", padding: "6px 12px", borderRadius: "6px", border: `1px solid ${A.border}` }}>
-              ↗ Xem
+
+        {/* Title row */}
+        <div style={s.sectionHeader}>
+          <h2 style={{ ...s.sectionTitle, margin: 0 }}>
+            {isEdit ? "Chỉnh sửa bài viết" : "Tạo bài viết mới"}
+          </h2>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            {err && (
+              <span style={{
+                fontSize: "12px", color: A.danger, maxWidth: "260px", padding: "5px 10px",
+                background: "rgba(193,51,51,0.07)", borderRadius: "6px",
+              }}>
+                {err}
+              </span>
+            )}
+            <button style={s.btnSecondary} disabled={saving} onClick={() => save("draft")}>
+              {saving ? "..." : "Lưu nháp"}
+            </button>
+            <a
+              href={canPreview ? `/tin-tuc/${form.slug}` : undefined}
+              target="_blank"
+              rel="noopener"
+              onClick={(e) => { if (!canPreview) e.preventDefault(); }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "4px",
+                padding: "6px 12px", borderRadius: "6px", border: `1px solid ${A.border}`,
+                fontSize: "12.5px", fontWeight: 500, textDecoration: "none",
+                color: canPreview ? A.text : A.textLight,
+                cursor: canPreview ? "pointer" : "not-allowed",
+                background: "transparent",
+              }}
+              title={canPreview ? "Xem bài trên website (tab mới)" : "Nhập slug trước để xem trước"}
+            >
+              ↗ Xem trước
             </a>
-          )}
-          <button style={s.btnSecondary} disabled={saving} onClick={() => save("draft")}>
-            {saving ? "..." : "Lưu nháp"}
-          </button>
-          <button style={s.btnPrimary} disabled={saving} onClick={() => save("published")}>
-            {saving ? "Đang lưu..." : "Xuất bản"}
-          </button>
+            <button style={s.btnPrimary} disabled={saving} onClick={() => save("published")}>
+              {saving ? "Đang lưu..." : publishLabel}
+            </button>
+          </div>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 286px", gap: "1.25rem", alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 290px", gap: "1.25rem", alignItems: "start" }}>
 
-        {/* ── Main column ── */}
+        {/* ── LEFT column ── */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
 
-          {/* Title + slug */}
+          {/* Basic info */}
           <div style={s.card}>
             <div style={{ marginBottom: "1rem" }}>
-              <label style={s.label}>Tiêu đề</label>
+              <label style={s.label}>Tiêu đề bài viết <span style={{ color: A.danger }}>*</span></label>
               <input
-                style={{ ...s.field, fontSize: "15px", fontWeight: 600 }}
+                style={{ ...s.field, fontSize: "15px", fontWeight: 600, borderColor: err && !form.title.trim() ? A.danger : undefined }}
                 value={form.title}
                 placeholder="Nhập tiêu đề bài viết..."
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value, slug: f.id ? f.slug : slugify(e.target.value) }))}
+                onChange={(e) => {
+                  const title = e.target.value;
+                  setForm((f) => ({ ...f, title, slug: f.id ? f.slug : slugify(title) }));
+                  if (err === "Tiêu đề là bắt buộc.") setErr("");
+                }}
               />
+              {err === "Tiêu đề là bắt buộc." && (
+                <p style={{ fontSize: "11px", color: A.danger, margin: "3px 0 0" }}>Vui lòng nhập tiêu đề bài viết.</p>
+              )}
             </div>
             <div>
-              <label style={s.label}>Slug (URL)</label>
-              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                <span style={{ fontSize: "12px", color: A.textLight, flexShrink: 0 }}>/tin-tuc/</span>
-                <input style={s.field} value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))} />
+              <label style={s.label}>Slug URL</label>
+              <div style={{ display: "flex", alignItems: "center", gap: "0" }}>
+                <span style={{
+                  fontSize: "12.5px", color: A.textMuted, background: "rgba(0,0,0,0.04)",
+                  border: `1px solid ${A.border}`, borderRight: "none",
+                  padding: "7px 10px", borderRadius: "6px 0 0 6px", flexShrink: 0,
+                  lineHeight: "1.4",
+                }}>
+                  /tin-tuc/
+                </span>
+                <input
+                  style={{ ...s.field, borderRadius: "0 6px 6px 0", flex: 1 }}
+                  value={form.slug}
+                  placeholder="slug-bai-viet"
+                  onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+                />
               </div>
+              <p style={{ fontSize: "11px", color: A.textLight, margin: "3px 0 0" }}>
+                URL công khai: <span style={{ fontFamily: "monospace" }}>/tin-tuc/{form.slug || "..."}</span>
+              </p>
             </div>
           </div>
 
           {/* Excerpt */}
           <div style={s.card}>
-            <label style={s.label}>Tóm tắt</label>
+            <label style={s.label}>Mô tả ngắn</label>
             <textarea
               style={{ ...s.textarea, height: "80px" }}
               value={form.excerpt ?? ""}
-              placeholder="Mô tả ngắn hiển thị trong danh sách bài viết..."
+              placeholder="Tóm tắt 1–2 câu hiển thị ngoài trang danh sách..."
               onChange={(e) => setForm((f) => ({ ...f, excerpt: e.target.value }))}
             />
+            <p style={{ fontSize: "11px", color: A.textLight, margin: "3px 0 0" }}>
+              {(form.excerpt ?? "").length} ký tự
+            </p>
           </div>
 
-          {/* Content */}
+          {/* Content + Markdown toolbar */}
           <div style={s.card}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.625rem" }}>
-              <label style={s.label}>Nội dung</label>
-              <span style={{ fontSize: "10px", color: A.textLight }}>Markdown đơn giản: # H2 · ## H3 · - danh sách · **đậm** · xuống dòng đôi = đoạn mới</span>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+              <label style={s.label}>Nội dung bài viết</label>
             </div>
+
+            {/* Toolbar */}
+            <div style={{
+              display: "flex", flexWrap: "wrap", gap: "3px",
+              padding: "6px 8px", background: "rgba(0,0,0,0.025)",
+              border: `1px solid ${A.border}`, borderBottom: "none",
+              borderRadius: "6px 6px 0 0",
+            }}>
+              {[
+                { label: "H2",   title: "Tiêu đề H2",    action: () => insertLinePrefix("## ") },
+                { label: "H3",   title: "Tiêu đề H3",    action: () => insertLinePrefix("### ") },
+                { label: "B",    title: "In đậm",         action: () => insertAtCursor("**", "**"), bold: true },
+                { label: "I",    title: "In nghiêng",     action: () => insertAtCursor("_", "_"), italic: true },
+                { label: "—",    title: "Divider",        action: () => insertAtCursor("\n---\n") },
+                { label: "List", title: "Danh sách",      action: () => insertLinePrefix("- ") },
+                { label: "> ",   title: "Trích dẫn",     action: () => insertLinePrefix("> ") },
+                { label: "Link", title: "Chèn liên kết",  action: () => insertAtCursor("[", "](https://...)") },
+              ].map((btn) => (
+                <button
+                  key={btn.label}
+                  type="button"
+                  title={btn.title}
+                  onClick={btn.action}
+                  style={{
+                    padding: "4px 10px", border: `1px solid ${A.border}`, borderRadius: "4px", cursor: "pointer",
+                    fontSize: "11.5px", background: "#fff", color: A.text,
+                    fontWeight: btn.bold ? 700 : btn.italic ? 400 : 500,
+                    fontStyle: btn.italic ? "italic" : "normal",
+                    lineHeight: 1,
+                  }}
+                >
+                  {btn.label}
+                </button>
+              ))}
+            </div>
+
             <textarea
-              style={{ ...s.textarea, height: "400px", fontFamily: "monospace", fontSize: "13px", lineHeight: 1.65 }}
+              ref={contentRef}
+              style={{
+                ...s.textarea,
+                height: "440px",
+                fontFamily: "monospace", fontSize: "13px", lineHeight: 1.65,
+                borderRadius: "0 0 6px 6px",
+              }}
               value={form.content ?? ""}
-              placeholder="Nội dung bài viết..."
+              placeholder={"# Tiêu đề bài\n\nNội dung đoạn đầu...\n\n## Phần 2\n\nNội dung..."}
               onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))}
             />
             <p style={{ fontSize: "11px", color: A.textLight, margin: "4px 0 0" }}>
-              {(form.content ?? "").length} ký tự · ~{Math.max(1, Math.round((form.content ?? "").split(" ").length / 200))} phút đọc
+              {(form.content ?? "").length} ký tự
+              {(form.content ?? "").trim().length > 0 && (
+                <> · ~{Math.max(1, Math.round((form.content ?? "").split(/\s+/).filter(Boolean).length / 200))} phút đọc</>
+              )}
             </p>
           </div>
 
           {/* SEO */}
           <div style={s.card}>
-            <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1.125rem" }}>SEO</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+            <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1.125rem" }}>
+              SEO
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               <div>
                 <label style={s.label}>SEO Title</label>
                 <input
                   style={s.field}
                   value={form.seoTitle ?? ""}
-                  placeholder={`${form.title} — Thắng SWC`}
+                  placeholder={form.title ? `${form.title} — Thắng SWC` : "Tiêu đề hiển thị trên Google..."}
                   onChange={(e) => setForm((f) => ({ ...f, seoTitle: e.target.value }))}
                 />
                 <p style={{ fontSize: "11px", color: (form.seoTitle ?? "").length > 60 ? "#d97706" : A.textLight, margin: "3px 0 0" }}>
-                  {(form.seoTitle ?? "").length} / 60 ký tự
+                  {(form.seoTitle ?? "").length} / 60 · Nên dưới 60 ký tự
                 </p>
               </div>
               <div>
@@ -552,36 +699,65 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
                 <textarea
                   style={{ ...s.textarea, height: "72px" }}
                   value={form.seoDescription ?? ""}
-                  placeholder="Mô tả ngắn hiển thị trên kết quả tìm kiếm..."
+                  placeholder="Mô tả hiển thị trên kết quả tìm kiếm Google..."
                   onChange={(e) => setForm((f) => ({ ...f, seoDescription: e.target.value }))}
                 />
                 <p style={{ fontSize: "11px", color: (form.seoDescription ?? "").length > 160 ? "#d97706" : A.textLight, margin: "3px 0 0" }}>
-                  {(form.seoDescription ?? "").length} / 160 ký tự
+                  {(form.seoDescription ?? "").length} / 160 · Nên dưới 160 ký tự
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── Sidebar column ── */}
+        {/* ── RIGHT sidebar ── */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
 
-          {/* Status card */}
+          {/* Publish / status */}
           <div style={s.card}>
-            <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1rem" }}>Xuất bản</p>
-            <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
-              <StatusPill status={form.status} />
-              {form.updatedAt && <span style={{ fontSize: "11px", color: A.textLight }}>Cập nhật {fmtDate(form.updatedAt)}</span>}
-            </div>
-            <div>
-              <label style={s.label}>Tác giả</label>
-              <input style={s.field} value={form.authorName} onChange={(e) => setForm((f) => ({ ...f, authorName: e.target.value }))} />
+            <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1rem" }}>
+              Xuất bản
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+              <div>
+                <label style={s.label}>Trạng thái</label>
+                <select
+                  style={s.select}
+                  value={form.status}
+                  onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
+                >
+                  <option value="draft">Nháp</option>
+                  <option value="published">Đã đăng</option>
+                </select>
+              </div>
+              {form.status === "published" && (
+                <div>
+                  <label style={s.label}>Ngày đăng</label>
+                  <input
+                    type="datetime-local"
+                    style={{ ...s.field, fontSize: "12px" }}
+                    value={form.publishedAt ? form.publishedAt.slice(0, 16) : ""}
+                    onChange={(e) => setForm((f) => ({ ...f, publishedAt: e.target.value ? new Date(e.target.value).toISOString() : null }))}
+                  />
+                </div>
+              )}
+              <div>
+                <label style={s.label}>Tác giả</label>
+                <input style={s.field} value={form.authorName} onChange={(e) => setForm((f) => ({ ...f, authorName: e.target.value }))} />
+              </div>
+              {isEdit && form.updatedAt && (
+                <p style={{ fontSize: "11px", color: A.textLight, margin: 0 }}>
+                  Cập nhật lần cuối: {fmtDate(form.updatedAt)}
+                </p>
+              )}
             </div>
           </div>
 
           {/* Classification */}
           <div style={s.card}>
-            <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1rem" }}>Phân loại</p>
+            <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1rem" }}>
+              Phân loại
+            </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
               <div>
                 <label style={s.label}>Chuyên mục</label>
@@ -602,7 +778,9 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
 
           {/* Tags */}
           <div style={s.card}>
-            <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 0.875rem" }}>Tags</p>
+            <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 0.875rem" }}>
+              Tags
+            </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
               {tags.map((t) => {
                 const active = form.tagIds.includes(t.id);
@@ -619,11 +797,13 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
                   </button>
                 );
               })}
-              {tags.length === 0 && <p style={{ fontSize: "12px", color: A.textLight }}>Chưa có tag. Thêm tags trong mục Tags.</p>}
+              {tags.length === 0 && (
+                <p style={{ fontSize: "12px", color: A.textLight, margin: 0 }}>Chưa có tag. Thêm trong mục Tags.</p>
+              )}
             </div>
           </div>
 
-          {/* Image */}
+          {/* Featured image */}
           <ImageCard
             featuredImage={form.featuredImage}
             postId={form.id}
@@ -633,6 +813,37 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
             cats={cats}
             onChange={(v) => setForm((f) => ({ ...f, featuredImage: v }))}
           />
+
+          {/* Display options */}
+          <div style={s.card}>
+            <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textMuted, margin: "0 0 1rem" }}>
+              Tuỳ chọn hiển thị
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {[
+                { key: "isFeatured",     label: "Bài nổi bật",             hint: "Hiển thị nổi bật trên trang chủ" },
+                { key: "showOnHomepage", label: "Hiển thị ở trang chủ",    hint: "Đưa vào danh sách bài viết chọn lọc" },
+                { key: "showInRelated",  label: "Hiển thị trong liên quan", hint: "Gợi ý trong phần bài liên quan" },
+              ].map(({ key, label, hint }) => {
+                const val = form[key as keyof PostForm] as boolean;
+                return (
+                  <label key={key} style={{ display: "flex", alignItems: "flex-start", gap: "10px", cursor: "pointer" }}>
+                    <input
+                      type="checkbox"
+                      checked={val}
+                      onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.checked }))}
+                      style={{ marginTop: "2px", width: "15px", height: "15px", cursor: "pointer", accentColor: A.primary }}
+                    />
+                    <div>
+                      <p style={{ fontSize: "12.5px", fontWeight: 500, color: A.text, margin: "0 0 1px" }}>{label}</p>
+                      <p style={{ fontSize: "11px", color: A.textLight, margin: 0 }}>{hint}</p>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
