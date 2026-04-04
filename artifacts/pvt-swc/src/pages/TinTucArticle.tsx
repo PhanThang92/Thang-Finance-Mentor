@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "wouter";
 import { motion } from "framer-motion";
 import { newsApi, type NewsPost } from "@/lib/newsApi";
-import { getPostImage, isFallbackImage } from "@/lib/postImage";
+import { getPostImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
 
 /* ── motion ────────────────────────────────────────────────────────── */
 const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] } } };
@@ -313,6 +313,7 @@ export default function TinTucArticle() {
             : "0 4px 24px rgba(10,40,35,0.10)",
           border: isFallback ? "1px solid rgba(52,160,140,0.12)" : "none",
           aspectRatio: "16/9",
+          position: "relative",
         }}>
           <img
             src={imgSrc} alt={post.title}
@@ -322,6 +323,20 @@ export default function TinTucArticle() {
               filter: isFallback ? "none" : "brightness(0.97) contrast(1.01)",
             }}
           />
+          {isFallback && (
+            <div style={{
+              position: "absolute", bottom: 0, right: 0,
+              padding: "0.45rem 0.85rem",
+              background: "rgba(5,22,19,0.72)",
+              borderTop: "1px solid rgba(52,160,140,0.18)",
+              borderLeft: "1px solid rgba(52,160,140,0.18)",
+              fontSize: "10px", fontWeight: 600, letterSpacing: "0.12em",
+              color: "rgba(52,160,140,0.80)",
+              textTransform: "uppercase", pointerEvents: "none",
+            }}>
+              {getWatermarkText(post)}
+            </div>
+          )}
         </div>
         {!isFallback && (
           <p style={{ fontSize: "11px", color: "hsl(var(--foreground) / 0.30)", textAlign: "center", marginTop: "0.625rem", fontStyle: "italic" }}>

@@ -4,9 +4,9 @@ import { A, s, fmtDate, slugify } from "./shared";
 
 /* ── Fallback image pools ────────────────────────────────────────── */
 const ADMIN_POOLS: Record<string, string[]> = {
-  atlas:           ["/images/fallback-atlas.svg", "/images/fallback-atlas-2.svg", "/images/fallback-atlas-3.svg"],
-  "road-to-1m":   ["/images/fallback-road-to-1m.svg", "/images/fallback-road-to-1m-2.svg", "/images/fallback-road-to-1m-3.svg"],
-  "tu-duy-dau-tu":["/images/fallback-tu-duy.svg", "/images/fallback-tu-duy-2.svg", "/images/fallback-tu-duy-3.svg"],
+  atlas:           ["/images/fallback-atlas.svg", "/images/fallback-atlas-2.svg"],
+  "road-to-1m":   ["/images/fallback-road-to-1m.svg", "/images/fallback-road-to-1m-2.svg"],
+  "tu-duy-dau-tu":["/images/fallback-tu-duy.svg", "/images/fallback-tu-duy-2.svg"],
   default:        ["/images/fallback-default.svg", "/images/fallback-default-2.svg"],
 };
 

@@ -1,0 +1,138 @@
+Create and integrate a complete internal fallback-image system for the Thắng SWC website news/articles section, without relying on external image generation tools.
+ 
+Goal:
+Generate 4 premium branded fallback visuals directly inside the project as reusable internal assets (preferably SVG, or another lightweight internal graphic format), then connect them to the article image workflow.
+ 
+Important:
+Do NOT use generic placeholder images.
+Do NOT require any outside image creation step.
+Generate the fallback visuals directly inside the project using code/assets.
+ 
+Please do all of the following:
+ 
+1. Create 4 internal fallback visuals as reusable project assets
+Use a premium editorial abstract visual system consistent with the Thắng SWC website.
+ 
+Style requirements for all 4 fallback visuals:
+- premium
+- minimal
+- editorial
+- dark teal / deep green / muted emerald palette
+- subtle gradients
+- faint grid / linework / strategic visual structure
+- calm and intelligent
+- no people
+- no stock-photo feel
+- no flashy finance clichés
+- no logos embedded in the image itself
+- no hardcoded text inside the base image
+- suitable for article cards and article hero images
+ 
+Generate these 4 fallback visuals:
+ 
+A. General fallback
+Purpose:
+For articles with no specific category/product context.
+Mood:
+Strategic finance-tech editorial image about structure, clarity, and long-term thinking.
+ 
+B. “Tư duy đầu tư” fallback
+Purpose:
+For investment mindset / personal finance / compounding / inflation / discipline articles.
+Mood:
+Long-term thinking, financial clarity, discipline, compounding, asset-building.
+ 
+C. “Road to $1M · SWC PASS” fallback
+Purpose:
+For Road to $1M related articles.
+Mood:
+Long-term financial journey, milestones, structured growth, progression, disciplined asset building.
+ 
+D. “ATLAS” fallback
+Purpose:
+For ATLAS-related articles.
+Mood:
+Premium proptech / digital real estate ecosystem / networked properties / verified transactions / smart structure.
+ 
+2. File organization
+Store these generated fallback assets cleanly inside the project, with clear naming such as:
+- fallback-default-thang-swc.svg
+- fallback-tu-duy-dau-tu.svg
+- fallback-road-to-1m.svg
+- fallback-atlas.svg
+ 
+3. Featured image workflow integration
+Integrate these fallback visuals into the article/news image system with this priority logic:
+ 
+Priority order:
+- if a post has a custom uploaded featured image → use the uploaded image
+- else if related product is atlas → use the ATLAS fallback
+- else if related product is road-to-1m / SWC PASS → use the Road to $1M fallback
+- else if category is tu-duy-dau-tu → use the Tư duy đầu tư fallback
+- else use the general fallback
+ 
+4. Automatic watermark overlay on display images
+When displaying article images on the frontend, apply a subtle watermark overlay.
+ 
+Watermark style:
+- small
+- elegant
+- uppercase
+- low-opacity
+- premium
+- placed tastefully near a lower corner
+- not loud
+- not spammy
+ 
+Dynamic watermark text:
+- default/general: “THẮNG SWC”
+- tư duy đầu tư: “THẮNG SWC · TÀI CHÍNH”
+- Road to $1M related: “THẮNG SWC · ROAD TO $1M”
+- ATLAS related: “THẮNG SWC · ATLAS”
+ 
+Important:
+Do not burn harsh watermark text into the base asset itself if it makes reuse difficult.
+Prefer a display-layer watermark approach if practical.
+If needed, generate display-ready versions elegantly.
+ 
+5. Auto crop / display consistency
+Ensure article images display consistently across:
+- news/article cards
+- category pages
+- related article cards
+- article detail hero image if enabled
+ 
+Use a clean consistent editorial ratio.
+Recommended:
+- article card ratio: 16:9
+- article hero image: wide, calm, editorial
+ 
+Use smart center crop by default.
+Do not distort images.
+ 
+6. Admin editor support
+In the admin post editor:
+- keep support for direct featured image upload
+- keep image preview
+- keep replace/remove actions
+- if no image is uploaded, clearly note:
+  “Để trống để hệ thống tự dùng ảnh mặc định phù hợp theo chuyên mục hoặc sản phẩm liên quan.”
+ 
+7. Quality requirements
+The generated fallback assets must feel like part of the Thắng SWC brand system:
+- premium
+- calm
+- mature
+- strategic
+- consistent with the current website visuals
+- not like a generic CMS placeholder
+ 
+8. Final task
+After generating and wiring everything:
+- make sure the news/article list uses the correct fallback automatically
+- make sure article detail pages also use the appropriate fallback when no custom image exists
+- ensure the result works without any external image creation step
+ 
+This should be a real working implementation inside the Replit project, not just a visual suggestion.
+Preferred implementation:
+Generate these fallback visuals directly as internal SVG assets or equivalent coded design assets inside the project, so they are lightweight, editable, and fully self-contained.

@@ -1,69 +1,122 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#091f1d"/>
-      <stop offset="100%" stop-color="#040c0b"/>
+      <stop offset="56%" stop-color="#061614"/>
+      <stop offset="100%" stop-color="#030c0b"/>
     </linearGradient>
-    <radialGradient id="globeGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#22917f" stop-opacity="0.14"/>
+    <radialGradient id="glow-center" cx="50%" cy="50%" r="42%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.12"/>
       <stop offset="60%" stop-color="#22917f" stop-opacity="0.04"/>
       <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
     </radialGradient>
+    <radialGradient id="glow-br" cx="82%" cy="78%" r="28%">
+      <stop offset="0%" stop-color="#1e8472" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#1e8472" stop-opacity="0"/>
+    </radialGradient>
   </defs>
 
-  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#glow-center)"/>
+  <rect width="1600" height="900" fill="url(#glow-br)"/>
 
-  <!-- Globe glow fill -->
-  <circle cx="600" cy="315" r="240" fill="url(#globeGlow)"/>
-
-  <!-- Globe outline -->
-  <circle cx="600" cy="315" r="238" stroke="rgba(52,160,140,0.18)" stroke-width="1.2"/>
-
-  <!-- Latitude lines (horizontal ellipses) -->
-  <ellipse cx="600" cy="315" rx="238" ry="8"   stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
-  <ellipse cx="600" cy="235" rx="218" ry="28"  stroke="rgba(52,160,140,0.09)" stroke-width="1"/>
-  <ellipse cx="600" cy="175" rx="170" ry="25"  stroke="rgba(52,160,140,0.08)" stroke-width="1"/>
-  <ellipse cx="600" cy="130" rx="108" ry="18"  stroke="rgba(52,160,140,0.07)" stroke-width="1"/>
-  <ellipse cx="600" cy="395" rx="218" ry="28"  stroke="rgba(52,160,140,0.09)" stroke-width="1"/>
-  <ellipse cx="600" cy="455" rx="170" ry="25"  stroke="rgba(52,160,140,0.08)" stroke-width="1"/>
-  <ellipse cx="600" cy="500" rx="108" ry="18"  stroke="rgba(52,160,140,0.07)" stroke-width="1"/>
-
-  <!-- Longitude lines (vertical ellipses through poles) -->
-  <ellipse cx="600" cy="315" rx="10"  ry="238" stroke="rgba(52,160,140,0.09)" stroke-width="1"/>
-  <ellipse cx="600" cy="315" rx="80"  ry="238" stroke="rgba(52,160,140,0.08)" stroke-width="1"/>
-  <ellipse cx="600" cy="315" rx="155" ry="238" stroke="rgba(52,160,140,0.07)" stroke-width="1"/>
-  <ellipse cx="600" cy="315" rx="215" ry="238" stroke="rgba(52,160,140,0.06)" stroke-width="1"/>
-
-  <!-- Poles -->
-  <circle cx="600" cy="77"  r="4" fill="rgba(52,160,140,0.50)"/>
-  <circle cx="600" cy="553" r="4" fill="rgba(52,160,140,0.30)"/>
-
-  <!-- Equator highlight -->
-  <ellipse cx="600" cy="315" rx="238" ry="8" stroke="rgba(52,160,140,0.28)" stroke-width="1.5"/>
-
-  <!-- Globe outer atmosphere -->
-  <circle cx="600" cy="315" r="255" stroke="rgba(52,160,140,0.05)" stroke-width="1"/>
-  <circle cx="600" cy="315" r="280" stroke="rgba(52,160,140,0.03)" stroke-width="1"/>
-
-  <!-- Radiating lines from globe edge (signal lines) -->
-  <line x1="838"  y1="315" x2="980"  y2="315" stroke="rgba(52,160,140,0.14)" stroke-width="1" stroke-dasharray="4 6"/>
-  <line x1="810"  y1="235" x2="940"  y2="180" stroke="rgba(52,160,140,0.10)" stroke-width="1" stroke-dasharray="3 7"/>
-  <line x1="810"  y1="395" x2="940"  y2="450" stroke="rgba(52,160,140,0.10)" stroke-width="1" stroke-dasharray="3 7"/>
-  <line x1="362"  y1="315" x2="220"  y2="315" stroke="rgba(52,160,140,0.14)" stroke-width="1" stroke-dasharray="4 6"/>
-
-  <!-- Signal endpoint dots -->
-  <circle cx="980" cy="315" r="4" fill="rgba(52,160,140,0.40)"/>
-  <circle cx="980" cy="315" r="8" fill="rgba(52,160,140,0.10)"/>
-  <circle cx="220" cy="315" r="4" fill="rgba(52,160,140,0.35)"/>
-
-  <!-- Accent dot grid — top right -->
-  <g fill="rgba(52,160,140,0.15)">
-    <circle cx="1060" cy="80"  r="2"/><circle cx="1090" cy="80"  r="2"/><circle cx="1120" cy="80"  r="2"/>
-    <circle cx="1060" cy="110" r="2"/><circle cx="1090" cy="110" r="2"/><circle cx="1120" cy="110" r="2"/>
-    <circle cx="1060" cy="140" r="2"/><circle cx="1090" cy="140" r="2"/><circle cx="1120" cy="140" r="2"/>
+  <!-- Isometric-style city grid viewed from above -->
+  <!-- Primary perspective lines — left vanishing -->
+  <g stroke="rgba(52,160,140,0.05)" stroke-width="1">
+    <line x1="1600" y1="0"   x2="0" y2="450"/>
+    <line x1="1600" y1="150" x2="0" y2="450"/>
+    <line x1="1600" y1="300" x2="0" y2="450"/>
+    <line x1="1600" y1="450" x2="0" y2="450"/>
+    <line x1="1600" y1="600" x2="0" y2="450"/>
+    <line x1="1600" y1="750" x2="0" y2="450"/>
+    <line x1="1600" y1="900" x2="0" y2="450"/>
+  </g>
+  <!-- Cross perspective lines -->
+  <g stroke="rgba(52,160,140,0.04)" stroke-width="1">
+    <line x1="200"  y1="180" x2="1400" y2="180"/>
+    <line x1="100"  y1="270" x2="1500" y2="270"/>
+    <line x1="50"   y1="360" x2="1550" y2="360"/>
+    <line x1="0"    y1="450" x2="1600" y2="450"/>
+    <line x1="50"   y1="540" x2="1550" y2="540"/>
+    <line x1="100"  y1="630" x2="1500" y2="630"/>
+    <line x1="200"  y1="720" x2="1400" y2="720"/>
   </g>
 
-  <line x1="0" y1="600" x2="1200" y2="600" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
-  <text x="60" y="580" font-family="system-ui, sans-serif" font-size="11" font-weight="600"
-    letter-spacing="0.18em" fill="rgba(255,255,255,0.20)">THẮNG SWC · ATLAS</text>
+  <!-- Property blocks — isometric flat tops (top-down city view) -->
+  <!-- Block cluster 1 — upper left quadrant -->
+  <rect x="260" y="160" width="120" height="80"  rx="2" fill="rgba(52,160,140,0.10)" stroke="rgba(52,160,140,0.16)" stroke-width="1"/>
+  <rect x="260" y="260" width="80"  height="50"  rx="2" fill="rgba(52,160,140,0.08)" stroke="rgba(52,160,140,0.12)" stroke-width="1"/>
+  <rect x="360" y="200" width="60"  height="90"  rx="2" fill="rgba(52,160,140,0.09)" stroke="rgba(52,160,140,0.14)" stroke-width="1"/>
+
+  <!-- Block cluster 2 — upper center (premium, highlighted) -->
+  <rect x="580" y="140" width="160" height="110" rx="2" fill="rgba(52,160,140,0.18)" stroke="rgba(52,160,140,0.35)" stroke-width="1.5"/>
+  <rect x="760" y="160" width="80"  height="70"  rx="2" fill="rgba(52,160,140,0.12)" stroke="rgba(52,160,140,0.20)" stroke-width="1"/>
+  <!-- Premium block node marker -->
+  <circle cx="660" cy="195" r="12" fill="rgba(52,160,140,0.55)"/>
+  <circle cx="660" cy="195" r="24" fill="rgba(52,160,140,0.12)"/>
+  <circle cx="660" cy="195" r="5"  fill="rgba(255,255,255,0.45)"/>
+  <!-- Verification ring -->
+  <circle cx="660" cy="195" r="34" stroke="rgba(52,160,140,0.20)" stroke-width="1" fill="none" stroke-dasharray="3 6"/>
+
+  <!-- Block cluster 3 — upper right -->
+  <rect x="960"  y="155" width="100" height="65" rx="2" fill="rgba(52,160,140,0.11)" stroke="rgba(52,160,140,0.18)" stroke-width="1"/>
+  <rect x="1080" y="140" width="140" height="95" rx="2" fill="rgba(52,160,140,0.15)" stroke="rgba(52,160,140,0.25)" stroke-width="1.5"/>
+  <rect x="1240" y="170" width="90"  height="60" rx="2" fill="rgba(52,160,140,0.09)" stroke="rgba(52,160,140,0.14)" stroke-width="1"/>
+  <!-- Premium marker -->
+  <circle cx="1150" cy="187" r="10" fill="rgba(52,160,140,0.58)"/>
+  <circle cx="1150" cy="187" r="22" fill="rgba(52,160,140,0.11)"/>
+  <circle cx="1150" cy="187" r="4"  fill="rgba(255,255,255,0.40)"/>
+
+  <!-- Block cluster 4 — lower left -->
+  <rect x="200"  y="600" width="110" height="70" rx="2" fill="rgba(52,160,140,0.10)" stroke="rgba(52,160,140,0.16)" stroke-width="1"/>
+  <rect x="330"  y="620" width="70"  height="50" rx="2" fill="rgba(52,160,140,0.08)" stroke="rgba(52,160,140,0.12)" stroke-width="1"/>
+
+  <!-- Block cluster 5 — lower center (premium) -->
+  <rect x="640"  y="590" width="150" height="100" rx="2" fill="rgba(52,160,140,0.16)" stroke="rgba(52,160,140,0.30)" stroke-width="1.5"/>
+  <rect x="810"  y="610" width="90"  height="70"  rx="2" fill="rgba(52,160,140,0.11)" stroke="rgba(52,160,140,0.18)" stroke-width="1"/>
+  <circle cx="715" cy="640" r="10" fill="rgba(52,160,140,0.55)"/>
+  <circle cx="715" cy="640" r="22" fill="rgba(52,160,140,0.11)"/>
+  <circle cx="715" cy="640" r="4.5" fill="rgba(255,255,255,0.40)"/>
+
+  <!-- Block cluster 6 — lower right -->
+  <rect x="1080" y="600" width="130" height="80" rx="2" fill="rgba(52,160,140,0.12)" stroke="rgba(52,160,140,0.20)" stroke-width="1"/>
+  <rect x="1230" y="580" width="160" height="120" rx="2" fill="rgba(52,160,140,0.17)" stroke="rgba(52,160,140,0.28)" stroke-width="1.5"/>
+  <circle cx="1310" cy="640" r="12" fill="rgba(52,160,140,0.58)"/>
+  <circle cx="1310" cy="640" r="26" fill="rgba(52,160,140,0.12)"/>
+  <circle cx="1310" cy="640" r="5"  fill="rgba(255,255,255,0.42)"/>
+  <circle cx="1310" cy="640" r="36" stroke="rgba(52,160,140,0.16)" stroke-width="1" fill="none" stroke-dasharray="3 6"/>
+
+  <!-- Network overlay connections (between premium blocks) -->
+  <line x1="660"  y1="195" x2="1150" y2="187" stroke="rgba(52,160,140,0.16)" stroke-width="1.5" stroke-dasharray="6 6"/>
+  <line x1="660"  y1="195" x2="715"  y2="640" stroke="rgba(52,160,140,0.14)" stroke-width="1.5" stroke-dasharray="6 6"/>
+  <line x1="1150" y1="187" x2="1310" y2="640" stroke="rgba(52,160,140,0.14)" stroke-width="1.5" stroke-dasharray="6 6"/>
+  <line x1="715"  y1="640" x2="1310" y2="640" stroke="rgba(52,160,140,0.18)" stroke-width="2" stroke-dasharray="8 5"/>
+
+  <!-- Central crosshair / reference point -->
+  <line x1="760" y1="425" x2="840" y2="425" stroke="rgba(52,160,140,0.16)" stroke-width="1"/>
+  <line x1="800" y1="405" x2="800" y2="485" stroke="rgba(52,160,140,0.16)" stroke-width="1"/>
+  <circle cx="800" cy="450" r="6" fill="rgba(52,160,140,0.35)"/>
+  <circle cx="800" cy="450" r="15" stroke="rgba(52,160,140,0.12)" stroke-width="1" fill="none"/>
+
+  <!-- Dot grid — top left -->
+  <g fill="rgba(52,160,140,0.22)">
+    <circle cx="80"  cy="72"  r="2.5"/><circle cx="120" cy="72"  r="2.5"/><circle cx="160" cy="72"  r="2.5"/>
+    <circle cx="80"  cy="108" r="2.5"/><circle cx="120" cy="108" r="2.5"/>
+    <circle cx="80"  cy="144" r="2"/>
+  </g>
+
+  <!-- Dot grid — bottom right -->
+  <g fill="rgba(52,160,140,0.16)">
+    <circle cx="1440" cy="830" r="2"/><circle cx="1480" cy="830" r="2"/><circle cx="1520" cy="830" r="2"/>
+    <circle cx="1440" cy="860" r="2"/><circle cx="1480" cy="860" r="2"/>
+  </g>
+
+  <!-- Corner brackets -->
+  <path d="M 44,44 L 44,88 L 80,88" stroke="rgba(52,160,140,0.28)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 1556,44 L 1556,88 L 1520,88" stroke="rgba(52,160,140,0.22)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 44,856 L 44,812 L 80,812" stroke="rgba(52,160,140,0.18)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 1556,856 L 1556,812 L 1520,812" stroke="rgba(52,160,140,0.15)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+
+  <!-- Base rule -->
+  <line x1="0" y1="878" x2="1600" y2="878" stroke="rgba(52,160,140,0.12)" stroke-width="1"/>
 </svg>
