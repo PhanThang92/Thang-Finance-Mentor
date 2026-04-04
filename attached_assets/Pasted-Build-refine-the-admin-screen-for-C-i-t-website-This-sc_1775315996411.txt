@@ -1,0 +1,109 @@
+Build/refine the admin screen for:
+“Cài đặt website”
+
+This screen is part of the existing Thắng SWC admin system.
+Do not redesign the whole admin.
+Keep the current clean light admin style and sidebar structure.
+
+Goal:
+Create a practical site settings screen so the main shared website elements can be updated without editing code.
+
+Requirements:
+
+1. Page header
+Show:
+- title: “Cài đặt website”
+- short subtitle: “Quản lý các thành phần dùng chung trên toàn bộ website”
+
+2. Use a tab-based settings layout
+Create these tabs:
+- Menu
+- Footer
+- Social
+- Liên hệ
+- Form settings
+- SEO chung
+
+3. Tab: Menu
+Support editing shared navbar structure.
+
+Fields / controls:
+- list of navigation items
+- label
+- link
+- order
+- visible/hidden toggle
+
+Support product dropdown structure under “Sản phẩm”:
+- parent item: Sản phẩm
+- child items:
+  - Road to $1M · SWC PASS
+  - ATLAS
+
+Make this practical but not over-complex.
+
+4. Tab: Footer
+Support editing shared footer structure.
+
+Editable blocks:
+- brand block text
+- description
+- footer navigation group
+- ecosystem/product links group
+- disclaimer text
+
+Allow editing:
+- link labels
+- link destinations
+- order
+- visible/hidden state
+
+5. Tab: Social
+Support editable social links:
+- Facebook
+- YouTube
+- Email
+- Community link
+- optional others if practical
+
+Show input fields for:
+- label
+- URL
+- visible/hidden
+
+6. Tab: Liên hệ
+Support general website contact info:
+- email
+- phone
+- zalo
+- contact note
+- optional business/location text
+
+7. Tab: Form settings
+Support basic shared form configuration:
+- recipient email
+- default success message
+- default error message
+- optional source labels if practical
+
+8. Tab: SEO chung
+Support global site SEO settings:
+- site title
+- site description
+- default OG image
+- favicon/logo if practical
+
+9. UX details
+- keep settings practical and clean
+- avoid turning this into a bloated technical control panel
+- focus on shared website elements that actually need editing
+- preserve premium but lightweight admin feel
+
+10. Keep consistency
+- preserve current admin design system
+- integrate with existing shared layout/database structure
+- make changes usable across all public pages
+
+Important:
+This is a real working settings screen, not just a mockup.
+It should help manage the shared navbar, footer, social links, forms, and general site settings dynamically.
