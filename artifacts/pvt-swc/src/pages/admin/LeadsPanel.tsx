@@ -1,18 +1,276 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { adminApi, type Lead } from "@/lib/newsApi";
-import { A, s, fmtDateTime, LEAD_STATUSES, leadStatusLabel, leadStatusColor } from "./shared";
+import { A, s, fmtDate, fmtDateTime, LEAD_STATUSES, leadStatusLabel, leadStatusColor } from "./shared";
 
-/* ── Lead detail view ───────────────────────────────────────────── */
-function LeadDetail({
-  lead,
-  adminKey,
-  onUpdated,
-  onClose,
+/* ── Source helpers ──────────────────────────────────────────────── */
+const SOURCE_OPTIONS = [
+  { value: "all",       label: "Tất cả nguồn" },
+  { value: "cong-dong", label: "Cộng đồng" },
+  { value: "road-to-1m",label: "Road to $1M" },
+  { value: "atlas",     label: "ATLAS" },
+  { value: "tin-tuc",   label: "Tin tức" },
+  { value: "lien-he",   label: "Liên hệ chung" },
+];
+
+const PRODUCT_OPTIONS = [
+  { value: "all",       label: "Tất cả sản phẩm" },
+  { value: "road-to-1m",label: "Road to $1M / SWC PASS" },
+  { value: "atlas",     label: "ATLAS" },
+];
+
+function sourceLabel(v: string | null) {
+  if (!v) return "—";
+  if (v.includes("cong-dong")) return "Cộng đồng";
+  if (v.includes("road") || v.includes("1m")) return "Road to $1M";
+  if (v.includes("atlas")) return "ATLAS";
+  if (v.includes("tin-tuc")) return "Tin tức";
+  if (v.includes("hero") || v.includes("lien-he") || v.includes("contact")) return "Liên hệ";
+  return v;
+}
+
+function matchesSource(lead: Lead, filter: string) {
+  if (filter === "all") return true;
+  const st = (lead.sourceType ?? "").toLowerCase();
+  const sp = (lead.sourcePage ?? "").toLowerCase();
+  const pr = (lead.productRef ?? "").toLowerCase();
+  if (filter === "cong-dong") return st.includes("cong-dong");
+  if (filter === "road-to-1m") return st.includes("road") || sp.includes("road") || pr.includes("road") || pr.includes("swcpass") || pr.includes("swc-pass") || pr.includes("1m");
+  if (filter === "atlas") return st.includes("atlas") || sp.includes("atlas") || pr.includes("atlas");
+  if (filter === "tin-tuc") return sp.includes("tin-tuc");
+  if (filter === "lien-he") return st.includes("hero") || st.includes("lien-he") || st.includes("contact") || (!st && !sp);
+  return true;
+}
+
+function matchesProduct(lead: Lead, filter: string) {
+  if (filter === "all") return true;
+  const pr = (lead.productRef ?? "").toLowerCase();
+  if (filter === "road-to-1m") return pr.includes("road") || pr.includes("swcpass") || pr.includes("swc-pass") || pr.includes("1m");
+  if (filter === "atlas") return pr.includes("atlas");
+  return true;
+}
+
+function exportCsv(leads: Lead[]) {
+  const headers = ["ID", "Họ tên", "Email", "Điện thoại", "Nguồn", "Trang nguồn", "Sản phẩm", "Lời nhắn", "Trạng thái", "Ghi chú", "Ngày gửi"];
+  const rows = leads.map((l) => [
+    l.id,
+    `"${l.name}"`,
+    l.email ?? "",
+    l.phone ?? "",
+    l.sourceType ?? "",
+    l.sourcePage ?? "",
+    l.productRef ?? "",
+    `"${(l.message ?? "").replace(/"/g, "''")}"`,
+    leadStatusLabel(l.status),
+    `"${(l.notes ?? "").replace(/"/g, "''")}"`,
+    new Date(l.createdAt).toLocaleString("vi-VN"),
+  ]);
+  const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `leads-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ── Lead row ────────────────────────────────────────────────────── */
+function LeadRow({
+  lead, isSelected, isLast, savingStatus,
+  onSelect, onQuickStatus, onDelete,
 }: {
-  lead: Lead;
-  adminKey: string;
-  onUpdated: (l: Lead) => void;
-  onClose: () => void;
+  lead: Lead; isSelected: boolean; isLast: boolean; savingStatus: boolean;
+  onSelect: () => void; onQuickStatus: (s: string) => void; onDelete: () => void;
+}) {
+  const [hov, setHov] = useState(false);
+  const isNew = lead.status === "moi";
+  const rowBg = isSelected ? `${A.primary}07` : hov ? "rgba(0,0,0,0.016)" : "#fff";
+
+  return (
+    <tr
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      onClick={onSelect}
+      style={{
+        background: rowBg,
+        borderBottom: isLast ? "none" : `1px solid rgba(0,0,0,0.04)`,
+        cursor: "pointer",
+        transition: "background 0.1s ease",
+        borderLeft: isNew ? "3px solid #2563eb" : isSelected ? `3px solid ${A.primary}` : "3px solid transparent",
+      }}
+    >
+      {/* Họ tên */}
+      <td style={{ ...s.td, paddingLeft: "10px", maxWidth: "170px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
+          <div style={{
+            width: "30px", height: "30px", borderRadius: "50%", flexShrink: 0,
+            background: `linear-gradient(135deg, ${leadStatusColor(lead.status)}25, ${leadStatusColor(lead.status)}10)`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <span style={{ fontSize: "12px", fontWeight: 700, color: leadStatusColor(lead.status) }}>
+              {lead.name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <p style={{
+              margin: "0 0 2px", fontWeight: 600, fontSize: "13px", color: A.text,
+              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "120px",
+            }}>
+              {lead.name}
+            </p>
+            {isNew && (
+              <span style={{
+                fontSize: "9px", fontWeight: 700, letterSpacing: "0.07em",
+                background: "#2563eb", color: "#fff", padding: "1px 5px", borderRadius: "3px",
+              }}>
+                MỚI
+              </span>
+            )}
+          </div>
+        </div>
+      </td>
+
+      {/* Liên hệ */}
+      <td style={{ ...s.td, maxWidth: "160px" }}>
+        {lead.phone && (
+          <p style={{ margin: "0 0 2px", fontSize: "12.5px", fontFamily: "monospace", color: A.text }}>
+            {lead.phone}
+          </p>
+        )}
+        {lead.email && (
+          <p style={{
+            margin: 0, fontSize: "11.5px", color: A.textMuted,
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "150px",
+          }}>
+            {lead.email}
+          </p>
+        )}
+        {!lead.phone && !lead.email && (
+          <span style={{ fontSize: "12px", color: A.textLight }}>—</span>
+        )}
+      </td>
+
+      {/* Nguồn */}
+      <td style={{ ...s.td, width: "110px" }}>
+        <span style={{ fontSize: "12px", color: A.textMuted }}>{sourceLabel(lead.sourceType)}</span>
+      </td>
+
+      {/* Sản phẩm */}
+      <td style={{ ...s.td, width: "130px" }}>
+        {lead.productRef ? (
+          <span style={{
+            fontSize: "11.5px", fontWeight: 500, color: A.primary,
+            background: `${A.primary}10`, padding: "2px 7px", borderRadius: "4px",
+            display: "inline-block", maxWidth: "120px",
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+          }}>
+            {lead.productRef}
+          </span>
+        ) : (
+          <span style={{ fontSize: "12px", color: A.textLight }}>—</span>
+        )}
+      </td>
+
+      {/* Mối quan tâm */}
+      <td style={{ ...s.td, maxWidth: "160px" }}>
+        <p style={{
+          margin: 0, fontSize: "12px", color: A.textMuted, lineHeight: 1.4,
+          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+        }}>
+          {lead.message ? lead.message.slice(0, 55) + (lead.message.length > 55 ? "…" : "") : "—"}
+        </p>
+      </td>
+
+      {/* Trạng thái */}
+      <td style={{ ...s.td, width: "145px" }} onClick={(e) => e.stopPropagation()}>
+        <select
+          value={lead.status}
+          disabled={savingStatus}
+          onChange={(e) => { e.stopPropagation(); onQuickStatus(e.target.value); }}
+          style={{
+            fontSize: "12px", padding: "4px 8px", borderRadius: "5px", cursor: "pointer",
+            border: `1px solid ${leadStatusColor(lead.status)}45`,
+            background: `${leadStatusColor(lead.status)}11`,
+            color: leadStatusColor(lead.status),
+            fontWeight: 500, outline: "none",
+          }}
+        >
+          {LEAD_STATUSES.map((st) => (
+            <option key={st.value} value={st.value}>{st.label}</option>
+          ))}
+        </select>
+        {savingStatus && (
+          <span style={{ fontSize: "10px", color: A.textLight, marginLeft: "5px" }}>...</span>
+        )}
+      </td>
+
+      {/* Ngày gửi */}
+      <td style={{ ...s.td, width: "95px" }}>
+        <span style={{ fontSize: "11.5px", color: A.textMuted }}>{fmtDate(lead.createdAt)}</span>
+      </td>
+
+      {/* Hành động */}
+      <td style={{ ...s.td, width: "70px" }} onClick={(e) => e.stopPropagation()}>
+        <button
+          onClick={onDelete}
+          title="Xoá lead này"
+          style={{
+            padding: "4px 9px", borderRadius: "5px", border: "1px solid rgba(193,51,51,0.22)",
+            cursor: "pointer", fontSize: "11px", color: A.danger, background: "transparent",
+          }}
+        >
+          Xoá
+        </button>
+      </td>
+    </tr>
+  );
+}
+
+/* ── Empty state ─────────────────────────────────────────────────── */
+function EmptyState({ hasLeads }: { hasLeads: boolean }) {
+  return (
+    <div style={{
+      display: "flex", flexDirection: "column", alignItems: "center",
+      justifyContent: "center", padding: "5rem 2rem", textAlign: "center",
+    }}>
+      <div style={{
+        width: "52px", height: "52px", borderRadius: "50%",
+        background: "rgba(0,0,0,0.045)", display: "flex", alignItems: "center",
+        justifyContent: "center", marginBottom: "1.25rem",
+      }}>
+        <span style={{ fontSize: "22px", opacity: 0.25 }}>◉</span>
+      </div>
+      {hasLeads ? (
+        <>
+          <p style={{ fontSize: "14px", fontWeight: 600, color: A.text, margin: "0 0 6px" }}>
+            Không tìm thấy leads nào
+          </p>
+          <p style={{ fontSize: "13px", color: A.textMuted, margin: 0 }}>
+            Thử thay đổi bộ lọc hoặc từ khoá tìm kiếm.
+          </p>
+        </>
+      ) : (
+        <>
+          <p style={{ fontSize: "14px", fontWeight: 600, color: A.text, margin: "0 0 8px" }}>
+            Chưa có leads nào
+          </p>
+          <p style={{ fontSize: "13px", color: A.textMuted, margin: "0 0 6px", maxWidth: "340px", lineHeight: 1.6 }}>
+            Khi khách hàng điền thông tin trên website, dữ liệu sẽ tự động xuất hiện tại đây.
+          </p>
+          <p style={{ fontSize: "12px", color: A.textLight, margin: 0 }}>
+            Form xuất hiện ở trang Cộng đồng, trang Sản phẩm và trang chủ.
+          </p>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ── Lead detail panel ───────────────────────────────────────────── */
+function LeadDetail({
+  lead, adminKey, onUpdated, onClose,
+}: {
+  lead: Lead; adminKey: string; onUpdated: (l: Lead) => void; onClose: () => void;
 }) {
   const [notesEdit, setNotesEdit] = useState(lead.notes ?? "");
   const [statusEdit, setStatusEdit] = useState(lead.status);
@@ -39,44 +297,50 @@ function LeadDetail({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      {/* Header */}
+
+      {/* Panel header */}
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "flex-start",
-        padding: "1.25rem 1.5rem 1rem", borderBottom: `1px solid ${A.border}`,
+        padding: "1.125rem 1.375rem 1rem", borderBottom: `1px solid ${A.border}`,
+        flexShrink: 0,
       }}>
         <div>
-          <p style={{ fontSize: "16px", fontWeight: 700, color: A.text, margin: "0 0 4px" }}>{lead.name}</p>
-          <span style={{
-            fontSize: "10px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
-            padding: "2px 8px", borderRadius: "4px",
-            background: `${leadStatusColor(lead.status)}18`,
-            color: leadStatusColor(lead.status),
-          }}>
-            {leadStatusLabel(lead.status)}
-          </span>
+          <p style={{ fontSize: "15.5px", fontWeight: 700, color: A.text, margin: "0 0 5px" }}>
+            {lead.name}
+          </p>
+          <StatusBadge status={lead.status} />
         </div>
-        <button style={s.btnGhost} onClick={onClose}>✕</button>
+        <button
+          onClick={onClose}
+          style={{
+            width: "28px", height: "28px", borderRadius: "6px", border: "none",
+            background: "rgba(0,0,0,0.05)", cursor: "pointer", fontSize: "14px",
+            color: A.textMuted, display: "flex", alignItems: "center", justifyContent: "center",
+          }}
+        >
+          ✕
+        </button>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", padding: "1.25rem 1.5rem" }}>
+      <div style={{ flex: 1, overflowY: "auto", padding: "1.125rem 1.375rem" }}>
 
         {/* Contact info */}
-        <Section label="Thông tin liên hệ">
-          <Row label="Họ tên" value={lead.name} />
-          <Row label="Điện thoại" value={lead.phone} mono />
-          <Row label="Email" value={lead.email} mono />
-        </Section>
+        <DetailSection label="Thông tin liên hệ">
+          <DetailRow label="Họ tên" value={lead.name} />
+          <DetailRow label="Điện thoại" value={lead.phone} mono />
+          <DetailRow label="Email" value={lead.email} mono />
+        </DetailSection>
 
-        {/* Source info */}
-        <Section label="Nguồn">
-          <Row label="Loại nguồn" value={lead.sourceType} />
-          <Row label="Trang" value={lead.sourcePage} />
-          <Row label="Sản phẩm quan tâm" value={lead.productRef} highlight />
-        </Section>
+        {/* Source */}
+        <DetailSection label="Nguồn tiếp cận">
+          <DetailRow label="Loại nguồn" value={sourceLabel(lead.sourceType)} />
+          <DetailRow label="Trang nguồn" value={lead.sourcePage} mono />
+          <DetailRow label="Sản phẩm" value={lead.productRef} highlight />
+        </DetailSection>
 
         {/* Message */}
         {lead.message && (
-          <Section label="Lời nhắn">
+          <DetailSection label="Lời nhắn / Mối quan tâm">
             <div style={{
               fontSize: "13px", color: A.text, background: "rgba(0,0,0,0.025)",
               padding: "10px 12px", borderRadius: "7px", lineHeight: 1.65,
@@ -84,39 +348,30 @@ function LeadDetail({
             }}>
               {lead.message}
             </div>
-          </Section>
+          </DetailSection>
         )}
 
-        {/* Timeline */}
-        <Section label="Lịch sử">
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
-            <TimelineItem
-              date={fmtDateTime(lead.createdAt)}
-              label="Lead đăng ký"
-              color={A.primary}
-            />
-            {lead.status !== "moi" && (
-              <TimelineItem
-                date="—"
-                label={`Chuyển sang: ${leadStatusLabel(lead.status)}`}
-                color={leadStatusColor(lead.status)}
-              />
-            )}
-          </div>
-        </Section>
+        {/* Dates */}
+        <DetailSection label="Thời gian">
+          <DetailRow label="Đăng ký" value={fmtDateTime(lead.createdAt)} />
+          {lead.updatedAt !== lead.createdAt && (
+            <DetailRow label="Cập nhật" value={fmtDateTime(lead.updatedAt)} />
+          )}
+        </DetailSection>
 
-        {/* Status control */}
-        <Section label="Cập nhật trạng thái">
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+        {/* Status */}
+        <DetailSection label="Cập nhật trạng thái">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
             {LEAD_STATUSES.map((st) => (
               <button
                 key={st.value}
                 onClick={() => setStatusEdit(st.value)}
                 style={{
-                  padding: "6px 14px", borderRadius: "7px", border: `1px solid ${statusEdit === st.value ? leadStatusColor(st.value) : A.border}`,
-                  cursor: "pointer", fontSize: "12.5px", fontWeight: statusEdit === st.value ? 600 : 400,
+                  padding: "6px 13px", borderRadius: "6px", cursor: "pointer", fontSize: "12.5px",
+                  border: `1px solid ${statusEdit === st.value ? leadStatusColor(st.value) : A.border}`,
                   background: statusEdit === st.value ? `${leadStatusColor(st.value)}12` : "#fff",
                   color: statusEdit === st.value ? leadStatusColor(st.value) : A.textMuted,
+                  fontWeight: statusEdit === st.value ? 600 : 400,
                   transition: "all 0.12s ease",
                 }}
               >
@@ -125,36 +380,59 @@ function LeadDetail({
             ))}
           </div>
           {statusChanged && (
-            <p style={{ fontSize: "11.5px", color: A.textMuted, margin: "6px 0 0" }}>
-              Đã thay đổi từ "{leadStatusLabel(lead.status)}" → nhấn Lưu để cập nhật.
+            <p style={{ fontSize: "11.5px", color: A.textMuted, margin: "7px 0 0" }}>
+              "{leadStatusLabel(lead.status)}" → "{leadStatusLabel(statusEdit)}" — nhấn Lưu để áp dụng.
             </p>
           )}
-        </Section>
+        </DetailSection>
 
-        {/* Internal notes */}
-        <Section label="Ghi chú nội bộ">
+        {/* Notes */}
+        <DetailSection label="Ghi chú nội bộ">
           <textarea
             value={notesEdit}
             onChange={(e) => setNotesEdit(e.target.value)}
-            style={{ ...s.textarea, height: "100px" }}
-            placeholder="Ghi chú nội bộ cho team (không hiển thị cho khách)..."
+            style={{ ...s.textarea, height: "90px", fontSize: "13px" }}
+            placeholder="Ghi chú riêng của team, không hiển thị cho khách..."
           />
-        </Section>
+        </DetailSection>
 
         {/* Save */}
-        <div style={{ display: "flex", gap: "0.625rem", alignItems: "center" }}>
-          <button style={s.btnPrimary} disabled={saving} onClick={save}>{saving ? "Đang lưu..." : "Lưu thay đổi"}</button>
-          {msg && <span style={{ fontSize: "12.5px", color: msg.startsWith("Đã") ? A.primary : A.danger }}>{msg}</span>}
+        <div style={{ display: "flex", gap: "0.625rem", alignItems: "center", paddingBottom: "1rem" }}>
+          <button style={s.btnPrimary} disabled={saving} onClick={save}>
+            {saving ? "Đang lưu..." : "Lưu thay đổi"}
+          </button>
+          {msg && (
+            <span style={{ fontSize: "12.5px", color: msg.startsWith("Đã") ? A.primary : A.danger }}>
+              {msg}
+            </span>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function Section({ label, children }: { label: string; children: React.ReactNode }) {
+function StatusBadge({ status }: { status: string }) {
+  const color = leadStatusColor(status);
+  return (
+    <span style={{
+      display: "inline-block",
+      fontSize: "10px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase",
+      padding: "2px 8px", borderRadius: "4px",
+      background: `${color}18`, color,
+    }}>
+      {leadStatusLabel(status)}
+    </span>
+  );
+}
+
+function DetailSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: "1.25rem" }}>
-      <p style={{ fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: A.textLight, margin: "0 0 0.625rem" }}>
+      <p style={{
+        fontSize: "10.5px", fontWeight: 700, letterSpacing: "0.12em",
+        textTransform: "uppercase", color: A.textLight, margin: "0 0 0.625rem",
+      }}>
         {label}
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -164,16 +442,19 @@ function Section({ label, children }: { label: string; children: React.ReactNode
   );
 }
 
-function Row({ label, value, mono, highlight }: { label: string; value?: string | null; mono?: boolean; highlight?: boolean }) {
+function DetailRow({ label, value, mono, highlight }: {
+  label: string; value?: string | null; mono?: boolean; highlight?: boolean;
+}) {
   if (!value) return null;
   return (
     <div style={{ display: "flex", gap: "0.75rem", alignItems: "baseline" }}>
-      <span style={{ fontSize: "11px", color: A.textLight, flexShrink: 0, width: "96px" }}>{label}</span>
+      <span style={{ fontSize: "11px", color: A.textLight, flexShrink: 0, width: "92px" }}>{label}</span>
       <span style={{
         fontSize: "13px",
         color: highlight ? A.primary : A.text,
         fontFamily: mono ? "monospace" : "inherit",
         fontWeight: highlight ? 600 : 400,
+        wordBreak: "break-all",
       }}>
         {value}
       </span>
@@ -181,44 +462,68 @@ function Row({ label, value, mono, highlight }: { label: string; value?: string 
   );
 }
 
-function TimelineItem({ date, label, color }: { date: string; label: string; color: string }) {
-  return (
-    <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
-      <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: color, marginTop: "5px", flexShrink: 0 }} />
-      <div>
-        <p style={{ fontSize: "12.5px", fontWeight: 500, color: A.text, margin: "0 0 1px" }}>{label}</p>
-        <p style={{ fontSize: "11px", color: A.textLight, margin: 0 }}>{date}</p>
-      </div>
-    </div>
-  );
-}
-
 /* ── Main panel ─────────────────────────────────────────────────── */
 export function LeadsPanel({ adminKey }: { adminKey: string }) {
-  const [leads, setLeads]       = useState<Lead[]>([]);
-  const [loading, setLoading]   = useState(true);
-  const [filter, setFilter]     = useState("all");
-  const [q, setQ]               = useState("");
-  const [selected, setSelected] = useState<Lead | null>(null);
+  const [leads, setLeads]         = useState<Lead[]>([]);
+  const [loading, setLoading]     = useState(true);
+  const [q, setQ]                 = useState("");
+  const [fStatus, setFStatus]     = useState("all");
+  const [fSource, setFSource]     = useState("all");
+  const [fProduct, setFProduct]   = useState("all");
+  const [selected, setSelected]   = useState<Lead | null>(null);
+  const [savingId, setSavingId]   = useState<number | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
-    adminApi.getLeads(adminKey, { status: filter === "all" ? undefined : filter, q: q || undefined })
+    adminApi.getLeads(adminKey)
       .then(setLeads).catch(console.error).finally(() => setLoading(false));
-  }, [adminKey, filter, q]);
+  }, [adminKey]);
 
   useEffect(() => { load(); }, [load]);
 
-  const openLead = (l: Lead) => setSelected(l);
-  const closeLead = () => setSelected(null);
+  /* Client-side filtering (source + product) */
+  const filtered = useMemo(() => {
+    let list = leads;
+    if (q.trim()) {
+      const lq = q.trim().toLowerCase();
+      list = list.filter((l) =>
+        l.name.toLowerCase().includes(lq) ||
+        (l.email ?? "").toLowerCase().includes(lq) ||
+        (l.phone ?? "").includes(lq) ||
+        (l.productRef ?? "").toLowerCase().includes(lq)
+      );
+    }
+    if (fStatus !== "all") list = list.filter((l) => l.status === fStatus);
+    if (fSource !== "all") list = list.filter((l) => matchesSource(l, fSource));
+    if (fProduct !== "all") list = list.filter((l) => matchesProduct(l, fProduct));
+    return list;
+  }, [leads, q, fStatus, fSource, fProduct]);
+
+  /* Counts per status (from all leads) */
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { all: leads.length };
+    LEAD_STATUSES.forEach((st) => { c[st.value] = leads.filter((l) => l.status === st.value).length; });
+    return c;
+  }, [leads]);
+
+  const newCount = counts["moi"] ?? 0;
 
   const onUpdated = (updated: Lead) => {
     setLeads((prev) => prev.map((l) => l.id === updated.id ? updated : l));
     setSelected(updated);
   };
 
+  const quickChangeStatus = async (lead: Lead, newStatus: string) => {
+    setSavingId(lead.id);
+    try {
+      const updated = await adminApi.updateLead(adminKey, lead.id, { status: newStatus });
+      onUpdated(updated);
+    } catch (e) { alert(String(e)); }
+    finally { setSavingId(null); }
+  };
+
   const deleteLead = async (id: number) => {
-    if (!confirm("Xóa lead này?")) return;
+    if (!confirm("Xoá lead này? Hành động không thể hoàn tác.")) return;
     try {
       await adminApi.deleteLead(adminKey, id);
       setLeads((prev) => prev.filter((l) => l.id !== id));
@@ -226,123 +531,208 @@ export function LeadsPanel({ adminKey }: { adminKey: string }) {
     } catch (e) { alert(String(e)); }
   };
 
-  /* Count by status */
-  const counts: Record<string, number> = { all: leads.length };
-  LEAD_STATUSES.forEach((st) => { counts[st.value] = leads.filter((l) => l.status === st.value).length; });
+  const toggleSelected = (lead: Lead) => {
+    setSelected((prev) => prev?.id === lead.id ? null : lead);
+  };
 
   return (
-    <div style={{ display: "flex", gap: 0, height: "calc(100vh - 52px - 3.5rem)", minHeight: "500px", marginTop: "-1.75rem", marginLeft: "-2rem", marginRight: "-2rem" }}>
+    <div style={{
+      display: "flex", flexDirection: "column",
+      height: "calc(100vh - 52px - 3.5rem)",
+      marginTop: "-1.75rem", marginLeft: "-2rem", marginRight: "-2rem",
+      background: A.bg,
+    }}>
 
-      {/* ── Left: list pane ─────────────────────────────────────────── */}
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", borderRight: `1px solid ${A.border}`, background: "#fff" }}>
+      {/* ── PAGE HEADER ── */}
+      <div style={{ background: "#fff", borderBottom: `1px solid ${A.border}`, flexShrink: 0 }}>
+        <div style={{ padding: "1.25rem 2rem 0" }}>
 
-        {/* Header */}
-        <div style={{ padding: "1.25rem 1.5rem 1rem", borderBottom: `1px solid ${A.border}` }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.875rem" }}>
-            <h2 style={{ ...s.sectionTitle, margin: 0 }}>Leads ({leads.length})</h2>
-            <button style={s.btnSecondary} onClick={load}>Làm mới</button>
-          </div>
-          {/* Filters */}
-          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-            <input
-              placeholder="Tìm tên, email, số điện thoại..."
-              value={q} onChange={(e) => setQ(e.target.value)}
-              style={{ ...s.field, width: "210px", height: "33px" }}
-            />
-            <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{ ...s.select, width: "160px", height: "33px" }}>
-              <option value="all">Tất cả ({leads.length})</option>
-              {LEAD_STATUSES.map((st) => (
-                <option key={st.value} value={st.value}>{st.label} ({counts[st.value] ?? 0})</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* List */}
-        <div style={{ flex: 1, overflowY: "auto" }}>
-          {loading ? (
-            <p style={{ fontSize: "13px", color: A.textMuted, padding: "1.25rem 1.5rem" }}>Đang tải...</p>
-          ) : leads.length === 0 ? (
-            <p style={{ fontSize: "13px", color: A.textLight, padding: "1.25rem 1.5rem" }}>Không có leads nào.</p>
-          ) : (
-            leads.map((l) => (
-              <div
-                key={l.id}
-                onClick={() => openLead(l)}
-                style={{
-                  padding: "0.875rem 1.5rem",
-                  borderBottom: `1px solid rgba(0,0,0,0.04)`,
-                  cursor: "pointer",
-                  background: selected?.id === l.id ? `${A.primary}06` : "transparent",
-                  borderLeft: selected?.id === l.id ? `3px solid ${A.primary}` : "3px solid transparent",
-                  transition: "background 0.1s ease",
-                  display: "flex", alignItems: "center", gap: "0.875rem",
-                }}
-              >
-                {/* Avatar */}
-                <div style={{
-                  width: "36px", height: "36px", borderRadius: "50%",
-                  background: `linear-gradient(135deg, ${leadStatusColor(l.status)}30, ${leadStatusColor(l.status)}10)`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  flexShrink: 0,
-                }}>
-                  <span style={{ fontSize: "13px", fontWeight: 700, color: leadStatusColor(l.status) }}>
-                    {l.name.charAt(0).toUpperCase()}
+          {/* Title row */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
+                <h2 style={{ fontSize: "17px", fontWeight: 700, color: A.text, margin: 0 }}>Leads</h2>
+                {newCount > 0 && (
+                  <span style={{
+                    fontSize: "11px", fontWeight: 700, background: "#2563eb", color: "#fff",
+                    padding: "2px 9px", borderRadius: "999px", letterSpacing: "0.03em",
+                  }}>
+                    {newCount} mới
                   </span>
-                </div>
-
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
-                    <p style={{ fontSize: "13px", fontWeight: 600, color: A.text, margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{l.name}</p>
-                    <span style={{
-                      fontSize: "9.5px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", flexShrink: 0,
-                      padding: "2px 6px", borderRadius: "4px",
-                      background: `${leadStatusColor(l.status)}18`, color: leadStatusColor(l.status),
-                    }}>
-                      {leadStatusLabel(l.status)}
-                    </span>
-                  </div>
-                  <p style={{ fontSize: "11.5px", color: A.textMuted, margin: 0 }}>
-                    {l.phone ?? l.email ?? "—"}
-                    {l.productRef && <span style={{ marginLeft: "6px", color: A.textLight }}>· {l.productRef}</span>}
-                  </p>
-                </div>
-
-                <div style={{ textAlign: "right", flexShrink: 0 }}>
-                  <p style={{ fontSize: "10.5px", color: A.textLight, margin: "0 0 4px" }}>{fmtDateTime(l.createdAt)}</p>
-                  <button
-                    style={{ ...s.btnDanger, fontSize: "11px", padding: "2px 8px" }}
-                    onClick={(e) => { e.stopPropagation(); deleteLead(l.id); }}
-                  >
-                    Xóa
-                  </button>
-                </div>
+                )}
               </div>
-            ))
-          )}
+              <p style={{ fontSize: "13px", color: A.textMuted, margin: 0 }}>
+                Quản lý toàn bộ người để lại thông tin trên website
+              </p>
+            </div>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <button style={s.btnSecondary} onClick={load}>Làm mới</button>
+              <button
+                style={s.btnSecondary}
+                onClick={() => exportCsv(filtered)}
+                title={`Xuất ${filtered.length} leads ra file CSV`}
+              >
+                ↓ Xuất dữ liệu
+              </button>
+            </div>
+          </div>
+
+          {/* Status tab strip */}
+          <div style={{
+            display: "flex", gap: 0, marginLeft: "-2rem", marginRight: "-2rem",
+            paddingLeft: "2rem", borderTop: `1px solid ${A.border}`,
+            overflowX: "auto",
+          }}>
+            {[{ value: "all", label: "Tất cả" }, ...LEAD_STATUSES].map((st) => {
+              const c = counts[st.value] ?? 0;
+              const active = fStatus === st.value;
+              return (
+                <button
+                  key={st.value}
+                  onClick={() => setFStatus(st.value)}
+                  style={{
+                    padding: "9px 16px", border: "none", background: "none", cursor: "pointer",
+                    fontSize: "12.5px", fontWeight: active ? 600 : 400,
+                    color: active ? A.primary : A.textMuted,
+                    borderBottom: active ? `2px solid ${A.primary}` : "2px solid transparent",
+                    transition: "all 0.12s ease", whiteSpace: "nowrap", flexShrink: 0,
+                  }}
+                >
+                  {st.label}{" "}
+                  <span style={{ fontSize: "11px", color: active ? A.primary : A.textLight, fontWeight: 400 }}>
+                    ({c})
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* ── Right: detail pane ──────────────────────────────────────── */}
-      {selected ? (
-        <div style={{ width: "380px", flexShrink: 0, display: "flex", flexDirection: "column", background: "#fff" }}>
-          <LeadDetail
-            lead={selected}
-            adminKey={adminKey}
-            onUpdated={onUpdated}
-            onClose={closeLead}
-          />
+      {/* ── BODY: Table + Detail pane ── */}
+      <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
+
+        {/* TABLE COLUMN */}
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", background: "#fff" }}>
+
+          {/* Filter bar */}
+          <div style={{
+            padding: "0.75rem 1.5rem",
+            borderBottom: `1px solid ${A.border}`,
+            display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center",
+          }}>
+            <input
+              placeholder="Tìm tên, email, số điện thoại..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              style={{ ...s.field, width: "220px", height: "34px" }}
+            />
+            <select
+              value={fSource}
+              onChange={(e) => setFSource(e.target.value)}
+              style={{ ...s.select, width: "165px", height: "34px" }}
+            >
+              {SOURCE_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+            <select
+              value={fProduct}
+              onChange={(e) => setFProduct(e.target.value)}
+              style={{ ...s.select, width: "185px", height: "34px" }}
+            >
+              {PRODUCT_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+
+            {/* Clear filters */}
+            {(q || fStatus !== "all" || fSource !== "all" || fProduct !== "all") && (
+              <button
+                style={{ ...s.btnGhost, fontSize: "12px", padding: "5px 11px", color: A.textMuted }}
+                onClick={() => { setQ(""); setFStatus("all"); setFSource("all"); setFProduct("all"); }}
+              >
+                Xoá bộ lọc
+              </button>
+            )}
+
+            <span style={{ fontSize: "12px", color: A.textLight, marginLeft: "auto" }}>
+              {filtered.length === leads.length
+                ? `${leads.length} leads`
+                : `${filtered.length} / ${leads.length} leads`}
+            </span>
+          </div>
+
+          {/* Table */}
+          <div style={{ flex: 1, overflowY: "auto", overflowX: "auto" }}>
+            {loading ? (
+              <p style={{ fontSize: "13px", color: A.textMuted, padding: "1.5rem" }}>Đang tải...</p>
+            ) : filtered.length === 0 ? (
+              <EmptyState hasLeads={leads.length > 0} />
+            ) : (
+              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "760px" }}>
+                <thead>
+                  <tr style={{ background: "#fafafa", position: "sticky", top: 0, zIndex: 1 }}>
+                    <th style={{ ...s.th, paddingLeft: "10px" }}>Họ tên</th>
+                    <th style={s.th}>Liên hệ</th>
+                    <th style={s.th}>Nguồn</th>
+                    <th style={s.th}>Sản phẩm</th>
+                    <th style={s.th}>Mối quan tâm</th>
+                    <th style={s.th}>Trạng thái</th>
+                    <th style={s.th}>Ngày gửi</th>
+                    <th style={{ ...s.th, width: "70px" }}>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((lead, idx) => (
+                    <LeadRow
+                      key={lead.id}
+                      lead={lead}
+                      isSelected={selected?.id === lead.id}
+                      isLast={idx === filtered.length - 1}
+                      savingStatus={savingId === lead.id}
+                      onSelect={() => toggleSelected(lead)}
+                      onQuickStatus={(status) => quickChangeStatus(lead, status)}
+                      onDelete={() => deleteLead(lead.id)}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
-      ) : (
-        <div style={{
-          width: "380px", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
-          color: A.textLight, fontSize: "13px", background: A.bg,
-          flexDirection: "column", gap: "0.5rem",
-        }}>
-          <span style={{ fontSize: "24px", opacity: 0.3 }}>◉</span>
-          <p style={{ margin: 0 }}>Chọn một lead để xem chi tiết</p>
-        </div>
-      )}
+
+        {/* DETAIL PANEL */}
+        {selected ? (
+          <div style={{
+            width: "390px", flexShrink: 0,
+            borderLeft: `1px solid ${A.border}`,
+            background: "#fff",
+            display: "flex", flexDirection: "column",
+          }}>
+            <LeadDetail
+              lead={selected}
+              adminKey={adminKey}
+              onUpdated={onUpdated}
+              onClose={() => setSelected(null)}
+            />
+          </div>
+        ) : (
+          <div style={{
+            width: "320px", flexShrink: 0,
+            borderLeft: `1px solid ${A.border}`,
+            background: A.bg,
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+            gap: "0.5rem", color: A.textLight,
+          }}>
+            <span style={{ fontSize: "28px", opacity: 0.2 }}>◉</span>
+            <p style={{ fontSize: "12.5px", margin: 0, textAlign: "center", lineHeight: 1.5 }}>
+              Nhấn vào một dòng<br />để xem chi tiết
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

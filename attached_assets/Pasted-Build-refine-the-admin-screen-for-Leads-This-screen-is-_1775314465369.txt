@@ -1,0 +1,103 @@
+Build/refine the admin screen for:
+“Leads”
+
+This screen is part of the existing Thắng SWC admin system.
+Do not redesign the whole admin.
+Keep the current clean light admin style and sidebar structure.
+
+Goal:
+Create a practical lead management screen to manage all form submissions from the website, including product interest, community signup, and general contact requests.
+
+Requirements:
+
+1. Page header
+Show:
+- title: “Leads”
+- short subtitle: “Quản lý toàn bộ người để lại thông tin trên website”
+- right-side actions:
+  - “Xuất dữ liệu”
+  - “Bộ lọc nâng cao” (if practical)
+
+2. Filter/search area
+Create a clean filter bar above the table with:
+- keyword search: search by name / email / phone / zalo
+- status filter:
+  - Tất cả
+  - Mới
+  - Đã liên hệ
+  - Đang theo dõi
+  - Hoàn tất
+- source filter:
+  - Tất cả
+  - Cộng đồng
+  - Road to $1M
+  - ATLAS
+  - Tin tức
+  - Liên hệ chung
+- product filter:
+  - Tất cả
+  - Road to $1M · SWC PASS
+  - ATLAS
+- date filter if practical
+
+3. Leads table
+Create a practical table with these columns:
+- Họ tên
+- Liên hệ
+- Nguồn
+- Sản phẩm quan tâm
+- Mối quan tâm
+- Trạng thái
+- Ngày gửi
+- Hành động
+
+4. Row behavior
+Each row should support:
+- Xem chi tiết
+- Đổi trạng thái nhanh
+- Thêm ghi chú nhanh (if practical)
+
+5. Lead detail behavior
+When opening a lead detail view, show:
+- Họ tên
+- Email
+- Số điện thoại / Zalo
+- Form/source type
+- Source page
+- Related product
+- Interest topic
+- Submitted message / note
+- Created date
+- Current status
+- Internal notes / timeline if practical
+
+6. Status workflow
+Support these lead statuses:
+- Mới
+- Đã liên hệ
+- Đang theo dõi
+- Hoàn tất
+
+Make status updates easy and visible.
+
+7. UX details
+- highlight new leads clearly but calmly
+- make the table easy to scan
+- preserve premium but practical admin style
+- keep spacing and hierarchy clean
+- avoid making it feel like a CRM monster
+
+8. Empty state
+If there are no leads:
+- show a clean empty state
+- explain that form submissions will appear here
+- keep the style minimal and calm
+
+9. Keep consistency
+- preserve current admin visual system
+- light, clean, maintainable interface
+- operational and realistic, not just visual
+
+Important:
+This is a real working lead-management screen, not just a visual mockup.
+Make the filters, status logic, and detail behavior work coherently with the existing admin/database structure.
