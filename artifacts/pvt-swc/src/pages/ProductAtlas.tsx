@@ -852,58 +852,262 @@ function FAQSection() {
    12. FINAL CTA (dark)
 ══════════════════════════════════════════════════════════ */
 function FinalCTASection() {
+  const [showReg,  setShowReg]  = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const [regSent,  setRegSent]  = useState(false);
+  const [infoSent, setInfoSent] = useState(false);
+
+  const closeReg  = () => { setShowReg(false);  setTimeout(() => setRegSent(false),  320); };
+  const closeInfo = () => { setShowInfo(false); setTimeout(() => setInfoSent(false), 320); };
+
+  /* ── shared token styles ─────────────────────────── */
   const btnPrimary: React.CSSProperties = {
-    display: "inline-flex", alignItems: "center", height: "44px", padding: "0 28px",
-    borderRadius: "999px", fontSize: "14px", fontWeight: 500, letterSpacing: "0.01em",
-    textDecoration: "none", background: "linear-gradient(140deg, #22917f, #1a7868)",
-    color: "#fff", boxShadow: "0 4px 18px rgba(26,120,104,0.30)",
+    display: "inline-flex", alignItems: "center", justifyContent: "center",
+    height: "44px", padding: "0 28px", borderRadius: "999px",
+    fontSize: "14px", fontWeight: 500, letterSpacing: "0.01em",
+    border: "none", cursor: "pointer",
+    background: "linear-gradient(140deg, #22917f, #1a7868)", color: "#fff",
+    boxShadow: "0 4px 18px rgba(26,120,104,0.30)",
     transition: "transform 0.22s ease, box-shadow 0.22s ease",
   };
   const btnGhost: React.CSSProperties = {
-    display: "inline-flex", alignItems: "center", height: "44px", padding: "0 24px",
-    borderRadius: "999px", fontSize: "14px", fontWeight: 400, letterSpacing: "0.01em",
-    textDecoration: "none", background: "transparent",
+    display: "inline-flex", alignItems: "center", justifyContent: "center",
+    height: "44px", padding: "0 24px", borderRadius: "999px",
+    fontSize: "14px", fontWeight: 400, letterSpacing: "0.01em",
+    background: "transparent", cursor: "pointer",
     border: "1px solid rgba(52,160,140,0.35)", color: "rgba(52,160,140,0.85)",
     transition: "border-color 0.22s ease, color 0.22s ease",
   };
+  const overlay: React.CSSProperties = {
+    position: "fixed", inset: 0, zIndex: 1000,
+    background: "rgba(3,12,10,0.84)", backdropFilter: "blur(10px)",
+    display: "flex", alignItems: "center", justifyContent: "center", padding: "1.5rem",
+  };
+  const panel: React.CSSProperties = {
+    width: "100%", maxWidth: "468px", position: "relative",
+    background: "linear-gradient(160deg, #0f2825 0%, #081e1b 100%)",
+    border: "1px solid rgba(52,160,140,0.18)", borderRadius: "1rem",
+    padding: "2rem 2rem 2.25rem",
+    boxShadow: "0 24px 64px rgba(0,0,0,0.50)",
+    maxHeight: "90vh", overflowY: "auto",
+  };
+  const fieldLabel: React.CSSProperties = {
+    display: "block", fontSize: "10.5px", fontWeight: 600,
+    letterSpacing: "0.12em", textTransform: "uppercase",
+    color: "rgba(255,255,255,0.36)", marginBottom: "7px",
+  };
+  const fieldBase: React.CSSProperties = {
+    width: "100%", height: "42px", padding: "0 14px",
+    background: "rgba(255,255,255,0.05)",
+    border: "1px solid rgba(255,255,255,0.11)", borderRadius: "8px",
+    fontSize: "13.5px", fontWeight: 400, color: "rgba(255,255,255,0.84)",
+    outline: "none", transition: "border-color 0.22s ease", boxSizing: "border-box" as const,
+  };
+  const fieldSelect: React.CSSProperties = {
+    ...fieldBase, cursor: "pointer", appearance: "none" as const,
+    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.28)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`,
+    backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center", paddingRight: "36px",
+  };
+  const fieldTextarea: React.CSSProperties = {
+    ...fieldBase, height: "76px", padding: "10px 14px", resize: "vertical" as const, lineHeight: 1.6,
+  };
+  const submitBtn: React.CSSProperties = {
+    ...btnPrimary, width: "100%", height: "46px", fontSize: "14px", marginTop: "0.25rem",
+  };
+  const closeBtn: React.CSSProperties = {
+    position: "absolute", top: "1rem", right: "1rem",
+    width: "28px", height: "28px", borderRadius: "50%",
+    background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)",
+    color: "rgba(255,255,255,0.46)", display: "flex", alignItems: "center",
+    justifyContent: "center", cursor: "pointer", fontSize: "17px", lineHeight: 1,
+  };
+  const focusBorder  = (e: React.FocusEvent<HTMLElement>) =>
+    (e.currentTarget.style.borderColor = "rgba(52,160,140,0.55)");
+  const blurBorder   = (e: React.FocusEvent<HTMLElement>) =>
+    (e.currentTarget.style.borderColor = "rgba(255,255,255,0.11)");
+  const hoverSubmit  = (e: React.MouseEvent<HTMLButtonElement>) => {
+    (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
+    (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.42)";
+  };
+  const leaveSubmit  = (e: React.MouseEvent<HTMLButtonElement>) => {
+    (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+    (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(26,120,104,0.30)";
+  };
+
+  /* ── shared success state UI ─────────────────────── */
+  const SuccessMark = () => (
+    <div style={{ width: "44px", height: "44px", borderRadius: "50%", background: "rgba(52,160,140,0.12)", border: "1px solid rgba(52,160,140,0.28)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.25rem" }}>
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M3.5 9.5L7 13l7.5-8" stroke="rgba(52,160,140,0.90)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </div>
+  );
 
   return (
-    <section id="dang-ky" className="py-20 sm:py-28" style={{ background: DARK_BG_A }}>
-      <div className="max-w-3xl mx-auto px-5 sm:px-8 text-center">
-        <motion.div initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
+    <>
+      {/* ── Section ──────────────────────────────────── */}
+      <section id="dang-ky" className="py-20 sm:py-28" style={{ background: DARK_BG_A }}>
+        <div className="max-w-3xl mx-auto px-5 sm:px-8 text-center">
+          <motion.div initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
 
-          <motion.div variants={fadeUp} style={{ marginBottom: "1.5rem", display: "flex", justifyContent: "center" }}>
-            <SectionLabel dark>Bước tiếp theo</SectionLabel>
+            <motion.div variants={fadeUp} style={{ marginBottom: "1.5rem", display: "flex", justifyContent: "center" }}>
+              <SectionLabel dark>Bước tiếp theo</SectionLabel>
+            </motion.div>
+
+            <motion.h2 variants={fadeUp} style={{ fontSize: "clamp(1.65rem, 4vw, 2.25rem)", fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.020em", color: "rgba(255,255,255,0.94)", marginBottom: "1.125rem" }}>
+              Anh/chị đang quan tâm nhiều hơn ở góc nào?
+            </motion.h2>
+
+            <motion.p variants={fadeUp} style={{ fontSize: "14px", lineHeight: 1.88, fontWeight: 300, color: "rgba(255,255,255,0.50)", maxWidth: "34rem", margin: "0 auto 2.25rem" }}>
+              Công nghệ & mô hình vận hành, hay cơ chế bảo vệ & cấu trúc tham gia? Nếu anh/chị muốn, có thể bắt đầu bằng việc để lại thông tin để nhận thêm tài liệu phù hợp.
+            </motion.p>
+
+            <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", justifyContent: "center", marginBottom: "2.5rem" }}>
+              <button style={btnPrimary} onClick={() => setShowReg(true)}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.38)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(26,120,104,0.30)"; }}>
+                Đăng ký quan tâm
+              </button>
+              <button style={btnGhost} onClick={() => setShowInfo(true)}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,160,140,0.60)"; (e.currentTarget as HTMLElement).style.color = "rgba(52,160,140,1)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,160,140,0.35)"; (e.currentTarget as HTMLElement).style.color = "rgba(52,160,140,0.85)"; }}>
+                Nhận thông tin
+              </button>
+            </motion.div>
+
+            <motion.p variants={fadeUp} style={{ fontSize: "13px", fontStyle: "italic", fontWeight: 300, color: "rgba(255,255,255,0.30)", lineHeight: 1.7 }}>
+              Không phải mọi cơ hội đều phù hợp với mọi người. Điều quan trọng là hiểu rõ trước khi quyết định.
+            </motion.p>
+
           </motion.div>
+        </div>
+      </section>
 
-          <motion.h2 variants={fadeUp} style={{ fontSize: "clamp(1.65rem, 4vw, 2.25rem)", fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.020em", color: "rgba(255,255,255,0.94)", marginBottom: "1.125rem" }}>
-            Anh/chị đang quan tâm nhiều hơn ở góc nào?
-          </motion.h2>
+      {/* ── Registration Modal (high-intent) ─────────── */}
+      {showReg && (
+        <div style={overlay} onClick={closeReg}>
+          <div style={panel} onClick={e => e.stopPropagation()}>
+            <button style={closeBtn} onClick={closeReg} aria-label="Đóng">×</button>
 
-          <motion.p variants={fadeUp} style={{ fontSize: "14px", lineHeight: 1.88, fontWeight: 300, color: "rgba(255,255,255,0.50)", maxWidth: "34rem", margin: "0 auto 2.25rem" }}>
-            Công nghệ & mô hình vận hành, hay cơ chế bảo vệ & cấu trúc tham gia? Nếu anh/chị muốn, có thể bắt đầu bằng việc để lại thông tin để nhận thêm tài liệu phù hợp.
-          </motion.p>
+            {regSent ? (
+              <div style={{ textAlign: "center", padding: "2rem 0.5rem" }}>
+                <SuccessMark />
+                <p style={{ fontSize: "16px", fontWeight: 600, color: "rgba(255,255,255,0.90)", marginBottom: "0.75rem" }}>Chúng tôi đã nhận được thông tin</p>
+                <p style={{ fontSize: "13.5px", fontWeight: 300, lineHeight: 1.82, color: "rgba(255,255,255,0.46)", maxWidth: "26rem", margin: "0 auto 1.75rem" }}>
+                  Cảm ơn anh/chị đã dành thời gian. Đội ngũ ATLAS sẽ liên hệ trong thời gian sớm nhất để trao đổi thêm.
+                </p>
+                <button style={{ ...btnGhost, width: "100%" }} onClick={closeReg}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,160,140,0.60)"; (e.currentTarget as HTMLElement).style.color = "rgba(52,160,140,1)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,160,140,0.35)"; (e.currentTarget as HTMLElement).style.color = "rgba(52,160,140,0.85)"; }}>
+                  Đóng
+                </button>
+              </div>
+            ) : (
+              <>
+                <p style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(52,160,140,0.68)", marginBottom: "0.5rem" }}>ATLAS · Đăng ký</p>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "rgba(255,255,255,0.92)", marginBottom: "1.75rem", lineHeight: 1.25 }}>
+                  Đăng ký quan tâm đến ATLAS
+                </h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: "1.1rem" }}>
+                  <div>
+                    <label style={fieldLabel}>Họ và tên</label>
+                    <input type="text" placeholder="Nguyễn Văn A" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                  </div>
+                  <div>
+                    <label style={fieldLabel}>Email</label>
+                    <input type="email" placeholder="email@example.com" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                  </div>
+                  <div>
+                    <label style={fieldLabel}>Số điện thoại / Zalo</label>
+                    <input type="tel" placeholder="09xx xxx xxx" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                  </div>
+                  <div>
+                    <label style={fieldLabel}>Mối quan tâm chính</label>
+                    <select style={fieldSelect} defaultValue="" onFocus={focusBorder} onBlur={blurBorder}>
+                      <option value="" disabled>Chọn mối quan tâm...</option>
+                      <option value="buy">Tìm hiểu mua / thuê bất động sản</option>
+                      <option value="sell">Đăng bán / cho thuê bất động sản</option>
+                      <option value="invest">Đầu tư hoặc hợp tác</option>
+                      <option value="general">Tìm hiểu chung về ATLAS</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={fieldLabel}>
+                      Ghi chú thêm{" "}
+                      <span style={{ fontSize: "9px", fontWeight: 400, opacity: 0.55, letterSpacing: "0.05em" }}>(không bắt buộc)</span>
+                    </label>
+                    <textarea placeholder="Anh/chị muốn chia sẻ thêm điều gì..." style={fieldTextarea} onFocus={focusBorder} onBlur={blurBorder} />
+                  </div>
+                  <button style={submitBtn} onClick={() => setRegSent(true)} onMouseEnter={hoverSubmit} onMouseLeave={leaveSubmit}>
+                    Gửi đăng ký
+                  </button>
+                  <p style={{ fontSize: "11.5px", fontWeight: 300, color: "rgba(255,255,255,0.26)", textAlign: "center", lineHeight: 1.65 }}>
+                    Thông tin của anh/chị được bảo mật và chỉ dùng để liên hệ về ATLAS.
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
-          <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", justifyContent: "center", marginBottom: "2.5rem" }}>
-            <a href="#" style={btnPrimary}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.38)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(26,120,104,0.30)"; }}>
-              Đăng ký quan tâm
-            </a>
-            <a href="#" style={btnGhost}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,160,140,0.60)"; (e.currentTarget as HTMLElement).style.color = "rgba(52,160,140,1)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,160,140,0.35)"; (e.currentTarget as HTMLElement).style.color = "rgba(52,160,140,0.85)"; }}>
-              Nhận thông tin
-            </a>
-          </motion.div>
+      {/* ── Info Modal (low-friction) ─────────────────── */}
+      {showInfo && (
+        <div style={overlay} onClick={closeInfo}>
+          <div style={panel} onClick={e => e.stopPropagation()}>
+            <button style={closeBtn} onClick={closeInfo} aria-label="Đóng">×</button>
 
-          <motion.p variants={fadeUp} style={{ fontSize: "13px", fontStyle: "italic", fontWeight: 300, color: "rgba(255,255,255,0.30)", lineHeight: 1.7 }}>
-            Không phải mọi cơ hội đều phù hợp với mọi người. Điều quan trọng là hiểu rõ trước khi quyết định.
-          </motion.p>
-
-        </motion.div>
-      </div>
-    </section>
+            {infoSent ? (
+              <div style={{ textAlign: "center", padding: "2rem 0.5rem" }}>
+                <SuccessMark />
+                <p style={{ fontSize: "16px", fontWeight: 600, color: "rgba(255,255,255,0.90)", marginBottom: "0.75rem" }}>Đã ghi nhận</p>
+                <p style={{ fontSize: "13.5px", fontWeight: 300, lineHeight: 1.82, color: "rgba(255,255,255,0.46)", maxWidth: "26rem", margin: "0 auto 1.75rem" }}>
+                  Tài liệu phù hợp sẽ được gửi đến email của anh/chị. Cảm ơn đã quan tâm đến ATLAS.
+                </p>
+                <button style={{ ...btnGhost, width: "100%" }} onClick={closeInfo}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,160,140,0.60)"; (e.currentTarget as HTMLElement).style.color = "rgba(52,160,140,1)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,160,140,0.35)"; (e.currentTarget as HTMLElement).style.color = "rgba(52,160,140,0.85)"; }}>
+                  Đóng
+                </button>
+              </div>
+            ) : (
+              <>
+                <p style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(52,160,140,0.68)", marginBottom: "0.5rem" }}>ATLAS · Thông tin</p>
+                <h3 style={{ fontSize: "18px", fontWeight: 700, color: "rgba(255,255,255,0.92)", marginBottom: "0.75rem", lineHeight: 1.25 }}>
+                  Nhận thêm thông tin về ATLAS
+                </h3>
+                <p style={{ fontSize: "13.5px", fontWeight: 300, lineHeight: 1.78, color: "rgba(255,255,255,0.44)", marginBottom: "1.75rem" }}>
+                  Để lại email và chủ đề anh/chị muốn tìm hiểu. Chúng tôi sẽ gửi tài liệu phù hợp — không spam, không quảng cáo.
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "1.1rem" }}>
+                  <div>
+                    <label style={fieldLabel}>Email</label>
+                    <input type="email" placeholder="email@example.com" style={fieldBase} onFocus={focusBorder} onBlur={blurBorder} />
+                  </div>
+                  <div>
+                    <label style={fieldLabel}>Chủ đề muốn nhận thêm thông tin</label>
+                    <select style={fieldSelect} defaultValue="" onFocus={focusBorder} onBlur={blurBorder}>
+                      <option value="" disabled>Chọn chủ đề...</option>
+                      <option value="tech">Công nghệ & mô hình vận hành</option>
+                      <option value="legal">Cơ chế bảo vệ & pháp lý</option>
+                      <option value="spv">Cấu trúc SPV & đầu tư</option>
+                      <option value="roadmap">Lộ trình phát triển</option>
+                      <option value="all">Tổng quan về ATLAS</option>
+                    </select>
+                  </div>
+                  <button style={submitBtn} onClick={() => setInfoSent(true)} onMouseEnter={hoverSubmit} onMouseLeave={leaveSubmit}>
+                    Nhận thông tin
+                  </button>
+                  <p style={{ fontSize: "11.5px", fontWeight: 300, color: "rgba(255,255,255,0.26)", textAlign: "center", lineHeight: 1.65 }}>
+                    Không spam. Thông tin chỉ dùng để gửi tài liệu theo chủ đề đã chọn.
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
