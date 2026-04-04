@@ -1,0 +1,62 @@
+Refine the news/article detail page so it feels fully polished, readable, and premium.
+
+Current issue:
+- the navbar is too hard to read on the article page
+- the page feels slightly washed out and not fully editorial yet
+- some elements are structurally correct but visually too weak
+
+Please make these exact improvements:
+
+1. Fix navbar readability on article pages
+- do NOT use the transparent/overlay hero navbar state on news detail pages
+- use the solid light navbar state from the first screen of the article page
+- improve contrast for logo, nav links, dropdown, and CTA button
+- make the navbar feel clear, premium, and readable on a light background
+- keep it sticky and consistent with the rest of the site
+
+2. Refine the article header
+- reduce unnecessary empty space at the top slightly
+- improve hierarchy between breadcrumb, badges, title, excerpt, and author row
+- keep the page calm and editorial
+- make the article title the strongest visual element
+- make the supporting excerpt easier to read
+
+3. Improve breadcrumb clarity
+- keep the breadcrumb structure
+- improve contrast, spacing, and readability
+- make the current page crumb feel slightly more intentional
+
+4. Refine category/product badges
+- preserve the current logic
+- make the main category badge feel primary
+- make the related product/system badge feel secondary
+- improve spacing and visual polish
+
+5. Improve article body readability
+- increase text readability with better line-height and paragraph spacing
+- keep the reading width premium and comfortable
+- make the article body feel more editorial and less like plain text blocks
+- preserve the calm minimal style
+
+6. Refine author/date block
+- keep the current author info
+- improve alignment, hierarchy, and visual polish subtly
+- make it feel more intentional and premium
+
+7. Improve tags and navigation below the article
+- keep the “CHỦ ĐỀ” section
+- make tags feel easier to scan and click
+- improve spacing and hover states
+- make “Quay lại Tin tức” slightly clearer and more intentional
+
+8. Improve related articles section
+- keep the “Có thể anh/chị quan tâm” logic
+- make the related article card(s) feel more useful and premium
+- improve hierarchy, spacing, and clarity
+- keep the style editorial and consistent
+
+Important:
+- do not redesign the whole page
+- preserve the Thắng SWC premium editorial identity
+- focus on readability, hierarchy, and article-page polish
+- this page should feel like a finished premium insight/article page
