@@ -16,6 +16,7 @@ import { AnalyticsPanel }          from "./admin/AnalyticsPanel";
 import { EmailSubscribersPanel }  from "./admin/EmailSubscribersPanel";
 import { EmailCampaignsPanel }    from "./admin/EmailCampaignsPanel";
 import { EmailSequencesPanel }    from "./admin/EmailSequencesPanel";
+import { EmailSettingsPanel }     from "./admin/EmailSettingsPanel";
 import { ResourcesPanel }         from "./admin/ResourcesPanel";
 import { ContactWidgetPanel }     from "./admin/ContactWidgetPanel";
 import { A }                      from "./admin/shared";
@@ -40,6 +41,7 @@ type Section =
   | "email-subscribers"
   | "email-campaigns"
   | "email-sequences"
+  | "email-settings"
   | "resources"
   | "contact-widget";
 
@@ -83,6 +85,7 @@ const NAV_STRUCTURE: NavGroup[] = [
       { id: "email-subscribers" as Section, label: "Người đăng ký", icon: "◎" },
       { id: "email-campaigns"   as Section, label: "Chiến dịch",    icon: "≡" },
       { id: "email-sequences"   as Section, label: "Chuỗi email",   icon: "⋮" },
+      { id: "email-settings"    as Section, label: "Cài đặt email", icon: "⚙" },
     ],
   },
   {
@@ -123,6 +126,7 @@ const SECTION_TITLES: Record<Section, string> = {
   "email-subscribers": "Email · Người đăng ký",
   "email-campaigns":   "Email · Chiến dịch",
   "email-sequences":   "Email · Chuỗi tự động",
+  "email-settings":    "Email · Cài đặt",
   resources:           "Tài liệu",
   "contact-widget":    "Liên hệ nổi · Widget",
 };
@@ -357,6 +361,7 @@ export default function Admin() {
           {section === "email-subscribers" && <EmailSubscribersPanel  adminKey={adminKey} />}
           {section === "email-campaigns"   && <EmailCampaignsPanel    adminKey={adminKey} />}
           {section === "email-sequences"   && <EmailSequencesPanel    adminKey={adminKey} />}
+          {section === "email-settings"    && <EmailSettingsPanel     adminKey={adminKey} />}
           {section === "resources"         && <ResourcesPanel         adminKey={adminKey} />}
           {section === "contact-widget"   && <ContactWidgetPanel     adminKey={adminKey} />}
         </main>

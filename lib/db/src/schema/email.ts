@@ -8,17 +8,17 @@ export const emailSubscribersTable = pgTable("email_subscribers", {
   fullName: text("full_name"),
   firstName: text("first_name"),
   subscriberStatus: text("subscriber_status").notNull().default("subscribed"),
-  // subscribed | unsubscribed | bounced | paused
+  // subscribed | unsubscribed | bounced | paused | suppressed
   interestPrimary: text("interest_primary"),
+  // ky_luat_tai_chinh | dau_tu_dai_han | swc | con_duong_1_trieu_do | chua_ro
   stage: text("stage").default("new_lead"),
-  // new_lead | nurturing | active | converted | inactive
+  // new_lead | nurturing | engaged | hot_lead | customer | inactive
   sourceType: text("source_type"),
+  // website_homepage | website_article | website_contact | landing_leadmagnet | youtube | facebook | webinar | manual_import
   sourcePage: text("source_page"),
   sourceSection: text("source_section"),
   consentStatus: text("consent_status").default("given"),
-  // Token for one-click unsubscribe links (generated on signup)
   unsubscribeToken: text("unsubscribe_token").notNull(),
-  // Optional link to a CRM lead record with the same email
   linkedLeadId: integer("linked_lead_id").references(() => leadsTable.id),
   tags: jsonb("tags").$type<string[]>(),
   subscribedAt: timestamp("subscribed_at", { withTimezone: true }).defaultNow(),
@@ -42,10 +42,12 @@ export const emailCampaignsTable = pgTable("email_campaigns", {
   status: text("status").notNull().default("draft"),
   // draft | sent | scheduled
   contentBody: text("content_body"),
-  // Plain-text body; rendered into HTML template on send
   targetType: text("target_type").default("all"),
-  // all | tagged | manual
+  // all | tagged | stage | source | interest
   targetTags: jsonb("target_tags").$type<string[]>(),
+  targetStage: text("target_stage"),
+  targetSource: text("target_source"),
+  targetInterest: text("target_interest"),
   recipientCount: integer("recipient_count"),
   sentAt: timestamp("sent_at", { withTimezone: true }),
   scheduledAt: timestamp("scheduled_at", { withTimezone: true }),
@@ -59,6 +61,8 @@ export const emailEventsTable = pgTable("email_events", {
   id: serial("id").primaryKey(),
   subscriberId: integer("subscriber_id").references(() => emailSubscribersTable.id),
   campaignId: integer("campaign_id").references(() => emailCampaignsTable.id),
+  sequenceId: integer("sequence_id").references(() => emailSequencesTable.id, { onDelete: "set null" }),
+  stepId: integer("step_id").references(() => emailSequenceStepsTable.id, { onDelete: "set null" }),
   eventType: text("event_type").notNull(),
   // sent | delivered | opened | clicked | bounced | unsubscribed
   eventMetadata: jsonb("event_metadata"),
@@ -73,10 +77,13 @@ export const emailSequencesTable = pgTable("email_sequences", {
   slug: text("slug").unique(),
   description: text("description"),
   status: text("status").notNull().default("active"),
-  // active | paused
+  // active | paused | archived
   triggerType: text("trigger_type").default("on_subscribe"),
-  // on_subscribe | manual | tag_added
+  // on_subscribe | tag_added | form_submitted | link_clicked | manual | segment_entered
   triggerTags: jsonb("trigger_tags").$type<string[]>(),
+  triggerConfig: jsonb("trigger_config").$type<Record<string, unknown>>(),
+  excludeRules: jsonb("exclude_rules").$type<string[]>(),
+  // array of rule ids: already_customer, already_enrolled, already_completed, unsubscribed, bounced, has_tag:xxx
   goal: text("goal"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
@@ -89,12 +96,25 @@ export const emailSequenceStepsTable = pgTable("email_sequence_steps", {
   sequenceId: integer("sequence_id").notNull().references(() => emailSequencesTable.id, { onDelete: "cascade" }),
   stepOrder: integer("step_order").notNull().default(1),
   stepType: text("step_type").default("email"),
-  // email | tag | wait
+  // email | wait | add_tag | remove_tag | update_field | end | move_to_sequence
   delayDays: integer("delay_days").notNull().default(0),
-  subject: text("subject").notNull(),
+  // --- Email step fields ---
+  subject: text("subject").notNull().default(""),
   previewText: text("preview_text"),
   contentBody: text("content_body"),
+  senderName: text("sender_name"),
+  senderEmail: text("sender_email"),
+  ctaText: text("cta_text"),
+  ctaUrl: text("cta_url"),
+  ctaSecondaryText: text("cta_secondary_text"),
+  ctaSecondaryUrl: text("cta_secondary_url"),
+  // --- Tag / field steps ---
   tagName: text("tag_name"),
+  updateField: text("update_field"),
+  updateValue: text("update_value"),
+  // --- Move to sequence step ---
+  targetSequenceId: integer("target_sequence_id").references(() => emailSequencesTable.id, { onDelete: "set null" }),
+  // --- Legacy / misc ---
   actionData: jsonb("action_data"),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -103,7 +123,6 @@ export const emailSequenceStepsTable = pgTable("email_sequence_steps", {
 export type EmailSequenceStep = typeof emailSequenceStepsTable.$inferSelect;
 
 /* ── Sequence enrollments (tracks per-subscriber progress) ────────── */
-// One row per (subscriber, sequence). Tracks which step to send next.
 export const emailSequenceEnrollmentsTable = pgTable("email_sequence_enrollments", {
   id: serial("id").primaryKey(),
   subscriberId: integer("subscriber_id").notNull().references(() => emailSubscribersTable.id, { onDelete: "cascade" }),

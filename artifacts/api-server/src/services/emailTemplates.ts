@@ -172,12 +172,42 @@ export function campaignEmailHtml(opts: {
 }
 
 export function sequenceStepEmailHtml(opts: {
-  subject:        string;
-  previewText?:   string | null;
-  contentBody:    string;
-  unsubscribeUrl: string;
+  subject:              string;
+  previewText?:         string | null;
+  contentBody:          string;
+  unsubscribeUrl:       string;
+  ctaText?:             string | null;
+  ctaUrl?:              string | null;
+  ctaSecondaryText?:    string | null;
+  ctaSecondaryUrl?:     string | null;
 }): string {
-  return campaignEmailHtml(opts);
+  const paragraphs = opts.contentBody
+    .split(/\n\n+/)
+    .filter((p) => p.trim())
+    .map((p) => {
+      // Bold: **text**
+      const processed = p.trim()
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\n/g, "<br>");
+      return bodyText(processed);
+    })
+    .join("\n");
+
+  const primaryBtn    = (opts.ctaText?.trim() && opts.ctaUrl?.trim())
+    ? ctaButton(opts.ctaText.trim(), opts.ctaUrl.trim())
+    : "";
+  const secondaryBtn  = (opts.ctaSecondaryText?.trim() && opts.ctaSecondaryUrl?.trim())
+    ? `<p style="margin:0 0 20px;"><a href="${opts.ctaSecondaryUrl.trim()}" style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:${TEAL};text-decoration:underline;">${opts.ctaSecondaryText.trim()}</a></p>`
+    : "";
+
+  const bodyHtml = [paragraphs, primaryBtn, secondaryBtn].filter(Boolean).join("\n");
+
+  return wrapEmailLayout({
+    subject:        opts.subject,
+    previewText:    opts.previewText,
+    bodyHtml,
+    unsubscribeUrl: opts.unsubscribeUrl,
+  });
 }
 
 export function unsubscribePageHtml(opts: {

@@ -168,6 +168,7 @@ export interface EmailCampaign {
   id: number; title: string; subject: string; previewText: string | null;
   campaignType: string; status: string; contentBody: string | null;
   targetType: string | null; targetTags: string[] | null;
+  targetStage: string | null; targetSource: string | null; targetInterest: string | null;
   recipientCount: number | null; sentAt: string | null; scheduledAt: string | null;
   createdAt: string; updatedAt: string;
 }
@@ -175,7 +176,11 @@ export interface EmailCampaign {
 export interface EmailSequence {
   id: number; title: string; slug: string | null; description: string | null;
   status: string; triggerType: string | null;
-  triggerTags: string[] | null; goal: string | null;
+  triggerTags: string[] | null; triggerConfig: Record<string, unknown> | null;
+  excludeRules: string[] | null; goal: string | null;
+  // Enriched analytics (from list endpoint)
+  enrolledCount?: number; activeCount?: number; completedCount?: number;
+  stepCount?: number; openRate?: number | null; clickRate?: number | null;
   createdAt: string; updatedAt: string;
 }
 
@@ -183,8 +188,30 @@ export interface EmailSequenceStep {
   id: number; sequenceId: number; stepOrder: number;
   stepType: string | null; delayDays: number;
   subject: string; previewText: string | null; contentBody: string | null;
-  tagName: string | null; actionData: Record<string, unknown> | null;
+  senderName: string | null; senderEmail: string | null;
+  ctaText: string | null; ctaUrl: string | null;
+  ctaSecondaryText: string | null; ctaSecondaryUrl: string | null;
+  tagName: string | null; updateField: string | null; updateValue: string | null;
+  targetSequenceId: number | null;
+  actionData: Record<string, unknown> | null;
   isActive: boolean; createdAt: string; updatedAt: string;
+}
+
+export interface SequenceAnalytics {
+  enrolled: number; active: number; completed: number; exited: number;
+  sent: number; opened: number; clicked: number;
+  openRate: number | null; clickRate: number | null;
+  steps: {
+    stepId: number; stepOrder: number; stepType: string | null; subject: string; delayDays: number;
+    sent: number; opened: number; clicked: number;
+    openRate: number | null; clickRate: number | null;
+  }[];
+}
+
+export interface SubscriberEnrollment {
+  enrollmentId: number; sequenceId: number; seqTitle: string | null;
+  status: string; currentStep: number;
+  nextSendAt: string | null; enrolledAt: string; completedAt: string | null;
 }
 
 export interface LeadMagnet {
@@ -421,41 +448,66 @@ export const adminApi = {
   getEmailStats: (key: string) =>
     get<{
       totalSubscribers: number; activeSubscribers: number; recentSubscribers: number;
-      totalCampaigns: number; sentCampaigns: number; totalEmailsSent: number; activeSequences: number;
+      totalCampaigns: number; sentCampaigns: number; totalEmailsSent: number;
+      activeSequences: number; totalEnrolled: number; activeEnrolled: number;
       recentCampaigns: Pick<EmailCampaign, "id" | "title" | "status" | "sentAt" | "recipientCount">[];
     }>("/admin/email/stats", key),
 
+  /* email — settings */
+  getEmailSettings: (key: string) =>
+    get<{ senderName: string; senderEmail: string; replyToEmail: string; siteUrl: string; providerType: string; apiKeyConfigured: boolean }>("/admin/email/settings", key),
+  sendTestEmailSettings: (key: string, toEmail: string) =>
+    mutate<{ ok: boolean; error?: string }>("POST", "/admin/email/settings/test", { toEmail }, key),
+
   /* email — subscribers */
-  getSubscribers: (key: string, params?: { q?: string; status?: string }) => {
+  getSubscribers: (key: string, params?: { q?: string; status?: string; stage?: string; interest?: string; source?: string }) => {
     const qs = new URLSearchParams(Object.entries(params ?? {}).filter(([, v]) => !!v) as [string, string][]).toString();
     return get<{ subscribers: EmailSubscriber[] }>(`/admin/email/subscribers${qs ? `?${qs}` : ""}`, key).then((d) => d.subscribers);
   },
-  updateSubscriber: (key: string, id: number, data: { subscriberStatus?: string; fullName?: string; tags?: string[] }) =>
+  updateSubscriber: (key: string, id: number, data: Partial<EmailSubscriber>) =>
     mutate<{ subscriber: EmailSubscriber }>("PATCH", `/admin/email/subscribers/${id}`, data, key).then((d) => d.subscriber),
+  getSubscriberEnrollments: (key: string, id: number) =>
+    get<{ enrollments: SubscriberEnrollment[] }>(`/admin/email/subscribers/${id}/enrollments`, key).then((d) => d.enrollments),
+  enrollSubscriber: (key: string, id: number, sequenceId: number, force?: boolean) =>
+    mutate<{ ok: boolean; enrollment?: SubscriberEnrollment }>( "POST", `/admin/email/subscribers/${id}/enroll`, { sequenceId, force }, key),
+  getSubscriberActivity: (key: string, id: number) =>
+    get<{ events: { id: number; eventType: string; createdAt: string; seqTitle: string | null; eventMetadata: unknown }[] }>(`/admin/email/subscribers/${id}/activity`, key).then((d) => d.events),
 
   /* email — campaigns */
   getCampaigns: (key: string) =>
     get<{ campaigns: EmailCampaign[] }>("/admin/email/campaigns", key).then((d) => d.campaigns),
+  getCampaignPreviewCount: (key: string, params: { targetType: string; targetStage?: string; targetSource?: string; targetInterest?: string }) => {
+    const qs = new URLSearchParams(Object.entries(params).filter(([, v]) => !!v) as [string, string][]).toString();
+    return get<{ count: number }>(`/admin/email/campaigns/preview-count?${qs}`, key).then((d) => d.count);
+  },
   createCampaign: (key: string, data: Partial<EmailCampaign>) =>
     mutate<{ campaign: EmailCampaign }>("POST", "/admin/email/campaigns", data, key).then((d) => d.campaign),
   updateCampaign: (key: string, id: number, data: Partial<EmailCampaign>) =>
     mutate<{ campaign: EmailCampaign }>("PUT", `/admin/email/campaigns/${id}`, data, key).then((d) => d.campaign),
   deleteCampaign: (key: string, id: number) =>
     mutate<{ ok: boolean }>("DELETE", `/admin/email/campaigns/${id}`, undefined, key),
+  duplicateCampaign: (key: string, id: number) =>
+    mutate<{ campaign: EmailCampaign }>("POST", `/admin/email/campaigns/${id}/duplicate`, {}, key).then((d) => d.campaign),
   sendCampaign: (key: string, id: number) =>
     mutate<{ ok: boolean; recipientCount?: number; error?: string }>("POST", `/admin/email/campaigns/${id}/send`, {}, key),
   testCampaign: (key: string, id: number, testEmail: string) =>
     mutate<{ ok: boolean; error?: string }>("POST", `/admin/email/campaigns/${id}/test`, { testEmail }, key),
 
   /* email — sequences */
-  getSequences: (key: string) =>
-    get<{ sequences: EmailSequence[] }>("/admin/email/sequences", key).then((d) => d.sequences),
+  getSequences: (key: string, params?: { status?: string; trigger?: string }) => {
+    const qs = new URLSearchParams(Object.entries(params ?? {}).filter(([, v]) => !!v) as [string, string][]).toString();
+    return get<{ sequences: EmailSequence[] }>(`/admin/email/sequences${qs ? `?${qs}` : ""}`, key).then((d) => d.sequences);
+  },
+  getSequenceAnalytics: (key: string, id: number) =>
+    get<SequenceAnalytics>(`/admin/email/sequences/${id}/analytics`, key),
   createSequence: (key: string, data: Partial<EmailSequence>) =>
     mutate<{ sequence: EmailSequence }>("POST", "/admin/email/sequences", data, key).then((d) => d.sequence),
   updateSequence: (key: string, id: number, data: Partial<EmailSequence>) =>
     mutate<{ sequence: EmailSequence }>("PUT", `/admin/email/sequences/${id}`, data, key).then((d) => d.sequence),
   deleteSequence: (key: string, id: number) =>
     mutate<{ ok: boolean }>("DELETE", `/admin/email/sequences/${id}`, undefined, key),
+  seedSequences: (key: string) =>
+    mutate<{ ok: boolean; inserted: { slug: string }[]; skipped: { slug: string }[] }>("POST", "/admin/email/sequences/seed", {}, key),
 
   /* email — sequence steps */
   getSequenceSteps: (key: string, sequenceId: number) =>

@@ -128,10 +128,14 @@ export async function sendSequenceStepToSubscriber(
   step: EmailSequenceStep,
 ): Promise<{ ok: boolean }> {
   const html = sequenceStepEmailHtml({
-    subject:        step.subject,
-    previewText:    step.previewText,
-    contentBody:    step.contentBody ?? "",
-    unsubscribeUrl: unsubscribeUrl(subscriber.unsubscribeToken),
+    subject:           step.subject,
+    previewText:       step.previewText,
+    contentBody:       step.contentBody ?? "",
+    unsubscribeUrl:    unsubscribeUrl(subscriber.unsubscribeToken),
+    ctaText:           (step as Record<string, unknown>)["ctaText"] as string | null ?? null,
+    ctaUrl:            (step as Record<string, unknown>)["ctaUrl"] as string | null ?? null,
+    ctaSecondaryText:  (step as Record<string, unknown>)["ctaSecondaryText"] as string | null ?? null,
+    ctaSecondaryUrl:   (step as Record<string, unknown>)["ctaSecondaryUrl"] as string | null ?? null,
   });
 
   const result = await sendEmail({ to: subscriber.email, subject: step.subject, html });
