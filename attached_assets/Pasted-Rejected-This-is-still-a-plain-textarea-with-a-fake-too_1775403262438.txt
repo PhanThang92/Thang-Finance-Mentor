@@ -1,0 +1,90 @@
+Rejected. This is still a plain textarea with a fake toolbar, not a real rich text editor.
+
+I do NOT want more patching on the existing textarea.
+I want you to actually replace the current article content field with a true WYSIWYG rich text editor.
+
+CURRENT RESULT IS NOT ACCEPTABLE because:
+- it is still a textarea
+- it still shows markdown-style placeholder text like "# Tiêu đề bài"
+- headings/lists are not true block nodes
+- this is not a structured editor
+- the writing experience is still primitive
+
+Use this as the new source of truth:
+
+GOAL
+Replace the current article editor with a real block-based rich text editor, preferably TipTap, or Lexical if it fits the stack better.
+
+MANDATORY REQUIREMENTS
+
+1. REAL EDITOR, NOT TEXTAREA
+- remove the current textarea-based content input
+- mount a real rich text editor component
+- the content area must be true WYSIWYG
+- when I type a heading, it should be a real heading block, not markdown text inside a textarea
+
+2. REQUIRED FEATURES
+The editor must support:
+- paragraph
+- H2
+- H3
+- bold
+- italic
+- bullet list
+- numbered list
+- blockquote
+- link
+- horizontal rule
+- undo / redo
+
+3. VISUAL BEHAVIOR
+- the editor surface must look like a modern CMS editor
+- no markdown placeholder like "# Title"
+- no raw markdown typing requirement
+- selected formatting must visibly apply inside the editor
+- toolbar buttons must toggle real formatting
+
+4. DATA STORAGE
+- store content in a reliable structured format
+- preferred: clean HTML or structured JSON
+- the saved content must reload correctly into the editor
+- frontend article rendering must match the editor structure
+
+5. FRONTEND COMPATIBILITY
+- H2 must render as real H2
+- H3 as real H3
+- lists as real lists
+- paragraphs as real paragraphs
+- links as real links
+- no broken parsing from pseudo-markdown
+
+6. IMPLEMENTATION REQUIREMENTS
+Please actually install and use the required editor packages.
+For example, if using TipTap, implement the real editor with proper extensions and integration.
+Do not simulate an editor using a textarea.
+
+7. ADMIN UX
+- keep the current admin layout and styling
+- the editor should feel native to the CMS
+- toolbar should be clean and compact
+- content area should be comfortable for long-form writing
+
+8. ACCEPTANCE CRITERIA
+This task is only complete if:
+- the textarea is gone
+- a real editor component is visible
+- headings/lists/links are true formatted blocks
+- content saves and reloads correctly
+- frontend article pages render the structure correctly
+- old content is preserved or migrated safely
+
+9. BEFORE FINISHING
+Show me:
+- which editor library you used
+- which packages were installed
+- which files were changed
+- how content is stored now
+- how old content compatibility is handled
+
+Do not give me another patched textarea.
+I want a true rich text editor replacement.
