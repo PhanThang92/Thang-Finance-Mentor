@@ -20,8 +20,10 @@ router.post("/", async (req, res) => {
   try {
     const {
       name, email, phone,
-      sourceType, sourcePage, productRef,
+      sourceType, sourcePage, sourceSection, productRef,
       message, interestTopic, formType, consentStatus,
+      utmSource, utmMedium, utmCampaign,
+      referrer,
       hp, // honeypot — must be empty
     } = req.body;
 
@@ -51,7 +53,7 @@ router.post("/", async (req, res) => {
       return;
     }
 
-    // Email deduplication — Option A: update existing record
+    // Email deduplication — update existing record if email already known
     if (trimmedEmail) {
       const [existing] = await db
         .select()
@@ -62,14 +64,19 @@ router.post("/", async (req, res) => {
       if (existing) {
         await db.update(leadsTable).set({
           name: String(name).trim(),
-          phone: phone?.trim() || existing.phone,
-          sourceType: sourceType || existing.sourceType,
-          sourcePage: sourcePage || existing.sourcePage,
-          productRef: productRef || existing.productRef,
-          message: message?.trim() || existing.message,
-          interestTopic: interestTopic || existing.interestTopic,
-          formType: formType || existing.formType,
-          consentStatus: consentStatus || existing.consentStatus,
+          phone:         phone?.trim()    || existing.phone,
+          sourceType:    sourceType       || existing.sourceType,
+          sourcePage:    sourcePage       || existing.sourcePage,
+          sourceSection: sourceSection    || existing.sourceSection,
+          productRef:    productRef       || existing.productRef,
+          message:       message?.trim()  || existing.message,
+          interestTopic: interestTopic    || existing.interestTopic,
+          formType:      formType         || existing.formType,
+          consentStatus: consentStatus    || existing.consentStatus,
+          utmSource:     utmSource        || existing.utmSource,
+          utmMedium:     utmMedium        || existing.utmMedium,
+          utmCampaign:   utmCampaign      || existing.utmCampaign,
+          referrer:      referrer         || existing.referrer,
           updatedAt: new Date(),
         }).where(eq(leadsTable.id, existing.id));
         res.json({ ok: true, id: existing.id });
@@ -78,16 +85,21 @@ router.post("/", async (req, res) => {
     }
 
     const [lead] = await db.insert(leadsTable).values({
-      name: String(name).trim(),
-      email: trimmedEmail,
-      phone: phone?.trim() || null,
-      sourceType: sourceType || null,
-      sourcePage: sourcePage || null,
-      productRef: productRef || null,
-      message: message?.trim() || null,
-      interestTopic: interestTopic || null,
-      formType: formType || null,
-      consentStatus: consentStatus || null,
+      name:          String(name).trim(),
+      email:         trimmedEmail,
+      phone:         phone?.trim()   || null,
+      sourceType:    sourceType      || null,
+      sourcePage:    sourcePage      || null,
+      sourceSection: sourceSection   || null,
+      productRef:    productRef      || null,
+      message:       message?.trim() || null,
+      interestTopic: interestTopic   || null,
+      formType:      formType        || null,
+      consentStatus: consentStatus   || null,
+      utmSource:     utmSource       || null,
+      utmMedium:     utmMedium       || null,
+      utmCampaign:   utmCampaign     || null,
+      referrer:      referrer        || null,
     }).returning();
 
     res.json({ ok: true, id: lead.id });

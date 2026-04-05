@@ -341,7 +341,7 @@ router.get("/leads", async (req, res) => {
 
 router.patch("/leads/:id", async (req, res) => {
   try {
-    const { status, notes, interestTopic, formType, leadStage, tags, lastContactedAt, nextFollowUpAt } = req.body;
+    const { status, notes, interestTopic, formType, leadStage, tags, lastContactedAt, nextFollowUpAt, assignedTo, score } = req.body;
     const now = new Date();
     const updateData: Record<string, unknown> = { updatedAt: now };
     if (status          !== undefined) updateData.status          = status;
@@ -352,6 +352,8 @@ router.patch("/leads/:id", async (req, res) => {
     if (tags            !== undefined) updateData.tags            = tags;
     if (lastContactedAt !== undefined) updateData.lastContactedAt = lastContactedAt ? new Date(lastContactedAt) : null;
     if (nextFollowUpAt  !== undefined) updateData.nextFollowUpAt  = nextFollowUpAt  ? new Date(nextFollowUpAt)  : null;
+    if (assignedTo      !== undefined) updateData.assignedTo      = assignedTo || null;
+    if (score           !== undefined) updateData.score           = Number(score);
     const [lead] = await db.update(leadsTable).set(updateData as never).where(eq(leadsTable.id, Number(req.params.id))).returning();
     res.json({ lead });
   } catch (e) { res.status(500).json({ error: String(e) }); }

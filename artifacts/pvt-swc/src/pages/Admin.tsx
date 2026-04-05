@@ -16,6 +16,7 @@ import { AnalyticsPanel }          from "./admin/AnalyticsPanel";
 import { EmailSubscribersPanel }  from "./admin/EmailSubscribersPanel";
 import { EmailCampaignsPanel }    from "./admin/EmailCampaignsPanel";
 import { EmailSequencesPanel }    from "./admin/EmailSequencesPanel";
+import { ResourcesPanel }         from "./admin/ResourcesPanel";
 import { A }                      from "./admin/shared";
 
 /* ── Types ────────────────────────────────────────────────────────── */
@@ -37,7 +38,8 @@ type Section =
   | "analytics"
   | "email-subscribers"
   | "email-campaigns"
-  | "email-sequences";
+  | "email-sequences"
+  | "resources";
 
 interface NavItem { id: Section; label: string; icon: string; }
 type NavGroup = { group: string; items: NavItem[] };
@@ -101,6 +103,12 @@ const NAV_STRUCTURE: NavGroup[] = [
     ],
   },
   {
+    group: "Tài liệu",
+    items: [
+      { id: "resources" as Section, label: "Tài liệu", icon: "⊙" },
+    ],
+  },
+  {
     group: "Hệ thống",
     items: [
       { id: "account", label: "Tài khoản", icon: "○" },
@@ -127,11 +135,12 @@ const SECTION_TITLES: Record<Section, string> = {
   "email-subscribers": "Email · Người đăng ký",
   "email-campaigns":   "Email · Chiến dịch",
   "email-sequences":   "Email · Chuỗi tự động",
+  resources:           "Tài liệu",
 };
 
 const STORAGE_KEY = "swc_admin_key";
 
-const FULL_HEIGHT_SECTIONS: Section[] = ["leads", "email-subscribers"];
+const FULL_HEIGHT_SECTIONS: Section[] = ["leads", "email-subscribers", "resources"];
 
 /* ── Login ────────────────────────────────────────────────────────── */
 function LoginScreen({ onLogin }: { onLogin: (key: string) => void }) {
@@ -355,6 +364,7 @@ export default function Admin() {
           {section === "email-subscribers" && <EmailSubscribersPanel  adminKey={adminKey} />}
           {section === "email-campaigns"   && <EmailCampaignsPanel    adminKey={adminKey} />}
           {section === "email-sequences"   && <EmailSequencesPanel    adminKey={adminKey} />}
+          {section === "resources"         && <ResourcesPanel         adminKey={adminKey} />}
         </main>
       </div>
     </div>

@@ -23,3 +23,4 @@ export * from "./content";
 export * from "./media";
 export * from "./analytics";
 export * from "./email";
+export * from "./resources";

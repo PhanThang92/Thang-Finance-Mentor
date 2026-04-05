@@ -126,6 +126,15 @@ function LeadRow({
                 MỚI
               </span>
             )}
+            {lead.score > 0 && (
+              <span style={{
+                fontSize: "9px", fontWeight: 700, letterSpacing: "0.04em",
+                background: lead.score >= 70 ? "#059669" : lead.score >= 40 ? "#d97706" : "#6b7280",
+                color: "#fff", padding: "1px 5px", borderRadius: "3px",
+              }}>
+                {lead.score}pt
+              </span>
+            )}
           </div>
         </div>
       </td>
@@ -153,6 +162,11 @@ function LeadRow({
       {/* Nguồn */}
       <td style={{ ...s.td, width: "110px" }}>
         <span style={{ fontSize: "12px", color: A.textMuted }}>{sourceLabel(lead.sourceType)}</span>
+        {lead.utmSource && (
+          <p style={{ margin: "1px 0 0", fontSize: "10.5px", color: A.textLight, fontFamily: "monospace" }}>
+            {lead.utmSource}
+          </p>
+        )}
       </td>
 
       {/* Sản phẩm */}
@@ -307,6 +321,8 @@ function LeadDetail({
   const [statusEdit, setStatusEdit]     = useState(lead.status);
   const [interestEdit, setInterestEdit] = useState(lead.interestTopic ?? "");
   const [followUpAt, setFollowUpAt]     = useState(lead.nextFollowUpAt ? lead.nextFollowUpAt.slice(0, 10) : "");
+  const [assignedTo, setAssignedTo]     = useState(lead.assignedTo ?? "");
+  const [score, setScore]               = useState(lead.score ?? 0);
   const [saving, setSaving]             = useState(false);
   const [msg, setMsg]                   = useState("");
 
@@ -321,6 +337,8 @@ function LeadDetail({
     setStatusEdit(lead.status);
     setInterestEdit(lead.interestTopic ?? "");
     setFollowUpAt(lead.nextFollowUpAt ? lead.nextFollowUpAt.slice(0, 10) : "");
+    setAssignedTo(lead.assignedTo ?? "");
+    setScore(lead.score ?? 0);
     setMsg(""); setNewNote("");
     setNotesLoading(true);
     adminApi.getLeadNotes(adminKey, lead.id)
@@ -334,6 +352,8 @@ function LeadDetail({
         status: statusEdit, notes: notesEdit,
         interestTopic: interestEdit || null,
         nextFollowUpAt: followUpAt ? new Date(followUpAt).toISOString() : null,
+        assignedTo: assignedTo || null,
+        score,
       });
       onUpdated(updated);
       setMsg("Đã lưu.");
@@ -417,9 +437,20 @@ function LeadDetail({
         <DetailSection label="Nguồn tiếp cận">
           <DetailRow label="Loại nguồn" value={sourceLabel(lead.sourceType)} />
           <DetailRow label="Trang nguồn" value={lead.sourcePage} mono />
+          <DetailRow label="Vị trí form" value={lead.sourceSection} />
           <DetailRow label="Loại form" value={lead.formType} />
           <DetailRow label="Sản phẩm" value={lead.productRef} highlight />
+          <DetailRow label="Referrer" value={lead.referrer} mono />
         </DetailSection>
+
+        {/* UTM tracking */}
+        {(lead.utmSource || lead.utmMedium || lead.utmCampaign) && (
+          <DetailSection label="UTM Tracking">
+            <DetailRow label="utm_source" value={lead.utmSource} mono />
+            <DetailRow label="utm_medium" value={lead.utmMedium} mono />
+            <DetailRow label="utm_campaign" value={lead.utmCampaign} mono />
+          </DetailSection>
+        )}
 
         {/* Message */}
         {lead.message && (
@@ -438,6 +469,26 @@ function LeadDetail({
             style={{ ...s.field, fontSize: "13px" }}
             placeholder="Ví dụ: đầu tư dài hạn, tài chính cá nhân..."
           />
+        </DetailSection>
+
+        {/* Assigned to + Score */}
+        <DetailSection label="Phân công & Điểm số">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "8px", alignItems: "center" }}>
+            <input
+              type="text" value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
+              style={{ ...s.field, fontSize: "13px" }}
+              placeholder="Phân công cho (email/tên)..."
+            />
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ fontSize: "11px", color: A.textLight, whiteSpace: "nowrap" }}>Điểm:</span>
+              <input
+                type="number" min={0} max={100} value={score}
+                onChange={(e) => setScore(Number(e.target.value))}
+                style={{ ...s.field, width: "64px", fontSize: "13px", textAlign: "center" }}
+              />
+            </div>
+          </div>
         </DetailSection>
 
         {/* Dates & follow-up */}

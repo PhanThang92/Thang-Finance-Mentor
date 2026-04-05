@@ -14,10 +14,12 @@ import HuyDangKy    from "@/pages/HuyDangKy";
 import Admin from "@/pages/Admin";
 import GioiThieu from "@/pages/GioiThieu";
 import KienThuc from "@/pages/KienThuc";
-import BaiViet from "@/pages/BaiViet";
-import Video from "@/pages/Video";
-import ChuDe from "@/pages/ChuDe";
-import Series from "@/pages/Series";
+import BaiViet    from "@/pages/BaiViet";
+import Video       from "@/pages/Video";
+import ChuDe       from "@/pages/ChuDe";
+import Series      from "@/pages/Series";
+import TaiLieu     from "@/pages/TaiLieu";
+import TaiLieuDetail from "@/pages/TaiLieuDetail";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +45,8 @@ function PublicRoutes() {
         <Route path="/tin-tuc/san-pham/atlas" component={() => <TinTuc productSlug="atlas" />} />
         <Route path="/tin-tuc/tag/:slug" component={({ params }) => <TinTuc tagSlug={params.slug} />} />
         <Route path="/tin-tuc/:category/:slug" component={TinTucArticle} />
+        <Route path="/tai-lieu"      component={TaiLieu} />
+        <Route path="/tai-lieu/:slug" component={TaiLieuDetail} />
         <Route path="/huy-dang-ky" component={HuyDangKy} />
         <Route component={NotFound} />
       </Switch>

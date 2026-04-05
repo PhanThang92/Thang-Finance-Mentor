@@ -19,6 +19,13 @@ export const leadsTable = pgTable("leads", {
   lastContactedAt: timestamp("last_contacted_at", { withTimezone: true }),
   nextFollowUpAt: timestamp("next_follow_up_at", { withTimezone: true }),
   consentStatus: text("consent_status"),  // "given" | "not-given"
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  assignedTo: text("assigned_to"),
+  score: integer("score").default(0).notNull(),
+  sourceSection: text("source_section"),
+  referrer: text("referrer"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });

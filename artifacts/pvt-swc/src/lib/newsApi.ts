@@ -14,12 +14,15 @@ export interface NewsPost {
 }
 export interface Lead {
   id: number; name: string; email: string | null; phone: string | null;
-  sourceType: string | null; sourcePage: string | null; productRef: string | null;
+  sourceType: string | null; sourcePage: string | null; sourceSection: string | null; productRef: string | null;
   message: string | null; status: string; notes: string | null;
   interestTopic: string | null; formType: string | null; leadStage: string | null;
   tags: string[] | null;
   lastContactedAt: string | null; nextFollowUpAt: string | null;
   consentStatus: string | null;
+  utmSource: string | null; utmMedium: string | null; utmCampaign: string | null;
+  assignedTo: string | null; score: number;
+  referrer: string | null;
   createdAt: string; updatedAt: string;
 }
 export interface LeadNote {
@@ -163,6 +166,50 @@ export interface EmailSequenceStep {
   isActive: boolean; createdAt: string; updatedAt: string;
 }
 
+export interface LeadMagnet {
+  id: number;
+  title: string;
+  slug: string;
+  shortDescription: string | null;
+  fullDescription: string | null;
+  resourceType: string;
+  coverImageUrl: string | null;
+  coverImageAlt: string | null;
+  fileUrl: string | null;
+  fileName: string | null;
+  fileSize: number | null;
+  fileMimeType: string | null;
+  externalUrl: string | null;
+  thankYouMessage: string | null;
+  buttonLabel: string | null;
+  status: string;
+  gatingMode: string;
+  deliveryMode: string;
+  featured: boolean;
+  topicSlug: string | null;
+  tags: string[] | null;
+  ctaTitle: string | null;
+  ctaDescription: string | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  ogImageUrl: string | null;
+  requiresPhone: boolean;
+  sortOrder: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ResourceAnalytics {
+  totalPageViews: number;
+  totalUnlocks: number;
+  totalDownloads: number;
+  totalEmailSent: number;
+  conversionRate: number;
+  uniqueEmails: number;
+  recent: Array<{ accessType: string; fullName: string | null; email: string | null; sourcePage: string | null; createdAt: string }>;
+  topSources: Array<{ sourcePage: string | null; c: number }>;
+}
+
 const BASE = "/api";
 
 async function get<T>(path: string, adminKey?: string): Promise<T> {
@@ -201,8 +248,9 @@ export const newsApi = {
 export const leadsApi = {
   submit: (data: {
     name: string; email?: string; phone?: string;
-    sourceType?: string; sourcePage?: string; productRef?: string;
+    sourceType?: string; sourcePage?: string; sourceSection?: string; productRef?: string;
     message?: string; interestTopic?: string; formType?: string; consentStatus?: string;
+    utmSource?: string; utmMedium?: string; utmCampaign?: string; referrer?: string;
     hp?: string; // honeypot — always send empty string
   }) => mutate<{ ok: boolean; id: number }>("POST", "/leads", data),
 };
@@ -215,6 +263,26 @@ export const emailApi = {
 
   unsubscribe: (token: string) =>
     get<{ ok: boolean; email?: string; error?: string }>(`/email/unsubscribe?token=${encodeURIComponent(token)}`),
+};
+
+export const resourcesApi = {
+  getResources: (params?: { featured?: boolean; topic?: string }) => {
+    const qs = new URLSearchParams(
+      Object.entries(params ?? {})
+        .filter(([, v]) => v !== undefined)
+        .map(([k, v]) => [k, String(v)])
+    ).toString();
+    return get<{ resources: LeadMagnet[] }>(`/resources${qs ? `?${qs}` : ""}`).then((d) => d.resources);
+  },
+  getResource: (slug: string) =>
+    get<{ resource: LeadMagnet }>(`/resources/${slug}`).then((d) => d.resource),
+  unlockResource: (
+    slug: string,
+    data: { fullName: string; email: string; phone?: string; interest?: string; hp?: string; sourcePage?: string; sourceSection?: string }
+  ) =>
+    mutate<{ ok: boolean; downloadUrl?: string | null; fileName?: string | null; thankYouMessage?: string | null; message: string }>(
+      "POST", `/resources/${slug}/unlock`, data
+    ),
 };
 
 /* ── Admin API ──────────────────────────────────────────────────────── */
@@ -268,6 +336,7 @@ export const adminApi = {
     status?: string; notes?: string; interestTopic?: string | null;
     formType?: string | null; leadStage?: string | null; tags?: string[] | null;
     lastContactedAt?: string | null; nextFollowUpAt?: string | null;
+    assignedTo?: string | null; score?: number;
   }) => mutate<{ lead: Lead }>("PATCH", `/admin/leads/${id}`, data, key).then((d) => d.lead),
   deleteLead: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/leads/${id}`, undefined, key),
   /* lead notes */
@@ -372,4 +441,29 @@ export const adminApi = {
     mutate<{ step: EmailSequenceStep }>("PUT", `/admin/email/steps/${id}`, data, key).then((d) => d.step),
   deleteSequenceStep: (key: string, id: number) =>
     mutate<{ ok: boolean }>("DELETE", `/admin/email/steps/${id}`, undefined, key),
+
+  /* resources / lead magnets */
+  getResources: (key: string) =>
+    get<{ resources: LeadMagnet[] }>("/admin/resources", key).then((d) => d.resources),
+  getResource: (key: string, id: number) =>
+    get<{ resource: LeadMagnet }>(`/admin/resources/${id}`, key).then((d) => d.resource),
+  createResource: (key: string, data: Partial<LeadMagnet>) =>
+    mutate<{ resource: LeadMagnet }>("POST", "/admin/resources", data, key).then((d) => d.resource),
+  updateResource: (key: string, id: number, data: Partial<LeadMagnet>) =>
+    mutate<{ resource: LeadMagnet }>("PUT", `/admin/resources/${id}`, data, key).then((d) => d.resource),
+  deleteResource: (key: string, id: number) =>
+    mutate<{ ok: boolean }>("DELETE", `/admin/resources/${id}`, undefined, key),
+  uploadResourceFile: async (key: string, file: File) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    const r = await fetch("/api/admin/resources/upload-file", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}` },
+      body: fd,
+    });
+    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error((e as { error?: string }).error ?? "Upload failed"); }
+    return r.json() as Promise<{ ok: boolean; url: string; fileName: string; fileSize: number; fileMimeType: string }>;
+  },
+  getResourceAnalytics: (key: string, id: number) =>
+    get<ResourceAnalytics>(`/admin/resources/${id}/analytics`, key),
 };

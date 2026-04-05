@@ -2,6 +2,8 @@ import { Router, type IRouter } from "express";
 import healthRouter from "./health";
 import newsRouter from "./news";
 import adminRouter from "./admin";
+import resourcesRouter from "./resources";
+import adminResourcesRouter from "./adminResources";
 import leadsRouter from "./leads";
 import contentRouter from "./content";
 import trackRouter from "./track";
@@ -17,6 +19,8 @@ router.use("/admin/email", emailAdminRouter);
 router.use("/email", emailPublicRouter);
 router.use("/leads", leadsRouter);
 router.use("/content", contentRouter);
+router.use("/resources", resourcesRouter);
+router.use("/admin/resources", adminResourcesRouter);
 router.use(trackRouter);
 
 export default router;

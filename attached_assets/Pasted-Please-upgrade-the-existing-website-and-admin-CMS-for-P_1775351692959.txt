@@ -1,0 +1,708 @@
+Please upgrade the existing website and admin CMS for “Phan Van Thang SWC” by adding a lead magnet / downloadable resources / gated content system.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Build on top of the current website, admin CMS, Supabase/Postgres, lead forms, mini CRM, and newsletter/email system.
+- Do NOT redesign the whole website.
+- Do NOT build an overcomplicated membership platform.
+- Focus on a practical gated-content system that helps collect qualified leads and deliver useful resources in a premium, trustworthy way.
+
+GOAL:
+Create a gated content / lead magnet system so the website can:
+1. offer downloadable resources
+2. collect lead information before access when appropriate
+3. deliver the resource cleanly
+4. connect downloads to the CRM
+5. trigger email follow-up if desired
+6. help the site owner understand which resources attract the most interest
+
+This system should support:
+- PDFs
+- checklists
+- guides
+- mini ebooks
+- templates
+- curated resource downloads
+- gated content pages
+- optional “email to unlock” flows
+
+The tone must remain:
+- premium
+- calm
+- useful
+- non-spammy
+- trust-based
+
+================================
+1. FEATURE SCOPE
+================================
+
+Please implement:
+
+A. Lead magnet/resource data model
+B. Public gated content blocks/pages
+C. Unlock/download form flow
+D. Resource delivery flow
+E. Admin resource management
+F. CRM integration
+G. Email automation integration
+H. Basic analytics for downloads/conversions
+
+Do NOT build a full membership/course platform.
+Keep it focused on downloadable resources and simple gated access.
+
+================================
+2. PRIMARY USE CASES
+================================
+
+Support these practical use cases first:
+
+A. Free downloadable PDF or guide
+User submits name/email to access a valuable resource
+
+B. Checklist or worksheet
+User unlocks and downloads a lightweight practical tool
+
+C. Resource page / lead magnet landing block
+Website promotes a useful lead magnet on homepage, article pages, or product/community pages
+
+D. Email follow-up after download
+Downloaded lead magnet can trigger a welcome/follow-up email
+
+E. CRM qualification
+Downloads help classify what the lead is interested in
+
+Requirements:
+- the flow should feel useful and respectful
+- not manipulative
+- not fake scarcity-based
+- suitable for a finance / knowledge / mentor brand
+
+================================
+3. RESOURCE TYPES
+================================
+
+Please support at least these resource types:
+
+A. Downloadable file
+Examples:
+- PDF
+- checklist
+- workbook
+- mini guide
+- ebook
+- template
+
+B. Gated page/content block
+A page section where access is unlocked after submitting a form
+
+C. External resource link (optional)
+A curated resource accessible after form submission
+
+Minimum requirement:
+- file-based gated downloads must work well first
+
+================================
+4. DATABASE / DATA MODEL
+================================
+
+Create a clean resource data model.
+
+Suggested main table:
+- `lead_magnets` or `resources`
+
+Recommended fields:
+- id (uuid, primary key)
+- title
+- slug
+- short_description
+- full_description (optional)
+- resource_type (file / gated_page / external_link)
+- cover_image_url (optional)
+- cover_image_alt (optional)
+- file_url (nullable)
+- file_name (nullable)
+- external_url (nullable)
+- thank_you_message (optional)
+- button_label (optional)
+- status (draft / published / archived)
+- gating_mode (public / email_unlock / lead_form_unlock)
+- featured (boolean)
+- topic_id or topic_slug (optional)
+- tags (optional)
+- cta_title (optional)
+- cta_description (optional)
+- seo_title (optional)
+- seo_description (optional)
+- og_image_url (optional)
+- created_at
+- updated_at
+
+Optional extra fields:
+- delivery_mode (direct_download / email_delivery / both)
+- requires_phone (boolean)
+- requires_name (boolean)
+- sort_order (optional)
+
+Requirements:
+- keep the schema practical and extensible
+- support different kinds of lead magnets
+- make it easy to connect to CRM and analytics later
+
+================================
+5. DOWNLOAD / ACCESS TRACKING TABLE
+================================
+
+Create a related tracking table for resource submissions/downloads.
+
+Suggested table:
+- `resource_access_events`
+
+Recommended fields:
+- id
+- resource_id
+- lead_id (nullable)
+- subscriber_id (nullable)
+- full_name
+- email
+- phone (nullable)
+- access_type (unlock / download / email_sent / link_clicked)
+- source_page
+- source_section
+- created_at
+- metadata (optional)
+
+Requirements:
+- this should help track conversion and usage
+- support resource-specific analytics
+- connect resource actions back to CRM where possible
+
+================================
+6. PUBLIC RESOURCE DISPLAY
+================================
+
+Allow lead magnets/resources to be displayed on the public site in strategic places such as:
+- homepage CTA/resource block
+- article detail pages
+- video pages
+- contact page
+- dedicated resource landing page
+- community/product teaser pages
+
+Examples of visible Vietnamese UI text:
+- Tài liệu miễn phí
+- Nhận tài liệu
+- Tải tài liệu
+- Mở khóa tài liệu
+- Nhận checklist
+- Nhận hướng dẫn
+- Nhận tài liệu phù hợp
+
+Requirements:
+- resource blocks should look premium and calm
+- match the website design system
+- do not look like cheap funnel widgets
+- fit naturally into the content ecosystem
+
+================================
+7. GATING MODES
+================================
+
+Support at least these gating modes:
+
+A. Public
+Resource can be downloaded directly without form
+
+B. Email unlock
+User enters name/email to unlock access
+
+C. Lead form unlock
+User enters more complete information:
+- name
+- email
+- optional phone
+- interest
+
+Requirements:
+- admin should be able to choose the gating mode per resource
+- gating behavior should be clear and consistent
+- no confusing access flow
+
+================================
+8. PUBLIC UNLOCK FORM UX
+================================
+
+Create reusable gated-content forms.
+
+Visible Vietnamese form examples:
+- Nhận tài liệu miễn phí
+- Mở khóa tài liệu này
+- Để lại thông tin để nhận tài liệu
+- Điền thông tin để tải ngay
+
+Field labels:
+- Họ và tên
+- Email
+- Số điện thoại
+- Nội dung quan tâm
+- Ghi chú
+
+Buttons:
+- Mở khóa tài liệu
+- Tải ngay
+- Nhận tài liệu
+- Gửi và tải xuống
+
+Success states:
+- Tài liệu đã sẵn sàng để tải xuống.
+- Cảm ơn bạn, thông tin đã được ghi nhận.
+- Kiểm tra email của bạn để nhận tài liệu nếu cần.
+
+Error states:
+- Có lỗi xảy ra, vui lòng thử lại.
+- Vui lòng kiểm tra lại thông tin.
+- Email không hợp lệ.
+
+Requirements:
+- keep forms short and trustworthy
+- allow resource-specific copy if helpful
+- avoid over-asking for information unless justified
+
+================================
+9. DELIVERY MODES
+================================
+
+Support practical delivery modes for resources.
+
+A. Direct download after form submission
+After successful unlock, show download button/link immediately
+
+B. Email delivery
+After successful submission, send the resource via email
+
+C. Both
+Immediate download + email follow-up
+
+Admin should be able to choose per resource.
+
+Visible Vietnamese examples:
+- Tải xuống ngay
+- Tài liệu đã được gửi qua email
+- Kiểm tra email để nhận tài liệu
+
+Requirements:
+- flow should be reliable
+- clear to user what happens next
+- if email delivery is used, integrate with the current email system cleanly
+
+================================
+10. DEDICATED RESOURCE LANDING PAGE
+================================
+
+Create a dedicated public resource detail page.
+
+Suggested route:
+- `/tai-lieu/[slug]`
+or another clean Vietnamese-friendly route
+
+This page should include:
+- resource hero
+- description
+- benefits/what’s inside
+- unlock/download form or button
+- optional trust note
+- optional related resources
+
+Visible Vietnamese text examples:
+Eyebrow:
+Tài liệu miễn phí
+
+Heading:
+[resource title]
+
+Subheading:
+[short description]
+
+CTA:
+- Mở khóa tài liệu
+- Tải tài liệu
+- Nhận qua email
+
+Requirements:
+- premium, editorial, calm layout
+- consistent with public site style
+- useful as a landing page for sharing and campaigns
+
+================================
+11. ADMIN RESOURCE MANAGEMENT
+================================
+
+Create an admin section to manage resources/lead magnets.
+
+Suggested routes:
+- `/admin/resources`
+- `/admin/resources/new`
+- `/admin/resources/[id]`
+
+Visible Vietnamese admin labels:
+- Tài liệu
+- Quản lý tài liệu
+- Tạo tài liệu mới
+
+List columns:
+- Tiêu đề
+- Loại
+- Trạng thái
+- Hình thức mở khóa
+- Nổi bật
+- Ngày tạo
+- Hành động
+
+Actions:
+- Sửa
+- Xem
+- Xóa
+- Xem thống kê
+- Sao chép liên kết
+
+Requirements:
+- clean admin list page
+- searchable
+- filterable by type/status/gating mode
+- practical and scalable
+
+================================
+12. RESOURCE CREATE / EDIT FORM
+================================
+
+Create a reusable admin form for resources.
+
+Visible Vietnamese field labels:
+- Tiêu đề
+- Đường dẫn tĩnh
+- Mô tả ngắn
+- Mô tả chi tiết
+- Loại tài liệu
+- Ảnh bìa
+- Alt ảnh bìa
+- Tệp tải xuống
+- Link ngoài
+- Hình thức mở khóa
+- Hình thức nhận tài liệu
+- Tiêu đề CTA
+- Mô tả CTA
+- Thẻ tag
+- Chủ đề
+- Trạng thái
+- Tài liệu nổi bật
+- Tiêu đề SEO
+- Mô tả SEO
+- Ảnh chia sẻ
+
+Possible select values:
+Resource type:
+- Tệp tải xuống
+- Nội dung mở khóa
+- Link ngoài
+
+Gating mode:
+- Công khai
+- Mở khóa bằng email
+- Mở khóa bằng form
+
+Delivery mode:
+- Tải trực tiếp
+- Gửi qua email
+- Cả hai
+
+Buttons:
+- Lưu bản nháp
+- Xuất bản
+- Cập nhật tài liệu
+- Hủy
+
+Requirements:
+- support file upload
+- support SEO fields if useful
+- support cover image/media library reuse
+- keep form grouped and practical
+- avoid clutter
+
+================================
+13. FILE STORAGE / DELIVERY
+================================
+
+Integrate downloadable file handling cleanly.
+
+Requirements:
+- support file upload through admin
+- store files in organized storage paths
+- generate safe/public delivery URLs as needed
+- keep files manageable and replaceable
+- support PDFs and common document types
+
+Recommended storage organization:
+- `resources/files/`
+- `resources/covers/`
+
+Support file metadata:
+- file size
+- file type
+- file name
+
+Visible Vietnamese helper text examples:
+- Tải tệp lên
+- Chọn tệp khác
+- Xóa tệp
+- Tải xuống thử
+
+================================
+14. CRM INTEGRATION
+================================
+
+Connect resource unlock/download activity to the mini CRM.
+
+Requirements:
+- if a user submits form to unlock, create or update a lead/subscriber
+- record which resource they requested
+- preserve source information
+- tag or classify the lead if useful based on resource/topic
+
+Examples:
+- downloaded “Checklist đầu tư dài hạn”
+- requested “Tài liệu tài chính cá nhân”
+- interested in “tư duy tích sản”
+
+This should help qualify interest naturally.
+
+================================
+15. EMAIL AUTOMATION INTEGRATION
+================================
+
+Connect downloads to the email system where appropriate.
+
+Possible flows:
+- send resource email automatically
+- enroll downloader in a simple nurture sequence
+- send follow-up email related to the downloaded topic
+- add a tag for future campaigns
+
+Requirements:
+- integrate cleanly with existing email subscriber / sequence logic
+- do not auto-enroll users without consent logic
+- keep behavior clear and configurable
+
+================================
+16. ANALYTICS / TRACKING
+================================
+
+Add lightweight analytics for resources.
+
+Track at least:
+- resource page view
+- unlock form submit
+- successful unlock
+- direct download click
+- email delivery trigger
+- related CTA click
+
+Admin should be able to see:
+- lượt xem
+- lượt mở khóa
+- lượt tải xuống
+- tỷ lệ chuyển đổi
+- nguồn hiệu quả
+
+Visible Vietnamese admin examples:
+- Lượt xem tài liệu
+- Lượt mở khóa
+- Lượt tải xuống
+- Tỷ lệ chuyển đổi
+- Nguồn hiệu quả
+
+Requirements:
+- keep analytics practical
+- no fake precision
+- useful for deciding which resources work best
+
+================================
+17. RESOURCE PERFORMANCE IN ADMIN
+================================
+
+Add a resource analytics view or summary section in admin.
+
+Possible route:
+- `/admin/resources/[id]/analytics`
+or integrated into the detail page
+
+Show:
+- total unlocks
+- total downloads
+- recent activity
+- top sources
+- linked leads/subscribers count
+
+Requirements:
+- useful but lightweight
+- enough for content/lead-magnet decisions
+
+================================
+18. HOMEPAGE / CONTENT INTEGRATION
+================================
+
+Allow selected resources to be featured on the public site.
+
+Examples:
+- homepage featured free guide
+- article CTA block linking to a resource
+- video page CTA linking to a checklist
+- product/community teaser linking to a guide
+
+Visible Vietnamese examples:
+- Tài liệu nổi bật
+- Nhận tài liệu miễn phí
+- Tải checklist
+- Nhận hướng dẫn chi tiết
+
+Requirements:
+- integrate resources into the broader content ecosystem
+- admin can control featured resource visibility if practical
+- preserve premium layout
+
+================================
+19. DUPLICATE / ACCESS LOGIC
+================================
+
+Handle repeated unlocks/downloads sensibly.
+
+Requirements:
+- if the same email requests the same resource again, avoid messy duplicate lead records
+- repeated access can still be logged as events
+- keep user experience smooth
+- if they already unlocked, allow practical repeat access behavior
+
+Choose a practical approach and document it.
+
+================================
+20. SECURITY / ACCESS CONTROL
+================================
+
+Protect resource delivery properly.
+
+Requirements:
+- do not expose unsafe file logic
+- gated files should not be trivially bypassed if gated mode is enabled
+- use a clean access strategy appropriate for the storage setup
+- prevent unsafe public write behavior on forms
+- validate all inputs server-side where appropriate
+
+Do not overbuild extreme DRM-style protection.
+Keep it practical and secure enough for this scale.
+
+================================
+21. OPTIONAL THANK-YOU EXPERIENCE
+================================
+
+Add a polished thank-you experience after unlock if helpful.
+
+Possible patterns:
+- inline success state
+- thank-you panel
+- thank-you page with download button and next-step CTA
+
+Visible Vietnamese examples:
+- Cảm ơn bạn
+- Tài liệu của bạn đã sẵn sàng
+- Tải xuống ngay
+- Khám phá thêm bài viết liên quan
+- Xem thêm video phù hợp
+
+Requirements:
+- should feel like a smooth continuation
+- good place to suggest related content
+- useful for nurturing and internal linking
+
+================================
+22. ADMIN NAVIGATION UPDATE
+================================
+
+Add resources to admin navigation.
+
+Visible Vietnamese labels:
+- Tổng quan
+- Bài viết
+- Video
+- Chủ đề
+- Series
+- Trang chủ
+- Thư viện ảnh
+- Phân tích nội dung
+- Khách hàng tiềm năng
+- Email
+- Tài liệu
+
+Requirements:
+- keep nav clear and scalable
+- “Tài liệu” should be easy to access
+
+================================
+23. SERVICE LAYER / HELPERS
+================================
+
+Create a clean service layer for resources.
+
+Suggested helpers:
+- createResource()
+- updateResource()
+- getResources()
+- getResourceBySlug()
+- unlockResource()
+- trackResourceAccess()
+- getResourceAnalytics()
+- deliverResourceByEmail()
+- getFeaturedResources()
+
+Requirements:
+- keep logic out of UI components
+- integrate with CRM/email/analytics cleanly
+- keep code maintainable
+
+================================
+24. SEO / SOCIAL SHARE SUPPORT
+================================
+
+Support SEO for resource landing pages if they exist.
+
+Requirements:
+- resource pages can have SEO title/description
+- resource pages can use OG image if available
+- public metadata should be generated cleanly
+- if resource is meant for promotion, page should be shareable
+
+================================
+25. DOCUMENTATION / HANDOFF
+================================
+
+Add simple notes/comments/documentation for:
+- resource model
+- gating modes
+- delivery modes
+- CRM integration
+- email integration
+- analytics tracking
+- file access logic
+
+================================
+26. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- the website can offer downloadable lead magnets and gated resources
+- users can unlock resources through clean forms
+- downloads connect into the CRM
+- follow-up emails can be triggered
+- admin can manage resources and track performance
+- the website becomes much stronger as a lead-generation and trust-building system
+
+Please implement this lead magnet / downloadable resources / gated content system directly into the website and admin CMS.
