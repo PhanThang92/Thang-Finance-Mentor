@@ -3,78 +3,94 @@ import { useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
 import { NAV_ITEMS, KIEN_THUC_PATHS } from "@/config/navigationConfig";
 
-/* ── Navigation data ─────────────────────────────────────── */
+/* ── Navigation types ──────────────────────────────────────────────── */
 type NavDropdownItem = { name: string; desc?: string; href: string };
 type NavItem =
   | { name: string; href: string; dropdownKey?: never; dropdown?: false }
-  | {
-      name: string;
-      href?: never;
-      dropdown: true;
-      dropdownKey: string;
-      items: NavDropdownItem[];
-    };
+  | { name: string; href?: never; dropdown: true; dropdownKey: string; items: NavDropdownItem[] };
 
-/* ── Per-state design tokens ──────────────────────────────── */
+/* ── Design tokens per scroll state ───────────────────────────────── */
 const HERO = {
-  linkColor:      "rgba(255,255,255,0.70)",
-  linkHover:      "rgba(255,255,255,0.92)",
+  linkColor:      "rgba(255,255,255,0.65)",
+  linkHover:      "rgba(255,255,255,0.94)",
   linkActive:     "rgba(255,255,255,0.96)",
   ctaBg:          "rgba(255,255,255,0.08)",
-  ctaBorder:      "rgba(255,255,255,0.18)",
+  ctaBorder:      "rgba(255,255,255,0.16)",
   ctaHoverBg:     "rgba(255,255,255,0.14)",
   ctaHoverBorder: "rgba(255,255,255,0.26)",
 } as const;
 
 const SCROLLED = {
-  linkColor:      "hsl(var(--foreground) / 0.54)",
+  linkColor:      "hsl(var(--foreground) / 0.50)",
   linkHover:      "hsl(var(--primary))",
   linkActive:     "hsl(var(--primary))",
   ctaBg:          "hsl(var(--primary))",
   ctaBorder:      "transparent",
-  ctaShadow:      "0 1px 8px rgba(10,40,35,0.14)",
-  ctaHoverBg:     "hsl(var(--primary) / 0.88)",
-  ctaHoverShadow: "0 3px 16px rgba(10,40,35,0.22)",
+  ctaShadow:      "0 1px 8px rgba(10,40,35,0.12)",
+  ctaHoverBg:     "hsl(var(--primary) / 0.86)",
+  ctaHoverShadow: "0 3px 14px rgba(10,40,35,0.20)",
 } as const;
 
-const DROPDOWN_STYLE = `
+/* ── Keyframe CSS ─────────────────────────────────────────────────── */
+const STYLE_TAG = `
   @keyframes pvt-dd-in {
-    from { opacity: 0; transform: translateX(-50%) translateY(-5px); }
+    from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
     to   { opacity: 1; transform: translateX(-50%) translateY(0px);  }
+  }
+  @keyframes pvt-mob-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0px);  }
   }
 `;
 
+/* ── Chevron ──────────────────────────────────────────────────────── */
 function Chevron({ open }: { open: boolean }) {
   return (
     <svg
-      width="8" height="8" viewBox="0 0 8 8" fill="none"
+      width="7" height="7" viewBox="0 0 8 8" fill="none"
       aria-hidden="true"
       style={{
         display:    "inline-block",
         marginLeft: "5px",
         flexShrink: 0,
-        opacity:    0.75,
+        opacity:    open ? 0.70 : 0.55,
         transform:  open ? "rotate(180deg)" : "rotate(0deg)",
         transition: "transform 0.22s ease, opacity 0.18s ease",
       }}
     >
-      <path
-        d="M1 2.5L4 5.5L7 2.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M1 2.5L4 5.5L7 2.5" stroke="currentColor" strokeWidth="1.5"
+            strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-/* ── Component ────────────────────────────────────────────── */
+/* ── Active underline indicator ───────────────────────────────────── */
+function ActiveDot({ scrolled }: { scrolled: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        position:     "absolute",
+        bottom:       "-5px",
+        left:         "50%",
+        transform:    "translateX(-50%)",
+        width:        "18px",
+        height:       "1.5px",
+        borderRadius: "999px",
+        background:   scrolled
+          ? "hsl(var(--primary) / 0.60)"
+          : "rgba(255,255,255,0.48)",
+      }}
+    />
+  );
+}
+
+/* ── Component ────────────────────────────────────────────────────── */
 export function Navbar() {
-  const [location]             = useLocation();
-  const [isScrolled,           setIsScrolled]           = useState(false);
-  const [isMobileMenuOpen,     setIsMobileMenuOpen]     = useState(false);
-  const [openDropdownKey,      setOpenDropdownKey]      = useState<string | null>(null);
+  const [location]              = useLocation();
+  const [isScrolled,            setIsScrolled]            = useState(false);
+  const [isMobileMenuOpen,      setIsMobileMenuOpen]      = useState(false);
+  const [openDropdownKey,       setOpenDropdownKey]       = useState<string | null>(null);
   const [openMobileDropdownKey, setOpenMobileDropdownKey] = useState<string | null>(null);
 
   /* Refs */
@@ -92,6 +108,7 @@ export function Navbar() {
   const isAboutPage     = location.startsWith("/gioi-thieu");
   const isKienThucPage  = KIEN_THUC_PATHS.some((p) => location.startsWith(p));
 
+  /* Dark hero = transparent initial navbar */
   const isHeroDark        = isHome || isProductPage || isCommunityPage || isAboutPage;
   const effectiveScrolled = isScrolled || !isHeroDark;
 
@@ -113,7 +130,7 @@ export function Navbar() {
     return { name: item.name, href: `${homeBase}${item.path ?? "/"}` };
   });
 
-  /* ── Scroll ──────────────────────────────────────────────── */
+  /* ── Scroll listener ──────────────────────────────────────────── */
   useEffect(() => {
     const fn = () => setIsScrolled(window.scrollY > 48);
     fn();
@@ -121,15 +138,21 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  /* ── Imperative color sync ────────────────────────────────── */
+  /* ── Close mobile menu on route change ───────────────────────── */
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setOpenMobileDropdownKey(null);
+  }, [location]);
+
+  /* ── Imperative color sync ────────────────────────────────────── */
   useEffect(() => {
     linkRefs.current.forEach((el, i) => {
       if (!el) return;
       const isActive =
-        (i === 1 && isAboutPage)    ||
-        (i === 2 && isKienThucPage) ||
-        (i === 3 && isTinTucPage)   ||
-        (i === 4 && isCommunityPage)||
+        (i === 1 && isAboutPage)     ||
+        (i === 2 && isKienThucPage)  ||
+        (i === 3 && isTinTucPage)    ||
+        (i === 4 && isCommunityPage) ||
         (i === 5 && isProductPage);
       el.style.color      = isActive
         ? (effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive)
@@ -142,14 +165,16 @@ export function Navbar() {
       cta.style.background  = SCROLLED.ctaBg;
       cta.style.borderColor = SCROLLED.ctaBorder;
       cta.style.boxShadow   = SCROLLED.ctaShadow;
+      cta.style.color       = "#fff";
     } else {
       cta.style.background  = HERO.ctaBg;
       cta.style.borderColor = HERO.ctaBorder;
       cta.style.boxShadow   = "none";
+      cta.style.color       = "rgba(255,255,255,0.88)";
     }
   }, [effectiveScrolled, isAboutPage, isKienThucPage, isTinTucPage, isCommunityPage, isProductPage]);
 
-  /* ── Generic dropdown open / close ───────────────────────── */
+  /* ── Dropdown open / close ────────────────────────────────────── */
   const openDropdown = useCallback((key: string) => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -159,10 +184,10 @@ export function Navbar() {
   }, []);
 
   const scheduleClose = useCallback(() => {
-    closeTimerRef.current = setTimeout(() => setOpenDropdownKey(null), 180);
+    closeTimerRef.current = setTimeout(() => setOpenDropdownKey(null), 190);
   }, []);
 
-  /* ── Outside-click closes all dropdowns ──────────────────── */
+  /* Outside-click closes desktop dropdowns */
   useEffect(() => {
     if (!openDropdownKey) return;
     const fn = (e: MouseEvent) => {
@@ -182,17 +207,17 @@ export function Navbar() {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
   }, []);
 
-  /* ── Color shortcuts ──────────────────────────────────────── */
-  const linkColor  = effectiveScrolled ? SCROLLED.linkColor  : HERO.linkColor;
-  const linkHover  = effectiveScrolled ? SCROLLED.linkHover  : HERO.linkHover;
+  /* ── Derived color shortcuts ──────────────────────────────────── */
+  const linkColor = effectiveScrolled ? SCROLLED.linkColor : HERO.linkColor;
+  const linkHover = effectiveScrolled ? SCROLLED.linkHover : HERO.linkHover;
 
-  /* ── Base link style ──────────────────────────────────────── */
+  /* ── Base link style ──────────────────────────────────────────── */
   const baseLinkStyle: React.CSSProperties = {
     fontSize:       "13px",
     fontWeight:     400,
-    letterSpacing:  "0.010em",
+    letterSpacing:  "0.012em",
     textDecoration: "none",
-    transition:     "color 0.18s ease",
+    transition:     "color 0.20s ease",
     background:     "none",
     border:         "none",
     padding:        0,
@@ -206,29 +231,31 @@ export function Navbar() {
 
   return (
     <>
-      <style>{DROPDOWN_STYLE}</style>
+      <style>{STYLE_TAG}</style>
 
       <nav
         style={{
           position: "fixed",
           top: 0, left: 0, right: 0,
           zIndex: 50,
-          transition: "background 0.42s ease, box-shadow 0.42s ease, padding 0.42s ease",
+          transition: "background 0.40s ease, box-shadow 0.40s ease, border-color 0.40s ease, padding 0.40s ease",
           ...(effectiveScrolled
             ? {
-                background:           "rgba(251,253,251,0.97)",
-                backdropFilter:       "blur(22px)",
-                WebkitBackdropFilter: "blur(22px)",
-                boxShadow:            "0 1px 0 rgba(0,0,0,0.055), 0 4px 24px rgba(10,40,35,0.05)",
+                background:           "rgba(249,252,250,0.97)",
+                backdropFilter:       "blur(24px)",
+                WebkitBackdropFilter: "blur(24px)",
+                boxShadow:            "none",
+                borderBottom:         "1px solid rgba(0,0,0,0.052)",
                 paddingTop:    "0.75rem",
                 paddingBottom: "0.75rem",
               }
             : {
                 background:
-                  "linear-gradient(to bottom, rgba(0,0,0,0.14) 0%, rgba(0,0,0,0.03) 65%, transparent 100%)",
+                  "linear-gradient(to bottom, rgba(5,25,20,0.22) 0%, rgba(4,18,14,0.06) 60%, transparent 100%)",
                 backdropFilter:       "none",
                 WebkitBackdropFilter: "none",
                 boxShadow:            "none",
+                borderBottom:         "1px solid transparent",
                 paddingTop:    "1.25rem",
                 paddingBottom: "1.25rem",
               }),
@@ -236,34 +263,44 @@ export function Navbar() {
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8 flex items-center justify-between">
 
-          {/* ── Logo ──────────────────────────────────────── */}
+          {/* ── Brand ──────────────────────────────────────────── */}
           <a
             href={`${homeBase}/`}
             style={{
-              fontSize:       "15px",
+              fontSize:       "15.5px",
               fontWeight:     700,
-              letterSpacing:  "-0.02em",
-              color:          effectiveScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.92)",
+              letterSpacing:  "-0.026em",
+              color:          effectiveScrolled
+                ? "hsl(var(--primary))"
+                : "rgba(255,255,255,0.94)",
               textDecoration: "none",
-              transition:     "color 0.3s ease",
+              transition:     "color 0.32s ease",
+              lineHeight:     1,
+              userSelect:     "none",
             }}
           >
             Thắng SWC
           </a>
 
-          {/* ── Desktop nav ───────────────────────────────── */}
-          <div className="hidden md:flex items-center gap-6">
-            <ul className="flex gap-5" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+          {/* ── Desktop nav ────────────────────────────────────── */}
+          <div className="hidden md:flex items-center gap-8">
+            <ul
+              style={{
+                listStyle: "none", margin: 0, padding: 0,
+                display: "flex", alignItems: "center", gap: "1.625rem",
+              }}
+            >
               {navLinks.map((link, i) => {
 
-                /* ── Dropdown item ─────────────────────── */
+                /* ── Dropdown ───────────────────────────────── */
                 if (link.dropdown) {
-                  const key       = link.dropdownKey;
-                  const isOpen    = openDropdownKey === key;
-                  const isActive  = (key === "kien-thuc" && isKienThucPage)
-                                 || (key === "san-pham"   && isProductPage);
+                  const key      = link.dropdownKey;
+                  const isOpen   = openDropdownKey === key;
+                  const isActive = (key === "kien-thuc" && isKienThucPage)
+                                || (key === "san-pham"   && isProductPage);
+
                   const triggerColor = isActive
-                    ? (isOpen ? linkHover : (effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive))
+                    ? (effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive)
                     : (isOpen ? linkHover : linkColor);
 
                   return (
@@ -277,57 +314,24 @@ export function Navbar() {
                       onMouseEnter={() => openDropdown(key)}
                       onMouseLeave={scheduleClose}
                     >
-                      {/* Trigger */}
+                      {/* Trigger button */}
                       <button
                         ref={(el) => { linkRefs.current[i] = el; }}
-                        style={{
-                          ...baseLinkStyle,
-                          color:      triggerColor,
-                          fontWeight: isActive ? 500 : 400,
-                        }}
+                        style={{ ...baseLinkStyle, color: triggerColor, fontWeight: isActive ? 500 : 400 }}
                         onClick={() => isOpen ? setOpenDropdownKey(null) : openDropdown(key)}
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLElement).style.color = linkHover;
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLElement).style.color = triggerColor;
-                        }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = linkHover; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = triggerColor; }}
                       >
                         {link.name}
-
-                        {/* Active underline */}
-                        {isActive && !isOpen && (
-                          <span
-                            aria-hidden="true"
-                            style={{
-                              position:     "absolute",
-                              bottom:       "-3px",
-                              left:         0,
-                              right:        "14px",
-                              height:       "1.5px",
-                              background:   effectiveScrolled
-                                ? "hsl(var(--primary) / 0.55)"
-                                : "rgba(255,255,255,0.46)",
-                              borderRadius: "999px",
-                            }}
-                          />
-                        )}
-
+                        {isActive && !isOpen && <ActiveDot scrolled={effectiveScrolled} />}
                         <Chevron open={isOpen} />
                       </button>
 
-                      {/* Invisible hover bridge */}
-                      <div
-                        aria-hidden="true"
-                        style={{
-                          position: "absolute",
-                          top:      "100%",
-                          left:     "-24px",
-                          right:    "-24px",
-                          height:   "12px",
-                          zIndex:   99,
-                        }}
-                      />
+                      {/* Hover bridge — prevents gap-triggered close */}
+                      <div aria-hidden="true" style={{
+                        position: "absolute", top: "100%",
+                        left: "-28px", right: "-28px", height: "14px", zIndex: 99,
+                      }} />
 
                       {/* Dropdown panel */}
                       {isOpen && (
@@ -337,25 +341,27 @@ export function Navbar() {
                           onMouseLeave={scheduleClose}
                           style={{
                             position:             "absolute",
-                            top:                  "calc(100% + 6px)",
+                            top:                  "calc(100% + 8px)",
                             left:                 "50%",
                             transform:            "translateX(-50%)",
-                            minWidth:             "272px",
-                            background:           "rgba(251,253,251,0.99)",
-                            backdropFilter:       "blur(24px)",
-                            WebkitBackdropFilter: "blur(24px)",
+                            minWidth:             "280px",
+                            background:           "rgba(249,252,250,0.99)",
+                            backdropFilter:       "blur(28px)",
+                            WebkitBackdropFilter: "blur(28px)",
+                            borderRadius:         "12px",
+                            border:               "1px solid rgba(0,0,0,0.07)",
+                            borderTop:            "1.5px solid hsl(var(--primary) / 0.16)",
                             boxShadow:
-                              "0 0 0 1px rgba(0,0,0,0.06), 0 4px 12px rgba(10,40,35,0.07), 0 12px 32px rgba(10,40,35,0.10)",
-                            borderRadius: "0.75rem",
-                            padding:      "0.375rem 0",
-                            zIndex:       100,
-                            animation:    "pvt-dd-in 0.18s cubic-bezier(0.16,1,0.3,1) forwards",
+                              "0 4px 16px rgba(10,40,35,0.08), 0 16px 40px rgba(10,40,35,0.10)",
+                            padding:  "0.5rem 0",
+                            zIndex:   100,
+                            animation: "pvt-dd-in 0.20s cubic-bezier(0.16,1,0.3,1) forwards",
                           }}
                         >
                           {link.items.map((item) => {
                             const itemActive =
-                              (key === "san-pham"  && isProductPage   && item.href.endsWith(location)) ||
-                              (key === "kien-thuc" && isKienThucPage  && item.href.endsWith(location));
+                              (key === "san-pham"  && isProductPage  && item.href.endsWith(location)) ||
+                              (key === "kien-thuc" && isKienThucPage && item.href.endsWith(location));
 
                             return (
                               <a
@@ -364,23 +370,21 @@ export function Navbar() {
                                 role="menuitem"
                                 style={{
                                   display:        "block",
-                                  padding:        "0.7rem 1.125rem 0.7rem 1rem",
+                                  padding:        "0.625rem 1.25rem 0.625rem 1rem",
                                   textDecoration: "none",
-                                  transition:
-                                    "background 0.16s ease, border-color 0.16s ease",
+                                  transition:     "background 0.16s ease",
                                   borderLeft: `2px solid ${
-                                    itemActive
-                                      ? "hsl(var(--primary))"
-                                      : "transparent"
+                                    itemActive ? "hsl(var(--primary))" : "transparent"
                                   }`,
-                                  background: itemActive
-                                    ? "hsl(var(--primary) / 0.04)"
-                                    : "transparent",
+                                  background: itemActive ? "hsl(var(--primary) / 0.04)" : "transparent",
+                                  marginLeft:  "0.25rem",
+                                  marginRight: "0.25rem",
+                                  borderRadius: "0 6px 6px 0",
                                 }}
                                 onMouseEnter={(e) => {
                                   const el = e.currentTarget as HTMLElement;
                                   el.style.background  = "hsl(var(--primary) / 0.05)";
-                                  el.style.borderColor = "hsl(var(--primary) / 0.45)";
+                                  el.style.borderColor = "hsl(var(--primary) / 0.40)";
                                 }}
                                 onMouseLeave={(e) => {
                                   const el = e.currentTarget as HTMLElement;
@@ -395,8 +399,8 @@ export function Navbar() {
                                   letterSpacing: "0.008em",
                                   color:         itemActive
                                     ? "hsl(var(--primary))"
-                                    : "hsl(var(--foreground) / 0.72)",
-                                  lineHeight:    1.3,
+                                    : "hsl(var(--foreground) / 0.70)",
+                                  lineHeight:    1.35,
                                   marginBottom:  item.desc ? "0.2rem" : 0,
                                   transition:    "color 0.16s ease",
                                 }}>
@@ -408,8 +412,8 @@ export function Navbar() {
                                     fontSize:      "11.5px",
                                     fontWeight:    300,
                                     letterSpacing: "0.006em",
-                                    color:         "hsl(var(--foreground) / 0.40)",
-                                    lineHeight:    1.45,
+                                    color:         "hsl(var(--foreground) / 0.38)",
+                                    lineHeight:    1.5,
                                   }}>
                                     {item.desc}
                                   </span>
@@ -423,28 +427,41 @@ export function Navbar() {
                   );
                 }
 
-                /* ── Plain link ─────────────────────────── */
+                /* ── Plain link ─────────────────────────────── */
+                const isActive =
+                  (i === 0 && (isHome)) ||
+                  (i === 1 && isAboutPage) ||
+                  (i === 3 && isTinTucPage) ||
+                  (i === 4 && isCommunityPage);
+
                 return (
-                  <li key={link.name}>
+                  <li key={link.name} style={{ position: "relative" }}>
                     <a
                       ref={(el) => { linkRefs.current[i] = el; }}
                       href={link.href}
-                      style={{ ...baseLinkStyle, color: linkColor }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLElement).style.color = linkHover;
+                      style={{
+                        ...baseLinkStyle,
+                        color:      isActive
+                          ? (effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive)
+                          : linkColor,
+                        fontWeight: isActive ? 500 : 400,
                       }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = linkHover; }}
                       onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLElement).style.color = linkColor;
+                        (e.currentTarget as HTMLElement).style.color = isActive
+                          ? (effectiveScrolled ? SCROLLED.linkActive : HERO.linkActive)
+                          : linkColor;
                       }}
                     >
                       {link.name}
+                      {isActive && <ActiveDot scrolled={effectiveScrolled} />}
                     </a>
                   </li>
                 );
               })}
             </ul>
 
-            {/* ── CTA ───────────────────────────────────── */}
+            {/* ── CTA button ─────────────────────────────────── */}
             <a
               ref={ctaRef}
               href={`${homeBase}/cong-dong#dang-ky`}
@@ -455,13 +472,12 @@ export function Navbar() {
                 padding:        "0 18px",
                 borderRadius:   "999px",
                 border:         "1px solid",
-                fontSize:       "13px",
+                fontSize:       "12.5px",
                 fontWeight:     500,
-                letterSpacing:  "0.014em",
+                letterSpacing:  "0.018em",
                 textDecoration: "none",
                 color:          "#fff",
-                transition:
-                  "background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease",
+                transition:     "background 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease",
                 ...(effectiveScrolled
                   ? {
                       background:  SCROLLED.ctaBg,
@@ -471,64 +487,79 @@ export function Navbar() {
                   : {
                       background:  HERO.ctaBg,
                       borderColor: HERO.ctaBorder,
-                      boxShadow:   "none",
+                      boxShadow:   "inset 0 1px 0 rgba(255,255,255,0.10)",
                     }),
               }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement;
                 el.style.background = effectiveScrolled ? SCROLLED.ctaHoverBg : HERO.ctaHoverBg;
-                el.style.boxShadow  = effectiveScrolled ? SCROLLED.ctaHoverShadow : "none";
+                el.style.boxShadow  = effectiveScrolled ? SCROLLED.ctaHoverShadow : "inset 0 1px 0 rgba(255,255,255,0.12)";
                 if (!effectiveScrolled) el.style.borderColor = HERO.ctaHoverBorder;
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement;
                 el.style.background  = effectiveScrolled ? SCROLLED.ctaBg  : HERO.ctaBg;
                 el.style.borderColor = effectiveScrolled ? SCROLLED.ctaBorder : HERO.ctaBorder;
-                el.style.boxShadow   = effectiveScrolled ? SCROLLED.ctaShadow : "none";
+                el.style.boxShadow   = effectiveScrolled ? SCROLLED.ctaShadow : "inset 0 1px 0 rgba(255,255,255,0.10)";
               }}
             >
               Tham gia cộng đồng
             </a>
           </div>
 
-          {/* ── Mobile hamburger ──────────────────────────── */}
+          {/* ── Mobile hamburger ────────────────────────────────── */}
           <button
-            className="md:hidden p-2 rounded-md"
+            className="md:hidden"
             style={{
-              color:      effectiveScrolled ? "hsl(var(--foreground))" : "rgba(255,255,255,0.88)",
+              color:      effectiveScrolled ? "hsl(var(--foreground) / 0.70)" : "rgba(255,255,255,0.84)",
               background: "none",
               border:     "none",
               cursor:     "pointer",
+              padding:    "0.375rem",
+              borderRadius: "6px",
+              display:    "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "color 0.2s ease, background 0.2s ease",
             }}
             onClick={() => setIsMobileMenuOpen((v) => !v)}
             aria-label={isMobileMenuOpen ? "Đóng menu" : "Mở menu"}
             data-testid="btn-mobile-menu"
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.background = effectiveScrolled
+                ? "rgba(0,0,0,0.04)"
+                : "rgba(255,255,255,0.08)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "none";
+            }}
           >
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            {isMobileMenuOpen ? <X size={18} strokeWidth={1.75} /> : <Menu size={18} strokeWidth={1.75} />}
           </button>
         </div>
 
-        {/* ── Mobile drawer ─────────────────────────────────── */}
+        {/* ── Mobile drawer ───────────────────────────────────────── */}
         {isMobileMenuOpen && (
           <div
             className="md:hidden absolute top-full left-0 w-full"
             style={{
-              background:           "rgba(251,253,251,0.99)",
-              backdropFilter:       "blur(22px)",
-              WebkitBackdropFilter: "blur(22px)",
-              borderBottom:         "1px solid rgba(0,0,0,0.07)",
-              boxShadow:            "0 8px 32px rgba(10,40,35,0.08)",
+              background:           "rgba(249,252,250,0.99)",
+              backdropFilter:       "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              borderBottom:         "1px solid rgba(0,0,0,0.058)",
+              boxShadow:            "0 12px 36px rgba(10,40,35,0.08)",
+              animation:            "pvt-mob-in 0.22s cubic-bezier(0.16,1,0.3,1) forwards",
             }}
           >
-            <div className="max-w-6xl mx-auto px-5 py-4 flex flex-col">
+            <div className="max-w-6xl mx-auto px-5 py-5 flex flex-col">
               {navLinks.map((link) => {
 
-                /* ── Mobile dropdown ──────────────────── */
+                /* ── Mobile dropdown item ──────────────────── */
                 if (link.dropdown) {
-                  const key        = link.dropdownKey;
-                  const isMobOpen  = openMobileDropdownKey === key;
-                  const isActive   = (key === "kien-thuc" && isKienThucPage)
-                                  || (key === "san-pham"   && isProductPage);
+                  const key       = link.dropdownKey;
+                  const isMobOpen = openMobileDropdownKey === key;
+                  const isActive  = (key === "kien-thuc" && isKienThucPage)
+                                 || (key === "san-pham"   && isProductPage);
 
                   return (
                     <React.Fragment key={link.name}>
@@ -543,15 +574,13 @@ export function Navbar() {
                           letterSpacing:  "0.010em",
                           color:          isActive
                             ? "hsl(var(--primary))"
-                            : "hsl(var(--foreground) / 0.68)",
-                          padding:        "0.72rem 0",
+                            : "hsl(var(--foreground) / 0.65)",
+                          padding:        "0.75rem 0",
                           background:     "none",
-                          borderTop:      "none",
-                          borderLeft:     "none",
-                          borderRight:    "none",
+                          border:         "none",
                           borderBottom:   isMobOpen
                             ? "none"
-                            : "1px solid hsl(var(--border) / 0.38)",
+                            : "1px solid rgba(0,0,0,0.055)",
                           cursor:         "pointer",
                         }}
                         onClick={() =>
@@ -561,22 +590,23 @@ export function Navbar() {
                         <span>{link.name}</span>
                         <span style={{
                           color:      isActive
-                            ? "hsl(var(--primary) / 0.65)"
-                            : "hsl(var(--foreground) / 0.40)",
+                            ? "hsl(var(--primary) / 0.60)"
+                            : "hsl(var(--foreground) / 0.35)",
                           transition: "transform 0.22s ease",
                           transform:  isMobOpen ? "rotate(180deg)" : "rotate(0deg)",
                           display:    "inline-flex",
                         }}>
                           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor"
+                                  strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </span>
                       </button>
 
                       {isMobOpen && (
                         <div style={{
-                          borderBottom: "1px solid hsl(var(--border) / 0.38)",
-                          padding:      "0.25rem 0 0.5rem",
+                          borderBottom: "1px solid rgba(0,0,0,0.055)",
+                          padding:      "0.25rem 0 0.625rem",
                         }}>
                           {link.items.map((item) => {
                             const itemActive =
@@ -591,18 +621,16 @@ export function Navbar() {
                                   display:        "flex",
                                   alignItems:     "flex-start",
                                   gap:            "0.625rem",
-                                  padding:        "0.6rem 0 0.6rem 1rem",
+                                  padding:        "0.625rem 0 0.625rem 1rem",
                                   textDecoration: "none",
-                                  borderLeft:     `2px solid ${
+                                  borderLeft: `2px solid ${
                                     itemActive
                                       ? "hsl(var(--primary))"
-                                      : "hsl(var(--primary) / 0.30)"
+                                      : "hsl(var(--primary) / 0.24)"
                                   }`,
                                   marginLeft:   "0.25rem",
-                                  borderRadius: "0 0.375rem 0.375rem 0",
-                                  background:   itemActive
-                                    ? "hsl(var(--primary) / 0.05)"
-                                    : "transparent",
+                                  borderRadius: "0 6px 6px 0",
+                                  background:   itemActive ? "hsl(var(--primary) / 0.04)" : "transparent",
                                   transition:   "background 0.16s ease",
                                 }}
                                 onClick={() => {
@@ -617,8 +645,8 @@ export function Navbar() {
                                     letterSpacing: "0.008em",
                                     color:         itemActive
                                       ? "hsl(var(--primary))"
-                                      : "hsl(var(--foreground) / 0.68)",
-                                    lineHeight:    1.3,
+                                      : "hsl(var(--foreground) / 0.66)",
+                                    lineHeight:    1.35,
                                     marginBottom:  item.desc ? "0.2rem" : 0,
                                   }}>
                                     {item.name}
@@ -627,8 +655,8 @@ export function Navbar() {
                                     <div style={{
                                       fontSize:   "11.5px",
                                       fontWeight: 300,
-                                      color:      "hsl(var(--foreground) / 0.38)",
-                                      lineHeight: 1.45,
+                                      color:      "hsl(var(--foreground) / 0.36)",
+                                      lineHeight: 1.5,
                                     }}>
                                       {item.desc}
                                     </div>
@@ -643,7 +671,7 @@ export function Navbar() {
                   );
                 }
 
-                /* ── Plain mobile link ────────────────── */
+                /* ── Plain mobile link ──────────────────────── */
                 return (
                   <a
                     key={link.name}
@@ -652,19 +680,16 @@ export function Navbar() {
                       fontSize:       "14px",
                       fontWeight:     400,
                       letterSpacing:  "0.010em",
-                      color:          "hsl(var(--foreground) / 0.68)",
-                      padding:        "0.72rem 0",
-                      borderBottom:   "1px solid hsl(var(--border) / 0.38)",
+                      color:          "hsl(var(--foreground) / 0.65)",
+                      padding:        "0.75rem 0",
+                      borderBottom:   "1px solid rgba(0,0,0,0.055)",
                       textDecoration: "none",
                       transition:     "color 0.18s ease",
+                      display:        "block",
                     }}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary))";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.color = "hsl(var(--foreground) / 0.68)";
-                    }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary))"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "hsl(var(--foreground) / 0.65)"; }}
                   >
                     {link.name}
                   </a>
@@ -675,19 +700,19 @@ export function Navbar() {
               <a
                 href={`${homeBase}/cong-dong#dang-ky`}
                 style={{
-                  marginTop:      "0.875rem",
+                  marginTop:      "1rem",
                   display:        "flex",
                   alignItems:     "center",
                   justifyContent: "center",
                   height:         "2.625rem",
                   borderRadius:   "999px",
                   background:     "hsl(var(--primary))",
-                  fontSize:       "13.5px",
+                  fontSize:       "13px",
                   fontWeight:     500,
-                  letterSpacing:  "0.014em",
+                  letterSpacing:  "0.018em",
                   color:          "#fff",
                   textDecoration: "none",
-                  boxShadow:      "0 1px 10px rgba(10,40,35,0.16)",
+                  boxShadow:      "0 1px 10px rgba(10,40,35,0.14)",
                   transition:     "background 0.22s ease, box-shadow 0.22s ease",
                 }}
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -699,7 +724,7 @@ export function Navbar() {
                 onMouseLeave={(e) => {
                   const el = e.currentTarget as HTMLElement;
                   el.style.background = "hsl(var(--primary))";
-                  el.style.boxShadow  = "0 1px 10px rgba(10,40,35,0.16)";
+                  el.style.boxShadow  = "0 1px 10px rgba(10,40,35,0.14)";
                 }}
               >
                 Tham gia cộng đồng

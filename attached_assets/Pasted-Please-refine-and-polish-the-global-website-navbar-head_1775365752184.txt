@@ -1,0 +1,353 @@
+Please refine and polish the global website navbar/header for “Phan Van Thang SWC” so it feels significantly more premium, calm, modern, and intentional.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- Apply this polish consistently across the full public website.
+- Do NOT redesign the whole website.
+- Focus specifically on the navbar/header system, including desktop and mobile behavior.
+- Preserve the brand direction: premium, calm, trustworthy, editorial, personal-brand finance mentor.
+
+GOAL:
+Upgrade the navbar so it no longer feels like a generic website menu.
+It should feel:
+- premium
+- refined
+- clean
+- high-trust
+- compact but elegant
+- editorial rather than template-like
+- consistent with the rest of the site
+
+The navbar should help the whole website feel more mature and polished from the very first glance.
+
+================================
+1. NAVBAR ROLE
+================================
+
+The navbar should clearly do these jobs:
+- anchor the brand
+- provide intuitive navigation
+- feel premium and lightweight
+- support trust and clarity
+- stay visually clean even when the site grows
+
+Current visible Vietnamese items should remain based on:
+
+- Trang chủ
+- Giới thiệu
+- Kiến thức
+- Tin tức
+- Cộng đồng
+- Sản phẩm
+- Liên hệ
+
+Optional CTA button:
+- Tham gia cộng đồng
+or
+- Liên hệ kết nối
+
+Requirements:
+- keep the navigation practical
+- do not overcrowd it
+- preserve clarity first, elegance second
+- keep the menu readable and balanced
+
+================================
+2. BRAND / LOGO AREA POLISH
+================================
+
+Refine the brand area on the left side of the navbar.
+
+Visible brand text may remain:
+- Thắng SWC
+or
+- Phan Van Thang SWC
+
+Please improve:
+- typography weight
+- spacing around the brand
+- alignment with menu items
+- visual confidence of the brand anchor
+
+Requirements:
+- brand should feel premium and intentional
+- not too small and weak
+- not too bold and loud
+- should align well with the header height and overall rhythm
+
+If the shorter brand “Thắng SWC” is currently used, make sure it feels premium and clean.
+If a longer brand version is better in the current layout, use it only if spacing still feels elegant.
+
+================================
+3. HEADER HEIGHT / PROPORTIONS
+================================
+
+Refine the overall height and proportions of the navbar.
+
+Please review:
+- header height
+- top/bottom padding
+- menu vertical alignment
+- logo/menu/button balance
+- desktop spacing rhythm
+
+Requirements:
+- avoid a header that feels too tall and heavy
+- avoid a header that feels too thin and cramped
+- make the header feel premium, stable, and deliberate
+- maintain a clean horizontal rhythm
+
+================================
+4. MENU ITEM TYPOGRAPHY
+================================
+
+Polish the typography of the menu items.
+
+Please improve:
+- font size
+- font weight
+- letter spacing if needed
+- opacity / contrast balance
+- active state styling
+- hover state styling
+
+Requirements:
+- menu items should feel readable but not loud
+- text should feel more refined than default navigation text
+- active item should be clear without shouting
+- hover states should be subtle and premium
+- avoid overly bright, overly bold, or underlined default-feeling interactions
+
+The menu should feel calm and confident.
+
+================================
+5. NAVBAR SPACING / RHYTHM
+================================
+
+Refine the horizontal spacing between menu items.
+
+Requirements:
+- spacing should feel balanced and premium
+- do not make items feel crowded
+- do not make the nav feel stretched and disconnected
+- visually align menu rhythm with the overall brand feel
+
+Please improve:
+- gap between main nav items
+- space between last menu item and CTA button
+- left-right padding inside the header container
+- overall distribution across the navbar width
+
+================================
+6. DROPDOWN POLISH
+================================
+
+If “Kiến thức” and/or “Sản phẩm” use dropdowns, polish them.
+
+Visible Vietnamese dropdown items can remain based on existing structure.
+
+Please improve:
+- dropdown panel spacing
+- hover states
+- active item indication
+- border and shadow treatment
+- corner radius
+- typography hierarchy
+- transition quality
+
+Requirements:
+- dropdown should feel premium, not default
+- avoid generic SaaS dropdown styling
+- avoid overcrowded mega-menu feel
+- use calm shadow and surface treatment
+- make dropdown open/close behavior smooth and polished
+
+If descriptions are shown in dropdown items, keep them subtle and useful.
+
+================================
+7. CTA BUTTON POLISH
+================================
+
+If a CTA button exists in the navbar, refine it carefully.
+
+Visible Vietnamese examples:
+- Tham gia cộng đồng
+- Liên hệ kết nối
+
+Please improve:
+- button size
+- border treatment
+- surface contrast
+- padding
+- hover state
+- relationship to the rest of the nav
+
+Requirements:
+- CTA should be visible but not too dominant
+- it should feel premium and calm
+- not like a loud conversion button
+- consistent with the overall site style
+- avoid bright aggressive CTA styling
+
+If necessary, make the CTA slightly more understated and elegant.
+
+================================
+8. BACKGROUND / SURFACE TREATMENT
+================================
+
+Refine the navbar surface and background treatment.
+
+Current site direction may include:
+- dark teal hero backgrounds
+- subtle grid / circular line textures
+- blurred overlay on scroll
+- premium transparent-to-solid header behavior
+
+Please improve:
+- transparency behavior
+- background blur if used
+- solid background state on scroll
+- border-bottom or divider treatment if needed
+- contrast between navbar and underlying hero
+
+Requirements:
+- header should remain readable on both dark and light sections
+- scrolling state should feel smooth and premium
+- avoid heavy sticky-header effects
+- avoid noisy overlays
+
+================================
+9. STICKY HEADER BEHAVIOR
+================================
+
+If the navbar is sticky, refine the sticky behavior.
+
+Requirements:
+- smooth transition when scrolling
+- proper surface contrast when the page moves under it
+- no jumpy behavior
+- no overly dramatic shrink animation unless already elegant
+- maintain readability and polish
+
+If helpful:
+- slightly adjust padding/height on scroll
+- add subtle blur / solidification
+But keep it refined.
+
+================================
+10. ACTIVE / CURRENT PAGE STATE
+================================
+
+Improve how active page state is shown.
+
+Requirements:
+- active menu item should be clearly identifiable
+- do not rely on cheap default underline
+- use a premium, subtle active state
+- active state should work across:
+  - Trang chủ
+  - Giới thiệu
+  - Kiến thức
+  - Tin tức
+  - Cộng đồng
+  - Sản phẩm
+  - Liên hệ
+
+If a dropdown section is active (for example inside Kiến thức), the top-level item should still reflect active context gracefully.
+
+================================
+11. MOBILE NAV POLISH
+================================
+
+Carefully refine the mobile header and menu.
+
+Please improve:
+- mobile header height
+- menu toggle styling
+- spacing inside the mobile panel
+- submenu expansion for Kiến thức / Sản phẩm
+- CTA placement
+- readability of item list
+- close/open animation quality
+
+Visible Vietnamese items should remain consistent.
+
+Requirements:
+- mobile nav should feel premium too, not just functional
+- avoid clutter
+- keep touch targets comfortable
+- keep submenu behavior clear and smooth
+- maintain brand consistency with desktop
+
+================================
+12. REDUCE TEMPLATE FEEL
+================================
+
+Actively remove anything that makes the navbar feel like:
+- a generic website template
+- a default framework header
+- a SaaS dashboard top nav
+- an overly symmetrical menu without intention
+
+Increase:
+- compositional confidence
+- premium restraint
+- spacing discipline
+- typography refinement
+- subtle motion polish
+
+================================
+13. MICRODETAILS
+================================
+
+Refine small details that improve quality.
+
+Examples:
+- menu hover opacity change
+- active indicator treatment
+- dropdown arrow styling
+- CTA border contrast
+- navbar container max width
+- item alignment precision
+- subtle divider lines only if helpful
+
+Requirements:
+- keep details subtle
+- do not over-style
+- every change should support elegance and clarity
+
+================================
+14. RESPONSIVENESS / CROSS-PAGE CONSISTENCY
+================================
+
+Make sure the navbar feels consistent across:
+- homepage
+- giới thiệu
+- kiến thức
+- bài viết
+- video
+- tin tức
+- cộng đồng
+- sản phẩm
+- liên hệ
+
+Requirements:
+- same quality and spacing logic across the whole site
+- no broken states between dark and light page sections
+- no inconsistent CTA/button styles
+- no alignment drift between pages
+
+================================
+15. FINAL EXPECTED RESULT
+================================
+
+After refinement, the navbar should:
+- feel more premium immediately
+- be cleaner and more balanced
+- improve first impression of the whole site
+- look less templated
+- support navigation more clearly
+- align with a serious personal brand in finance/investing
+
+Please implement this navbar/header polish directly across the public website.
