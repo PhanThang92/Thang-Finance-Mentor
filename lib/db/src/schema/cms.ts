@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, jsonb, integer } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, jsonb, integer, boolean } from "drizzle-orm/pg-core";
 
 /* ── Leads / form submissions ─────────────────────────────────────── */
 export const leadsTable = pgTable("leads", {
@@ -51,3 +51,46 @@ export const siteSettingsTable = pgTable("site_settings", {
 });
 
 export type SiteSetting = typeof siteSettingsTable.$inferSelect;
+
+/* ── Contact widget settings (single-row config) ──────────────────── */
+export const contactWidgetSettingsTable = pgTable("site_contact_widget_settings", {
+  id:               serial("id").primaryKey(),
+  isEnabled:        boolean("is_enabled").notNull().default(true),
+  widgetTitle:      text("widget_title"),
+  widgetSubtitle:   text("widget_subtitle"),
+  position:         text("position").notNull().default("bottom-right"),
+  expandDirection:  text("expand_direction").notNull().default("up"),
+  showLabels:       boolean("show_labels").notNull().default(true),
+  showTooltips:     boolean("show_tooltips").notNull().default(true),
+  desktopOffsetX:   integer("desktop_offset_x").notNull().default(24),
+  desktopOffsetY:   integer("desktop_offset_y").notNull().default(24),
+  mobileOffsetX:    integer("mobile_offset_x").notNull().default(16),
+  mobileOffsetY:    integer("mobile_offset_y").notNull().default(16),
+  defaultOpen:      boolean("default_open").notNull().default(false),
+  themeVariant:     text("theme_variant"),
+  showOnDesktop:    boolean("show_on_desktop").notNull().default(true),
+  showOnMobile:     boolean("show_on_mobile").notNull().default(true),
+  createdAt:        timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt:        timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type ContactWidgetSettings = typeof contactWidgetSettingsTable.$inferSelect;
+
+/* ── Contact channels ─────────────────────────────────────────────── */
+export const contactChannelsTable = pgTable("contact_channels", {
+  id:            serial("id").primaryKey(),
+  channelType:   text("channel_type").notNull(),   // phone | zalo | telegram
+  label:         text("label").notNull(),
+  value:         text("value").notNull(),           // phone number or URL
+  iconKey:       text("icon_key"),
+  tooltipText:   text("tooltip_text"),
+  isEnabled:     boolean("is_enabled").notNull().default(true),
+  displayOrder:  integer("display_order").notNull().default(0),
+  openMode:      text("open_mode").notNull().default("new_tab"), // tel | same_tab | new_tab
+  showOnDesktop: boolean("show_on_desktop").notNull().default(true),
+  showOnMobile:  boolean("show_on_mobile").notNull().default(true),
+  createdAt:     timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt:     timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type ContactChannel = typeof contactChannelsTable.$inferSelect;

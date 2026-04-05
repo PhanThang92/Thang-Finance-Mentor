@@ -17,6 +17,7 @@ import { EmailSubscribersPanel }  from "./admin/EmailSubscribersPanel";
 import { EmailCampaignsPanel }    from "./admin/EmailCampaignsPanel";
 import { EmailSequencesPanel }    from "./admin/EmailSequencesPanel";
 import { ResourcesPanel }         from "./admin/ResourcesPanel";
+import { ContactWidgetPanel }     from "./admin/ContactWidgetPanel";
 import { A }                      from "./admin/shared";
 
 /* ── Types ────────────────────────────────────────────────────────── */
@@ -39,7 +40,8 @@ type Section =
   | "email-subscribers"
   | "email-campaigns"
   | "email-sequences"
-  | "resources";
+  | "resources"
+  | "contact-widget";
 
 interface NavItem { id: Section; label: string; icon: string; }
 type NavGroup = { group: string; items: NavItem[] };
@@ -84,8 +86,9 @@ const NAV_STRUCTURE: NavGroup[] = [
   {
     group: "Vận hành",
     items: [
-      { id: "community", label: "Cộng đồng", icon: "◎" },
-      { id: "settings",  label: "Cài đặt",   icon: "⚙" },
+      { id: "community",      label: "Cộng đồng",   icon: "◎" },
+      { id: "contact-widget", label: "Liên hệ nổi", icon: "◉" },
+      { id: "settings",       label: "Cài đặt",     icon: "⚙" },
     ],
   },
   {
@@ -136,6 +139,7 @@ const SECTION_TITLES: Record<Section, string> = {
   "email-campaigns":   "Email · Chiến dịch",
   "email-sequences":   "Email · Chuỗi tự động",
   resources:           "Tài liệu",
+  "contact-widget":    "Liên hệ nổi · Widget",
 };
 
 const STORAGE_KEY = "swc_admin_key";
@@ -365,6 +369,7 @@ export default function Admin() {
           {section === "email-campaigns"   && <EmailCampaignsPanel    adminKey={adminKey} />}
           {section === "email-sequences"   && <EmailSequencesPanel    adminKey={adminKey} />}
           {section === "resources"         && <ResourcesPanel         adminKey={adminKey} />}
+          {section === "contact-widget"   && <ContactWidgetPanel     adminKey={adminKey} />}
         </main>
       </div>
     </div>

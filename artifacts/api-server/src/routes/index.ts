@@ -9,6 +9,7 @@ import contentRouter from "./content";
 import trackRouter from "./track";
 import emailPublicRouter from "./emailPublic";
 import emailAdminRouter from "./emailAdmin";
+import contactRouter from "./contact";
 
 const router: IRouter = Router();
 
@@ -21,6 +22,7 @@ router.use("/leads", leadsRouter);
 router.use("/content", contentRouter);
 router.use("/resources", resourcesRouter);
 router.use("/admin/resources", adminResourcesRouter);
+router.use("/contact", contactRouter);
 router.use(trackRouter);
 
 export default router;

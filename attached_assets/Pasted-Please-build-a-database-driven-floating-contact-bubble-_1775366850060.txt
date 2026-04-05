@@ -1,0 +1,546 @@
+Please build a database-driven floating contact bubble widget for the public website of “Phan Van Thang SWC”.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Build this feature in a clean, scalable, maintainable way.
+- Do NOT hardcode phone/Zalo/Telegram values directly in frontend components.
+- All contact channels and widget behavior must be configurable from the database and manageable through admin.
+- Keep the design premium, calm, compact, and aligned with the website’s current visual system.
+- This is NOT a chatbot. It is a floating quick-contact widget.
+
+GOAL:
+Create a floating contact widget that appears in the bottom-right corner of the public website.
+
+The widget should:
+1. show a primary floating bubble button
+2. expand to reveal 3 direct contact options:
+   - gọi số điện thoại
+   - chat Zalo
+   - Telegram
+3. read all channel data from the database
+4. be manageable from the admin CMS
+5. support desktop and mobile behavior cleanly
+6. support tracking/analytics for clicks
+7. feel premium and non-intrusive
+
+================================
+1. FEATURE OVERVIEW
+================================
+
+Please implement a floating contact widget that:
+- appears on the public website only
+- is positioned in the bottom-right corner
+- expands upward (preferred) when clicked
+- shows enabled contact channels from the database
+- supports phone, Zalo, and Telegram initially
+- can be extended later if needed
+
+The widget should NOT:
+- appear inside admin routes
+- feel like a spammy sales popup
+- block too much page content
+- autoplay or force itself open aggressively
+
+================================
+2. PUBLIC UX / INTERACTION
+================================
+
+Default behavior:
+- show one main circular floating bubble button at the bottom-right corner
+
+When clicked:
+- expand a small vertical stack or compact panel with enabled contact channels
+
+Initial supported channels:
+- Gọi điện
+- Chat Zalo
+- Telegram
+
+Preferred expand direction:
+- upward
+
+Visible Vietnamese text examples:
+Main bubble tooltip or label (optional):
+- Liên hệ nhanh
+
+Expanded item labels:
+- Gọi điện
+- Chat Zalo
+- Telegram
+
+Requirements:
+- compact and premium
+- subtle animation
+- smooth expand/collapse
+- good spacing between items
+- not visually noisy
+- accessible click targets on both desktop and mobile
+
+================================
+3. DATABASE-DRIVEN ARCHITECTURE
+================================
+
+Do NOT hardcode contact values in the frontend.
+
+Please create a database-backed structure for:
+A. widget-level settings
+B. contact channel items
+
+Suggested tables:
+
+A. `site_contact_widget_settings`
+Fields:
+- id (uuid or single-row config pattern)
+- is_enabled (boolean)
+- widget_title (nullable)
+- widget_subtitle (nullable)
+- position (text, default "bottom-right")
+- expand_direction (text, default "up")
+- show_labels (boolean)
+- show_tooltips (boolean)
+- desktop_offset_x (integer or text)
+- desktop_offset_y (integer or text)
+- mobile_offset_x (integer or text)
+- mobile_offset_y (integer or text)
+- default_open (boolean, default false)
+- theme_variant (nullable)
+- show_on_desktop (boolean)
+- show_on_mobile (boolean)
+- created_at
+- updated_at
+
+B. `contact_channels`
+Fields:
+- id
+- channel_type (text: phone / zalo / telegram)
+- label (text)
+- value (text)
+- icon_key (text, nullable)
+- tooltip_text (text, nullable)
+- is_enabled (boolean)
+- display_order (integer)
+- open_mode (text: tel / same_tab / new_tab)
+- show_on_desktop (boolean)
+- show_on_mobile (boolean)
+- created_at
+- updated_at
+
+Requirements:
+- the widget must render from DB values
+- only enabled channels should show
+- channels should be sorted by display_order
+- if no settings or no enabled channels exist, fail gracefully and hide widget
+
+================================
+4. CHANNEL LOGIC
+================================
+
+Support these channel behaviors:
+
+A. Phone
+- store the clean phone number in `value`
+- frontend should generate:
+  `tel:{phone_number}`
+- label example:
+  `Gọi điện`
+
+B. Zalo
+- store a full Zalo URL in `value`
+  Example:
+  `https://zalo.me/0988123456`
+- open in new tab by default
+- label example:
+  `Chat Zalo`
+
+C. Telegram
+- store a full Telegram URL in `value`
+  Example:
+  `https://t.me/username`
+- open in new tab by default
+- label example:
+  `Telegram`
+
+Requirements:
+- support future extension to other channels later
+- validate links in admin where practical
+- keep logic clean and centralized
+
+================================
+5. ADMIN CMS SUPPORT
+================================
+
+Add admin management for this widget.
+
+Suggested admin routes:
+- `/admin/settings/contact-widget`
+- `/admin/settings/contact-channels`
+
+A. Widget settings page
+Visible Vietnamese labels/examples:
+- Cài đặt liên hệ nổi
+- Bật widget liên hệ
+- Tiêu đề widget
+- Mô tả ngắn
+- Vị trí
+- Hướng bung menu
+- Hiện nhãn
+- Hiện tooltip
+- Hiện trên desktop
+- Hiện trên mobile
+- Khoảng cách phải (desktop)
+- Khoảng cách dưới (desktop)
+- Khoảng cách phải (mobile)
+- Khoảng cách dưới (mobile)
+
+B. Contact channels page
+Visible Vietnamese labels/examples:
+- Kênh liên hệ
+- Thêm kênh mới
+- Loại kênh
+- Nhãn hiển thị
+- Giá trị liên hệ
+- Tooltip
+- Bật kênh
+- Thứ tự hiển thị
+- Hiện desktop
+- Hiện mobile
+- Hành động
+
+Requirements:
+- admin can enable/disable widget
+- admin can enable/disable each channel
+- admin can edit labels and values
+- admin can set display order
+- admin can choose desktop/mobile visibility
+- keep admin UI practical and simple
+
+================================
+6. DEFAULT CHANNELS / INITIAL SEED
+================================
+
+Please support initial seeded channel records for:
+- phone
+- zalo
+- telegram
+
+Use placeholder values if real values are not yet available.
+
+Suggested Vietnamese labels:
+- Gọi điện
+- Chat Zalo
+- Telegram
+
+Requirements:
+- easy to replace later from admin
+- keep seed data clean and minimal
+
+================================
+7. FRONTEND COMPONENT DESIGN
+================================
+
+Create a reusable frontend component, for example:
+- `FloatingContactWidget`
+
+Requirements:
+- render globally on public pages
+- do not render on admin routes
+- read DB-backed settings and channels cleanly
+- be easy to maintain
+- use a compact premium style
+- support closed and expanded states
+
+Suggested behavior:
+- main floating circle button
+- clicking toggles expanded list
+- clicking outside closes widget if appropriate
+- ESC key closes widget on desktop if practical
+
+Optional:
+- auto-close after clicking a channel is acceptable
+
+================================
+8. VISUAL DESIGN DIRECTION
+================================
+
+Keep the widget design aligned with the current site brand:
+- premium
+- calm
+- trustworthy
+- compact
+- dark teal / charcoal / soft teal aligned
+- subtle shadows
+- refined radius
+- non-intrusive surface treatment
+
+Avoid:
+- bright spammy colors
+- oversized WhatsApp-style sales widget look
+- loud bounce animations
+- cheap-looking gradients
+- cluttered labels
+
+The widget should feel:
+- elegant
+- useful
+- intentionally designed
+- small but clearly accessible
+
+================================
+9. MAIN BUBBLE BUTTON
+================================
+
+The main floating bubble button should be visually strong but restrained.
+
+Requirements:
+- circular or softly rounded shape
+- clear icon
+- premium hover/focus state
+- subtle shadow
+- compact size
+- not too large
+- not too flashy
+
+Optional visible tooltip:
+- Liên hệ nhanh
+
+If a label is shown, keep it subtle.
+If icon-only is cleaner, that is acceptable.
+
+================================
+10. EXPANDED CHANNEL ITEM UI
+================================
+
+Each expanded channel item should include:
+- icon
+- label
+- optional tooltip or helper text
+
+Visible Vietnamese examples:
+- Gọi điện
+- Chat Zalo
+- Telegram
+
+Requirements:
+- clean surface treatment
+- good tap/click target
+- hover feedback
+- icon alignment polished
+- compact layout
+- consistent spacing
+
+If show_labels = false, allow icon-only compact mode.
+If show_labels = true, display icon + text elegantly.
+
+================================
+11. DESKTOP AND MOBILE BEHAVIOR
+================================
+
+Support both desktop and mobile carefully.
+
+Desktop:
+- bottom-right floating widget
+- expand upward
+- hover and click states refined
+
+Mobile:
+- bottom-right floating widget
+- easy touch targets
+- not too close to screen edges
+- not blocking too much content
+- spacing tuned via mobile offsets
+
+Requirements:
+- desktop and mobile visibility can be controlled from DB
+- widget should remain usable on smaller screens
+- smooth expand/collapse on both
+
+================================
+12. POSITIONING / OFFSET SUPPORT
+================================
+
+Use the widget settings table to control widget offset positioning.
+
+Requirements:
+- support right and bottom offset separately for desktop and mobile
+- allow future tuning without code changes
+- default position:
+  bottom-right
+- default expand direction:
+  up
+
+If the site has fixed CTA bars or other sticky elements on mobile, ensure the widget does not overlap badly.
+
+================================
+13. CONDITIONAL RENDERING
+================================
+
+Do not render the widget everywhere blindly.
+
+Requirements:
+- hide widget on admin routes
+- optionally hide if widget is disabled
+- hide if there are zero enabled channels
+- support future route-based conditions if architecture allows
+
+Minimum requirement:
+- render on public site only
+
+================================
+14. ANALYTICS / CLICK TRACKING
+================================
+
+Track interactions from this widget.
+
+At minimum, track:
+- phone click
+- zalo click
+- telegram click
+- widget open
+- widget close (optional)
+
+Suggested analytics event examples:
+- contact_widget_open
+- contact_channel_click
+
+Suggested metadata:
+- channel_type
+- source_page
+- source_path
+- device_type
+- timestamp
+
+Requirements:
+- integrate with existing analytics/tracking system if already present
+- if not, add lightweight event tracking compatible with the current analytics architecture
+- keep event logic centralized
+
+================================
+15. ACCESSIBILITY
+================================
+
+Make the widget accessible.
+
+Requirements:
+- buttons and links should have proper aria-labels
+- keyboard support where practical
+- focus states visible and refined
+- sufficient contrast
+- avoid relying only on icon meaning without labels/aria text
+
+Suggested aria labels:
+- Mở liên hệ nhanh
+- Gọi điện
+- Chat Zalo
+- Mở Telegram
+
+================================
+16. DATA FETCHING / SERVICE LAYER
+================================
+
+Create a clean service/data access layer for widget data.
+
+Suggested helpers:
+- getContactWidgetSettings()
+- getEnabledContactChannels()
+- getVisibleContactChannelsForDevice()
+
+Requirements:
+- keep DB logic out of the UI component
+- clean separation of settings + channels
+- make it easy to extend later
+
+================================
+17. VALIDATION IN ADMIN
+================================
+
+Add practical validation rules in admin.
+
+Examples:
+- phone channel value should be a valid phone or clean tel-compatible number
+- Zalo value should be a valid URL
+- Telegram value should be a valid URL
+- label should not be empty
+- display_order should be valid
+
+Visible Vietnamese error examples:
+- Vui lòng nhập giá trị hợp lệ
+- Liên kết không hợp lệ
+- Nhãn hiển thị là bắt buộc
+
+Requirements:
+- keep validation helpful and simple
+- avoid accepting obviously broken values
+
+================================
+18. SECURITY / LINK HANDLING
+================================
+
+Handle external links safely.
+
+Requirements:
+- phone uses tel:
+- Zalo/Telegram external links should open safely
+- use target and rel attributes appropriately when opening new tabs
+- do not expose unsafe DB-rendered HTML
+- sanitize and validate saved values where appropriate
+
+================================
+19. FALLBACK LOGIC
+================================
+
+Gracefully handle incomplete data.
+
+Requirements:
+- if widget settings are missing, either use safe defaults or do not render
+- if a channel is enabled but missing value, skip rendering that item
+- do not break the page
+- log or handle errors cleanly if useful
+
+================================
+20. FILE / CODE ORGANIZATION
+================================
+
+Keep implementation clean.
+
+Suggested areas:
+- DB schema/migration
+- admin pages/forms
+- widget settings service
+- contact channels service
+- frontend widget component
+- analytics helper integration
+
+Requirements:
+- avoid duplicated logic
+- keep code scalable
+- keep naming clear
+
+================================
+21. DOCUMENTATION / HANDOFF
+================================
+
+Add simple notes/comments/documentation for:
+- where widget settings are stored
+- where contact channels are stored
+- how widget rendering works
+- how click tracking works
+- how to add a new channel type later
+
+================================
+22. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- the public website has a premium floating contact bubble in the bottom-right corner
+- clicking it reveals:
+  - Gọi điện
+  - Chat Zalo
+  - Telegram
+- all values come from the database
+- admin can manage widget settings and contact channels
+- widget works well on desktop and mobile
+- interactions are trackable
+- the feature feels premium, useful, and maintainable
+
+Please implement this full database-driven floating contact widget directly into the existing website and admin CMS.

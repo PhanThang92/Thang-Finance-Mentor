@@ -5,7 +5,7 @@ import { randomBytes } from "crypto";
 import { Router, type Request, type Response, type NextFunction } from "express";
 import multer from "multer";
 import sharp from "sharp";
-import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, leadNotesTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable } from "@workspace/db";
+import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, leadNotesTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable, contactWidgetSettingsTable, contactChannelsTable } from "@workspace/db";
 import { eq, sql, desc, ilike, or, and, isNotNull, gte, lte } from "drizzle-orm";
 
 /* ── Upload dirs ─────────────────────────────────────────────────────── */
@@ -1070,6 +1070,137 @@ router.get("/analytics", async (req, res) => {
         ctaClicks:     r.ctaClicks     ?? 0,
       })),
     });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   CONTACT WIDGET SETTINGS
+══════════════════════════════════════════════════════════════════ */
+
+router.get("/contact-widget", requireAdmin, async (_req, res) => {
+  try {
+    const [row] = await db.select().from(contactWidgetSettingsTable).limit(1);
+    if (!row) {
+      // Auto-create default row
+      const [created] = await db.insert(contactWidgetSettingsTable).values({}).returning();
+      res.json(created);
+    } else {
+      res.json(row);
+    }
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.patch("/contact-widget", requireAdmin, async (req, res) => {
+  try {
+    const {
+      isEnabled, widgetTitle, widgetSubtitle, showLabels, showTooltips,
+      desktopOffsetX, desktopOffsetY, mobileOffsetX, mobileOffsetY,
+      showOnDesktop, showOnMobile, defaultOpen, themeVariant,
+    } = req.body as Record<string, unknown>;
+
+    const [existing] = await db.select().from(contactWidgetSettingsTable).limit(1);
+    if (!existing) {
+      const [row] = await db.insert(contactWidgetSettingsTable).values({}).returning();
+      res.json(row);
+      return;
+    }
+
+    const update: Record<string, unknown> = { updatedAt: new Date() };
+    if (typeof isEnabled      === "boolean")  update.isEnabled      = isEnabled;
+    if (typeof showLabels     === "boolean")  update.showLabels     = showLabels;
+    if (typeof showTooltips   === "boolean")  update.showTooltips   = showTooltips;
+    if (typeof showOnDesktop  === "boolean")  update.showOnDesktop  = showOnDesktop;
+    if (typeof showOnMobile   === "boolean")  update.showOnMobile   = showOnMobile;
+    if (typeof defaultOpen    === "boolean")  update.defaultOpen    = defaultOpen;
+    if (widgetTitle   !== undefined)          update.widgetTitle    = widgetTitle   || null;
+    if (widgetSubtitle !== undefined)         update.widgetSubtitle = widgetSubtitle || null;
+    if (themeVariant  !== undefined)          update.themeVariant   = themeVariant  || null;
+    if (typeof desktopOffsetX === "number")   update.desktopOffsetX = desktopOffsetX;
+    if (typeof desktopOffsetY === "number")   update.desktopOffsetY = desktopOffsetY;
+    if (typeof mobileOffsetX  === "number")   update.mobileOffsetX  = mobileOffsetX;
+    if (typeof mobileOffsetY  === "number")   update.mobileOffsetY  = mobileOffsetY;
+
+    const [updated] = await db.update(contactWidgetSettingsTable)
+      .set(update)
+      .where(eq(contactWidgetSettingsTable.id, existing.id))
+      .returning();
+    res.json(updated);
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   CONTACT CHANNELS
+══════════════════════════════════════════════════════════════════ */
+
+router.get("/contact-channels", requireAdmin, async (_req, res) => {
+  try {
+    const rows = await db.select().from(contactChannelsTable)
+      .orderBy(contactChannelsTable.displayOrder);
+    res.json(rows);
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.post("/contact-channels", requireAdmin, async (req, res) => {
+  try {
+    const {
+      channelType, label, value, iconKey, tooltipText,
+      isEnabled, displayOrder, openMode, showOnDesktop, showOnMobile,
+    } = req.body as Record<string, unknown>;
+
+    if (!channelType || !label || !value) {
+      res.status(400).json({ error: "channelType, label, and value are required" });
+      return;
+    }
+    const [row] = await db.insert(contactChannelsTable).values({
+      channelType:   String(channelType),
+      label:         String(label),
+      value:         String(value),
+      iconKey:       typeof iconKey   === "string" ? iconKey   : null,
+      tooltipText:   typeof tooltipText === "string" ? tooltipText : null,
+      isEnabled:     typeof isEnabled  === "boolean" ? isEnabled  : true,
+      displayOrder:  typeof displayOrder === "number" ? displayOrder : 0,
+      openMode:      typeof openMode   === "string" ? openMode   : "new_tab",
+      showOnDesktop: typeof showOnDesktop === "boolean" ? showOnDesktop : true,
+      showOnMobile:  typeof showOnMobile  === "boolean" ? showOnMobile  : true,
+    }).returning();
+    res.json(row);
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.patch("/contact-channels/:id", requireAdmin, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const {
+      channelType, label, value, iconKey, tooltipText,
+      isEnabled, displayOrder, openMode, showOnDesktop, showOnMobile,
+    } = req.body as Record<string, unknown>;
+
+    const update: Record<string, unknown> = { updatedAt: new Date() };
+    if (typeof channelType   === "string")  update.channelType   = channelType;
+    if (typeof label         === "string")  update.label         = label;
+    if (typeof value         === "string")  update.value         = value;
+    if (iconKey    !== undefined)           update.iconKey       = iconKey    || null;
+    if (tooltipText !== undefined)          update.tooltipText   = tooltipText || null;
+    if (typeof isEnabled     === "boolean") update.isEnabled     = isEnabled;
+    if (typeof displayOrder  === "number")  update.displayOrder  = displayOrder;
+    if (typeof openMode      === "string")  update.openMode      = openMode;
+    if (typeof showOnDesktop === "boolean") update.showOnDesktop = showOnDesktop;
+    if (typeof showOnMobile  === "boolean") update.showOnMobile  = showOnMobile;
+
+    const [updated] = await db.update(contactChannelsTable)
+      .set(update)
+      .where(eq(contactChannelsTable.id, id))
+      .returning();
+    if (!updated) { res.status(404).json({ error: "Not found" }); return; }
+    res.json(updated);
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.delete("/contact-channels/:id", requireAdmin, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    await db.delete(contactChannelsTable).where(eq(contactChannelsTable.id, id));
+    res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 
