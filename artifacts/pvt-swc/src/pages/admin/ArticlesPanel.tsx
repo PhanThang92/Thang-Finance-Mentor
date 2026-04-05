@@ -99,6 +99,7 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
   const [loading, setLoading]   = useState(true);
   const [view, setView]         = useState<"list" | "form">("list");
   const [form, setForm]         = useState<Form>(EMPTY);
+  const [originalSlug, setOriginalSlug] = useState("");
   const [saving, setSaving]     = useState(false);
   const [err, setErr]           = useState("");
   const [toast, setToast]       = useState<{ msg: string; type: "ok" | "err" } | null>(null);
@@ -153,10 +154,10 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
 
   const isFiltered = q || fStatus !== "all" || fFeatured !== "all" || fHomepage !== "all";
 
-  const newArticle = () => { setForm({ ...EMPTY }); setErr(""); setShowSeo(false); setView("form"); };
+  const newArticle = () => { setForm({ ...EMPTY }); setOriginalSlug(""); setErr(""); setShowSeo(false); setView("form"); };
   const editArticle = (a: Article) => {
     setForm({ ...a, tagsInput: tagsToString(a.tags) });
-    setErr(""); setShowSeo(false); setView("form");
+    setOriginalSlug(a.slug); setErr(""); setShowSeo(false); setView("form");
   };
 
   const deleteArticle = async (id: number) => {
@@ -313,8 +314,14 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
                         </span>
                       </td>
                       <td style={{ ...s.td, whiteSpace: "nowrap" }}>
-                        <div style={{ display: "flex", gap: "4px" }}>
+                        <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
                           <button onClick={() => editArticle(a)} style={{ ...s.btnGhost, fontSize: "11.5px", padding: "4px 10px" }}>Sửa</button>
+                          {a.status === "published" && (
+                            <a href={`/bai-viet/${a.slug}`} target="_blank" rel="noopener noreferrer"
+                              style={{ ...s.btnGhost, fontSize: "11.5px", padding: "4px 10px", textDecoration: "none", color: A.primary }}>
+                              Xem bài
+                            </a>
+                          )}
                           <button onClick={() => toggleStatus(a)} style={{ ...s.btnGhost, fontSize: "11.5px", padding: "4px 10px", color: a.status === "published" ? A.textMuted : A.primary }}>
                             {a.status === "published" ? "Nháp" : "Đăng"}
                           </button>
@@ -352,7 +359,17 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
       <div style={{ marginBottom: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
           <h2 style={{ ...s.sectionTitle, margin: "0 0 4px" }}>{isEdit ? "Chỉnh sửa bài viết" : "Tạo bài viết mới"}</h2>
-          {isEdit && <p style={{ fontSize: "12px", color: A.textLight, margin: 0 }}>ID: {form.id}</p>}
+          {isEdit && (
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <p style={{ fontSize: "12px", color: A.textLight, margin: 0 }}>ID: {form.id}</p>
+              {form.status === "published" && form.slug && (
+                <a href={`/bai-viet/${form.slug}`} target="_blank" rel="noopener noreferrer"
+                  style={{ fontSize: "12px", color: A.primary, textDecoration: "none", fontWeight: 500 }}>
+                  Xem bài ↗
+                </a>
+              )}
+            </div>
+          )}
         </div>
         <div style={{ display: "flex", gap: "0.625rem" }}>
           <button onClick={() => save("published")} disabled={saving} style={{ ...s.btnPrimary, opacity: saving ? 0.6 : 1 }}>
@@ -364,6 +381,12 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
       </div>
 
       {err && <div style={s.error}>{err}</div>}
+
+      {isEdit && originalSlug && form.status === "published" && form.slug !== originalSlug && (
+        <div style={{ marginBottom: "1rem", padding: "10px 14px", background: "#fffbeb", border: "1px solid #fcd34d", borderRadius: "8px", fontSize: "12.5px", color: "#92400e", lineHeight: 1.6 }}>
+          <strong>Lưu ý:</strong> Bạn đang thay đổi đường dẫn của một bài viết đã xuất bản. Điều này có thể làm hỏng liên kết đang được chia sẻ và ảnh hưởng đến SEO. Đường dẫn cũ: <code style={{ fontFamily: "monospace", background: "rgba(0,0,0,0.06)", padding: "1px 5px", borderRadius: "3px" }}>/{originalSlug}</code>
+        </div>
+      )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
 

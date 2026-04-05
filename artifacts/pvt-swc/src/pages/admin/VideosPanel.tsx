@@ -78,6 +78,7 @@ export function VideosPanel({ adminKey }: { adminKey: string }) {
   const [series, setSeries]     = useState<Series[]>([]);
   const [loading, setLoading]   = useState(true);
   const [view, setView]         = useState<"list" | "form">("list");
+  const [originalSlug, setOriginalSlug] = useState("");
   const [form, setForm]         = useState<Form>(EMPTY);
   const [saving, setSaving]     = useState(false);
   const [err, setErr]           = useState("");
@@ -134,10 +135,10 @@ export function VideosPanel({ adminKey }: { adminKey: string }) {
 
   const isFiltered = q || fStatus !== "all" || fFeatured !== "all" || fHomepage !== "all";
 
-  const newVideo = () => { setForm({ ...EMPTY }); setErr(""); setYtErr(""); setShowSeo(false); setView("form"); };
+  const newVideo = () => { setForm({ ...EMPTY }); setOriginalSlug(""); setErr(""); setYtErr(""); setShowSeo(false); setView("form"); };
   const editVideo = (v: Video) => {
     setForm({ ...v, categoriesInput: catsToString(v.categories) });
-    setErr(""); setYtErr(""); setShowSeo(false); setView("form");
+    setOriginalSlug(v.slug); setErr(""); setYtErr(""); setShowSeo(false); setView("form");
   };
 
   const deleteVideo = async (id: number) => {
@@ -315,8 +316,14 @@ export function VideosPanel({ adminKey }: { adminKey: string }) {
                         </span>
                       </td>
                       <td style={{ ...s.td, whiteSpace: "nowrap" }}>
-                        <div style={{ display: "flex", gap: "4px" }}>
+                        <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
                           <button onClick={() => editVideo(v)} style={{ ...s.btnGhost, fontSize: "11.5px", padding: "4px 10px" }}>Sửa</button>
+                          {v.status === "published" && (
+                            <a href={`/video/${v.slug}`} target="_blank" rel="noopener noreferrer"
+                              style={{ ...s.btnGhost, fontSize: "11.5px", padding: "4px 10px", textDecoration: "none", color: A.primary }}>
+                              Xem video
+                            </a>
+                          )}
                           <button onClick={() => toggleStatus(v)} style={{ ...s.btnGhost, fontSize: "11.5px", padding: "4px 10px", color: v.status === "published" ? A.textMuted : A.primary }}>
                             {v.status === "published" ? "Nháp" : "Đăng"}
                           </button>
@@ -357,7 +364,17 @@ export function VideosPanel({ adminKey }: { adminKey: string }) {
       <div style={{ marginBottom: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
           <h2 style={{ ...s.sectionTitle, margin: "0 0 4px" }}>{isEdit ? "Chỉnh sửa video" : "Thêm video mới"}</h2>
-          {isEdit && <p style={{ fontSize: "12px", color: A.textLight, margin: 0 }}>ID: {form.id}</p>}
+          {isEdit && (
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <p style={{ fontSize: "12px", color: A.textLight, margin: 0 }}>ID: {form.id}</p>
+              {form.status === "published" && form.slug && (
+                <a href={`/video/${form.slug}`} target="_blank" rel="noopener noreferrer"
+                  style={{ fontSize: "12px", color: A.primary, textDecoration: "none", fontWeight: 500 }}>
+                  Xem video ↗
+                </a>
+              )}
+            </div>
+          )}
         </div>
         <div style={{ display: "flex", gap: "0.625rem" }}>
           <button onClick={() => save("published")} disabled={saving} style={{ ...s.btnPrimary, opacity: saving ? 0.6 : 1 }}>{saving ? "Đang lưu..." : publishLabel}</button>
@@ -367,6 +384,12 @@ export function VideosPanel({ adminKey }: { adminKey: string }) {
       </div>
 
       {err && <div style={s.error}>{err}</div>}
+
+      {isEdit && originalSlug && form.status === "published" && form.slug !== originalSlug && (
+        <div style={{ marginBottom: "1rem", padding: "10px 14px", background: "#fffbeb", border: "1px solid #fcd34d", borderRadius: "8px", fontSize: "12.5px", color: "#92400e", lineHeight: 1.6 }}>
+          <strong>Lưu ý:</strong> Bạn đang thay đổi đường dẫn của một video đã xuất bản. Điều này có thể làm hỏng liên kết đang được chia sẻ và ảnh hưởng đến SEO. Đường dẫn cũ: <code style={{ fontFamily: "monospace", background: "rgba(0,0,0,0.06)", padding: "1px 5px", borderRadius: "3px" }}>/{originalSlug}</code>
+        </div>
+      )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
 

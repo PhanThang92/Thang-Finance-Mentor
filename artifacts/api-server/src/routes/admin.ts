@@ -34,6 +34,21 @@ function requireAdmin(req: Request, res: Response, next: NextFunction) {
 }
 router.use(requireAdmin);
 
+// ── Slug uniqueness helper ─────────────────────────────────────────────────────
+// Drizzle wraps PG errors in QueryError; the actual postgres error is in `cause`
+function isSlugConflict(e: unknown): boolean {
+  if (e && typeof e === "object") {
+    // The PG unique_violation error code is 23505 — check both the error and its cause
+    const errObj = e as Record<string, unknown>;
+    if (errObj["code"] === "23505") return true;
+    const cause = errObj["cause"];
+    if (cause && typeof cause === "object" && (cause as Record<string, unknown>)["code"] === "23505") return true;
+  }
+  // String fallback for non-PG error wrappers
+  const msg = String(e).toLowerCase();
+  return msg.includes("duplicate key") || (msg.includes("unique constraint") && msg.includes("slug"));
+}
+
 // ── System status (no secrets exposed — presence only) ────────────────────────
 router.get("/system-status", (_req, res) => {
   const notionOk  = !!(process.env["NOTION_API_KEY"] && process.env["NOTION_DATABASE_ID"]);
@@ -483,7 +498,10 @@ router.post("/articles", async (req, res) => {
       createdAt: now, updatedAt: now,
     }).returning();
     res.json({ article });
-  } catch (e) { res.status(500).json({ error: String(e) }); }
+  } catch (e) {
+    if (isSlugConflict(e)) { res.status(409).json({ error: `Đường dẫn tĩnh "${String((req.body as Record<string, unknown>).slug)}" đã tồn tại. Vui lòng chọn đường dẫn khác.` }); return; }
+    res.status(500).json({ error: String(e) });
+  }
 });
 
 router.put("/articles/:id", async (req, res) => {
@@ -499,7 +517,10 @@ router.put("/articles/:id", async (req, res) => {
     }).where(eq(articlesTable.id, id)).returning();
     if (!article) { res.status(404).json({ error: "Not found" }); return; }
     res.json({ article });
-  } catch (e) { res.status(500).json({ error: String(e) }); }
+  } catch (e) {
+    if (isSlugConflict(e)) { res.status(409).json({ error: `Đường dẫn tĩnh "${String((req.body as Record<string, unknown>).slug)}" đã tồn tại. Vui lòng chọn đường dẫn khác.` }); return; }
+    res.status(500).json({ error: String(e) });
+  }
 });
 
 router.delete("/articles/:id", async (req, res) => {
@@ -618,7 +639,10 @@ router.post("/videos", async (req, res) => {
       createdAt: now, updatedAt: now,
     }).returning();
     res.json({ video });
-  } catch (e) { res.status(500).json({ error: String(e) }); }
+  } catch (e) {
+    if (isSlugConflict(e)) { res.status(409).json({ error: `Đường dẫn tĩnh "${String((req.body as Record<string, unknown>).slug)}" đã tồn tại. Vui lòng chọn đường dẫn khác.` }); return; }
+    res.status(500).json({ error: String(e) });
+  }
 });
 
 router.put("/videos/:id", async (req, res) => {
@@ -636,7 +660,10 @@ router.put("/videos/:id", async (req, res) => {
     }).where(eq(videosTable.id, id)).returning();
     if (!video) { res.status(404).json({ error: "Not found" }); return; }
     res.json({ video });
-  } catch (e) { res.status(500).json({ error: String(e) }); }
+  } catch (e) {
+    if (isSlugConflict(e)) { res.status(409).json({ error: `Đường dẫn tĩnh "${String((req.body as Record<string, unknown>).slug)}" đã tồn tại. Vui lòng chọn đường dẫn khác.` }); return; }
+    res.status(500).json({ error: String(e) });
+  }
 });
 
 router.delete("/videos/:id", async (req, res) => {

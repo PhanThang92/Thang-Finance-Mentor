@@ -153,11 +153,14 @@ export interface ContentMeta {
 
 /* ── Email types ────────────────────────────────────────────────────── */
 export interface EmailSubscriber {
-  id: number; email: string; fullName: string | null;
-  subscriberStatus: string; sourceType: string | null; sourcePage: string | null; sourceSection: string | null;
+  id: number; email: string; fullName: string | null; firstName: string | null;
+  subscriberStatus: string;
+  interestPrimary: string | null; stage: string | null;
+  sourceType: string | null; sourcePage: string | null; sourceSection: string | null;
   consentStatus: string | null; unsubscribeToken: string;
   linkedLeadId: number | null; tags: string[] | null;
   subscribedAt: string | null; unsubscribedAt: string | null;
+  lastEmailSentAt: string | null; lastOpenedAt: string | null; lastClickedAt: string | null;
   createdAt: string; updatedAt: string;
 }
 
@@ -170,14 +173,17 @@ export interface EmailCampaign {
 }
 
 export interface EmailSequence {
-  id: number; title: string; description: string | null;
+  id: number; title: string; slug: string | null; description: string | null;
   status: string; triggerType: string | null;
+  triggerTags: string[] | null; goal: string | null;
   createdAt: string; updatedAt: string;
 }
 
 export interface EmailSequenceStep {
-  id: number; sequenceId: number; stepOrder: number; delayDays: number;
+  id: number; sequenceId: number; stepOrder: number;
+  stepType: string | null; delayDays: number;
   subject: string; previewText: string | null; contentBody: string | null;
+  tagName: string | null; actionData: Record<string, unknown> | null;
   isActive: boolean; createdAt: string; updatedAt: string;
 }
 

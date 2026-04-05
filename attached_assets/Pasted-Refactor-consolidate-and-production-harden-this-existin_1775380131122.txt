@@ -1,0 +1,666 @@
+Refactor, consolidate, and production-harden this existing website project for the personal brand “Phan Văn Thắng SWC” into a clean, reliable, portable, and easy-to-manage platform.
+
+PROJECT CONTEXT
+This is a Vietnamese personal brand / finance / mentor website for “Phan Văn Thắng SWC”.
+The site includes or will include:
+- Homepage
+- Articles / News listing page
+- Article detail page
+- Contact page
+- Admin area
+- Article CMS
+- Image/media uploads
+- Contact / lead capture forms
+- Optional sync to Notion and Google Sheets
+- Premium finance / mentor brand identity
+- Vietnamese language support
+- Calm, trustworthy, high-credibility tone
+- Teal / dark teal premium visual direction
+
+MAIN GOAL
+Keep the current website working and visually consistent, but upgrade the whole technical and admin system so it becomes:
+1. Stable and maintainable
+2. Easy for a non-technical admin to operate
+3. Reliable for article publishing and lead capture
+4. Better structured for media/image handling
+5. Ready for optional Notion / Google Sheets sync
+6. Portable for future migration from Replit to external hosting
+
+CRITICAL RULES
+- Do NOT break the current website
+- Do NOT remove working features unless absolutely necessary
+- Do NOT redesign the public site unless needed for functional consistency
+- Preserve all current public pages and core UX
+- Preserve Vietnamese content support and UTF-8 rendering
+- Preserve SEO-friendly article URLs/slugs where already live
+- Preserve backward compatibility wherever possible
+- Prefer careful refactoring over rebuilding from scratch
+- Keep admin workflows simple, clean, and practical
+- If something must change, document it clearly
+
+==================================================
+1) FULL TECHNICAL AUDIT AND CONSOLIDATION
+==================================================
+
+Audit the current project architecture and consolidate it into a clearer, more maintainable structure.
+
+Please:
+- identify current frontend/backend structure
+- identify database usage
+- identify current media/image upload logic
+- identify current contact/lead form flow
+- identify admin routes and auth flow
+- identify any Replit-specific assumptions
+- reduce duplication in logic where possible
+- centralize configuration and shared services
+
+Refactor into a sensible maintainable structure such as:
+- /src
+- /components
+- /pages or /app
+- /server or /api
+- /lib
+- /config
+- /public
+- /scripts
+- /docs
+- /services
+- /storage abstraction layer
+
+If the existing framework already has a good structure, keep it but clean it up.
+
+==================================================
+2) ENVIRONMENT, CONFIG, AND PORTABILITY
+==================================================
+
+Move all important configuration into environment variables and centralize config handling.
+
+Please handle:
+- APP_BASE_URL
+- DATABASE_URL
+- storage provider settings
+- admin/auth/session secrets
+- SMTP/email settings if present
+- Notion integration settings
+- Google Sheets integration settings
+- analytics IDs if any
+
+Requirements:
+- remove fragile hardcoded values
+- minimize Replit-only coupling
+- support local development, Replit deployment, and future external hosting
+- document all required environment variables clearly
+
+==================================================
+3) DATABASE AUDIT, CLEANUP, AND MIGRATION READINESS
+==================================================
+
+Audit and improve the current database structure.
+
+Please:
+- identify whether the current database is SQLite, PostgreSQL, or another option
+- centralize database access through a clean data layer
+- support proper schema migrations
+- make the project ready for PostgreSQL if not already using it
+- preserve current data safely
+
+Ensure the system properly supports or maps equivalent models for:
+
+A. ARTICLES / POSTS
+- id
+- title
+- slug
+- excerpt
+- content
+- category
+- tags
+- featured_image_id
+- status
+- published_at
+- created_at
+- updated_at
+
+B. MEDIA / IMAGES
+- id
+- original_filename
+- stored_filename
+- mime_type
+- file_size
+- width
+- height
+- storage_provider
+- original_url
+- processed_url
+- thumbnail_url
+- medium_url
+- large_url
+- watermark_text
+- watermark_enabled
+- uploaded_by
+- related_article_id
+- alt_text
+- caption
+- created_at
+
+C. LEADS / CONTACTS
+- id
+- full_name
+- phone
+- email
+- message
+- source_page
+- source_type
+- campaign
+- referrer_url
+- utm_source
+- utm_medium
+- utm_campaign
+- utm_term
+- utm_content
+- status
+- notes_internal
+- assigned_to
+- synced_to_notion
+- synced_to_google_sheets
+- sync_error
+- created_at
+- updated_at
+
+If a different schema already exists, migrate carefully and preserve compatibility.
+
+==================================================
+4) ARTICLE CMS IMPROVEMENTS
+==================================================
+
+Improve the article/content management system so it becomes cleaner, safer, and easier to use.
+
+Please improve:
+- article list page
+- create article page
+- edit article page
+- draft vs published workflow
+- slug handling
+- publish workflow
+- tags/category handling if used
+- featured image selection
+- article metadata handling
+- SEO-friendly content management
+
+Article list should support:
+- search by title
+- filter by status
+- sort by date
+- visibility of slug, publish status, updated_at
+- edit action
+- preview action if feasible
+- delete/archive action with safe confirmation
+
+Article editor should support:
+- title
+- slug
+- excerpt
+- main content
+- featured image
+- tags
+- category
+- status
+- publish date
+- SEO metadata if already present or helpful
+
+Important:
+- preserve live article URLs
+- avoid accidental slug changes for published articles
+- make the publishing workflow clear for non-technical use
+
+==================================================
+5) MEDIA / IMAGE UPLOAD SYSTEM
+==================================================
+
+Upgrade the media/image system for articles and admin usage.
+
+Please implement or improve:
+- image upload support for featured image, thumbnail image, and optional in-article images
+- support for JPG, JPEG, PNG, WEBP
+- file validation
+- file size validation
+- safe filename normalization
+- collision prevention
+- metadata storage in database
+- preservation of linkage between articles and images
+
+Build a storage abstraction layer so uploads can later work with:
+- local storage
+- Cloudinary
+- Supabase Storage
+- S3-compatible storage
+
+Keep current local behavior working if used today, but make the system easy to switch later.
+
+==================================================
+6) IMAGE PROCESSING AND WATERMARK SYSTEM
+==================================================
+
+Add or improve automatic image processing and watermarking for article images.
+
+Requirements:
+- preserve original uploaded image
+- generate processed web display versions
+- generate thumbnail, medium, and large versions
+- optimize images for performance
+- maintain visual quality
+- normalize orientation if needed
+- avoid destroying originals
+- keep aspect ratio unless a display-specific crop is required
+
+WATERMARK REQUIREMENTS
+- default watermark text for article/finance images:
+  “Thắng SWC - Tài Chính”
+- watermark applied to processed display versions, not original
+- watermark enabled by default for article images
+- watermark should be subtle, premium, readable, and non-intrusive
+- default position: bottom right with safe margin
+- use elegant opacity
+- scale watermark appropriately based on image size
+- allow watermark on/off per image or per article if feasible
+- store watermark settings in database
+- support future section-based watermark text if needed
+
+Also improve admin handling for:
+- image preview
+- current image display
+- watermark status
+- alt text
+- caption
+- watermark on/off control if practical
+
+==================================================
+7) CONTACT FORMS AND LEAD CAPTURE
+==================================================
+
+Audit and improve all contact/lead forms across the website.
+
+Please:
+- identify all lead entry points
+- centralize submission handling into a reusable lead capture system
+- keep existing forms working
+- standardize validation
+- standardize save behavior
+- standardize user feedback
+
+Support forms such as:
+- Contact page form
+- Homepage CTA form
+- Article inquiry form
+- Consultation request form
+- Popup/banner lead forms if any
+- Future forms using the same backend flow
+
+Validation requirements:
+- required field validation
+- server-side validation
+- client-side validation where useful
+- clear Vietnamese-friendly success/error messages
+- protect against empty/obviously invalid submissions
+
+==================================================
+8) LEAD STORAGE, TRACKING, AND ADMIN MANAGEMENT
+==================================================
+
+Improve lead storage and management.
+
+Please:
+- save every valid lead to the database first
+- make the database the primary source of truth
+- capture source context such as:
+  - current page URL
+  - page type
+  - article slug/title if relevant
+  - referrer if available
+  - UTM parameters if available
+  - source form/block identifier if useful
+
+Lead status system should support:
+- new
+- contacted
+- qualified
+- closed
+- spam
+
+Default lead status:
+- new
+
+Create or improve an admin lead management area with:
+- list/table view
+- search by name, phone, email
+- filter by status
+- filter by date
+- filter by source_type
+- created_at visibility
+- lead detail view
+- internal notes
+- assigned_to
+- sync status visibility
+
+Keep it lightweight and practical, not a heavy CRM.
+
+==================================================
+9) OPTIONAL NOTION SYNC
+==================================================
+
+Add or improve optional Notion sync for leads.
+
+SYNC RULES
+- database save happens first
+- Notion sync happens after successful DB save
+- Notion sync must never block lead capture
+- if Notion sync fails, lead must remain safely saved in DB
+- sync result and error state should be tracked
+- retry should be possible later
+
+Use environment variables for:
+- NOTION_API_KEY
+- NOTION_DATABASE_ID
+- ENABLE_NOTION_SYNC
+
+Map lead data cleanly into a Notion database, such as:
+- Name
+- Phone
+- Email
+- Message
+- Source Page
+- Source Type
+- Campaign
+- Status
+- Created At
+
+Centralize Notion logic in a reusable service and document it clearly.
+
+==================================================
+10) OPTIONAL GOOGLE SHEETS SYNC
+==================================================
+
+Add or improve optional Google Sheets sync for leads.
+
+SYNC RULES
+- database save happens first
+- Google Sheets sync happens after successful DB save
+- Google Sheets sync must never block lead capture
+- if sync fails, lead must remain safely saved in DB
+- sync result and error state should be tracked
+- retry should be possible later
+
+Use environment variables for:
+- GOOGLE_CLIENT_EMAIL
+- GOOGLE_PRIVATE_KEY
+- GOOGLE_SPREADSHEET_ID
+- GOOGLE_SHEET_NAME
+- ENABLE_GOOGLE_SHEETS_SYNC
+
+Append lead rows with useful columns such as:
+- Created At
+- Full Name
+- Phone
+- Email
+- Message
+- Source Page
+- Source Type
+- Campaign
+- UTM Source
+- UTM Medium
+- UTM Campaign
+- Status
+
+Centralize Google Sheets sync in a reusable service and document setup clearly.
+
+==================================================
+11) ADMIN SYSTEM CONSOLIDATION
+==================================================
+
+Consolidate the admin system into a clean, coherent structure.
+
+Suggested admin navigation:
+- Dashboard
+- Articles
+  - All articles
+  - New article
+  - Drafts
+  - Published
+- Media
+  - Library
+  - Upload
+- Leads
+  - All leads
+  - New leads
+  - Status filters
+- Settings
+  - General
+  - Storage
+  - Integrations
+- Account / Logout
+
+If some sections do not exist yet, add lightweight versions where appropriate.
+
+==================================================
+12) ADMIN DASHBOARD
+==================================================
+
+Create or improve a simple useful admin dashboard.
+
+The dashboard should show helpful overview metrics such as:
+- total articles
+- published articles
+- draft articles
+- total media items
+- total leads
+- new leads
+- recent article activity
+- recent lead activity
+
+Optional but useful:
+- top lead source pages
+- latest uploaded images
+- sync warnings if Notion/Google Sheets sync fails
+
+Keep the dashboard compact, clear, and actionable.
+
+==================================================
+13) MEDIA LIBRARY
+==================================================
+
+Create or improve a practical media library.
+
+The media library should:
+- show uploaded images in a clear grid or list
+- support preview
+- show basic metadata
+- show watermark status
+- show created date
+- support search/filter if feasible
+- allow selecting an image for article use
+- allow editing alt text and caption
+- reduce duplicate confusion
+
+If image processing exists, make the media library aware of:
+- original image
+- processed versions
+- thumbnail version
+- watermark status
+
+==================================================
+14) ADMIN UI / DESIGN CONSISTENCY
+==================================================
+
+Polish the admin UI so it feels consistent and professional.
+
+Requirements:
+- keep a calm premium style
+- maintain readability
+- consistent spacing
+- consistent form styling
+- consistent tables/buttons/cards
+- responsive enough for laptop/tablet
+- avoid clutter
+- use teal / dark teal accents sparingly and tastefully
+
+This is a polish and coherence pass, not a major redesign.
+
+==================================================
+15) VALIDATION, ERROR HANDLING, AND SAFETY
+==================================================
+
+Standardize validation and error handling across articles, media, and leads.
+
+Please:
+- standardize form validation
+- standardize success states
+- standardize error states
+- avoid silent failures
+- provide meaningful admin feedback
+- prevent broken save/update/delete flows
+- handle failed image processing gracefully
+- handle failed sync gracefully without data loss
+- reject unsupported uploads safely
+- reduce orphaned records where possible
+
+==================================================
+16) AUTH / ADMIN ACCESS SAFETY
+==================================================
+
+Audit and improve admin authentication and route protection.
+
+Please:
+- verify admin routes are protected
+- verify non-admin users cannot access admin pages
+- centralize auth/session checks
+- keep login flow working
+- move secrets/session config into environment variables
+- avoid exposing sensitive internal data publicly
+
+Do this carefully and non-destructively.
+
+==================================================
+17) SEO AND CONTENT SAFETY
+==================================================
+
+Preserve and improve SEO-related content behavior.
+
+Please preserve or improve:
+- article slugs
+- metadata structure
+- title tags
+- descriptions
+- canonical handling if present
+- sitemap generation if present
+- clean UTF-8 Vietnamese rendering
+
+Also improve CMS safety with:
+- slug uniqueness checks
+- warning before changing slug of published article
+- safe excerpt handling
+- preview support if feasible
+- draft vs published clarity
+
+==================================================
+18) STORAGE, BACKUP, AND MIGRATION READINESS
+==================================================
+
+Prepare the project for future migration outside Replit.
+
+Please:
+- reduce platform-specific coupling where possible
+- centralize storage logic
+- centralize DB access
+- centralize lead sync logic
+- centralize config
+- make migration mainly a matter of:
+  - moving database
+  - moving storage
+  - setting environment variables
+  - reconnecting integrations
+
+Document:
+- where originals are stored
+- where processed media are stored
+- how image URLs are generated
+- how DB export/import should work
+- how uploads should be migrated later
+- what still depends on Replit, if anything
+
+==================================================
+19) BACKWARD COMPATIBILITY
+==================================================
+
+Do not break existing:
+- public pages
+- articles
+- article URLs
+- uploaded images
+- leads
+- admin workflows
+
+If schema changes are required:
+- migrate safely
+- preserve old data
+- add fallbacks where necessary
+- document assumptions clearly
+
+==================================================
+20) DOCUMENTATION
+==================================================
+
+Create or update these files:
+- README_DEPLOY.md
+- MIGRATION_NOTES.md
+- ADMIN_SYSTEM_OVERVIEW.md (if helpful)
+
+Documentation should explain:
+- current architecture
+- environment variables
+- database type
+- article workflow
+- media workflow
+- watermark flow
+- lead flow
+- Notion sync flow
+- Google Sheets sync flow
+- admin structure
+- portability considerations
+- migration steps
+- known limitations
+- recommended next improvements
+
+==================================================
+21) OUTPUT I EXPECT FROM YOU
+==================================================
+
+After making the changes, provide:
+1. Summary of technical architecture improvements
+2. Current database type and migration readiness
+3. Summary of article CMS improvements
+4. Summary of media/upload/watermark improvements
+5. Summary of lead capture and lead management improvements
+6. Summary of Notion sync behavior
+7. Summary of Google Sheets sync behavior
+8. Summary of admin/dashboard improvements
+9. Auth/access safety summary
+10. Required environment variables
+11. Notes on backward compatibility
+12. Notes on portability outside Replit
+13. Remaining limitations or recommended next steps
+
+IMPORTANT PRIORITY ORDER
+1. Keep current website working
+2. Keep the public UI stable
+3. Make the admin easier to use
+4. Save articles, media, and leads reliably
+5. Make sync non-blocking and safe
+6. Improve portability and maintainability
+7. Document everything clearly
+
+FINAL PRODUCT DIRECTION
+This admin system is for a Vietnamese personal brand owner, not a technical newsroom team.
+Prioritize simplicity, clarity, and day-to-day usability over enterprise complexity.
+The system should feel clean, premium, calm, and easy to operate for publishing articles, managing images, and reviewing leads.
+Use Vietnamese labels/messages in the admin and form UX where appropriate.
+Prioritize phone number capture because this website is oriented toward consultation and trust-based lead generation.
+Database storage must remain the source of truth even when external sync integrations are enabled.
