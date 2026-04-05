@@ -5,24 +5,27 @@ import type { CoreValue } from "@/types/content";
    ABOUT PAGE CONTENT — STRUCTURED DATA
    All Vietnamese text for /gioi-thieu lives here.
    GioiThieu.tsx reads from this file for layout.
-   Upgrade path: fetch from CMS / API and merge.
 ══════════════════════════════════════════════ */
 
 /* ── A. Hero ── */
 export const aboutHero = {
-  eyebrow:       "Giới thiệu",
-  heading:       "Phan Văn Thắng SWC",
-  subheading:    "Chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn.",
+  eyebrow:        "Giới thiệu",
+  heading:        "Phan Văn Thắng SWC",
+  subheading:     "Chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn.",
   supportingText: "Không theo đuổi những lời hứa ngắn hạn. Ưu tiên sự rõ ràng, nền tảng vững và hành trình đi đường dài.",
 };
 
-/* ── B. About Main ── */
-export const aboutMain = {
-  eyebrow:     "Về Phan Văn Thắng SWC",
-  heading:     "Về Phan Văn Thắng SWC",
-  description: "Phan Văn Thắng SWC theo đuổi hướng chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo cách thực tế, kỷ luật và dài hạn. Mục tiêu không phải tạo cảm giác làm giàu nhanh, mà là giúp người đọc có góc nhìn rõ hơn để xây nền tảng tài chính bền vững theo thời gian.",
-  highlights:  ["Góc nhìn dài hạn", "Nội dung thực chiến", "Ưu tiên giá trị bền vững"],
-  quote:       "Đi đường dài trong tài chính luôn bắt đầu từ việc hiểu đúng.",
+/* ── B. Brand direction (replaces the repeated "Về PVT SWC" section) ── */
+export const dinhHuong = {
+  eyebrow:  "Định hướng",
+  heading:  "Một hướng đi ưu tiên sự rõ ràng, thực tế và bền vững",
+  para1:    "Website này được xây dựng để chia sẻ những góc nhìn rõ ràng hơn về tài chính, đầu tư và quá trình tích sản dài hạn — theo hướng thực tế hơn, kỷ luật hơn và bền vững hơn.",
+  para2:    "Mục tiêu không phải tạo cảm giác làm giàu nhanh, mà là giúp người đọc hiểu đúng hơn, đi vững hơn và lựa chọn hành trình phù hợp với chính mình.",
+  principles: [
+    { title: "Rõ hơn trước khi nhanh hơn",  desc: "Hiểu đúng bản chất trước khi nghĩ đến kết quả." },
+    { title: "Dài hạn hơn ngắn hạn",         desc: "Giá trị thật cần thời gian, kỷ luật và sự chọn lọc." },
+    { title: "Giá trị hơn hứa hẹn",          desc: "Nền tảng đáng tin cậy hơn là hưng phấn nhất thời." },
+  ],
 };
 
 /* ── C. Core Values ── */
@@ -84,7 +87,8 @@ export const audienceSection = {
 export const aboutCta = {
   eyebrow:         "Bắt đầu",
   heading:         "Bắt đầu từ việc hiểu đúng, rồi đi đường dài",
-  subheading:      "Khám phá thêm bài viết, chủ đề nội dung và những hướng kết nối phù hợp với hành trình của bạn.",
-  primaryButton:   { label: "Khám phá bài viết", href: "/tin-tuc"  },
-  secondaryButton: { label: "Tham gia cộng đồng", href: "/cong-dong" },
+  subheading:      "Khám phá thêm bài viết, video và những hướng kết nối phù hợp với hành trình của bạn.",
+  primaryButton:   { label: "Xem bài viết",      href: "/tin-tuc"   },
+  videoButton:     { label: "Xem video",          href: "/video"     },
+  secondaryButton: { label: "Liên hệ kết nối",   href: "/#lien-he"  },
 };

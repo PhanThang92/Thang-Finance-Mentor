@@ -1,0 +1,252 @@
+Please refine the current About page for “Phan Van Thang SWC” because the content structure is currently repetitive and the page feels redundant.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- Do not redesign the entire page from scratch unless necessary.
+- Focus on fixing repetition, improving information hierarchy, reducing duplicated visual usage, and making the About page feel more intentional and premium.
+
+GOAL:
+The About page currently repeats the same introduction content twice:
+- the hero section already introduces the brand and positioning
+- the next “Về Phan Văn Thắng SWC” section repeats almost the same message
+- the same portrait image is used twice in close succession
+This makes the page feel redundant and less refined.
+
+Please restructure the page so each section has a distinct role.
+
+================================
+1. MAIN PROBLEM TO FIX
+================================
+
+Current issues:
+- hero and next section are saying nearly the same thing
+- portrait image is repeated twice too close together
+- page lacks a stronger narrative flow
+- the page should feel more editorial and intentional, not duplicated
+
+Please fix these issues directly.
+
+================================
+2. KEEP THE HERO, BUT LET IT OWN THE INTRO ROLE
+================================
+
+Keep the current hero section as the main introduction block.
+
+The hero should remain responsible for:
+- brand name
+- short positioning
+- short supporting explanation
+- portrait image
+- primary CTA
+
+Visible Vietnamese content can remain close to:
+
+Eyebrow:
+Giới thiệu
+
+Heading:
+Phan Van Thang SWC
+
+Subheading:
+Chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn.
+
+Supporting text:
+Không theo đuổi những lời hứa ngắn hạn. Ưu tiên sự rõ ràng, nền tảng vững và hành trình đi đường dài.
+
+Requirements:
+- keep only one strong portrait use here
+- do not repeat the same portrait card immediately in the next section
+- keep the hero as the main personal identity anchor
+
+================================
+3. REPLACE THE REPETITIVE “VỀ PHAN VĂN THẮNG SWC” SECTION
+================================
+
+The current second section should no longer repeat the same introduction.
+
+Please replace that section with a new section that has a different purpose.
+
+New role:
+Brand direction / Why this site exists / The philosophy behind the work
+
+Suggested visible Vietnamese content:
+
+Eyebrow:
+Định hướng
+
+Heading:
+Một hướng đi ưu tiên sự rõ ràng, thực tế và bền vững
+
+Paragraph 1:
+Website này được xây dựng để chia sẻ những góc nhìn rõ ràng hơn về tài chính, đầu tư và quá trình tích sản dài hạn — theo hướng thực tế hơn, kỷ luật hơn và bền vững hơn.
+
+Paragraph 2:
+Mục tiêu không phải tạo cảm giác làm giàu nhanh, mà là giúp người đọc hiểu đúng hơn, đi vững hơn và lựa chọn hành trình phù hợp với chính mình.
+
+Optional small highlights:
+- Rõ hơn trước khi nhanh hơn
+- Dài hạn hơn ngắn hạn
+- Giá trị hơn hứa hẹn
+
+Requirements:
+- this section should NOT reuse the same portrait image again
+- use a text-led layout or a lighter abstract visual
+- the section should clearly differ from the hero in purpose
+- make it feel like a deeper philosophy section, not a duplicate bio section
+
+================================
+4. REMOVE DUPLICATED PORTRAIT USAGE
+================================
+
+Do not use the same portrait image card in two consecutive sections.
+
+Requirements:
+- keep the portrait in hero only
+- if another visual is needed below, use:
+  - subtle abstract graphic
+  - premium quote block
+  - icon-based principle row
+  - text-led editorial composition
+- avoid visual repetition
+
+================================
+5. KEEP AND POLISH THE CORE VALUES SECTION
+================================
+
+The “Giá trị cốt lõi” section is appropriate, but should come after the new “Định hướng” section.
+
+Visible Vietnamese content can remain:
+
+Eyebrow:
+Giá trị cốt lõi
+
+Heading:
+Những nguyên tắc tôi ưu tiên khi xây nội dung và đồng hành
+
+Cards:
+1. Rõ hơn trước khi nhanh hơn
+2. Dài hạn hơn ngắn hạn
+3. Thực tế hơn khẩu hiệu
+4. Giá trị hơn hứa hẹn
+
+Requirements:
+- improve spacing and visual rhythm if needed
+- keep card design premium and clean
+- ensure this section now feels like the next layer after “Định hướng”
+
+================================
+6. KEEP THE WORKING PROCESS SECTION
+================================
+
+Keep the “Cách tôi xây giá trị và đồng hành cùng người theo dõi” section.
+
+It should come after:
+1. Hero
+2. Định hướng
+3. Giá trị cốt lõi
+
+Requirements:
+- keep the timeline/steps section
+- improve layout if necessary
+- make sure this section now feels like a natural progression, not another repeated intro
+
+================================
+7. ADD A “DÀNH CHO AI” SECTION IF IT HELPS FLOW
+================================
+
+Add a short section after the working process if the page needs stronger clarity.
+
+Visible Vietnamese text:
+
+Eyebrow:
+Dành cho ai
+
+Heading:
+Phù hợp với những người đang muốn xây nền tài chính vững hơn
+
+Items:
+- Người muốn hiểu tài chính cá nhân rõ hơn
+- Người quan tâm đầu tư dài hạn thay vì chạy theo xu hướng ngắn hạn
+- Người muốn tích sản theo cách kỷ luật và thực tế hơn
+- Người cần một hệ nội dung chọn lọc để đi đường dài
+
+Requirements:
+- keep this section simple and easy to scan
+- use checklist cards or a clean two-column layout
+- only include it if it improves the page structure
+
+================================
+8. IMPROVE PAGE FLOW
+================================
+
+Please make the About page follow this clearer narrative flow:
+
+1. Hero — who the brand/person is
+2. Định hướng — why this website exists and what it stands for
+3. Giá trị cốt lõi — what principles guide the work
+4. Cách đồng hành — how value is created and shared
+5. Dành cho ai — who this is for
+6. Final CTA — where the user should go next
+
+Requirements:
+- every section must have a distinct role
+- remove repeated wording where possible
+- make the page feel more mature and intentional
+
+================================
+9. FINAL CTA
+================================
+
+Keep or refine the final CTA block.
+
+Visible Vietnamese text:
+
+Heading:
+Bắt đầu từ việc hiểu đúng, rồi đi đường dài
+
+Subtext:
+Khám phá thêm bài viết, video và những hướng kết nối phù hợp với hành trình của bạn.
+
+Buttons:
+- Xem bài viết
+- Xem video
+- Liên hệ kết nối
+
+Requirements:
+- CTA should connect the About page back into the ecosystem
+- keep it premium and calm
+
+================================
+10. DESIGN / UX POLISH
+================================
+
+Please also polish:
+- spacing between sections
+- heading hierarchy
+- text width for readability
+- section rhythm
+- mobile spacing
+- reduce visual duplication
+- improve editorial feel
+
+The page should feel:
+- premium
+- calm
+- trustworthy
+- more intentional
+- less repetitive
+- more structured
+
+================================
+11. FINAL EXPECTED RESULT
+================================
+
+After refinement:
+- the About page should no longer feel repetitive
+- hero should introduce the brand once, clearly
+- the next section should deepen the philosophy, not repeat the intro
+- portrait usage should feel more refined
+- the page should have stronger narrative flow and better information hierarchy
+
+Please implement this refinement directly on the current About page.
