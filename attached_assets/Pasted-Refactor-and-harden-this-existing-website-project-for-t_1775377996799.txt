@@ -1,0 +1,188 @@
+Refactor and harden this existing website project for the personal brand “Phan Văn Thắng SWC” so it becomes portable, production-ready, and easy to migrate later from Replit to external hosting without losing current functionality, content structure, or visual quality.
+
+PROJECT CONTEXT
+This is a Vietnamese personal brand / finance website for Phan Văn Thắng SWC. The site includes or will include:
+- Homepage
+- Articles / News listing page
+- Article detail page
+- Contact page
+- Admin area for creating/editing articles
+- Image upload for article thumbnails and cover images
+- Lead/contact form collection
+- Brand positioning around personal finance, long-term investing, credibility, calm mentor tone, premium teal / dark teal visual language
+
+MAIN GOAL
+Keep the current site working and visually consistent, but refactor the technical structure so the project can later be moved from Replit to external hosting (VPS, Vercel, Railway, Render, Docker, or another server) with minimal friction.
+
+CRITICAL RULES
+- Do NOT break the current website
+- Do NOT remove existing pages or features unless strictly necessary
+- Do NOT redesign the UI unless needed for technical cleanup
+- Preserve all Vietnamese content support
+- Preserve SEO-friendly routing and article URLs if already implemented
+- Keep admin workflows usable
+- Keep current forms, articles, and page structure functioning
+- If anything must change, document it clearly
+
+PLEASE IMPLEMENT THE FOLLOWING
+
+1) ENVIRONMENT & CONFIG CLEANUP
+- Move all secrets and configuration into environment variables
+- Centralize config for:
+  - app base URL
+  - database URL
+  - storage provider settings
+  - SMTP / email settings
+  - admin/auth secrets
+  - analytics IDs if any
+- Remove hardcoded Replit-only values wherever possible
+- Add a clean config layer so the app can run in local, Replit, and external production environments
+
+2) PROJECT STRUCTURE
+Refactor the project into a cleaner, portable structure. Use a sensible layout such as:
+- /src
+- /components
+- /pages or /app (depending on framework)
+- /server or /api
+- /lib
+- /config
+- /public
+- /uploads abstraction layer
+- /scripts
+- /docs
+
+If the framework already has a strong structure, keep it, but make it cleaner and easier to maintain.
+
+3) DATABASE PORTABILITY
+- Audit the current database setup
+- Identify whether the project uses SQLite, PostgreSQL, or something else
+- If SQLite is currently used, prepare the project for PostgreSQL migration
+- Centralize database access through a proper ORM or database layer
+- Add or clean up schema migration support
+- Make sure all key data models remain intact, especially:
+  - articles/posts
+  - categories/tags if any
+  - contacts/leads
+  - users/admin accounts
+  - uploaded image references
+- Create a migration/export strategy and document it clearly
+
+4) MEDIA / IMAGE / FILE HANDLING
+- Audit current image upload logic
+- Abstract file storage so it is not tightly coupled to Replit local filesystem
+- Prepare the upload architecture so it can later switch to:
+  - local storage
+  - Cloudinary
+  - Supabase Storage
+  - S3-compatible storage
+- Keep current upload behavior working
+- If article images are currently stored locally, preserve compatibility but build an adapter layer for future cloud storage migration
+- Ensure file paths and URLs are not hardcoded in a fragile way
+
+5) ARTICLE CMS / ADMIN STABILITY
+- Keep the admin flow for creating and editing articles working
+- Keep slug generation, article image selection, and article publishing workflows stable
+- If possible, improve reliability and validation for:
+  - title
+  - slug
+  - excerpt
+  - content
+  - tags
+  - thumbnail / featured image
+- Ensure article creation/editing remains easy for a non-technical admin
+- Preserve the existing article page layout and SEO structure
+
+6) CONTACT / LEAD FORM HANDLING
+- Keep current contact forms working
+- Centralize form submission handling
+- Store submissions reliably in the database
+- Structure the lead data clearly for future export
+- Include fields such as:
+  - name
+  - phone
+  - email
+  - message
+  - source/page
+  - created_at
+- Make this future-ready for optional sync to Notion, Google Sheets, or CRM later
+
+7) AUTH / ADMIN ACCESS
+- Audit admin authentication and protect sensitive routes
+- Move secrets and session configs into environment variables
+- Make sure admin routes are not publicly exposed
+- Keep login/admin access functional
+- If auth is weak, improve it in a minimal, safe, non-breaking way
+
+8) SEO & CONTENT SAFETY
+- Preserve or improve:
+  - article slugs
+  - metadata structure
+  - title tags
+  - descriptions
+  - canonical handling if present
+  - sitemap generation if present
+- Do not damage current SEO behavior
+- Preserve Vietnamese language rendering and proper UTF-8 support
+
+9) DEPLOYMENT READINESS
+Prepare the project so it can be deployed outside Replit with minimal changes.
+Please add:
+- production build readiness
+- environment variable documentation
+- startup instructions
+- database migration instructions
+- backup/export instructions
+- asset migration notes
+- a deployment checklist for moving to external hosting
+
+10) BACKUP / EXPORT / MIGRATION DOCUMENTATION
+Create a clear technical document named:
+README_DEPLOY.md
+
+This file must include:
+- project overview
+- required environment variables
+- local development steps
+- production deployment steps
+- database export/import instructions
+- how to migrate from Replit to another host
+- how to move uploaded files/images
+- common failure points and how to fix them
+
+Also create a short migration summary file named:
+MIGRATION_NOTES.md
+
+This file should explain:
+- current architecture
+- what is portable now
+- what still depends on Replit
+- what should be changed later before final migration
+
+11) CODE QUALITY & SAFETY
+- Remove obvious technical debt where possible without causing feature regressions
+- Improve validation and error handling
+- Avoid overengineering
+- Favor maintainable, understandable code
+- Add comments only where they genuinely help future maintenance
+
+12) NON-BREAKING IMPROVEMENTS ONLY
+Do not rewrite the entire project just for style.
+Prefer careful refactoring over destructive rebuilding.
+The site must remain usable after the update.
+
+OUTPUT I EXPECT FROM YOU
+After making the changes, provide:
+1. A summary of what was changed
+2. A list of all required environment variables
+3. Notes on the current database type and migration readiness
+4. Notes on image/file storage readiness
+5. External hosting readiness status
+6. Any remaining limitations or risks
+7. A suggested next-step checklist for final migration later
+
+IMPORTANT PRIORITY ORDER
+1. Keep the current website working
+2. Make the code portable
+3. Prepare database and storage migration
+4. Document everything clearly
+5. Avoid unnecessary UI changes

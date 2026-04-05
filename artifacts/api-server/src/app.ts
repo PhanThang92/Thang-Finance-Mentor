@@ -39,11 +39,10 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Ensure uploads root exists for static file serving.
+// Sub-directories (orig, disp, thumb, resources) are created on-demand by storage.ts.
 const uploadsDir = path.join(process.cwd(), "uploads");
-["orig", "disp"].forEach((sub) => {
-  const dir = path.join(uploadsDir, sub);
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-});
+if (!existsSync(uploadsDir)) mkdirSync(uploadsDir, { recursive: true });
 app.use("/api/uploads", express.static(uploadsDir, { maxAge: "1d", etag: true }));
 
 app.use("/api", router);

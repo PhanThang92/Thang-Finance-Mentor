@@ -6,3 +6,15 @@ id = "cEMxvWIaNzNP9ECTxLppX"
 uri = "file://DATA_MIGRATION.md"
 type = "text"
 title = "Hướng dẫn xuất / nhập dữ liệu"
+
+[[outputs]]
+id = "Ho7KPeHfGSlcie7V5KhB5"
+uri = "file://MIGRATION_NOTES.md"
+type = "text"
+title = "MIGRATION_NOTES.md — Trạng thái di chuyển"
+
+[[outputs]]
+id = "hSFqB9A74Tqp62HJAUwd3"
+uri = "file://README_DEPLOY.md"
+type = "text"
+title = "README_DEPLOY.md — Hướng dẫn triển khai"
