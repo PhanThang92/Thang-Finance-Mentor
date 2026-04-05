@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { adminApi, type SystemStatus } from "@/lib/newsApi";
 import { A, s } from "./shared";
+import { MediaPickerModal } from "./MediaPickerModal";
+import { invalidateLogoCache } from "@/hooks/useLogoSettings";
+import type { MediaAsset } from "@/lib/newsApi";
 
 /* ── Types ────────────────────────────────────────────────────────── */
-type SettTab = "menu" | "footer" | "social" | "contact" | "form" | "seo" | "system";
+type SettTab = "menu" | "footer" | "social" | "contact" | "form" | "seo" | "logo" | "system";
 
 interface NavItem {
   id: string; label: string; href: string; visible: boolean; order: number;
@@ -64,6 +67,7 @@ function TabBar({ tab, setTab }: { tab: SettTab; setTab: (t: SettTab) => void })
     { id: "contact", label: "Liên hệ" },
     { id: "form",    label: "Form" },
     { id: "seo",     label: "SEO" },
+    { id: "logo",    label: "Logo thương hiệu" },
     { id: "system",  label: "Hệ thống" },
   ];
   return (
@@ -679,6 +683,210 @@ function SystemTab({ adminKey }: { adminKey: string }) {
   );
 }
 
+/* ── Logo URL picker ──────────────────────────────────────────────── */
+function LogoUrlField({
+  label, settingKey, value, hint, adminKey, setS,
+}: {
+  label: string; settingKey: string; value: string;
+  hint: string; adminKey: string;
+  setS: (k: string, v: string) => void;
+}) {
+  const [showPicker, setShowPicker] = useState(false);
+
+  const handlePickAsset = (asset: MediaAsset) => {
+    setS(settingKey, asset.publicUrl);
+    setShowPicker(false);
+  };
+
+  return (
+    <>
+      {showPicker && (
+        <MediaPickerModal adminKey={adminKey} onSelect={handlePickAsset} onClose={() => setShowPicker(false)} />
+      )}
+      <div style={{ marginBottom: "1.25rem" }}>
+        <Lbl>{label}</Lbl>
+        <Hint text={hint} />
+        <div style={{ display: "flex", gap: "6px", marginTop: "5px" }}>
+          <input
+            style={{ ...s.field, flex: 1, fontFamily: "monospace", fontSize: "12px" }}
+            value={value}
+            placeholder="https://... hoặc /api/uploads/..."
+            onChange={(e) => setS(settingKey, e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPicker(true)}
+            style={{ ...s.btnSecondary, fontSize: "11.5px", padding: "6px 10px", whiteSpace: "nowrap", flexShrink: 0 }}
+          >
+            Chọn từ thư viện
+          </button>
+          {value && (
+            <button
+              type="button"
+              onClick={() => setS(settingKey, "")}
+              style={{ ...s.btnGhost, padding: "6px 10px", color: A.danger, flexShrink: 0 }}
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        {value && (
+          <div style={{
+            marginTop: "8px", display: "inline-flex", alignItems: "center",
+            background: "#f0f0f0",
+            backgroundImage: "linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc), linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc)",
+            backgroundSize: "12px 12px", backgroundPosition: "0 0, 6px 6px",
+            borderRadius: "7px", padding: "8px", border: `1px solid ${A.border}`,
+          }}>
+            <img
+              src={value}
+              alt={label}
+              style={{ maxHeight: "48px", maxWidth: "180px", objectFit: "contain", display: "block" }}
+            />
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+/* ── Logo tab ─────────────────────────────────────────────────────── */
+function LogoTab({
+  settings, setS, adminKey,
+}: { settings: Record<string, string>; setS: (k: string, v: string) => void; adminKey: string }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", maxWidth: "760px" }}>
+      <InfoBox
+        title="Hướng dẫn sử dụng"
+        text="Tải ảnh logo lên qua trang Phương tiện (Media), sau đó chọn URL hoặc dán vào đây. Sau khi lưu, logo sẽ tự động hiển thị trên Header, Footer và Favicon. Nếu chưa đặt logo, website vẫn hiển thị tên thương hiệu dạng chữ."
+      />
+
+      {/* Brand display name + widths */}
+      <div style={s.card}>
+        <SectionHead>Thông tin thương hiệu</SectionHead>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "0.875rem" }}>
+          <div>
+            <Lbl>Tên hiển thị (fallback khi chưa có ảnh)</Lbl>
+            <input
+              style={{ ...s.field, fontWeight: 600 }}
+              value={settings["logo_display_name"] ?? ""}
+              placeholder="Thắng SWC"
+              onChange={(e) => setS("logo_display_name", e.target.value)}
+            />
+          </div>
+          <div>
+            <Lbl>Chiều rộng logo — Desktop (px)</Lbl>
+            <input
+              style={{ ...s.field, fontFamily: "monospace" }}
+              value={settings["logo_desktop_width"] ?? ""}
+              placeholder="120"
+              type="number"
+              min="40" max="400"
+              onChange={(e) => setS("logo_desktop_width", e.target.value)}
+            />
+          </div>
+          <div>
+            <Lbl>Chiều rộng logo — Mobile (px)</Lbl>
+            <input
+              style={{ ...s.field, fontFamily: "monospace" }}
+              value={settings["logo_mobile_width"] ?? ""}
+              placeholder="90"
+              type="number"
+              min="30" max="200"
+              onChange={(e) => setS("logo_mobile_width", e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Logo assets */}
+      <div style={s.card}>
+        <SectionHead>Các phiên bản logo</SectionHead>
+
+        <div style={{
+          marginBottom: "1rem", padding: "10px 14px",
+          background: "rgba(26,120,104,0.04)", borderRadius: "7px",
+          border: "1px solid rgba(26,120,104,0.12)",
+        }}>
+          <p style={{ fontSize: "11.5px", color: A.textMuted, margin: 0, lineHeight: 1.7 }}>
+            Nền sáng (Header khi scroll) → dùng <strong>Logo chính</strong> &nbsp;·&nbsp;
+            Nền tối (Hero, Footer, Mobile menu) → dùng <strong>Logo nền tối</strong> &nbsp;·&nbsp;
+            Favicon / compact → <strong>Logo icon</strong>
+          </p>
+        </div>
+
+        <LogoUrlField
+          label="Logo chính — nền sáng (dark/navy)"
+          settingKey="logo_light_bg"
+          value={settings["logo_light_bg"] ?? ""}
+          hint="Dùng khi header ở trạng thái scroll (nền trắng). Khuyến nghị: SVG hoặc PNG nền trong."
+          adminKey={adminKey}
+          setS={setS}
+        />
+
+        <LogoUrlField
+          label="Logo nền tối (white/light)"
+          settingKey="logo_dark_bg"
+          value={settings["logo_dark_bg"] ?? ""}
+          hint="Dùng trên nền tối: Hero, Footer, Mobile overlay. Khuyến nghị: SVG hoặc PNG trắng/sáng."
+          adminKey={adminKey}
+          setS={setS}
+        />
+
+        <LogoUrlField
+          label="Logo accent / chiến dịch (blue)"
+          settingKey="logo_accent"
+          value={settings["logo_accent"] ?? ""}
+          hint="Dùng cho các trang chiến dịch đặc biệt. Màu xanh accent. Tuỳ chọn."
+          adminKey={adminKey}
+          setS={setS}
+        />
+
+        <LogoUrlField
+          label="Logo icon — favicon / header mobile"
+          settingKey="logo_icon"
+          value={settings["logo_icon"] ?? ""}
+          hint="Ảnh vuông nhỏ, dùng cho favicon và vị trí compact. Khuyến nghị: 64×64 hoặc 128×128 px."
+          adminKey={adminKey}
+          setS={setS}
+        />
+
+        <LogoUrlField
+          label="Logo watermark (tuỳ chọn)"
+          settingKey="logo_watermark"
+          value={settings["logo_watermark"] ?? ""}
+          hint="Dùng cho ảnh đóng dấu tự động nếu tính năng watermark được bật. Nên là logo trong mờ."
+          adminKey={adminKey}
+          setS={setS}
+        />
+      </div>
+
+      <div style={{ ...s.card, background: "#fafafa" }}>
+        <SectionHead>Quy tắc sử dụng logo</SectionHead>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+          {[
+            { place: "Header — đã scroll (nền sáng)", uses: "Logo chính (nền sáng)" },
+            { place: "Header — chưa scroll (nền tối)", uses: "Logo nền tối" },
+            { place: "Footer", uses: "Logo nền tối" },
+            { place: "Mobile menu overlay", uses: "Logo nền tối" },
+            { place: "Favicon trình duyệt", uses: "Logo icon" },
+            { place: "Campaign / highlight", uses: "Logo accent (nếu đặt)" },
+          ].map(({ place, uses }) => (
+            <div key={place} style={{
+              display: "flex", justifyContent: "space-between", alignItems: "center",
+              padding: "8px 10px", borderRadius: "6px",
+              background: "#fff", border: `1px solid ${A.border}`,
+            }}>
+              <span style={{ fontSize: "12px", color: A.textMuted }}>{place}</span>
+              <span style={{ fontSize: "11.5px", fontWeight: 600, color: A.primary, marginLeft: "8px", textAlign: "right" }}>{uses}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Main panel ─────────────────────────────────────────────────── */
 export function SettingsPanel({ adminKey }: { adminKey: string }) {
   const [tab, setTab]         = useState<SettTab>("menu");
@@ -725,6 +933,7 @@ export function SettingsPanel({ adminKey }: { adminKey: string }) {
         footer_product_links: JSON.stringify(footerProducts),
       };
       await adminApi.updateSettings(adminKey, payload);
+      invalidateLogoCache();
       setMsg("Đã lưu cài đặt.");
     } catch (e) { setMsg(String(e)); }
     finally { setSaving(false); }
@@ -774,6 +983,7 @@ export function SettingsPanel({ adminKey }: { adminKey: string }) {
       {tab === "contact" && <ContactTab settings={settings} setS={setS} />}
       {tab === "form"    && <FormTab    settings={settings} setS={setS} />}
       {tab === "seo"     && <SeoTab     settings={settings} setS={setS} />}
+      {tab === "logo"    && <LogoTab    settings={settings} setS={setS} adminKey={adminKey} />}
       {tab === "system"  && <SystemTab  adminKey={adminKey} />}
     </div>
   );

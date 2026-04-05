@@ -10,8 +10,26 @@ import trackRouter from "./track";
 import emailPublicRouter from "./emailPublic";
 import emailAdminRouter from "./emailAdmin";
 import contactRouter from "./contact";
+import { db, siteSettingsTable } from "@workspace/db";
 
 const router: IRouter = Router();
+
+const LOGO_KEYS = [
+  "logo_light_bg", "logo_dark_bg", "logo_accent",
+  "logo_icon", "logo_watermark",
+  "logo_display_name", "logo_desktop_width", "logo_mobile_width",
+];
+
+router.get("/logo-settings", async (_req, res) => {
+  try {
+    const rows = await db.select().from(siteSettingsTable);
+    const settings: Record<string, string | null> = {};
+    rows.forEach((r) => {
+      if (LOGO_KEYS.includes(r.key)) settings[r.key] = r.value;
+    });
+    res.json({ settings });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
 
 router.use(healthRouter);
 router.use("/news", newsRouter);

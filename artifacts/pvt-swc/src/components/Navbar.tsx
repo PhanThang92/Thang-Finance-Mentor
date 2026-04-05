@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
 import { NAV_ITEMS, KIEN_THUC_PATHS } from "@/config/navigationConfig";
+import { useLogoSettings } from "@/hooks/useLogoSettings";
 
 /* ── Navigation types ──────────────────────────────────────────────── */
 type NavDropdownItem = { name: string; desc?: string; href: string };
@@ -98,6 +99,8 @@ export function Navbar() {
   const ctaRef        = useRef<HTMLAnchorElement | null>(null);
   const dropdownRefs  = useRef<Map<string, HTMLLIElement>>(new Map());
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const logo = useLogoSettings();
 
   /* Derived */
   const homeBase        = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -276,9 +279,30 @@ export function Navbar() {
               transition:     "color 0.32s ease",
               lineHeight:     1,
               userSelect:     "none",
+              display:        "inline-flex",
+              alignItems:     "center",
             }}
           >
-            Thắng SWC
+            {(() => {
+              const src = effectiveScrolled ? logo.logoLightBg : logo.logoDarkBg;
+              if (src) {
+                return (
+                  <img
+                    src={src}
+                    alt={logo.displayName}
+                    style={{
+                      height:    "auto",
+                      width:     `${logo.desktopWidth}px`,
+                      maxWidth:  "140px",
+                      display:   "block",
+                      objectFit: "contain",
+                      transition: "opacity 0.32s ease",
+                    }}
+                  />
+                );
+              }
+              return logo.displayName || "Thắng SWC";
+            })()}
           </a>
 
           {/* ── Desktop nav ────────────────────────────────────── */}

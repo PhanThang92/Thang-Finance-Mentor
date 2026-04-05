@@ -6,6 +6,7 @@ import {
   FOOTER_KIEN_THUC_LINKS,
 } from "@/config/navigationConfig";
 import { siteConfig } from "@/config/siteConfig";
+import { useLogoSettings } from "@/hooks/useLogoSettings";
 
 /* ══════════════════════════════════════════════════════════════════
    SHARED LINK STYLE HELPERS
@@ -156,6 +157,7 @@ function ContactLink({
 export function Footer() {
   const homeBase = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
   const year     = new Date().getFullYear();
+  const logo     = useLogoSettings();
 
   return (
     <footer
@@ -215,30 +217,47 @@ export function Footer() {
               href={`${homeBase}/`}
               style={{ textDecoration: "none", display: "inline-block", marginBottom: "1rem" }}
             >
-              <div
-                style={{
-                  fontSize:      "17.5px",
-                  fontWeight:    700,
-                  letterSpacing: "-0.032em",
-                  color:         "rgba(255,255,255,0.94)",
-                  lineHeight:    1.1,
-                  marginBottom:  "0.3rem",
-                }}
-              >
-                Thắng SWC
-              </div>
-              <div
-                style={{
-                  fontSize:      "10.5px",
-                  fontWeight:    500,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color:         "hsl(var(--primary) / 0.52)",
-                  lineHeight:    1,
-                }}
-              >
-                Phan Văn Thắng
-              </div>
+              {logo.logoDarkBg ? (
+                <img
+                  src={logo.logoDarkBg}
+                  alt={logo.displayName}
+                  style={{
+                    display:   "block",
+                    width:     `${logo.desktopWidth}px`,
+                    maxWidth:  "160px",
+                    height:    "auto",
+                    objectFit: "contain",
+                    marginBottom: "0.3rem",
+                  }}
+                />
+              ) : (
+                <>
+                  <div
+                    style={{
+                      fontSize:      "17.5px",
+                      fontWeight:    700,
+                      letterSpacing: "-0.032em",
+                      color:         "rgba(255,255,255,0.94)",
+                      lineHeight:    1.1,
+                      marginBottom:  "0.3rem",
+                    }}
+                  >
+                    {logo.displayName || "Thắng SWC"}
+                  </div>
+                  <div
+                    style={{
+                      fontSize:      "10.5px",
+                      fontWeight:    500,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      color:         "hsl(var(--primary) / 0.52)",
+                      lineHeight:    1,
+                    }}
+                  >
+                    Phan Văn Thắng
+                  </div>
+                </>
+              )}
             </a>
 
             {/* Positioning tagline */}
