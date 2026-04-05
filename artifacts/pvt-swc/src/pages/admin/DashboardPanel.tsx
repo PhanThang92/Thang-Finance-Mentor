@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { adminApi, type DashboardData, type NewsProduct } from "@/lib/newsApi";
 import { A, fmtDate, leadStatusLabel, leadStatusColor } from "./shared";
 
-type Section = "dashboard" | "posts" | "categories" | "tags" | "products" | "leads" | "community" | "settings" | "account" | "articles" | "videos";
+type Section = "dashboard" | "posts" | "categories" | "tags" | "products" | "leads" | "community" | "settings" | "account" | "articles" | "videos" | "media" | "topics" | "series" | "analytics" | "email-subscribers" | "email-campaigns" | "email-sequences" | "resources" | "contact-widget";
 
 /* ── Quick action button ─────────────────────────────────────────── */
 function QuickAction({
@@ -127,12 +127,37 @@ export function DashboardPanel({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", maxWidth: "960px" }}>
 
+      {/* ── Sync error warning ────────────────────────────────────── */}
+      {data.syncErrors > 0 && (
+        <div style={{
+          background: "rgba(234,88,12,0.06)", border: "1px solid rgba(234,88,12,0.22)",
+          borderRadius: "9px", padding: "0.875rem 1.125rem",
+          display: "flex", alignItems: "flex-start", gap: "0.75rem",
+        }}>
+          <span style={{ fontSize: "16px", flexShrink: 0, marginTop: "1px" }}>⚠</span>
+          <div>
+            <p style={{ fontSize: "13px", fontWeight: 600, color: "#c2410c", margin: "0 0 3px" }}>
+              {data.syncErrors} lead có lỗi đồng bộ
+            </p>
+            <p style={{ fontSize: "12px", color: "#9a3412", margin: 0, lineHeight: 1.55 }}>
+              Một số leads chưa được đồng bộ sang Notion hoặc Google Sheets. Vào mục Leads để xem chi tiết và xử lý.
+            </p>
+          </div>
+          <button
+            onClick={() => onNavigate("leads")}
+            style={{ marginLeft: "auto", flexShrink: 0, padding: "5px 12px", borderRadius: "6px", border: "1px solid rgba(234,88,12,0.30)", cursor: "pointer", fontSize: "12px", fontWeight: 500, background: "transparent", color: "#c2410c" }}
+          >
+            Xem leads →
+          </button>
+        </div>
+      )}
+
       {/* ── Quick actions ─────────────────────────────────────────── */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-        <QuickAction icon="📄" label="Bài viết kiến thức" sub="Quản lý và xuất bản" onClick={() => onNavigate("articles")} />
-        <QuickAction icon="▶" label="Video kiến thức" sub="Thêm và chỉnh sửa video" onClick={() => onNavigate("videos")} />
-        <QuickAction icon="≡" label="Bài viết tin tức" sub="Soạn và xuất bản nội dung" onClick={() => onNavigate("posts")} />
-        <QuickAction icon="◉" label={data.newLeads > 0 ? `${data.newLeads} lead mới` : "Xem leads"} sub={data.newLeads > 0 ? "Cần xử lý" : "Quản lý danh sách"} onClick={() => onNavigate("leads")} />
+        <QuickAction icon="◉" label={data.newLeads > 0 ? `${data.newLeads} lead mới` : "Leads"} sub={data.newLeads > 0 ? "Cần xử lý ngay" : "Quản lý danh sách"} onClick={() => onNavigate("leads")} />
+        <QuickAction icon="≡" label="Bài viết kiến thức" sub="Soạn và xuất bản" onClick={() => onNavigate("articles")} />
+        <QuickAction icon="▶" label="Video" sub="Thêm và chỉnh sửa" onClick={() => onNavigate("videos")} />
+        <QuickAction icon="⊞" label="Thư viện ảnh" sub="Upload và quản lý ảnh" onClick={() => onNavigate("media")} />
       </div>
 
       {/* ── Stat cards ───────────────────────────────────────────── */}

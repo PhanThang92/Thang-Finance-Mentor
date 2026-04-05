@@ -10,6 +10,8 @@ type Props = {
   sourcePage: string;
   formType?: string;
   productRef?: string;
+  articleSlug?: string;
+  articleTitle?: string;
   buttonLabel?: string;
 };
 
@@ -23,6 +25,8 @@ export function CompactLeadForm({
   sourcePage,
   formType = "email-capture",
   productRef,
+  articleSlug,
+  articleTitle,
   buttonLabel = "Đăng ký",
 }: Props) {
   const [name, setName]     = useState("");
@@ -48,6 +52,8 @@ export function CompactLeadForm({
         sourcePage,
         formType,
         productRef,
+        articleSlug,
+        articleTitle,
         consentStatus: "given",
         hp,
       });

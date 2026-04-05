@@ -1,0 +1,413 @@
+Consolidate, refine, and polish the existing “Phan Văn Thắng SWC” website admin system into a clean, reliable, and easy-to-manage content platform.
+
+PROJECT CONTEXT
+This is a Vietnamese personal brand / finance website for Phan Văn Thắng SWC.
+The website includes or will include:
+- Homepage
+- Articles / News listing page
+- Article detail page
+- Contact page
+- Admin area
+- Article CMS
+- Media/image uploads
+- Lead/contact form collection
+- Optional sync to Notion / Google Sheets
+- Premium teal / dark teal finance mentor brand identity
+- Vietnamese language support
+
+MAIN GOAL
+Unify and improve the full admin/content system so the website becomes:
+1. Easy for a non-technical admin to manage
+2. Structurally clean and consistent
+3. Reliable for publishing articles and handling leads
+4. Organized for long-term maintenance
+5. Portable for future migration outside Replit
+
+CRITICAL RULES
+- Do NOT break the current website
+- Do NOT remove working features unless absolutely necessary
+- Do NOT redesign the public-facing website unless needed for functional consistency
+- Preserve Vietnamese content support
+- Preserve SEO-friendly article behavior
+- Preserve current data wherever possible
+- Prefer careful refactoring over rebuilding from scratch
+- Keep the admin experience clean and practical, not bloated
+
+PLEASE IMPLEMENT THE FOLLOWING
+
+==================================================
+1) AUDIT AND CONSOLIDATE THE ADMIN SYSTEM
+==================================================
+
+Audit the full current admin area and consolidate it into a clearer structure.
+
+Please:
+- identify all current admin pages, tools, and workflows
+- remove duplication in logic where possible
+- unify naming conventions
+- unify data flow between articles, media, and leads
+- make the admin architecture easier to understand and maintain
+
+Target admin areas should include:
+- Dashboard
+- Articles
+- Media Library
+- Leads / Contacts
+- Settings / Integrations (if needed)
+- Authentication / Admin access
+
+If some areas do not yet exist, add lightweight versions where appropriate.
+
+==================================================
+2) ADMIN INFORMATION ARCHITECTURE
+==================================================
+
+Reorganize the admin interface into a logical structure.
+
+Suggested admin navigation:
+- Dashboard
+- Articles
+  - All articles
+  - New article
+  - Drafts
+  - Published
+- Media
+  - Library
+  - Upload
+- Leads
+  - All leads
+  - New leads
+  - Status filters
+- Settings
+  - General
+  - Storage
+  - Integrations
+- Account / Logout
+
+Keep the structure simple and intuitive.
+Avoid enterprise-style complexity.
+
+==================================================
+3) DASHBOARD PAGE
+==================================================
+
+Create or improve a simple, useful admin dashboard.
+
+The dashboard should show a quick overview such as:
+- total articles
+- published articles
+- draft articles
+- total media items
+- total leads
+- new leads
+- recent article activity
+- recent lead activity
+
+Optional but useful:
+- top lead source pages
+- latest uploaded images
+- sync status warnings if Notion / Google Sheets sync failed
+
+Keep the dashboard compact, readable, and actionable.
+
+==================================================
+4) ARTICLE CMS IMPROVEMENTS
+==================================================
+
+Improve the article/content management system so it is easier and safer to use.
+
+Please improve:
+- article list page
+- article create page
+- article edit page
+- article status handling
+- slug handling
+- publish workflow
+- article metadata handling
+- featured image selection
+- tags / category handling if used
+
+Article list should support:
+- search by title
+- filter by status
+- sort by date
+- quick visibility of slug, publish status, updated_at
+- edit action
+- preview action if possible
+- delete/archive action with safe confirmation
+
+Article editor should support:
+- title
+- slug
+- excerpt
+- main content
+- featured image
+- tags
+- category
+- status
+- publish date
+- SEO metadata if already present or useful
+
+Important:
+- preserve current article URLs if already live
+- avoid accidental slug changes for published content
+- make the publishing workflow clear for non-technical use
+
+==================================================
+5) MEDIA LIBRARY IMPROVEMENTS
+==================================================
+
+Create or improve a clean media library for article/image management.
+
+The media library should:
+- show uploaded images in a useful grid or list
+- support preview
+- show basic metadata
+- show whether watermark is enabled
+- show created date
+- support search or filter if feasible
+- allow selecting an image for article use
+- allow editing alt text and caption
+- avoid duplicate confusion
+
+If image processing already exists, make the media library aware of:
+- original image
+- processed versions
+- thumbnail version
+- watermark status
+
+Keep the workflow simple and visually clear.
+
+==================================================
+6) LEAD MANAGEMENT IMPROVEMENTS
+==================================================
+
+Create or improve a clean lead management area.
+
+Lead list should support:
+- table/list view
+- search by name, phone, email
+- filter by status
+- filter by source_type
+- filter by date
+- see created_at clearly
+- quick view of lead source page
+- quick status update if feasible
+
+Lead detail should support:
+- full contact details
+- message
+- source page
+- UTM data if available
+- status
+- internal notes
+- assigned_to
+- sync status to Notion
+- sync status to Google Sheets
+- sync error info if relevant
+
+Keep this lightweight and practical.
+Do not turn it into a heavy CRM.
+
+==================================================
+7) DESIGN CONSISTENCY INSIDE ADMIN
+==================================================
+
+Polish the admin UI so it feels consistent and professional.
+
+Requirements:
+- keep public site branding spirit where appropriate
+- use a clean premium admin style
+- maintain readability
+- consistent spacing
+- consistent form styling
+- consistent buttons and tables
+- responsive enough for laptop and tablet use
+- avoid clutter
+- avoid flashy design
+
+Suggested style direction:
+- minimal, calm, professional
+- finance/mentor brand feel
+- clean teal / dark teal accents used sparingly
+- card-based layout where helpful
+- clear typography hierarchy
+
+This is an admin polish pass, not a dramatic redesign.
+
+==================================================
+8) FORM, VALIDATION, AND ERROR HANDLING CONSISTENCY
+==================================================
+
+Standardize validation and error handling across admin workflows.
+
+Please make article, media, and lead forms more consistent by:
+- standardizing form validation
+- standardizing success messages
+- standardizing error messages
+- preventing confusing states
+- preventing silent failures
+- keeping save/update/delete actions clear
+
+Ensure:
+- invalid article data is handled gracefully
+- failed image upload does not corrupt article workflow
+- failed sync does not lose lead data
+- admin gets meaningful feedback
+
+==================================================
+9) DATA RELATIONSHIPS AND CLEANUP
+==================================================
+
+Review the relationships between:
+- articles
+- media
+- leads
+- users/admin
+
+Please improve data consistency such as:
+- featured_image_id correctly linked
+- media references not easily orphaned
+- lead source data correctly linked to page/article when possible
+- article deletion handled safely if related media exists
+- fallback behavior for missing images or old records
+
+Do not break existing records.
+Preserve backward compatibility where possible.
+
+==================================================
+10) SEO / CONTENT SAFETY IN CMS
+==================================================
+
+Make the CMS safer for real publishing.
+
+Please add or improve:
+- slug uniqueness checks
+- warning if trying to change slug of a published article
+- meta title/meta description support if appropriate
+- safe excerpt handling
+- article preview support if feasible
+- publish date clarity
+- draft vs published clarity
+
+The goal is to reduce admin mistakes and preserve public content quality.
+
+==================================================
+11) SETTINGS / INTEGRATIONS AREA
+==================================================
+
+If appropriate, create a simple settings/integrations area for admin visibility.
+
+This does NOT need to expose secrets directly in UI.
+Instead, it can show system status or configuration awareness such as:
+- storage provider currently in use
+- whether watermark defaults are enabled
+- whether Notion sync is enabled
+- whether Google Sheets sync is enabled
+- whether environment variables are missing for some integrations
+
+Keep it lightweight.
+If full settings UI is too much, create a system status page or internal config summary page instead.
+
+==================================================
+12) AUTH / ACCESS CLEANUP
+==================================================
+
+Audit and improve admin access safety.
+
+Please:
+- verify admin routes are protected
+- verify non-admin visitors cannot access admin pages
+- centralize auth/session checks
+- improve route guards if needed
+- keep login flow working
+- avoid exposing sensitive internal data publicly
+
+Do this carefully and non-destructively.
+
+==================================================
+13) PORTABILITY AND MAINTAINABILITY
+==================================================
+
+Refactor the full admin/content system so it is cleaner and easier to move later outside Replit.
+
+Please:
+- reduce platform-specific coupling where possible
+- centralize config
+- centralize storage logic
+- centralize lead sync logic
+- centralize CMS data access
+- make the code easier to understand for future migration
+
+The admin/content system should be structured so later migration mainly involves:
+- moving database
+- moving storage
+- setting environment variables
+- reconnecting integrations
+
+==================================================
+14) BACKWARD COMPATIBILITY
+==================================================
+
+Do not break existing:
+- articles
+- article URLs
+- uploaded images
+- leads
+- admin workflows
+- public pages
+
+If schema changes are required:
+- migrate safely
+- preserve old data
+- add fallbacks where needed
+- document assumptions clearly
+
+==================================================
+15) DOCUMENTATION
+==================================================
+
+Create or update documentation that clearly explains the admin/content system.
+
+Please update:
+- README_DEPLOY.md
+- MIGRATION_NOTES.md
+
+Also add a concise internal document if useful, such as:
+- ADMIN_SYSTEM_OVERVIEW.md
+
+This documentation should explain:
+- admin architecture
+- article workflow
+- media workflow
+- lead workflow
+- integrations status
+- current dependencies
+- portability considerations
+- known limitations
+- recommended next improvements
+
+==================================================
+16) OUTPUT I EXPECT FROM YOU
+==================================================
+
+After making the changes, provide:
+1. Summary of admin system improvements
+2. Dashboard summary
+3. Article CMS summary
+4. Media library summary
+5. Lead management summary
+6. Auth/access summary
+7. Design consistency summary
+8. Portability/maintainability summary
+9. Backward compatibility notes
+10. Remaining limitations or recommended next steps
+
+IMPORTANT PRIORITY ORDER
+1. Keep current website working
+2. Make admin easier to use
+3. Make articles/media/leads feel like one coherent system
+4. Reduce confusion and duplication
+5. Improve reliability and structure
+6. Keep future migration possible
+7. Document everything clearly

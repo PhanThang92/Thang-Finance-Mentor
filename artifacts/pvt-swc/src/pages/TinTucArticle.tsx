@@ -475,8 +475,10 @@ export default function TinTucArticle() {
         title="Nhận thêm nội dung phù hợp"
         description="Để lại thông tin để nhận những bài viết và chia sẻ mới phù hợp với mối quan tâm của anh/chị."
         sourceType="tin-tuc"
-        sourcePage="/tin-tuc"
+        sourcePage={`/tin-tuc/${slug ?? ""}`}
         formType="email-capture"
+        articleSlug={slug}
+        articleTitle={post?.title}
         buttonLabel="Đăng ký nhận nội dung"
       />
     </div>

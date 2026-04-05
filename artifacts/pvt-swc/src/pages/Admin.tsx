@@ -54,67 +54,52 @@ const NAV_STRUCTURE: NavGroup[] = [
     ],
   },
   {
-    group: "Tin tức",
+    group: "Leads",
     items: [
-      { id: "posts",      label: "Bài viết",    icon: "≡" },
-      { id: "categories", label: "Chuyên mục",  icon: "⊞" },
-      { id: "tags",       label: "Tags",         icon: "#" },
+      { id: "leads", label: "Danh sách leads", icon: "◉" },
     ],
   },
   {
-    group: "Kiến thức",
+    group: "Nội dung",
     items: [
-      { id: "articles", label: "Bài viết KB",  icon: "≡" },
-      { id: "videos",   label: "Video",         icon: "▶" },
-      { id: "topics",   label: "Chủ đề",        icon: "◈" },
-      { id: "series",   label: "Series",        icon: "⋮" },
+      { id: "articles", label: "Bài viết kiến thức", icon: "≡" },
+      { id: "videos",   label: "Video",               icon: "▶" },
+      { id: "media",    label: "Thư viện ảnh",        icon: "⊞" },
+      { id: "posts",    label: "Tin tức",              icon: "◇" },
     ],
   },
   {
-    group: "Thư viện",
+    group: "Phân loại",
     items: [
-      { id: "media" as Section, label: "Thư viện ảnh", icon: "⊞" },
-    ],
-  },
-  {
-    group: "Hệ sinh thái",
-    items: [
-      { id: "products", label: "Sản phẩm", icon: "◈" },
-      { id: "leads",    label: "Leads",    icon: "◉" },
-    ],
-  },
-  {
-    group: "Vận hành",
-    items: [
-      { id: "community",      label: "Cộng đồng",   icon: "◎" },
-      { id: "contact-widget", label: "Liên hệ nổi", icon: "◉" },
-      { id: "settings",       label: "Cài đặt",     icon: "⚙" },
-    ],
-  },
-  {
-    group: "Phân tích",
-    items: [
-      { id: "analytics" as Section, label: "Phân tích nội dung", icon: "▤" },
+      { id: "topics",     label: "Chủ đề",    icon: "◈" },
+      { id: "series",     label: "Series",    icon: "⋮" },
+      { id: "categories", label: "Chuyên mục", icon: "⊕" },
+      { id: "tags",       label: "Tags",       icon: "#" },
     ],
   },
   {
     group: "Email",
     items: [
-      { id: "email-subscribers" as Section, label: "Người đăng ký",  icon: "◎" },
-      { id: "email-campaigns"   as Section, label: "Chiến dịch",      icon: "≡" },
-      { id: "email-sequences"   as Section, label: "Chuỗi email",     icon: "⋮" },
+      { id: "email-subscribers" as Section, label: "Người đăng ký", icon: "◎" },
+      { id: "email-campaigns"   as Section, label: "Chiến dịch",    icon: "≡" },
+      { id: "email-sequences"   as Section, label: "Chuỗi email",   icon: "⋮" },
     ],
   },
   {
-    group: "Tài liệu",
+    group: "Vận hành",
     items: [
-      { id: "resources" as Section, label: "Tài liệu", icon: "⊙" },
+      { id: "resources"      as Section, label: "Tài liệu",       icon: "⊙" },
+      { id: "products",                  label: "Sản phẩm",       icon: "◈" },
+      { id: "community",                 label: "Cộng đồng",      icon: "◎" },
+      { id: "contact-widget",            label: "Nút liên hệ",    icon: "◉" },
+      { id: "analytics"      as Section, label: "Phân tích",      icon: "▤" },
     ],
   },
   {
     group: "Hệ thống",
     items: [
-      { id: "account", label: "Tài khoản", icon: "○" },
+      { id: "settings", label: "Cài đặt",   icon: "⚙" },
+      { id: "account",  label: "Tài khoản", icon: "○" },
     ],
   },
 ];

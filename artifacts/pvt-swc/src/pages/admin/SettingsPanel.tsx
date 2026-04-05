@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { adminApi } from "@/lib/newsApi";
+import { adminApi, type SystemStatus } from "@/lib/newsApi";
 import { A, s } from "./shared";
 
 /* ── Types ────────────────────────────────────────────────────────── */
-type SettTab = "menu" | "footer" | "social" | "contact" | "form" | "seo";
+type SettTab = "menu" | "footer" | "social" | "contact" | "form" | "seo" | "system";
 
 interface NavItem {
   id: string; label: string; href: string; visible: boolean; order: number;
@@ -60,10 +60,11 @@ function TabBar({ tab, setTab }: { tab: SettTab; setTab: (t: SettTab) => void })
   const TABS: { id: SettTab; label: string }[] = [
     { id: "menu",    label: "Menu" },
     { id: "footer",  label: "Footer" },
-    { id: "social",  label: "Social" },
+    { id: "social",  label: "Mạng xã hội" },
     { id: "contact", label: "Liên hệ" },
     { id: "form",    label: "Form" },
-    { id: "seo",     label: "SEO chung" },
+    { id: "seo",     label: "SEO" },
+    { id: "system",  label: "Hệ thống" },
   ];
   return (
     <div style={{ display: "flex", gap: 0, borderBottom: `1px solid ${A.border}`, marginBottom: "1.5rem" }}>
@@ -527,6 +528,157 @@ function SeoTab({ settings, setS }: { settings: Record<string, string>; setS: (k
   );
 }
 
+/* ── System status tab ────────────────────────────────────────────── */
+function StatusRow({
+  label, ok, onLabel, offLabel, note,
+}: { label: string; ok: boolean; onLabel?: string; offLabel?: string; note?: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem", padding: "0.75rem 0", borderBottom: `1px solid ${A.border}` }}>
+      <div style={{
+        width: "20px", height: "20px", borderRadius: "50%", flexShrink: 0, marginTop: "1px",
+        background: ok ? "rgba(26,120,104,0.12)" : "rgba(0,0,0,0.06)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        <span style={{ fontSize: "10px", color: ok ? A.primary : A.textLight }}>
+          {ok ? "✓" : "—"}
+        </span>
+      </div>
+      <div style={{ flex: 1 }}>
+        <p style={{ fontSize: "13px", fontWeight: 500, color: A.text, margin: "0 0 2px" }}>{label}</p>
+        {note && <p style={{ fontSize: "11.5px", color: A.textMuted, margin: 0, lineHeight: 1.55 }}>{note}</p>}
+      </div>
+      <span style={{
+        fontSize: "11px", fontWeight: 600, padding: "2px 9px", borderRadius: "4px",
+        background: ok ? "rgba(26,120,104,0.09)" : "rgba(0,0,0,0.06)",
+        color: ok ? A.primary : A.textMuted,
+        flexShrink: 0,
+      }}>
+        {ok ? (onLabel ?? "Bật") : (offLabel ?? "Tắt")}
+      </span>
+    </div>
+  );
+}
+
+function SystemTab({ adminKey }: { adminKey: string }) {
+  const [status, setStatus] = useState<SystemStatus | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+
+  useEffect(() => {
+    adminApi.getSystemStatus(adminKey)
+      .then(setStatus)
+      .catch(() => setErr("Không tải được trạng thái hệ thống."))
+      .finally(() => setLoading(false));
+  }, [adminKey]);
+
+  if (loading) return <p style={{ fontSize: "13px", color: A.textMuted }}>Đang tải...</p>;
+  if (err || !status) return <p style={{ fontSize: "13px", color: A.danger }}>{err}</p>;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", maxWidth: "620px" }}>
+      {/* Security */}
+      <div style={s.card}>
+        <SectionHead>Bảo mật</SectionHead>
+        <StatusRow
+          label="Admin Key"
+          ok={!status.adminKey.isDefault}
+          onLabel="Đã đổi"
+          offLabel="Đang dùng mặc định"
+          note={status.adminKey.isDefault
+            ? "Đang dùng key mặc định. Hãy đổi bằng cách đặt biến môi trường ADMIN_KEY."
+            : "Admin key đã được tùy chỉnh."}
+        />
+      </div>
+
+      {/* Storage & media */}
+      <div style={s.card}>
+        <SectionHead>Lưu trữ & ảnh</SectionHead>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.75rem 0", borderBottom: `1px solid ${A.border}` }}>
+          <div style={{ width: "20px", height: "20px", borderRadius: "50%", flexShrink: 0, background: "rgba(26,120,104,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ fontSize: "10px", color: A.primary }}>◈</span>
+          </div>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: "13px", fontWeight: 500, color: A.text, margin: "0 0 2px" }}>Nhà cung cấp lưu trữ</p>
+            <p style={{ fontSize: "11.5px", color: A.textMuted, margin: 0 }}>
+              {status.storage.provider === "local" ? "Lưu trữ cục bộ (local)" : `S3-compatible: ${status.storage.provider}`}
+            </p>
+          </div>
+          <span style={{ fontSize: "11px", fontWeight: 600, padding: "2px 9px", borderRadius: "4px", background: "rgba(26,120,104,0.09)", color: A.primary }}>
+            {status.storage.provider === "local" ? "Local" : "S3"}
+          </span>
+        </div>
+        <StatusRow
+          label="Watermark trên ảnh"
+          ok={status.watermark.enabled}
+          note={status.watermark.enabled
+            ? "Ảnh tải lên sẽ được đóng dấu watermark."
+            : "Watermark tắt — đặt WATERMARK_ENABLED=true để bật."}
+        />
+      </div>
+
+      {/* Email */}
+      <div style={s.card}>
+        <SectionHead>Email (Resend)</SectionHead>
+        <StatusRow
+          label="Email thông báo"
+          ok={status.email.configured}
+          onLabel="Đã kết nối"
+          offLabel="Chưa cấu hình"
+          note={status.email.configured
+            ? `Gửi từ: ${status.email.from ?? "chưa đặt RESEND_FROM_EMAIL"}`
+            : "Đặt RESEND_API_KEY để kích hoạt gửi email xác nhận."}
+        />
+      </div>
+
+      {/* Notion */}
+      <div style={s.card}>
+        <SectionHead>Đồng bộ Notion</SectionHead>
+        <StatusRow
+          label="Kết nối Notion"
+          ok={status.notion.configured}
+          onLabel="Đã cấu hình"
+          offLabel="Chưa cấu hình"
+          note={status.notion.configured
+            ? "NOTION_API_KEY + NOTION_DATABASE_ID đã được thiết lập."
+            : "Thiếu NOTION_API_KEY hoặc NOTION_DATABASE_ID."}
+        />
+        <StatusRow
+          label="Tự động đồng bộ leads"
+          ok={status.notion.enabled}
+          note={status.notion.enabled
+            ? "Leads mới sẽ được đồng bộ sang Notion tự động."
+            : "Đặt ENABLE_NOTION_SYNC=true để kích hoạt."}
+        />
+      </div>
+
+      {/* Google Sheets */}
+      <div style={s.card}>
+        <SectionHead>Đồng bộ Google Sheets</SectionHead>
+        <StatusRow
+          label="Kết nối Google Sheets"
+          ok={status.sheets.configured}
+          onLabel="Đã cấu hình"
+          offLabel="Chưa cấu hình"
+          note={status.sheets.configured
+            ? "Service account + spreadsheet đã được thiết lập."
+            : "Thiếu GOOGLE_CLIENT_EMAIL, GOOGLE_PRIVATE_KEY hoặc GOOGLE_SPREADSHEET_ID."}
+        />
+        <StatusRow
+          label="Tự động đồng bộ leads"
+          ok={status.sheets.enabled}
+          note={status.sheets.enabled
+            ? "Leads mới sẽ được đồng bộ sang Google Sheets tự động."
+            : "Đặt ENABLE_GOOGLE_SHEETS_SYNC=true để kích hoạt."}
+        />
+      </div>
+
+      <p style={{ fontSize: "11.5px", color: A.textLight, lineHeight: 1.65 }}>
+        Trang này chỉ hiển thị trạng thái kết nối. Các giá trị bí mật (API keys, private keys) không bao giờ được hiển thị. Để thay đổi, cập nhật biến môi trường trên server và khởi động lại.
+      </p>
+    </div>
+  );
+}
+
 /* ── Main panel ─────────────────────────────────────────────────── */
 export function SettingsPanel({ adminKey }: { adminKey: string }) {
   const [tab, setTab]         = useState<SettTab>("menu");
@@ -590,16 +742,18 @@ export function SettingsPanel({ adminKey }: { adminKey: string }) {
             Quản lý các thành phần dùng chung trên toàn bộ website
           </p>
         </div>
-        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          {msg && (
-            <span style={{ fontSize: "12.5px", color: msg.startsWith("Đã") ? A.primary : A.danger }}>
-              {msg}
-            </span>
-          )}
-          <button style={s.btnPrimary} disabled={saving} onClick={save}>
-            {saving ? "Đang lưu..." : "Lưu tất cả"}
-          </button>
-        </div>
+        {tab !== "system" && (
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            {msg && (
+              <span style={{ fontSize: "12.5px", color: msg.startsWith("Đã") ? A.primary : A.danger }}>
+                {msg}
+              </span>
+            )}
+            <button style={s.btnPrimary} disabled={saving} onClick={save}>
+              {saving ? "Đang lưu..." : "Lưu tất cả"}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Tab bar */}
@@ -620,6 +774,7 @@ export function SettingsPanel({ adminKey }: { adminKey: string }) {
       {tab === "contact" && <ContactTab settings={settings} setS={setS} />}
       {tab === "form"    && <FormTab    settings={settings} setS={setS} />}
       {tab === "seo"     && <SeoTab     settings={settings} setS={setS} />}
+      {tab === "system"  && <SystemTab  adminKey={adminKey} />}
     </div>
   );
 }

@@ -34,6 +34,36 @@ function requireAdmin(req: Request, res: Response, next: NextFunction) {
 }
 router.use(requireAdmin);
 
+// ── System status (no secrets exposed — presence only) ────────────────────────
+router.get("/system-status", (_req, res) => {
+  const notionOk  = !!(process.env["NOTION_API_KEY"] && process.env["NOTION_DATABASE_ID"]);
+  const sheetsOk  = !!(process.env["GOOGLE_CLIENT_EMAIL"] && process.env["GOOGLE_PRIVATE_KEY"] && process.env["GOOGLE_SPREADSHEET_ID"]);
+  const resendOk  = !!process.env["RESEND_API_KEY"];
+  res.json({
+    storage: {
+      provider: process.env["STORAGE_PROVIDER"] ?? "local",
+    },
+    watermark: {
+      enabled: process.env["WATERMARK_ENABLED"] !== "false",
+    },
+    email: {
+      configured: resendOk,
+      from: resendOk ? (process.env["RESEND_FROM_EMAIL"] ?? null) : null,
+    },
+    notion: {
+      enabled:    process.env["ENABLE_NOTION_SYNC"] === "true",
+      configured: notionOk,
+    },
+    sheets: {
+      enabled:    process.env["ENABLE_GOOGLE_SHEETS_SYNC"] === "true",
+      configured: sheetsOk,
+    },
+    adminKey: {
+      isDefault: (process.env["ADMIN_KEY"] ?? "swc-admin-2026") === "swc-admin-2026",
+    },
+  });
+});
+
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 router.get("/dashboard", async (_req, res) => {
   try {
@@ -64,6 +94,10 @@ router.get("/dashboard", async (_req, res) => {
       .limit(5);
 
     const recentLeads = await db.select().from(leadsTable).orderBy(desc(leadsTable.createdAt)).limit(5);
+    const [syncErrors] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(leadsTable)
+      .where(isNotNull(leadsTable.syncError));
 
     res.json({
       publishedCount: publishedCount.count, draftCount: draftCount.count,
@@ -72,6 +106,7 @@ router.get("/dashboard", async (_req, res) => {
       articlesPublished: articlesPublished.count, articlesDraft: articlesDraft.count,
       videosPublished: videosPublished.count, videosDraft: videosDraft.count,
       topicsCount: topicsCount.count, seriesCount: seriesCount.count,
+      syncErrors: syncErrors.count,
     });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });

@@ -21,9 +21,23 @@ export interface Lead {
   lastContactedAt: string | null; nextFollowUpAt: string | null;
   consentStatus: string | null;
   utmSource: string | null; utmMedium: string | null; utmCampaign: string | null;
+  utmTerm: string | null; utmContent: string | null;
+  articleSlug: string | null; articleTitle: string | null;
   assignedTo: string | null; score: number;
   referrer: string | null;
+  syncedToNotion: boolean; notionPageId: string | null; notionSyncedAt: string | null;
+  syncedToSheets: boolean; sheetsSyncedAt: string | null;
+  syncError: string | null;
   createdAt: string; updatedAt: string;
+}
+
+export interface SystemStatus {
+  storage:   { provider: string };
+  watermark: { enabled: boolean };
+  email:     { configured: boolean; from: string | null };
+  notion:    { enabled: boolean; configured: boolean };
+  sheets:    { enabled: boolean; configured: boolean };
+  adminKey:  { isDefault: boolean };
 }
 export interface LeadNote {
   id: number; leadId: number; note: string; noteType: string | null; createdAt: string;
@@ -36,6 +50,7 @@ export interface DashboardData {
   articlesPublished: number; articlesDraft: number;
   videosPublished: number; videosDraft: number;
   topicsCount: number; seriesCount: number;
+  syncErrors: number;
 }
 
 /* ── Content types (articles + videos from KB hub) ──────────────────── */
@@ -343,6 +358,9 @@ export const adminApi = {
   getLeadNotes: (key: string, leadId: number) => get<{ notes: LeadNote[] }>(`/admin/leads/${leadId}/notes`, key).then((d) => d.notes),
   addLeadNote: (key: string, leadId: number, note: string, noteType?: string) => mutate<{ note: LeadNote }>("POST", `/admin/leads/${leadId}/notes`, { note, noteType: noteType ?? "internal" }, key).then((d) => d.note),
   deleteLeadNote: (key: string, noteId: number) => mutate<{ ok: boolean }>("DELETE", `/admin/leads/notes/${noteId}`, undefined, key),
+
+  /* system status */
+  getSystemStatus: (key: string) => get<SystemStatus>("/admin/system-status", key),
 
   /* settings */
   getSettings: (key: string) => get<{ settings: Record<string, string | null> }>("/admin/settings", key).then((d) => d.settings),

@@ -505,6 +505,40 @@ function LeadDetail({
           </div>
         </DetailSection>
 
+        {/* Sync status */}
+        {(lead.syncedToNotion || lead.syncedToSheets || lead.syncError) && (
+          <DetailSection label="Đồng bộ bên ngoài">
+            {lead.syncedToNotion && (
+              <div style={{ display: "flex", gap: "7px", alignItems: "center" }}>
+                <span style={{ fontSize: "10px", fontWeight: 700, background: "rgba(26,120,104,0.10)", color: A.primary, padding: "1px 7px", borderRadius: "4px" }}>✓ Notion</span>
+                {lead.notionSyncedAt && <span style={{ fontSize: "11px", color: A.textLight }}>{fmtDateTime(lead.notionSyncedAt)}</span>}
+              </div>
+            )}
+            {lead.syncedToSheets && (
+              <div style={{ display: "flex", gap: "7px", alignItems: "center" }}>
+                <span style={{ fontSize: "10px", fontWeight: 700, background: "rgba(26,120,104,0.10)", color: A.primary, padding: "1px 7px", borderRadius: "4px" }}>✓ Sheets</span>
+                {lead.sheetsSyncedAt && <span style={{ fontSize: "11px", color: A.textLight }}>{fmtDateTime(lead.sheetsSyncedAt)}</span>}
+              </div>
+            )}
+            {lead.syncError && (
+              <div style={{ background: "rgba(193,51,51,0.06)", border: "1px solid rgba(193,51,51,0.20)", borderRadius: "6px", padding: "8px 10px" }}>
+                <p style={{ fontSize: "11px", fontWeight: 600, color: A.danger, margin: "0 0 3px" }}>Lỗi đồng bộ</p>
+                <p style={{ fontSize: "11px", color: A.danger, margin: 0, fontFamily: "monospace", wordBreak: "break-all", lineHeight: 1.5 }}>
+                  {lead.syncError}
+                </p>
+              </div>
+            )}
+          </DetailSection>
+        )}
+
+        {/* Article context */}
+        {lead.articleSlug && (
+          <DetailSection label="Nguồn bài viết">
+            <DetailRow label="Bài viết" value={lead.articleTitle ?? lead.articleSlug} />
+            <DetailRow label="Slug" value={lead.articleSlug} mono />
+          </DetailSection>
+        )}
+
         {/* Status */}
         <DetailSection label="Cập nhật trạng thái">
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
