@@ -84,6 +84,7 @@ export function VideosPanel({ adminKey }: { adminKey: string }) {
   const [toast, setToast]       = useState<{ msg: string; type: "ok" | "err" } | null>(null);
   const [showSeo, setShowSeo]   = useState(false);
   const [ytErr, setYtErr]       = useState("");
+  const [ogGenerating, setOgGenerating] = useState(false);
 
   const [q, setQ]               = useState("");
   const [fStatus, setFStatus]   = useState("all");
@@ -91,6 +92,20 @@ export function VideosPanel({ adminKey }: { adminKey: string }) {
   const [fHomepage, setFHomepage] = useState("all");
 
   const showToast = useCallback((msg: string, type: "ok" | "err" = "ok") => setToast({ msg, type }), []);
+
+  const generateOg = useCallback(async () => {
+    if (!form.id) return;
+    setOgGenerating(true);
+    try {
+      const result = await adminApi.generateVideoOg(adminKey, form.id);
+      setForm((prev) => ({ ...prev, generatedOgImageUrl: result.generatedOgImageUrl, ogImageGenerated: true }));
+      showToast("Đã tạo ảnh chia sẻ thành công.");
+    } catch {
+      showToast("Không thể tạo ảnh chia sẻ, vui lòng thử lại.", "err");
+    } finally {
+      setOgGenerating(false);
+    }
+  }, [form.id, adminKey, showToast]);
 
   const reload = useCallback(() => {
     setLoading(true);
@@ -540,8 +555,8 @@ export function VideosPanel({ adminKey }: { adminKey: string }) {
                     <input value={form.ogTitle ?? ""} onChange={(e) => setField("ogTitle", e.target.value)} placeholder={form.seoTitle || form.title || ""} style={s.field} />
                   </div>
                   <div>
-                    <label style={s.label}>Ảnh chia sẻ (OG Image URL)</label>
-                    <input value={form.ogImageUrl ?? ""} onChange={(e) => setField("ogImageUrl", e.target.value)} placeholder={form.thumbnailUrl || "https://..."} style={s.field} />
+                    <label style={s.label}>Ảnh chia sẻ tùy chỉnh (ghi đè ảnh tự động)</label>
+                    <input value={form.ogImageUrl ?? ""} onChange={(e) => setField("ogImageUrl", e.target.value)} placeholder="https://... (để trống để dùng ảnh tự động)" style={s.field} />
                   </div>
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={s.label}>Mô tả Open Graph</label>
@@ -553,6 +568,47 @@ export function VideosPanel({ adminKey }: { adminKey: string }) {
                   </div>
                 </div>
               </div>
+
+              {/* OG image generation */}
+              <div style={{ borderTop: `1px solid ${A.border}`, paddingTop: "0.875rem" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
+                  <div>
+                    <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: A.textLight, margin: 0 }}>Ảnh chia sẻ tự động</p>
+                    <p style={{ fontSize: "11.5px", color: A.textMuted, margin: "3px 0 0" }}>Tạo ảnh thương hiệu 1200×630 từ tiêu đề video.</p>
+                  </div>
+                  {form.id ? (
+                    <button
+                      type="button"
+                      onClick={generateOg}
+                      disabled={ogGenerating}
+                      style={{ ...s.btnSecondary, fontSize: "12px", padding: "7px 14px", opacity: ogGenerating ? 0.6 : 1, whiteSpace: "nowrap", flexShrink: 0 }}
+                    >
+                      {ogGenerating ? "Đang tạo..." : form.ogImageGenerated ? "Tạo lại ảnh chia sẻ" : "Tạo ảnh chia sẻ"}
+                    </button>
+                  ) : (
+                    <span style={{ fontSize: "11.5px", color: A.textMuted, fontStyle: "italic" }}>Lưu video trước khi tạo ảnh.</span>
+                  )}
+                </div>
+                {form.generatedOgImageUrl ? (
+                  <div style={{ border: `1px solid ${A.border}`, borderRadius: "8px", overflow: "hidden", background: "#f5f6f7" }}>
+                    <div style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: A.textMuted, padding: "7px 12px", borderBottom: `1px solid ${A.border}`, background: "#fff" }}>
+                      Xem trước ảnh chia sẻ
+                    </div>
+                    <div style={{ aspectRatio: "1200/630", maxHeight: "220px", overflow: "hidden" }}>
+                      <img src={form.generatedOgImageUrl} alt="OG preview" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                    </div>
+                    <div style={{ padding: "7px 12px", fontSize: "11px", color: A.textMuted, display: "flex", gap: "10px", alignItems: "center" }}>
+                      <span>URL:</span>
+                      <code style={{ fontSize: "10.5px", background: "#f0f0f0", padding: "2px 6px", borderRadius: "4px", wordBreak: "break-all" }}>{form.generatedOgImageUrl}</code>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ border: `1px dashed ${A.border}`, borderRadius: "8px", padding: "24px", textAlign: "center", color: A.textMuted, fontSize: "13px" }}>
+                    Chưa có ảnh chia sẻ tự động.
+                  </div>
+                )}
+              </div>
+
               <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", userSelect: "none" }}>
                 <input type="checkbox" checked={form.noindex ?? false} onChange={(e) => setField("noindex", e.target.checked)} style={{ width: "15px", height: "15px", cursor: "pointer" }} />
                 <span style={{ fontSize: "13px", color: A.text, fontWeight: 500 }}>Không lập chỉ mục (noindex)</span>

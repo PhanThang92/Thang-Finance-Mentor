@@ -43,6 +43,8 @@ export interface Article {
   seoTitle: string | null; seoDescription: string | null; seoKeywords: string | null;
   ogTitle: string | null; ogDescription: string | null; ogImageUrl: string | null;
   canonicalUrl: string | null; noindex: boolean;
+  /* Generated OG image */
+  generatedOgImageUrl: string | null; ogImageGenerated: boolean; ogImageUpdatedAt: string | null;
   /* Homepage */
   showOnHomepage: boolean; displayOrder: number;
   createdAt: string; updatedAt: string;
@@ -62,6 +64,8 @@ export interface Video {
   seoTitle: string | null; seoDescription: string | null; seoKeywords: string | null;
   ogTitle: string | null; ogDescription: string | null; ogImageUrl: string | null;
   canonicalUrl: string | null; noindex: boolean;
+  /* Generated OG image */
+  generatedOgImageUrl: string | null; ogImageGenerated: boolean; ogImageUpdatedAt: string | null;
   /* Homepage */
   showOnHomepage: boolean; displayOrder: number;
   createdAt: string; updatedAt: string;
@@ -222,6 +226,7 @@ export const adminApi = {
   createArticle: (key: string, data: Partial<Article>) => mutate<{ article: Article }>("POST", "/admin/articles", data, key).then((d) => d.article),
   updateArticle: (key: string, id: number, data: Partial<Article>) => mutate<{ article: Article }>("PUT", `/admin/articles/${id}`, data, key).then((d) => d.article),
   deleteArticle: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/articles/${id}`, undefined, key),
+  generateArticleOg: (key: string, id: number) => mutate<{ ok: boolean; generatedOgImageUrl: string }>("POST", `/admin/articles/${id}/generate-og`, {}, key),
 
   /* videos (KB hub) */
   getVideos: (key: string) => get<{ videos: Video[] }>("/admin/videos", key).then((d) => d.videos),
@@ -229,6 +234,7 @@ export const adminApi = {
   createVideo: (key: string, data: Partial<Video>) => mutate<{ video: Video }>("POST", "/admin/videos", data, key).then((d) => d.video),
   updateVideo: (key: string, id: number, data: Partial<Video>) => mutate<{ video: Video }>("PUT", `/admin/videos/${id}`, data, key).then((d) => d.video),
   deleteVideo: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/videos/${id}`, undefined, key),
+  generateVideoOg: (key: string, id: number) => mutate<{ ok: boolean; generatedOgImageUrl: string }>("POST", `/admin/videos/${id}/generate-og`, {}, key),
 
   /* topics */
   getTopics: (key: string) => get<{ topics: Topic[] }>("/admin/topics", key).then((d) => d.topics),

@@ -107,6 +107,58 @@ A complete media workflow is integrated into Articles and Videos forms.
 
 **UX flow**: Editor clicks "Tải ảnh lên" → selects file → crop modal opens → drags to adjust, zooms, clicks "Lưu ảnh" → image uploaded to server → watermarked + compressed → both display and thumbnail URLs saved to form → preview rendered inline. Manual URL fallback input remains below upload widget.
 
+### Admin CMS — OG Image Generator (Ảnh chia sẻ tự động)
+
+Server-side branded social share image generation for Articles and Videos.
+
+**Output**: 1200×630 PNG — standard Open Graph / social preview format.
+
+**Design**: Premium dark teal editorial template:
+- Background: `#0e3d35` (deep teal)
+- Content type badge: "BÀI VIẾT" / "VIDEO" in teal pill (top-left)
+- Title: white, 50px bold, word-wrapped max 3 lines (30 chars/line)
+- Category/topic label: `#9ed8c9` light teal
+- Left accent bar: 7px, `#22917f` bright teal
+- Decorative arcs: top-right translucent teal circles
+- Bottom brand strip: "PHAN VĂN THẮNG SWC" + "Đầu tư · Tư duy · Bền vững"
+
+**Generator file**: `artifacts/api-server/src/og/ogImageGenerator.ts`
+- Pure server-side: sharp + SVG compositing (no browser required)
+- `generateOgImage({ title, category, contentType, slug })` → `{ filePath, publicUrl, filename }`
+- Text wrapping via `wrapText(text, maxChars, maxLines)` — handles long Vietnamese titles gracefully
+
+**Storage**: `uploads/og-images/{articles|videos}/{slug}-{timestamp}.png`  
+Served at: `/api/uploads/og-images/{type}/{filename}` (covered by existing static file route)
+
+**DB columns added** to both `articles` and `videos`:
+- `generated_og_image_url TEXT` — auto-generated URL
+- `og_image_generated BOOLEAN DEFAULT FALSE` — tracking flag
+- `og_image_updated_at TIMESTAMPTZ` — generation timestamp
+
+**API routes** (Bearer auth required):
+- `POST /api/admin/articles/:id/generate-og` → generates and saves, returns `{ ok, generatedOgImageUrl }`
+- `POST /api/admin/videos/:id/generate-og` → same for videos
+
+**Admin UI** (inside SEO & Chia sẻ collapsible section):
+- "Ảnh chia sẻ tự động" sub-section with header + description
+- "Tạo ảnh chia sẻ" button (editing existing) / "Lưu trước..." hint (new item)
+- "Tạo lại ảnh chia sẻ" label shown after first generation
+- Loading state: "Đang tạo..."
+- Preview box showing generated image (1200:630 aspect ratio, 220px max-height)
+- URL display below preview for easy copy
+- Empty state: dashed border placeholder "Chưa có ảnh chia sẻ tự động"
+- Toast feedback: success / error
+- Manual `ogImageUrl` field renamed to "Ảnh chia sẻ tùy chỉnh (ghi đè ảnh tự động)"
+
+**Priority logic for public pages** (when individual detail pages exist):
+1. `ogImageUrl` (custom manual override)
+2. `generatedOgImageUrl` (auto-generated)
+3. Cover/thumbnail image
+4. Site default
+
+**Drizzle schema updated**: `lib/db/src/schema/content.ts` — both `articlesTable` and `videosTable`
+**Frontend interfaces updated**: `artifacts/pvt-swc/src/lib/newsApi.ts` — `Article` + `Video` types + `adminApi.generateArticleOg` + `adminApi.generateVideoOg`
+
 ### Admin CMS — Media Library (Thư viện ảnh)
 
 A centralized media asset management system for all uploaded images.

@@ -1,5 +1,6 @@
 import path from "path";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { generateOgImage } from "../og/ogImageGenerator";
 import { randomBytes } from "crypto";
 import { Router, type Request, type Response, type NextFunction } from "express";
 import multer from "multer";
@@ -467,6 +468,33 @@ router.delete("/articles/:id", async (req, res) => {
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 
+// ── Article OG image generation ────────────────────────────────────────────────
+router.post("/articles/:id/generate-og", async (req, res) => {
+  try {
+    const id   = Number(req.params.id);
+    const rows = await db.select().from(articlesTable).where(eq(articlesTable.id, id)).limit(1);
+    if (!rows.length) { res.status(404).json({ error: "Not found" }); return; }
+    const a = rows[0]!;
+
+    const { publicUrl } = await generateOgImage({
+      title:       a.seoTitle || a.title,
+      category:    a.category,
+      contentType: "article",
+      slug:        a.slug,
+    });
+
+    const now = new Date();
+    await db.update(articlesTable).set({
+      generatedOgImageUrl: publicUrl,
+      ogImageGenerated:    true,
+      ogImageUpdatedAt:    now,
+      updatedAt:           now,
+    }).where(eq(articlesTable.id, id));
+
+    res.json({ ok: true, generatedOgImageUrl: publicUrl });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
 // ── Videos CRUD ────────────────────────────────────────────────────────────────
 
 function pickVideoFields(body: Record<string, unknown>) {
@@ -574,6 +602,37 @@ router.delete("/videos/:id", async (req, res) => {
   try {
     await db.delete(videosTable).where(eq(videosTable.id, Number(req.params.id)));
     res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+// ── Video OG image generation ──────────────────────────────────────────────────
+router.post("/videos/:id/generate-og", async (req, res) => {
+  try {
+    const id   = Number(req.params.id);
+    const rows = await db.select().from(videosTable).where(eq(videosTable.id, id)).limit(1);
+    if (!rows.length) { res.status(404).json({ error: "Not found" }); return; }
+    const v = rows[0]!;
+
+    const category = Array.isArray(v.categories) && v.categories.length > 0
+      ? v.categories[0]!
+      : (v.topicSlug ? v.topicSlug.replace(/-/g, " ") : null);
+
+    const { publicUrl } = await generateOgImage({
+      title:       v.seoTitle || v.title,
+      category,
+      contentType: "video",
+      slug:        v.slug,
+    });
+
+    const now = new Date();
+    await db.update(videosTable).set({
+      generatedOgImageUrl: publicUrl,
+      ogImageGenerated:    true,
+      ogImageUpdatedAt:    now,
+      updatedAt:           now,
+    }).where(eq(videosTable.id, id));
+
+    res.json({ ok: true, generatedOgImageUrl: publicUrl });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 

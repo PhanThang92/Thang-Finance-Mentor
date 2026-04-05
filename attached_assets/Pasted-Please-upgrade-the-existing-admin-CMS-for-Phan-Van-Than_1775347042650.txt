@@ -1,0 +1,500 @@
+Please upgrade the existing admin CMS for “Phan Van Thang SWC” by adding an automatic SEO OG image generator / social share image system.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Build on top of the current admin CMS, Supabase/Postgres, media pipeline, and media library.
+- Do NOT redesign the whole CMS.
+- Focus specifically on generating branded Open Graph / social share images for Articles and Videos.
+- Keep the solution practical, clean, reusable, and maintainable.
+
+GOAL:
+Create an automatic OG image generation system so that Articles and Videos can have branded social share images generated inside the admin CMS.
+
+This system should:
+- generate social share images automatically from content data
+- allow manual regeneration when needed
+- support fallback behavior
+- keep brand consistency
+- work well with existing SEO fields and public metadata output
+- reduce the need to design every share image manually
+
+Primary content types:
+1. Articles
+2. Videos
+
+Future-ready:
+- Topics
+- Series
+- static pages if needed later
+
+================================
+1. FEATURE SCOPE
+================================
+
+Please add OG image generation support for:
+- Articles
+- Videos
+
+The system should support:
+- automatic OG image generation
+- manual regenerate action
+- preview inside admin
+- saving generated OG image URLs
+- using generated image URLs in SEO/Open Graph metadata on public pages
+
+This should integrate with:
+- existing SEO fields
+- media pipeline / storage
+- admin edit forms
+- public page metadata rendering
+
+================================
+2. PRIMARY USE CASE
+================================
+
+When an editor creates or updates an Article or Video, the admin CMS should be able to generate a branded social share image automatically.
+
+The OG image should be suitable for sharing on:
+- Facebook
+- LinkedIn
+- Zalo
+- X / Twitter
+- messaging previews
+- other social platforms that use Open Graph / preview images
+
+The resulting image should feel:
+- premium
+- clean
+- readable
+- aligned with the website brand
+- professional for finance / investing / long-term thinking content
+
+================================
+3. DEFAULT OG IMAGE TEMPLATE SYSTEM
+================================
+
+Create a reusable OG image template system.
+
+At minimum, support one default branded template for:
+- Articles
+- Videos
+
+Optional:
+- slightly different template variants for article vs video content
+
+The design direction should be:
+- premium
+- editorial
+- calm
+- trustworthy
+- dark teal / deep teal / soft teal / charcoal
+- aligned with “Phan Van Thang SWC”
+- no flashy social-media gimmicks
+- no cheap clickbait thumbnail style
+
+Suggested content on OG image:
+- brand name: “Phan Van Thang SWC”
+- content title
+- optional category/topic label
+- subtle brand line or descriptor
+- optional content type marker such as:
+  - Bài viết
+  - Video
+
+Requirements:
+- title must remain readable
+- composition should handle long Vietnamese text gracefully
+- design must look good in 1200x630 social preview format
+- spacing and typography should feel premium
+
+================================
+4. IMAGE SIZE / FORMAT
+================================
+
+Generate OG images in the standard social share format.
+
+Recommended output:
+- 1200 x 630 px
+
+Requirements:
+- export web-friendly image
+- keep text sharp and readable
+- use optimized file format (PNG or WebP depending on compatibility needs)
+- ensure the final image is publicly accessible for metadata usage
+
+If compatibility is a concern:
+- PNG is acceptable for OG output
+- compression should still be reasonable
+
+================================
+5. CONTENT INPUTS FOR OG GENERATION
+================================
+
+Use content data from the current Article / Video record.
+
+Suggested source fields:
+For Articles:
+- title
+- category or topic
+- seo_title (fallback to title)
+- cover image if used as background element
+- brand name
+
+For Videos:
+- title
+- topic or series
+- seo_title (fallback to title)
+- thumbnail if used as background element
+- brand name
+
+Generation rules:
+- if seo_title exists, prefer it
+- otherwise use title
+- if category/topic exists, optionally display it as a small label
+- if no image background is available, use a strong branded graphic template
+
+================================
+6. TEMPLATE DESIGN APPROACH
+================================
+
+Please implement a consistent branded template.
+
+Recommended layout style:
+Option A:
+- branded dark teal background
+- subtle chart/grid/financial texture
+- title block on left
+- optional label / content type badge
+- brand mark / name at bottom
+
+Option B:
+- blurred or darkened cover image background
+- text block overlay
+- brand footer strip
+- premium editorial layout
+
+Requirements:
+- choose the cleaner and more reliable approach
+- readability is more important than visual complexity
+- avoid using too much small text
+- do not overcrowd the image
+- title should be the main focus
+
+================================
+7. AUTO-GENERATION RULES
+================================
+
+Please define when OG images are automatically generated.
+
+Recommended behavior:
+- generate automatically when a new Article is created and published
+- generate automatically when a new Video is created and published
+- allow regeneration when title/SEO metadata changes
+- optionally allow generate-on-save for draft content too if useful
+
+Minimum requirement:
+- admin must be able to trigger or re-trigger generation easily
+
+================================
+8. MANUAL REGENERATE ACTION
+================================
+
+Add a manual action in the admin forms.
+
+Visible Vietnamese examples:
+- Tạo ảnh chia sẻ
+- Tạo lại ảnh chia sẻ
+- Xem trước ảnh chia sẻ
+- Đã tạo ảnh chia sẻ thành công
+
+Requirements:
+- admin can regenerate OG image on demand
+- useful when title, branding, or layout changes
+- this should not require manual external design work
+
+================================
+9. ADMIN FORM INTEGRATION
+================================
+
+Upgrade the Article and Video edit forms to include a dedicated OG image / social share section.
+
+Visible Vietnamese labels/examples:
+- Ảnh chia sẻ
+- Tự tạo ảnh chia sẻ
+- Tạo lại ảnh chia sẻ
+- Xem trước ảnh chia sẻ
+- Dùng ảnh tùy chỉnh
+- URL ảnh chia sẻ
+- Tự động tạo từ nội dung
+
+Suggested section grouping:
+- SEO
+- Open Graph / Chia sẻ mạng xã hội
+
+Requirements:
+- keep the UI clean
+- allow generated preview
+- allow switching between auto-generated image and manual custom image if desired
+- do not make the form confusing
+
+================================
+10. CUSTOM OVERRIDE SUPPORT
+================================
+
+Allow optional manual override.
+
+Requirements:
+- admin can use a custom OG image instead of generated one
+- if custom OG image is provided, public metadata should use it
+- if no custom OG image is provided, use the generated OG image
+- if no generated OG image exists, fall back to existing SEO og_image_url field or default site image
+
+Visible Vietnamese option examples:
+- Dùng ảnh chia sẻ tùy chỉnh
+- Quay lại ảnh chia sẻ tự động
+
+================================
+11. STORAGE STRATEGY
+================================
+
+Store generated OG images in a clean storage structure.
+
+Recommended folders:
+- `og-images/articles/`
+- `og-images/videos/`
+- optional:
+  - `og-images/topics/`
+  - `og-images/series/`
+
+Filename strategy example:
+- article slug + timestamp
+- video slug + timestamp
+
+Example:
+- `og-images/articles/dau-tu-dai-han-bat-dau-tu-dau-1712345678.png`
+
+Requirements:
+- avoid filename collisions
+- make regeneration manageable
+- keep storage organized
+- support public access for metadata tags
+
+================================
+12. DATABASE FIELD SUPPORT
+================================
+
+Update schema if needed.
+
+For `articles`, support fields such as:
+- og_image_url
+- og_image_generated (boolean)
+- og_image_updated_at (optional)
+
+For `videos`, support fields such as:
+- og_image_url
+- og_image_generated (boolean)
+- og_image_updated_at (optional)
+
+Requirements:
+- preserve compatibility with existing SEO fields
+- do not break current metadata handling
+- write migrations safely
+
+================================
+13. PUBLIC SEO METADATA INTEGRATION
+================================
+
+Update public pages so they use the OG image correctly.
+
+Requirements:
+- article detail pages use:
+  1. custom og image if present
+  2. generated og image if present
+  3. fallback og image field or site default image
+- video pages use the same logic
+- metadata output should include correct Open Graph image URL
+- keep the logic clean and centralized
+
+Do not break existing SEO behavior.
+
+================================
+14. PREVIEW INSIDE ADMIN
+================================
+
+Show a preview of the generated OG image inside admin.
+
+Visible Vietnamese text examples:
+- Xem trước ảnh chia sẻ
+- Ảnh chia sẻ hiện tại
+- Chưa có ảnh chia sẻ
+
+Requirements:
+- preview should be easy to inspect
+- allow regenerate directly from preview area
+- allow switching to custom image if needed
+- keep preview size practical
+
+================================
+15. SUPPORT LONG TITLES GRACEFULLY
+================================
+
+Handle long Vietnamese titles carefully.
+
+Requirements:
+- clamp or wrap title in a controlled way
+- avoid text overflow outside image bounds
+- preserve readability
+- if title is too long, prioritize clean line breaks
+- avoid shrinking text too aggressively
+
+This is critical for Vietnamese content quality.
+
+================================
+16. BRAND CONSISTENCY
+================================
+
+The OG image system must match the overall brand.
+
+Brand direction:
+- premium
+- calm
+- trustworthy
+- finance / investing mentor
+- editorial
+- dark teal / soft teal / charcoal / off-white palette
+
+Avoid:
+- clickbait YouTube thumbnail style
+- loud colors
+- excessive effects
+- noisy visual clutter
+
+The result should feel like:
+- a premium branded share image
+- not a generic auto-generated banner
+
+================================
+17. TEMPLATE CONFIG / REUSABILITY
+================================
+
+Create a reusable config/helper for OG image generation.
+
+Suggested config areas:
+- dimensions
+- fonts / typography settings
+- brand colors
+- padding
+- label style
+- title max lines
+- output format
+- per-content-type rules
+
+Suggested file example:
+- `src/config/ogImageConfig.ts`
+
+Requirements:
+- avoid hardcoding values in many places
+- make future adjustments easy
+- support future extension for Topics / Series
+
+================================
+18. GENERATION IMPLEMENTATION APPROACH
+================================
+
+Use a clean and reliable implementation approach suitable for the current stack.
+
+Requirements:
+- generate images consistently
+- avoid fragile browser-only hacks if a server-side render is cleaner
+- choose a method that works reliably in deployment
+- keep the code maintainable
+
+The solution should be appropriate for:
+- server-side OG image rendering
+or
+- backend-generated image composition
+depending on the stack
+
+But the final architecture should feel clean and production-usable.
+
+================================
+19. MEDIA LIBRARY INTEGRATION
+================================
+
+If appropriate, integrate generated OG images with the Media Library.
+
+Requirements:
+- generated OG images can optionally appear as media assets
+- or at least be managed in a similarly clean storage pattern
+- keep things organized
+- do not create scattered unmanaged image files
+
+This is optional if it complicates things too much, but desirable if easy.
+
+================================
+20. BULK / FUTURE READINESS
+================================
+
+Do not overbuild bulk generation right now, but prepare the structure for future use.
+
+Future possibilities:
+- regenerate all OG images
+- regenerate OG images when branding changes
+- generate OG images for Topics / Series / static pages
+
+Keep the system extensible enough for this later.
+
+================================
+21. ADMIN FEEDBACK / STATES
+================================
+
+Add clear feedback states.
+
+Visible Vietnamese examples:
+- Đang tạo ảnh chia sẻ...
+- Đã tạo ảnh chia sẻ thành công
+- Đã cập nhật ảnh chia sẻ
+- Không thể tạo ảnh chia sẻ, vui lòng thử lại
+
+Requirements:
+- good success/error handling
+- no noisy UX
+- clear actions and states
+
+================================
+22. SECURITY / STORAGE BEST PRACTICES
+================================
+
+Apply good practices:
+- safe public URL generation
+- organized storage paths
+- no secret leakage
+- stable metadata URLs
+- regeneration should not create broken references
+- update DB atomically where reasonable
+
+================================
+23. DOCUMENTATION / HANDOFF
+================================
+
+Add simple notes/comments/documentation for:
+- where OG generation logic lives
+- how templates are defined
+- how admin trigger/regenerate works
+- how public metadata chooses the correct image
+- how this can later be extended
+
+================================
+24. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- Articles and Videos can automatically generate branded social share images
+- editors can preview and regenerate them in admin
+- generated images are stored cleanly
+- public metadata uses them correctly
+- the website becomes more professional and SEO/social-share ready
+- brand consistency improves across shared links
+
+Please implement this automatic OG image generator / social share image system directly into the admin CMS.

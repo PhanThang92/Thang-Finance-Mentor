@@ -36,6 +36,10 @@ export const articlesTable = pgTable("articles", {
   ogImageUrl:       text("og_image_url"),
   canonicalUrl:     text("canonical_url"),
   noindex:          boolean("noindex").notNull().default(false),
+  /* Generated OG image */
+  generatedOgImageUrl: text("generated_og_image_url"),
+  ogImageGenerated:    boolean("og_image_generated").notNull().default(false),
+  ogImageUpdatedAt:    timestamp("og_image_updated_at", { withTimezone: true }),
   /* Homepage control */
   showOnHomepage:   boolean("show_on_homepage").notNull().default(false),
   displayOrder:     integer("display_order").notNull().default(0),
@@ -83,6 +87,10 @@ export const videosTable = pgTable("videos", {
   ogImageUrl:       text("og_image_url"),
   canonicalUrl:     text("canonical_url"),
   noindex:          boolean("noindex").notNull().default(false),
+  /* Generated OG image */
+  generatedOgImageUrl: text("generated_og_image_url"),
+  ogImageGenerated:    boolean("og_image_generated").notNull().default(false),
+  ogImageUpdatedAt:    timestamp("og_image_updated_at", { withTimezone: true }),
   /* Homepage control */
   showOnHomepage:   boolean("show_on_homepage").notNull().default(false),
   displayOrder:     integer("display_order").notNull().default(0),
