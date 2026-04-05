@@ -1,0 +1,298 @@
+Perform a final polish pass on this existing “Phan Văn Thắng SWC” website project.
+
+IMPORTANT CONTEXT
+This project has already gone through major refactoring and feature implementation.
+At this stage, do NOT rebuild the system.
+Do NOT introduce major architectural changes unless absolutely necessary.
+This is a final stabilization, QA, UX polish, admin polish, and consistency pass.
+
+MAIN GOAL
+Make the website feel finished, stable, clean, consistent, and ready for real use.
+
+CORE RULES
+- Do NOT break the current website
+- Do NOT remove working features unless absolutely necessary
+- Do NOT redesign the public site
+- Do NOT perform large rewrites just for code style
+- Preserve all current public pages, article URLs, media, leads, admin workflows, and Vietnamese content
+- Prefer small targeted improvements over big refactors
+- If something is risky, document it instead of forcing a destructive change
+
+==================================================
+1) FINAL QA AND BUG FIX PASS
+==================================================
+
+Audit the entire project and fix remaining bugs, inconsistencies, fragile logic, and unfinished flows.
+
+Please test and improve:
+- homepage
+- article list page
+- article detail page
+- contact page
+- admin dashboard
+- article create/edit flow
+- media upload flow
+- watermark flow
+- lead capture flow
+- lead admin flow
+- Notion sync flow if enabled
+- Google Sheets sync flow if enabled
+- authentication/admin protection
+
+Fix:
+- broken states
+- incorrect links
+- missing fallbacks
+- inconsistent validation
+- broken empty states
+- silent failures
+- fragile edge cases
+- obvious UI inconsistencies
+- missing loading/error/success handling where necessary
+
+==================================================
+2) PUBLIC WEBSITE POLISH
+==================================================
+
+Polish the public-facing website without changing its design direction.
+
+Please improve:
+- spacing consistency
+- typography consistency
+- button consistency
+- card consistency
+- image rendering consistency
+- responsive behavior
+- article thumbnail appearance
+- article hero image appearance
+- contact form clarity
+- visual rhythm between sections
+
+Do NOT redesign the site.
+Only refine what already exists so it feels cleaner and more premium.
+
+Brand direction to preserve:
+- calm
+- trustworthy
+- professional
+- premium finance mentor
+- teal / dark teal accents used tastefully
+- Vietnamese personal brand tone
+
+==================================================
+3) ADMIN UI POLISH
+==================================================
+
+Polish the admin area so it feels coherent, clean, and easy to operate daily.
+
+Please improve:
+- navigation clarity
+- table readability
+- form spacing
+- input consistency
+- button hierarchy
+- dashboard card consistency
+- lead detail readability
+- article editor usability
+- media library clarity
+- status badge consistency
+- empty states and helper text where useful
+
+The admin should feel:
+- simple
+- premium
+- calm
+- practical
+- non-technical-user friendly
+
+Do NOT overcomplicate the admin.
+
+==================================================
+4) ARTICLE CMS FINAL CLEANUP
+==================================================
+
+Polish the article CMS for real publishing use.
+
+Please verify and improve:
+- title handling
+- slug handling
+- slug uniqueness checks
+- excerpt handling
+- content save/update flow
+- featured image selection
+- draft/published workflow
+- publish date clarity
+- preview behavior if available
+- safe handling of published article edits
+- prevention of accidental destructive actions
+
+Important:
+- preserve existing article URLs
+- warn before risky changes to published content if appropriate
+- make the publishing workflow feel confident and clean
+
+==================================================
+5) MEDIA / IMAGE FINAL CLEANUP
+==================================================
+
+Polish the media system and image behavior.
+
+Please verify and improve:
+- upload validation
+- upload error handling
+- image preview behavior
+- processed image rendering
+- watermark rendering consistency
+- alt text and caption editing UX
+- thumbnail consistency
+- fallback image behavior
+- replacement/update behavior where relevant
+- prevention of orphaned media references where possible
+
+Keep original images preserved.
+Keep processed display images optimized and consistent.
+
+==================================================
+6) LEAD SYSTEM FINAL CLEANUP
+==================================================
+
+Polish the lead capture and lead management experience.
+
+Please verify and improve:
+- form submission reliability
+- validation messages
+- Vietnamese-friendly success/error feedback
+- source tracking consistency
+- lead status updates
+- lead notes handling
+- lead search/filter usability
+- sync status visibility
+- graceful handling when Notion/Google Sheets sync fails
+
+Priority:
+- database save must remain the source of truth
+- sync failures must never lose lead data
+- lead admin view should feel clear and practical
+
+==================================================
+7) RESPONSIVE AND MOBILE CHECK
+==================================================
+
+Perform a responsive polish pass across public pages and admin where relevant.
+
+Please improve:
+- mobile spacing
+- tablet spacing
+- card stacking
+- form usability on mobile
+- button tap areas
+- article image scaling
+- table overflow handling in admin
+- layout stability on smaller screens
+
+Do not redesign layouts unless needed to prevent obvious breakage or poor usability.
+
+==================================================
+8) PERFORMANCE AND CLEANUP
+==================================================
+
+Make small practical performance and code cleanliness improvements without risky rewrites.
+
+Please improve where appropriate:
+- remove dead obvious code
+- remove duplicate small utilities if safe
+- reduce unnecessary re-renders or repeated fetches if obvious
+- ensure processed images are used appropriately
+- improve loading states if needed
+- improve perceived performance where possible
+
+Do NOT do major performance engineering unless clearly necessary.
+
+==================================================
+9) ERROR HANDLING AND SAFETY
+==================================================
+
+Standardize and polish final error handling.
+
+Please make sure:
+- admin receives meaningful feedback
+- users receive clear form feedback
+- upload failures are handled gracefully
+- sync failures are recorded clearly
+- missing env/config issues fail in understandable ways
+- dangerous actions have confirmation where appropriate
+- empty states are not confusing
+- failed optional features do not break core workflows
+
+==================================================
+10) FINAL CONSISTENCY PASS
+==================================================
+
+Do a final consistency pass across:
+- terminology
+- labels
+- status names
+- Vietnamese wording
+- button text
+- helper text
+- page titles
+- admin section naming
+- field naming
+- date display formatting
+- badges and chips
+- success/error/toast styles
+
+Make the whole system feel like one coherent product, not separate stitched parts.
+
+Use Vietnamese labels/messages in user-facing and admin-facing areas where appropriate.
+
+==================================================
+11) DOCUMENTATION FINALIZATION
+==================================================
+
+Review and finalize the project documentation.
+
+Please update or polish:
+- README_DEPLOY.md
+- MIGRATION_NOTES.md
+- ADMIN_SYSTEM_OVERVIEW.md if it exists
+
+Make sure the docs clearly explain:
+- current architecture
+- environment variables
+- database/storage status
+- media/watermark flow
+- lead flow
+- sync flow
+- admin structure
+- current limitations
+- what is ready for migration outside Replit
+- what still needs caution
+
+==================================================
+12) OUTPUT I EXPECT
+==================================================
+
+After completing this final polish pass, provide:
+
+1. A concise summary of bugs/issues fixed
+2. Public website polish summary
+3. Admin polish summary
+4. Article CMS polish summary
+5. Media/image/watermark polish summary
+6. Lead system polish summary
+7. Responsive/mobile polish summary
+8. Remaining known issues or limitations
+9. Final readiness assessment:
+   - content publishing readiness
+   - lead collection readiness
+   - admin usability readiness
+   - migration readiness outside Replit
+
+FINAL PRIORITY ORDER
+1. Keep the current website working
+2. Fix remaining bugs and weak points
+3. Make the site/admin feel polished and consistent
+4. Improve usability for real daily operation
+5. Keep everything safe, stable, and non-destructive
+6. Leave the project cleaner and more production-ready without major rewrites

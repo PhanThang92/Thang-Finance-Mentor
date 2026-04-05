@@ -164,20 +164,24 @@ function LoginScreen({ onLogin }: { onLogin: (key: string) => void }) {
             {err}
           </div>
         )}
-        <div style={{ marginBottom: "1rem" }}>
-          <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, display: "block", marginBottom: "6px" }}>Admin Key</label>
-          <input
-            type="password" value={key}
-            onChange={(e) => setKey(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && attempt()}
-            placeholder="••••••••••••••"
-            style={{ width: "100%", height: "42px", padding: "0 12px", borderRadius: "8px", border: `1px solid ${A.border}`, fontSize: "14px", outline: "none", boxSizing: "border-box", background: A.bg }}
-          />
-        </div>
-        <button disabled={busy} onClick={attempt}
-          style={{ width: "100%", height: "42px", borderRadius: "8px", border: "none", cursor: busy ? "not-allowed" : "pointer", fontSize: "14px", fontWeight: 600, background: `linear-gradient(140deg, #22917f, #1a7868)`, color: "#fff", opacity: busy ? 0.7 : 1 }}>
-          {busy ? "Đang kiểm tra..." : "Đăng nhập"}
-        </button>
+        <form onSubmit={(e) => { e.preventDefault(); attempt(); }} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          {/* Hidden username satisfies browser password-manager heuristic */}
+          <input type="text" name="username" value="admin" readOnly autoComplete="username" style={{ display: "none" }} aria-hidden="true" />
+          <div>
+            <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, display: "block", marginBottom: "6px" }}>Admin Key</label>
+            <input
+              type="password" value={key}
+              onChange={(e) => setKey(e.target.value)}
+              placeholder="••••••••••••••"
+              autoComplete="current-password"
+              style={{ width: "100%", height: "42px", padding: "0 12px", borderRadius: "8px", border: `1px solid ${A.border}`, fontSize: "14px", outline: "none", boxSizing: "border-box", background: A.bg }}
+            />
+          </div>
+          <button type="submit" disabled={busy}
+            style={{ width: "100%", height: "42px", borderRadius: "8px", border: "none", cursor: busy ? "not-allowed" : "pointer", fontSize: "14px", fontWeight: 600, background: `linear-gradient(140deg, #22917f, #1a7868)`, color: "#fff", opacity: busy ? 0.7 : 1 }}>
+            {busy ? "Đang kiểm tra..." : "Đăng nhập"}
+          </button>
+        </form>
       </div>
     </div>
   );
