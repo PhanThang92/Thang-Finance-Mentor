@@ -166,37 +166,9 @@ export function Footer() {
             <div aria-hidden="true" style={{ width: "2.25rem", height: "1px", background: "rgba(255,255,255,0.10)", marginBottom: "1.125rem" }} />
 
             {/* Brand description */}
-            <p style={{ fontSize: "13px", fontWeight: 300, letterSpacing: "0.004em", lineHeight: 1.92, color: "rgba(255,255,255,0.40)", marginBottom: "2rem" }}>
+            <p style={{ fontSize: "13px", fontWeight: 300, letterSpacing: "0.004em", lineHeight: 1.92, color: "rgba(255,255,255,0.40)" }}>
               {siteConfig.footerDescription}
             </p>
-
-            {/* Social + contact */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
-              <a href={siteConfig.youtubeUrl} target="_blank" rel="noopener noreferrer"
-                style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", textDecoration: "none", color: LINK_RESTING, fontSize: "12.5px", fontWeight: 400, letterSpacing: "0.006em", transition: "color 0.20s ease" }}
-                onMouseEnter={onIn} onMouseLeave={onOut}>
-                <SiYoutube size={12} style={{ flexShrink: 0, opacity: 0.78 }} />
-                <span>YouTube</span>
-                <ArrowUpRight size={10} style={{ opacity: 0.38, marginLeft: "1px" }} />
-              </a>
-              <a href={siteConfig.facebookUrl} target="_blank" rel="noopener noreferrer"
-                style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", textDecoration: "none", color: LINK_RESTING, fontSize: "12.5px", fontWeight: 400, letterSpacing: "0.006em", transition: "color 0.20s ease" }}
-                onMouseEnter={onIn} onMouseLeave={onOut}>
-                <SiFacebook size={12} style={{ flexShrink: 0, opacity: 0.78 }} />
-                <span>Facebook</span>
-                <ArrowUpRight size={10} style={{ opacity: 0.38, marginLeft: "1px" }} />
-              </a>
-              <a href={`mailto:${siteConfig.contactEmail}`}
-                style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", textDecoration: "none", color: LINK_RESTING, fontSize: "12.5px", fontWeight: 400, letterSpacing: "0.004em", transition: "color 0.20s ease" }}
-                onMouseEnter={onIn} onMouseLeave={onOut}>
-                <Mail size={12} style={{ flexShrink: 0, opacity: 0.78 }} />
-                <span>{siteConfig.contactEmail}</span>
-              </a>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", color: "rgba(255,255,255,0.24)", fontSize: "12.5px", fontWeight: 400, letterSpacing: "0.006em" }}>
-                <MapPin size={12} style={{ flexShrink: 0, opacity: 0.65 }} />
-                <span>Hà Nội, Việt Nam</span>
-              </div>
-            </div>
           </div>
 
           {/* ── Col 2: Liên kết nhanh ────────────────────────────── */}

@@ -1,0 +1,79 @@
+Refactor the footer to remove duplicated contact information and make the information architecture cleaner and more premium.
+
+IMPORTANT:
+- Keep the current footer visual style, colors, spacing, typography, and overall layout.
+- Do NOT redesign the whole footer.
+- Only improve structure, clarity, and duplication handling.
+- Keep the footer aligned with the Phan Van Thang SWC brand: calm, premium, strategic, clean.
+
+PROBLEM:
+The footer currently duplicates contact information.
+The left brand column already shows:
+- YouTube
+- Facebook
+- email
+- location
+
+And the right “Kết nối” column repeats nearly the same items again.
+
+This makes the footer feel redundant, heavier, and less elegant.
+
+GOAL:
+Remove duplication and give each footer column a clear role.
+
+PLEASE MAKE THESE CHANGES:
+
+1. BRAND COLUMN
+Keep this column focused only on brand identity:
+- logo
+- brand name
+- short descriptor
+- short brand statement / positioning text
+
+Remove these items from the left brand column:
+- YouTube
+- Facebook
+- email
+- location
+
+Do not turn the brand column into a contact list.
+
+2. KẾT NỐI COLUMN
+Keep all contact/social items only here:
+- Kênh YouTube
+- Trang Facebook
+- email
+- Hà Nội, Việt Nam
+- Tham gia cộng đồng
+
+This column should become the single clear place for contact and connection.
+
+3. OVERALL FOOTER STRUCTURE
+Keep the footer structured like this:
+- Brand / intro
+- Liên kết nhanh
+- Kiến thức
+- Hệ sinh thái
+- Kết nối
+
+Each column should have a distinct purpose with no repeated content.
+
+4. LAYOUT POLISH
+After removing the duplicated contact items from the left column:
+- rebalance spacing if needed
+- make sure the brand column still feels visually strong
+- improve line lengths and white space
+- keep the footer breathable and premium
+- ensure desktop and mobile still look balanced
+
+5. FINAL QUALITY CHECK
+- no duplicated social/contact info across columns
+- footer feels cleaner and more intentional
+- Kết nối becomes the only contact-focused column
+- brand column remains elegant and concise
+- keep everything native to the current Thang SWC website
+
+Then:
+- summarize exactly what was removed from the brand column
+- confirm what remains in the Kết nối column
+- mention any small spacing or alignment adjustments made
