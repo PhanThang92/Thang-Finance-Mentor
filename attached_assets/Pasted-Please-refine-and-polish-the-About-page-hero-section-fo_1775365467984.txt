@@ -1,0 +1,265 @@
+Please refine and polish the About page hero section for “Phan Van Thang SWC” so it feels significantly more premium, editorial, balanced, and visually confident.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- Do NOT redesign the entire About page.
+- Focus only on the hero section.
+- Preserve the current premium brand direction: calm, trustworthy, editorial, dark teal / soft teal / charcoal palette.
+- Do NOT make the hero flashy, noisy, or overly dramatic.
+
+GOAL:
+Upgrade the About page hero so it becomes a stronger opening section for the page.
+
+The hero should feel:
+- premium
+- calm
+- intentional
+- visually balanced
+- personal brand oriented
+- mature
+- editorial
+- high-trust
+
+It should no longer feel like a standard two-column template with text and image placed side by side without enough refinement.
+
+================================
+1. HERO ROLE
+================================
+
+The hero should clearly do these things:
+- introduce the personal brand
+- establish tone and trust
+- present the main positioning
+- make the page feel elevated from the first screen
+- create a strong visual anchor for the About page
+
+Visible Vietnamese content can remain based on:
+
+Eyebrow:
+Giới thiệu
+
+Heading:
+Phan Van Thang SWC
+
+Subheading:
+Chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn.
+
+Supporting text:
+Không theo đuổi những lời hứa ngắn hạn. Ưu tiên sự rõ ràng, nền tảng vững và hành trình đi đường dài.
+
+Optional buttons:
+- Xem bài viết
+- Liên hệ kết nối
+
+Requirements:
+- the section should feel like a confident opening statement
+- text should not feel too small or too generic
+- image should support the identity without overpowering the text
+
+================================
+2. LAYOUT BALANCE
+================================
+
+Refine the hero layout so it feels more intentional.
+
+Please review and improve:
+- text column width
+- image column width
+- spacing between columns
+- vertical alignment
+- relationship between heading, body text, and portrait
+- how the content sits inside the overall container
+
+Requirements:
+- avoid a flat 50/50 split if it feels generic
+- use a more refined proportion if needed
+- ensure the text block has enough visual weight
+- ensure the portrait does not float awkwardly
+- hero should look balanced on wide screens
+
+If needed:
+- slightly enlarge the text zone
+- slightly reduce or reframe the portrait zone
+- create a more premium asymmetry
+
+================================
+3. TYPOGRAPHY POLISH
+================================
+
+Refine the typography inside the hero.
+
+Please improve:
+- eyebrow styling
+- heading size and line breaks
+- heading weight
+- subheading readability
+- supporting text hierarchy
+- spacing between each text layer
+
+Requirements:
+- heading should feel strong and premium
+- avoid awkward line breaks
+- subheading should feel readable and elegant
+- supporting text should sit clearly below, with lower emphasis
+- all text should be easy to read in Vietnamese
+
+The hero typography should feel more editorial and less like default landing page copy.
+
+================================
+4. PORTRAIT TREATMENT
+================================
+
+Refine the portrait presentation.
+
+Please improve:
+- portrait frame size and proportions
+- corner radius
+- shadow / depth
+- background treatment around the portrait
+- integration with the hero background
+- portrait positioning within the layout
+
+Requirements:
+- portrait should feel premium, calm, and grounded
+- avoid making it look like a generic profile card
+- avoid a floating image that feels disconnected from the page
+- the portrait should contribute to trust and presence
+- the portrait should feel curated, not inserted
+
+If needed:
+- use a refined image frame
+- add subtle layered background treatment
+- improve portrait padding / visual anchoring
+- add a more intentional relationship between portrait and surrounding background pattern
+
+================================
+5. BACKGROUND / DEPTH
+================================
+
+Refine the hero background and depth treatment.
+
+Current brand direction allows:
+- dark teal background
+- subtle grid / chart / financial texture
+- soft circular line patterns
+- calm gradient depth
+
+Requirements:
+- make the background feel premium and intentional
+- reduce any sense of a generic decorative pattern
+- improve how the background supports the portrait and text
+- keep all effects subtle
+- avoid noise or visual clutter
+
+The background should create atmosphere, not compete with content.
+
+================================
+6. VISUAL ANCHOR / COMPOSITION
+================================
+
+Strengthen the overall composition of the hero.
+
+Possible improvements:
+- better alignment between eyebrow and heading block
+- stronger visual anchor behind the portrait
+- more intentional empty space
+- cleaner rhythm between left text and right image
+- subtle compositional asymmetry
+
+Requirements:
+- hero should feel composed, not simply assembled
+- there should be a clear focal flow:
+  eyebrow → heading → subheading → supporting line → portrait
+- layout should feel stable and premium
+
+================================
+7. BUTTON / CTA POLISH
+================================
+
+If the hero includes CTA buttons, polish them.
+
+Visible Vietnamese examples:
+- Xem bài viết
+- Liên hệ kết nối
+
+Requirements:
+- spacing between buttons and text should feel refined
+- button hierarchy should be clear
+- buttons should not overpower the hero
+- premium, calm, non-salesy styling
+- on mobile, stacking should remain elegant
+
+If CTA buttons are not currently needed, do not force them.
+
+================================
+8. MICRODETAILS
+================================
+
+Improve subtle details that make the hero feel more high-end.
+
+Examples:
+- eyebrow accent line
+- text max-width
+- portrait shadow softness
+- spacing under heading
+- slight overlay gradients
+- image-to-background contrast
+- alignment edges
+- soft visual layers
+
+Requirements:
+- keep microdetails restrained
+- do not decorate excessively
+- all details should support refinement and polish
+
+================================
+9. MOBILE HERO POLISH
+================================
+
+Carefully refine the hero for mobile and tablet.
+
+Please review:
+- heading wrap
+- portrait scaling
+- spacing between text and image
+- padding above and below the hero
+- CTA stacking
+- readability of subheading/supporting text
+
+Requirements:
+- mobile hero should still feel premium
+- avoid giant portrait dominating the screen
+- avoid cramped text
+- keep a strong opening impression even on smaller screens
+
+================================
+10. REMOVE TEMPLATE FEEL
+================================
+
+Actively reduce anything that makes the hero feel like:
+- a standard template
+- a default two-column section
+- a generic “about us” hero
+- something too evenly distributed without intention
+
+Increase:
+- editorial composition
+- asymmetry where appropriate
+- whitespace discipline
+- visual confidence
+- premium restraint
+
+================================
+11. FINAL EXPECTED RESULT
+================================
+
+After refinement, the About page hero should:
+- feel more premium immediately
+- create stronger trust and presence
+- look more editorial and curated
+- have better text/image balance
+- feel less templated
+- set a better tone for the rest of the About page
+
+Please implement this hero-only polish directly on the current About page.

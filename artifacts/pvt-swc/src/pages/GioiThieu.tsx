@@ -29,17 +29,48 @@ function GioiThieuHero() {
     <section
       className="relative overflow-hidden"
       style={{
-        background: "linear-gradient(152deg, #0d2622 0%, #0e2924 50%, #091c18 100%)",
-        paddingTop:    "clamp(6rem, 15vw, 9.5rem)",
-        paddingBottom: "clamp(5rem, 12vw, 8rem)",
+        background: "linear-gradient(148deg, #0c2420 0%, #0e2924 55%, #081b17 100%)",
+        paddingTop:    "clamp(6.5rem, 15vw, 10rem)",
+        paddingBottom: "clamp(5.5rem, 12vw, 8.5rem)",
       }}
     >
+      {/* Structural grid texture */}
       <BackgroundDecor />
 
-      {/* Subtle vignette at bottom edge */}
+      {/* Right-side atmospheric glow — grounds the portrait */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          top: "-5%", right: "-8%",
+          width: "58%", height: "115%",
+          background: "radial-gradient(ellipse at 60% 38%, rgba(34,145,127,0.10) 0%, rgba(20,100,88,0.04) 42%, transparent 70%)",
+          filter: "blur(40px)",
+        }}
+      />
+
+      {/* Top-left ambient — balances the glow */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          top: 0, left: 0,
+          width: "42%", height: "55%",
+          background: "radial-gradient(ellipse at 10% 10%, rgba(26,118,100,0.07) 0%, transparent 62%)",
+        }}
+      />
+
+      {/* Bottom vignette / section close */}
       <div
         className="absolute bottom-0 left-0 right-0 pointer-events-none"
-        style={{ height: "120px", background: "linear-gradient(to bottom, transparent, rgba(9,28,24,0.55))" }}
+        style={{ height: "100px", background: "linear-gradient(to bottom, transparent, rgba(8,27,23,0.52))" }}
+      />
+
+      {/* Bottom hairline accent */}
+      <div
+        className="absolute bottom-0 left-0 right-0 pointer-events-none"
+        style={{
+          height: "1px",
+          background: "linear-gradient(90deg, transparent 0%, rgba(52,160,140,0.16) 30%, rgba(52,160,140,0.16) 70%, transparent 100%)",
+        }}
       />
 
       <div className="max-w-5xl mx-auto px-5 sm:px-8 relative z-10">
@@ -47,154 +78,203 @@ function GioiThieuHero() {
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="grid grid-cols-1 lg:grid-cols-[1fr_272px] gap-10 lg:gap-16 items-center"
+          className="grid grid-cols-1 lg:grid-cols-[1fr_308px] gap-10 lg:gap-20 items-center"
         >
 
           {/* ── Text column ── */}
           <div>
             {/* Eyebrow */}
-            <motion.div variants={fadeUp} className="flex items-center gap-3 mb-8">
-              <div style={{ width: "1.875rem", height: "0.5px", background: "rgba(200,158,76,0.60)", flexShrink: 0 }} />
+            <motion.div variants={fadeUp} className="flex items-center gap-3" style={{ marginBottom: "1.75rem" }}>
+              <div style={{
+                width: "2rem", height: "0.5px",
+                background: "linear-gradient(to right, rgba(200,158,76,0.20), rgba(200,158,76,0.65))",
+                flexShrink: 0,
+              }} />
               <span style={{
-                fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.26em",
-                textTransform: "uppercase", color: "rgba(200,158,76,0.76)",
+                fontSize: "9px", fontWeight: 600,
+                letterSpacing: "0.28em", textTransform: "uppercase",
+                color: "rgba(200,158,76,0.72)",
               }}>
                 {aboutHero.eyebrow}
               </span>
             </motion.div>
 
-            {/* H1 */}
+            {/* H1 — strong, premium, clear */}
             <motion.h1
               variants={fadeUp}
               className="text-white"
               style={{
-                fontSize: "clamp(2.1rem, 5.2vw, 3.4rem)",
+                fontSize: "clamp(2.25rem, 5.6vw, 3.6rem)",
                 fontWeight: 700,
-                lineHeight: 1.12,
-                letterSpacing: "-0.036em",
-                marginBottom: "1.625rem",
+                lineHeight: 1.10,
+                letterSpacing: "-0.038em",
+                marginBottom: "1.875rem",
+                maxWidth: "22rem",
               }}
             >
               {aboutHero.heading}
             </motion.h1>
 
-            {/* Primary subheading */}
+            {/* Primary subheading — editorial lead */}
             <motion.p
               variants={fadeUp}
               style={{
-                fontSize: "16.5px",
+                fontSize: "15.5px",
                 fontWeight: 400,
-                color: "rgba(255,255,255,0.66)",
-                lineHeight: 1.78,
-                maxWidth: "32rem",
-                marginBottom: "1rem",
+                color: "rgba(255,255,255,0.62)",
+                lineHeight: 1.86,
+                maxWidth: "30rem",
+                marginBottom: "1.125rem",
               }}
             >
               {aboutHero.subheading}
             </motion.p>
 
-            {/* Supporting text — quieter */}
+            {/* Supporting text — stepped down, quiet */}
             <motion.p
               variants={fadeUp}
               style={{
-                fontSize: "13.5px",
+                fontSize: "13px",
                 fontWeight: 400,
-                color: "rgba(255,255,255,0.38)",
-                lineHeight: 1.9,
-                maxWidth: "28rem",
-                marginBottom: "2.25rem",
+                color: "rgba(255,255,255,0.34)",
+                lineHeight: 1.92,
+                maxWidth: "26rem",
+                marginBottom: "2.5rem",
+                letterSpacing: "0.005em",
               }}
             >
               {aboutHero.supportingText}
             </motion.p>
 
-            {/* CTA */}
-            <motion.div variants={fadeUp} className="flex items-center gap-4 flex-wrap">
+            {/* CTA buttons */}
+            <motion.div variants={fadeUp} className="flex items-center gap-3 flex-wrap">
+              {/* Primary */}
               <a
                 href="/tin-tuc"
                 className="inline-flex items-center gap-2 rounded-full text-white"
                 style={{
                   height: "2.875rem",
                   padding: "0 1.875rem",
-                  fontSize: "13px",
+                  fontSize: "12.5px",
                   fontWeight: 600,
-                  letterSpacing: "0.025em",
+                  letterSpacing: "0.03em",
                   textDecoration: "none",
                   background: "linear-gradient(140deg, #22917f 0%, #1a7868 100%)",
-                  boxShadow: "0 4px 20px rgba(20,115,98,0.28), inset 0 1px 0 rgba(255,255,255,0.14)",
-                  transition: "box-shadow 0.22s ease, transform 0.22s ease",
+                  boxShadow: "0 4px 20px rgba(20,115,98,0.26), inset 0 1px 0 rgba(255,255,255,0.14)",
+                  transition: "box-shadow 0.24s ease, transform 0.24s ease",
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.boxShadow = "0 6px 24px rgba(20,115,98,0.40), inset 0 1px 0 rgba(255,255,255,0.16)";
+                  el.style.boxShadow = "0 7px 26px rgba(20,115,98,0.40), inset 0 1px 0 rgba(255,255,255,0.16)";
                   el.style.transform = "translateY(-1px)";
                 }}
                 onMouseLeave={(e) => {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.boxShadow = "0 4px 20px rgba(20,115,98,0.28), inset 0 1px 0 rgba(255,255,255,0.14)";
+                  el.style.boxShadow = "0 4px 20px rgba(20,115,98,0.26), inset 0 1px 0 rgba(255,255,255,0.14)";
                   el.style.transform = "translateY(0)";
                 }}
               >
-                Khám phá bài viết
-                <ArrowRight size={13} strokeWidth={2} />
+                Xem bài viết
+                <ArrowRight size={12} strokeWidth={2.2} />
               </a>
 
+              {/* Secondary — frosted glass */}
               <a
-                href="/gioi-thieu#dinh-huong"
+                href="/#lien-he"
+                className="inline-flex items-center gap-2 rounded-full"
                 style={{
+                  height: "2.875rem",
+                  padding: "0 1.625rem",
                   fontSize: "12.5px",
-                  fontWeight: 400,
-                  color: "rgba(255,255,255,0.44)",
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.68)",
                   textDecoration: "none",
-                  letterSpacing: "0.01em",
-                  transition: "color 0.2s ease",
+                  background: "rgba(255,255,255,0.048)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  backdropFilter: "blur(16px)",
+                  transition: "background 0.24s ease, border-color 0.24s ease, color 0.24s ease",
                 }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.68)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.44)"; }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = "rgba(255,255,255,0.075)";
+                  el.style.borderColor = "rgba(255,255,255,0.20)";
+                  el.style.color = "rgba(255,255,255,0.86)";
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.background = "rgba(255,255,255,0.048)";
+                  el.style.borderColor = "rgba(255,255,255,0.12)";
+                  el.style.color = "rgba(255,255,255,0.68)";
+                }}
               >
-                Tìm hiểu định hướng
+                Liên hệ kết nối
               </a>
             </motion.div>
 
-            {/* Trust bar */}
-            <motion.div
-              variants={fadeUp}
-              className="flex items-center gap-5 mt-8 flex-wrap"
-            >
-              {[
-                { n: "7+", label: "năm đầu tư dài hạn" },
-                { n: "5+", label: "năm công nghệ" },
-              ].map((s, i) => (
-                <React.Fragment key={s.label}>
-                  {i > 0 && (
-                    <div style={{ width: "1px", height: "24px", background: "rgba(255,255,255,0.10)", flexShrink: 0 }} />
-                  )}
-                  <div className="flex items-baseline gap-1.5">
-                    <span style={{ fontSize: "15px", fontWeight: 600, color: "rgba(255,255,255,0.68)", letterSpacing: "-0.02em" }}>
-                      {s.n}
-                    </span>
-                    <span style={{ fontSize: "11px", fontWeight: 400, color: "rgba(255,255,255,0.32)", letterSpacing: "0.04em" }}>
-                      {s.label}
-                    </span>
-                  </div>
-                </React.Fragment>
-              ))}
+            {/* Trust bar — separated by a hairline */}
+            <motion.div variants={fadeUp} style={{ marginTop: "2.5rem" }}>
+              <div style={{
+                height: "1px",
+                width: "100%",
+                maxWidth: "20rem",
+                background: "rgba(255,255,255,0.07)",
+                marginBottom: "1.25rem",
+              }} />
+              <div className="flex items-center gap-6 flex-wrap">
+                {[
+                  { n: "7+", label: "năm đầu tư dài hạn" },
+                  { n: "5+", label: "năm công nghệ" },
+                ].map((s, i) => (
+                  <React.Fragment key={s.label}>
+                    {i > 0 && (
+                      <div style={{ width: "1px", height: "22px", background: "rgba(255,255,255,0.09)", flexShrink: 0 }} />
+                    )}
+                    <div className="flex items-baseline gap-1.5">
+                      <span style={{
+                        fontSize: "14.5px", fontWeight: 600,
+                        color: "rgba(255,255,255,0.60)", letterSpacing: "-0.022em",
+                      }}>
+                        {s.n}
+                      </span>
+                      <span style={{
+                        fontSize: "10.5px", fontWeight: 400,
+                        color: "rgba(255,255,255,0.28)", letterSpacing: "0.03em",
+                      }}>
+                        {s.label}
+                      </span>
+                    </div>
+                  </React.Fragment>
+                ))}
+              </div>
             </motion.div>
           </div>
 
-          {/* ── Portrait — single use ── */}
+          {/* ── Portrait — single use, double-frame treatment ── */}
           <motion.div
             variants={fadeUp}
             className="flex justify-center lg:justify-end"
+            style={{ position: "relative" }}
           >
-            <div style={{ width: "100%", maxWidth: "260px" }}>
+            {/* Outer frosted ring — premium frame */}
+            <div
+              style={{
+                padding: "5px",
+                borderRadius: "22px",
+                background: "rgba(255,255,255,0.025)",
+                border: "1px solid rgba(255,255,255,0.09)",
+                boxShadow: "0 32px 80px rgba(0,0,0,0.50), 0 8px 24px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.06)",
+                width: "100%",
+                maxWidth: "296px",
+              }}
+            >
+              {/* Inner portrait card */}
               <div
-                className="relative overflow-hidden w-full"
                 style={{
-                  borderRadius: "1.75rem",
+                  borderRadius: "18px",
+                  overflow: "hidden",
                   aspectRatio: "4/5",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                  boxShadow: "0 24px 72px rgba(0,0,0,0.38), 0 4px 16px rgba(0,0,0,0.18)",
+                  position: "relative",
+                  background: "#0a2420",
                 }}
               >
                 <img
@@ -203,32 +283,39 @@ function GioiThieuHero() {
                   style={{
                     width: "100%", height: "100%",
                     objectFit: "cover",
-                    objectPosition: "60% 10%",
-                    filter: "brightness(1.08) contrast(1.05) saturate(0.93)",
+                    objectPosition: "60% 8%",
+                    filter: "brightness(1.07) contrast(1.05) saturate(0.92)",
                     display: "block",
                   }}
                 />
 
-                {/* Gradient overlays */}
+                {/* Bottom gradient — gives name badge contrast */}
                 <div className="absolute inset-0 pointer-events-none" style={{
-                  background: "linear-gradient(to top, rgba(9,28,24,0.82) 0%, rgba(9,28,24,0.20) 38%, transparent 58%)",
+                  background: "linear-gradient(to top, rgba(8,27,23,0.88) 0%, rgba(8,27,23,0.24) 32%, transparent 55%)",
                 }} />
+
+                {/* Left-edge gradient — blends portrait into dark bg */}
                 <div className="absolute inset-0 pointer-events-none" style={{
-                  background: "linear-gradient(to right, rgba(13,38,34,0.28) 0%, transparent 48%)",
+                  background: "linear-gradient(to right, rgba(12,36,32,0.30) 0%, transparent 40%)",
                 }} />
 
                 {/* Name badge */}
-                <div className="absolute bottom-0 left-0 right-0 px-5 pb-5">
-                  <div style={{ height: "0.5px", background: "rgba(255,255,255,0.09)", marginBottom: "12px" }} />
+                <div className="absolute bottom-0 left-0 right-0" style={{ padding: "0 1.375rem 1.375rem" }}>
+                  <div style={{ height: "0.5px", background: "rgba(255,255,255,0.10)", marginBottom: "0.75rem" }} />
                   <p style={{
-                    fontSize: "12.5px", fontWeight: 600,
-                    color: "rgba(255,255,255,0.86)", letterSpacing: "0.01em", lineHeight: 1.3,
+                    fontSize: "12px", fontWeight: 600,
+                    color: "rgba(255,255,255,0.88)",
+                    letterSpacing: "0.012em",
+                    lineHeight: 1.3,
+                    marginBottom: "3px",
                   }}>
                     Phan Văn Thắng
                   </p>
                   <p style={{
-                    fontSize: "10px", fontWeight: 400,
-                    color: "rgba(255,255,255,0.40)", letterSpacing: "0.06em", marginTop: "3px",
+                    fontSize: "9.5px", fontWeight: 400,
+                    color: "rgba(255,255,255,0.36)",
+                    letterSpacing: "0.07em",
+                    textTransform: "uppercase",
                   }}>
                     Mentor tài chính dài hạn
                   </p>
