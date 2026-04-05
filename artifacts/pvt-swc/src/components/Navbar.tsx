@@ -125,8 +125,7 @@ export function Navbar() {
         })),
       };
     }
-    if (item.path === "/" && isHome)         return { name: item.name, href: "#trang-chu" };
-    if (item.path === "/#lien-he" && isHome) return { name: item.name, href: "#lien-he" };
+    if (item.path === "/" && isHome) return { name: item.name, href: "#trang-chu" };
     return { name: item.name, href: `${homeBase}${item.path ?? "/"}` };
   });
 

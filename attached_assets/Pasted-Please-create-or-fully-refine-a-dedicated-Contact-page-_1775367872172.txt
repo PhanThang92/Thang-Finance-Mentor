@@ -1,0 +1,397 @@
+Please create or fully refine a dedicated Contact page for “Phan Van Thang SWC”.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- This Contact page should be part of the public website.
+- It must work together with the existing floating contact widget, not replace it.
+- The page should feel premium, calm, trustworthy, and aligned with the current site design system.
+- Do NOT make it feel like a generic support page or a cheap lead-gen landing page.
+
+GOAL:
+Create a dedicated Contact page that serves as the official, trust-building place for users to connect.
+
+The floating widget is for quick contact.
+The Contact page should be for:
+- more intentional contact
+- form submission
+- choosing the right contact channel
+- connecting to CRM / lead capture
+- providing a more complete and trustworthy contact experience
+
+This page should help users understand:
+- how they can contact the brand
+- which channel fits which need
+- how to leave information properly
+- what happens after they submit a form
+
+================================
+1. PAGE PURPOSE
+================================
+
+This page should feel like:
+- an official connection point
+- a trust-building page
+- a calm and premium contact experience
+- a bridge between content and relationship
+
+It should NOT feel like:
+- a generic support center
+- a cluttered contact info dump
+- a noisy sales funnel page
+
+================================
+2. ROUTE
+================================
+
+Use or refine the route:
+
+`/lien-he`
+
+Make sure:
+- navbar “Liên hệ” points here
+- footer “Liên hệ” points here
+- relevant CTA links can also point here when appropriate
+
+================================
+3. PAGE STRUCTURE
+================================
+
+Build the Contact page with this structure:
+
+A. Page hero
+B. Main contact channel cards
+C. Contact / consultation form
+D. “Kênh nào phù hợp?” guidance section
+E. Optional trust / expectation note
+F. Final CTA block
+G. Footer
+
+Keep the page clean, structured, and easy to scan.
+
+================================
+4. HERO SECTION
+================================
+
+Create a refined hero section.
+
+Visible Vietnamese text:
+
+Eyebrow:
+Liên hệ
+
+Heading:
+Kết nối theo cách phù hợp với bạn
+
+Subheading:
+Nếu bạn muốn trao đổi thêm về nội dung, định hướng phù hợp hoặc các hình thức kết nối, đây là nơi thuận tiện để bắt đầu.
+
+Optional supporting text:
+Chọn kênh liên hệ nhanh hoặc để lại thông tin để tôi có thể phản hồi theo cách phù hợp hơn.
+
+Requirements:
+- premium spacing
+- not too tall
+- strong readability
+- consistent with About / Articles page hero style
+- calm, editorial, trustworthy
+
+================================
+5. MAIN CONTACT CHANNELS
+================================
+
+Create a section for the 3 main direct contact channels.
+
+IMPORTANT:
+These contact channels should be loaded from the existing database-driven contact channel system if already implemented.
+Do NOT hardcode them if the DB structure already exists.
+
+Display these channel types:
+- Gọi điện
+- Chat Zalo
+- Telegram
+
+For each card, show:
+- icon
+- label
+- short description
+- action button
+
+Visible Vietnamese content examples:
+
+Card 1:
+Title:
+Gọi điện
+Description:
+Phù hợp khi bạn muốn trao đổi nhanh, trực tiếp và rõ vấn đề.
+Button:
+Gọi ngay
+
+Card 2:
+Title:
+Chat Zalo
+Description:
+Phù hợp khi bạn muốn nhắn tin, gửi thông tin ngắn hoặc kết nối thuận tiện trên điện thoại.
+Button:
+Mở Zalo
+
+Card 3:
+Title:
+Telegram
+Description:
+Phù hợp khi bạn muốn theo dõi trao đổi hoặc kết nối qua Telegram.
+Button:
+Mở Telegram
+
+Requirements:
+- cards should feel premium and clean
+- do not make them too flashy
+- use the DB-configured URLs/values
+- support enabled/disabled states cleanly
+- hide channels that are disabled in DB
+- keep layout responsive
+
+================================
+6. CONTACT FORM
+================================
+
+Add a serious but lightweight contact form.
+
+Visible Vietnamese text:
+
+Section heading:
+Để lại thông tin để kết nối
+
+Section description:
+Nếu bạn muốn chia sẻ rõ hơn nhu cầu hoặc để tôi phản hồi theo cách phù hợp, hãy để lại thông tin tại đây.
+
+Fields:
+- Họ và tên
+- Email
+- Số điện thoại
+- Nội dung quan tâm
+- Ghi chú
+
+Optional select/dropdown for “Nội dung quan tâm”:
+- Tài chính cá nhân
+- Đầu tư dài hạn
+- Tư duy tích sản
+- Cộng đồng
+- Sản phẩm / dịch vụ
+- Khác
+
+Buttons:
+- Gửi thông tin
+or
+- Gửi liên hệ
+
+Success states:
+- Cảm ơn bạn, thông tin đã được ghi nhận.
+- Tôi sẽ phản hồi theo cách phù hợp trong thời gian hợp lý.
+
+Error states:
+- Có lỗi xảy ra, vui lòng thử lại.
+- Vui lòng kiểm tra lại thông tin.
+
+Requirements:
+- connect this form to the current lead/CRM system if already implemented
+- keep validation clear
+- do not ask for too much information
+- keep the form premium and calm
+- make desktop and mobile layout polished
+
+================================
+7. “KÊNH NÀO PHÙ HỢP?” GUIDANCE SECTION
+================================
+
+Add a short guidance section to help people choose the right channel.
+
+Visible Vietnamese text:
+
+Eyebrow:
+Chọn kênh phù hợp
+
+Heading:
+Mỗi cách liên hệ sẽ phù hợp với một nhu cầu khác nhau
+
+Items:
+
+1.
+Title:
+Gọi điện
+Description:
+Phù hợp khi cần trao đổi nhanh, trực tiếp và rõ ngay vấn đề chính.
+
+2.
+Title:
+Zalo
+Description:
+Phù hợp cho nhắn tin ngắn, gửi thông tin nhanh và kết nối thuận tiện trên điện thoại.
+
+3.
+Title:
+Telegram
+Description:
+Phù hợp khi bạn muốn trao đổi qua Telegram hoặc theo dõi liên hệ trên nền tảng này.
+
+4.
+Title:
+Form liên hệ
+Description:
+Phù hợp khi bạn muốn để lại thông tin đầy đủ để được phản hồi sau.
+
+Requirements:
+- this section should be easy to scan
+- card/list/check format is acceptable
+- helps reduce friction and confusion
+- should feel useful, not redundant
+
+================================
+8. TRUST / EXPECTATION NOTE
+================================
+
+Add a short note that sets expectations politely.
+
+Visible Vietnamese text example:
+
+Heading:
+Một cách kết nối rõ ràng và tôn trọng thời gian của nhau
+
+Paragraph:
+Tôi ưu tiên những cuộc trao đổi rõ mục tiêu, phù hợp bối cảnh và mang lại giá trị thực tế hơn. Nếu bạn để lại thông tin, tôi sẽ phản hồi theo cách phù hợp trong thời gian hợp lý.
+
+Requirements:
+- keep tone warm, calm, mature
+- no exaggerated promises
+- this should increase trust
+
+================================
+9. FINAL CTA BLOCK
+================================
+
+Add a final CTA block near the bottom.
+
+Visible Vietnamese text:
+
+Heading:
+Bạn cũng có thể bắt đầu từ nội dung phù hợp
+
+Subtext:
+Khám phá thêm bài viết, video và các chủ đề được chọn lọc để hiểu rõ hơn trước khi kết nối.
+
+Buttons:
+- Xem bài viết
+- Xem video
+- Tham gia cộng đồng
+
+Requirements:
+- this should connect Contact page back to the content ecosystem
+- premium and calm
+- not overly salesy
+
+================================
+10. DESIGN DIRECTION
+================================
+
+The Contact page must match the current site design system:
+- premium
+- calm
+- trustworthy
+- editorial
+- dark teal / soft teal / off-white / charcoal
+- refined typography
+- subtle shadows
+- clean spacing
+- personal-brand oriented
+
+Avoid:
+- generic support page styling
+- bright conversion page colors
+- cluttered forms
+- template-looking card grids
+
+================================
+11. DATABASE / INTEGRATION REQUIREMENTS
+================================
+
+Please connect the Contact page properly to existing systems where available:
+
+A. Contact channels
+- load from the database-driven contact channel system
+- respect enabled/disabled states
+- respect display order if useful
+
+B. Contact form
+- connect to current lead form / CRM system if already implemented
+- store source info such as:
+  - source_page = contact
+  - source_section = contact_form
+  - form_type = contact
+
+C. Analytics
+- track contact channel clicks
+- track contact form submissions
+- integrate with existing analytics if already present
+
+Requirements:
+- keep integrations clean
+- do not duplicate logic unnecessarily
+
+================================
+12. RELATIONSHIP WITH FLOATING WIDGET
+================================
+
+Do NOT remove the floating widget.
+
+Instead:
+- keep the widget as the quick-contact layer
+- use the Contact page as the deeper official contact layer
+
+Requirements:
+- both should coexist naturally
+- Contact page should feel more complete and structured
+- widget can still appear on this page if desired, but should not feel redundant or obstructive
+
+If helpful:
+- slightly tone down widget presence on the Contact page
+or
+- keep it but ensure the page itself remains primary
+
+================================
+13. ADMIN / CONTENT CONFIG READINESS
+================================
+
+If helpful, structure the page so some content can later be managed cleanly.
+
+Recommended:
+- keep static text in structured config
+- keep contact channels in DB
+- keep form submissions in CRM/leads
+- avoid hardcoding repeated contact data
+
+================================
+14. MOBILE POLISH
+================================
+
+Carefully refine the Contact page for mobile.
+
+Requirements:
+- contact channel cards should stack cleanly
+- form spacing should remain comfortable
+- buttons should be easy to tap
+- hero should not feel oversized
+- page should still feel premium on small screens
+
+================================
+15. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- the website has a dedicated, official Contact page
+- users can choose between direct contact channels and form submission
+- contact channels are database-driven
+- form submissions connect into the CRM
+- the page feels premium, trustworthy, and aligned with the website
+- the floating widget and Contact page work together logically
+
+Please implement this Contact page directly and integrate it with the current site systems.

@@ -32,7 +32,7 @@ export const NAV_ITEMS: NavItemConfig[] = [
       { name: "ATLAS",                   desc: "Hệ sinh thái bất động sản kỹ thuật số",   path: "/san-pham/atlas"                },
     ],
   },
-  { name: "Liên hệ", path: "/#lien-he" },
+  { name: "Liên hệ", path: "/lien-he" },
 ];
 
 /** Footer — main nav column (top-level pages). */
@@ -43,7 +43,7 @@ export const FOOTER_NAV_LINKS: FooterLinkItem[] = [
   { name: "Tin tức",    href: "/tin-tuc"    },
   { name: "Cộng đồng",  href: "/cong-dong"  },
   { name: "Sản phẩm",   href: "/san-pham/duong-toi-1-trieu-do" },
-  { name: "Liên hệ",    href: "/#lien-he"   },
+  { name: "Liên hệ",    href: "/lien-he"   },
 ];
 
 /** Footer — Kiến thức sub-links column. */
@@ -70,6 +70,7 @@ export const NAV_ACTIVE_MAP: Record<number, string> = {
   3: "/tin-tuc",
   4: "/cong-dong",
   5: "/san-pham",
+  6: "/lien-he",
 };
 
 /** Paths that make "Kiến thức" the active nav item. */

@@ -20,6 +20,7 @@ import ChuDe       from "@/pages/ChuDe";
 import Series      from "@/pages/Series";
 import TaiLieu     from "@/pages/TaiLieu";
 import TaiLieuDetail from "@/pages/TaiLieuDetail";
+import LienHe        from "@/pages/LienHe";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ function PublicRoutes() {
         <Route path="/tin-tuc/:category/:slug" component={TinTucArticle} />
         <Route path="/tai-lieu"      component={TaiLieu} />
         <Route path="/tai-lieu/:slug" component={TaiLieuDetail} />
+        <Route path="/lien-he"      component={LienHe} />
         <Route path="/huy-dang-ky" component={HuyDangKy} />
         <Route component={NotFound} />
       </Switch>
