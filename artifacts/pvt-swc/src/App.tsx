@@ -7,6 +7,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import ProductDuongToiTrieuDo from "@/pages/ProductDuongToiTrieuDo";
 import ProductAtlas from "@/pages/ProductAtlas";
+import ProductSWCPass from "@/pages/ProductSWCPass";
 import CongDong from "@/pages/CongDong";
 import TinTuc from "@/pages/TinTuc";
 import TinTucArticle from "@/pages/TinTucArticle";
@@ -32,6 +33,7 @@ function PublicRoutes() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/cong-dong" component={CongDong} />
+        <Route path="/san-pham/swc-pass" component={ProductSWCPass} />
         <Route path="/san-pham/duong-toi-1-trieu-do" component={ProductDuongToiTrieuDo} />
         <Route path="/san-pham/atlas" component={ProductAtlas} />
         <Route path="/gioi-thieu" component={GioiThieu} />

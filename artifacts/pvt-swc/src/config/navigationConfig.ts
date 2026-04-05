@@ -28,6 +28,7 @@ export const NAV_ITEMS: NavItemConfig[] = [
     name:        "Sản phẩm",
     dropdownKey: "san-pham",
     items: [
+      { name: "SWC Pass",                desc: "Cổng truy cập vào hệ sinh thái SWC",      path: "/san-pham/swc-pass"             },
       { name: "Road to $1M · SWC PASS", desc: "Lộ trình tài chính cá nhân có hệ thống",  path: "/san-pham/duong-toi-1-trieu-do" },
       { name: "ATLAS",                   desc: "Hệ sinh thái bất động sản kỹ thuật số",   path: "/san-pham/atlas"                },
     ],

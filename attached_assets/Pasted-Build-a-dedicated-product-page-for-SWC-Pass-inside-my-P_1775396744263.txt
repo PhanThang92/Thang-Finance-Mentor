@@ -1,0 +1,391 @@
+Build a dedicated product page for “SWC Pass” inside my Phan Van Thang SWC website.
+
+IMPORTANT:
+- First inspect the current project structure, design system, routing, reusable components, and product page patterns.
+- Reuse the existing Thang SWC website style and component system.
+- Do NOT redesign unrelated pages.
+- The page must feel native to the current website, not like a separate microsite.
+- Keep the page premium, calm, strategic, mentor-led, and trustworthy.
+- Avoid hype, aggressive FOMO, flashy urgency, and exaggerated “get rich quick” language.
+- The tone must match the Phan Van Thang SWC brand: long-term thinking, disciplined finance, clear systems, practical guidance, and soft conversion.
+
+GOAL:
+Create a polished standalone product page for SWC Pass as a foundational gateway product within the Thang SWC ecosystem.
+
+POSITIONING:
+Present SWC Pass primarily as:
+- a structured access product
+- a gateway into the SWC ecosystem
+- a systemized entry point to tools, resources, analysis, and long-term guidance
+
+Do NOT present it as:
+- a single investment deal
+- a guaranteed financial outcome
+- a hype-driven “act now or lose forever” opportunity
+
+PAGE ROUTE:
+Create the page at:
+- /san-pham/swc-pass
+or use the best equivalent route in the current architecture.
+
+NAVIGATION:
+Place it logically under:
+- Hệ sinh thái
+or
+- Sản phẩm
+
+==================================================
+1. CONTENT STRATEGY
+==================================================
+
+The current SWC Pass source material communicates these core ideas:
+- SWC Pass is the “key” to enter the SWC ecosystem
+- access to SWC Field and related materials
+- Road to a Million is included in higher-tier access
+- analysis and advisory are part of the ecosystem value
+- there is a broader ecosystem including Marketplace and future products
+- there are 3 plan tiers:
+  - Essential: $240 for 1 year + 90 bonus days
+  - Plus: $600 for 5 years
+  - Ultimate: $2,600 lifetime
+- Ultimate includes Road to a Million and current/future products
+- the source page also mentions partner / affiliate potential
+
+However, for this website, rewrite and reframe the message in a calmer, cleaner, more premium and trust-based way.
+
+==================================================
+2. PAGE STRUCTURE
+==================================================
+
+Build the page with these sections in this order:
+
+A. HERO SECTION
+Headline:
+SWC Pass
+
+Subheadline:
+A structured gateway into the SWC ecosystem
+
+Supporting copy:
+Explain that SWC Pass is the foundational access layer for people who want to enter the SWC ecosystem in a clearer, more systemized way, with access to SWC Field, related materials, and higher-tier ecosystem value depending on the plan.
+
+CTA buttons:
+- Explore plans
+- Request consultation
+
+Visual direction:
+- premium ecosystem / system access feel
+- calm financial technology atmosphere
+- structured, editorial, trust-first
+- avoid loud “sales funnel” visuals
+- use existing Thang SWC design language
+
+B. WHAT IS SWC PASS?
+Section title:
+SWC Pass là gì?
+
+Content:
+Explain SWC Pass as an access product, not just a standalone item.
+Frame it as a gateway to:
+- SWC Field
+- related documents/materials
+- Road to a Million in higher tiers
+- analysis / advisory ecosystem value
+- broader ecosystem expansion over time
+
+Use 3–4 clean icon cards.
+
+C. WHAT PROBLEM DOES IT SOLVE?
+Section title:
+SWC Pass giúp giải quyết điều gì?
+
+Frame the problem in a thoughtful way:
+- fragmented information
+- emotional decisions
+- lack of structure in evaluating opportunities
+- no clear entry point into a broader ecosystem
+
+Present 3 problem/solution cards:
+1. From scattered information to one structured access point
+2. From emotional decision-making to a more systemized view
+3. From passive following to intentional participation
+
+D. WHAT’S INSIDE SWC PASS?
+Section title:
+Bên trong SWC Pass có gì?
+
+Create 4 value blocks:
+1. SWC Field
+2. Road to a Million
+3. Analysis & advisory
+4. Ecosystem expansion / Marketplace / future products
+
+Important:
+For Road to a Million, present it as a long-term framework and educational/strategic layer, not a guaranteed return promise.
+Use careful wording such as:
+- long-term financial planning framework
+- practical roadmap
+- structured long-range approach
+Do not write as if outcomes are guaranteed.
+
+E. WHO IS IT FOR?
+Section title:
+SWC Pass phù hợp với ai?
+
+Create 3 audience cards:
+1. Newcomers who want a structured entry point
+2. People who already see the value of a long-term system
+3. People who want deep ecosystem access or partner-oriented expansion
+
+F. PLANS / PRICING SECTION
+Section title:
+Các hạng gói SWC Pass
+
+Create 3 pricing cards:
+
+1. Essential
+- $240
+- 1 year + 90 bonus days
+- access to SWC Field and related materials
+- suitable for newcomers
+
+2. Plus
+- $600
+- 5 years
+- full Essential value for a longer commitment
+- suitable for users who understand the value of a system and want long-term access
+
+3. Ultimate
+- $2,600
+- lifetime
+- unlimited SWC Field access
+- includes Road to a Million
+- includes current and future ecosystem products/applications where applicable
+- suitable for long-term ecosystem participation or partner-oriented users
+
+Important:
+- show prices clearly
+- show benefits clearly
+- add a small note that plans and benefits may be updated according to official ecosystem announcements
+- do not overuse urgency language
+- if you mention any date-sensitive price note, make it easy to edit in admin or content config
+
+G. WHY THIS IS A FOUNDATIONAL PRODUCT
+Section title:
+Vì sao SWC Pass là sản phẩm nền tảng?
+
+Explain:
+- it is not just one content product
+- it is the entry layer into a growing ecosystem
+- it connects users to tools, materials, analysis, and deeper pathways
+- it is one of the clearest “starting points” in the SWC system
+
+Use 3 concise editorial cards:
+- Clear entry point
+- System over scattered discovery
+- Gateway to deeper value
+
+H. MENTOR GUIDANCE SECTION
+This is important and should be unique to Thang SWC.
+
+Section title:
+Cách tôi khuyên anh/chị tiếp cận SWC Pass
+
+Write this section in the Phan Van Thang SWC voice:
+- calm
+- mentor-like
+- practical
+- not pushy
+
+Core message:
+Do not look at SWC Pass as a shortcut.
+Look at it as access to a system.
+
+Suggested framing:
+If someone needs:
+- a clearer place to begin
+- a more structured way to approach opportunities
+- a long-term framework instead of random information
+then SWC Pass is worth considering.
+
+If someone still lacks financial foundations, clear goals, or emotional discipline, encourage them to understand the system first and move step by step.
+
+I. FAQ SECTION
+Section title:
+Câu hỏi thường gặp
+
+Include at least these FAQs:
+- Is SWC Pass a course or an ecosystem access product?
+- Does SWC Pass include SWC Field?
+- Which plan includes Road to a Million?
+- Is this suitable for beginners?
+- Is there a partner / affiliate direction?
+- How should I choose between Essential, Plus, and Ultimate?
+
+J. FINAL CTA SECTION
+Headline:
+Start with the right access, not scattered information
+
+Supporting text:
+SWC Pass is designed for people who want a clearer, more structured way to enter the SWC ecosystem.
+
+Buttons:
+- View plans
+- Request consultation
+
+==================================================
+3. COPYWRITING RULES
+==================================================
+
+Use Vietnamese on the page.
+
+Tone:
+- mature
+- calm
+- strategic
+- clear
+- non-hype
+- mentor-led
+- premium but approachable
+
+Avoid:
+- “money makes money” hype
+- “top 1000 elite” style hype
+- exaggerated urgency
+- guaranteed wealth framing
+- emotionally manipulative sales copy
+
+Use:
+- system
+- structure
+- ecosystem access
+- long-term thinking
+- disciplined approach
+- guided participation
+- practical clarity
+
+Financial safety language:
+- avoid guaranteed result language
+- avoid claims that imply certain return outcomes
+- if referencing Road to a Million, frame it as a long-term structured approach/example, not a promise
+
+==================================================
+4. DESIGN DIRECTION
+==================================================
+
+Match the Phan Van Thang SWC website style.
+
+Visual requirements:
+- premium editorial layout
+- calm teal / dark teal / charcoal / soft white palette if aligned with current brand
+- generous spacing
+- modern cards
+- subtle gradients only if already used in the site
+- no clutter
+- no loud crypto-style aesthetics
+- no flashy countdown sales page energy
+
+Suggested visual hierarchy:
+- strong hero
+- clean cards
+- elegant comparison/pricing section
+- mentor guidance block with a more personal tone
+- FAQ accordion
+- strong final CTA
+
+If the current website already has reusable sections/components for:
+- hero
+- pricing cards
+- FAQ accordion
+- CTA banner
+reuse them.
+
+==================================================
+5. ADMIN / EDITABILITY
+==================================================
+
+Make the page easy to update later.
+
+Where reasonable, structure the content so these can be edited:
+- hero text
+- section text
+- pricing
+- benefits per plan
+- CTA links
+- FAQ items
+
+If the project already has a CMS/admin content system, integrate the page into it.
+If not, keep the content well-structured in a single clean config/content file.
+
+==================================================
+6. CTA / CONVERSION LOGIC
+==================================================
+
+Primary CTA actions should support:
+- consultation request
+- internal contact flow
+- optional registration / plan inquiry
+
+If the website already has:
+- a contact page
+- a lead form
+- a consultation form
+connect the CTA buttons properly.
+
+Recommended CTA mapping:
+- “Explore plans” scrolls to pricing section
+- “Request consultation” opens contact form, modal, or dedicated inquiry flow
+
+Optional:
+Add a lightweight plan inquiry form near the pricing section with:
+- name
+- phone or email
+- plan of interest
+- note
+
+==================================================
+7. SEO / STRUCTURE
+==================================================
+
+Add strong on-page SEO basics:
+- page title
+- meta description
+- good heading structure
+- clean semantic HTML
+- internal links to related SWC ecosystem pages if they exist
+
+Suggested title:
+SWC Pass | Quyền truy cập vào hệ sinh thái SWC | Phan Văn Thắng SWC
+
+Suggested meta description:
+SWC Pass là sản phẩm nền tảng giúp bạn tiếp cận hệ sinh thái SWC theo cách có cấu trúc hơn, với quyền truy cập SWC Field, tài liệu liên quan và các lớp giá trị mở rộng theo từng hạng gói.
+
+==================================================
+8. IMPLEMENTATION REQUIREMENTS
+==================================================
+
+Please:
+1. Inspect the existing codebase first
+2. Reuse existing components wherever possible
+3. Build the page fully responsive
+4. Keep performance clean
+5. Make sure the page feels polished and production-ready
+6. Do not invent unrelated features
+7. Preserve brand consistency with the rest of the Thang SWC website
+
+==================================================
+9. DELIVERABLES
+==================================================
+
+Please deliver:
+- the full SWC Pass product page
+- any reusable components created
+- updated route/navigation if needed
+- editable content structure
+- polished responsive layout
+- final summary of what was implemented
+
+FINAL INSTRUCTION:
+This page should feel like a premium, trustworthy, strategic product page inside the Thang SWC ecosystem.
+It should present SWC Pass as a foundational gateway into a larger system, not as an aggressive hype-driven offer.
+Keep it clean, clear, persuasive, and aligned with the mentor brand voice of Phan Van Thang SWC.
