@@ -1,0 +1,336 @@
+Please polish the About page for “Phan Van Thang SWC” so it feels significantly more premium, editorial, balanced, and refined.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- Do NOT change the page structure drastically if the current section flow is already good.
+- This prompt is focused on visual polish, layout refinement, spacing, typography, hierarchy, and rhythm.
+- Do NOT reintroduce repetitive content.
+- Do NOT make the page flashy or overdesigned.
+
+GOAL:
+Refine the About page so it feels:
+- premium
+- calm
+- trustworthy
+- editorial
+- personal brand oriented
+- more intentional
+- more spacious
+- more visually mature
+
+The current page may already have the correct content structure, but it still needs a higher level of polish in:
+- composition
+- whitespace
+- typography hierarchy
+- alignment
+- section rhythm
+- visual breathing room
+- image/text balance
+- overall elegance
+
+================================
+1. OVERALL DESIGN GOAL
+================================
+
+Please make the About page feel like a premium personal brand editorial page rather than a standard template section stack.
+
+The page should feel:
+- quieter
+- more confident
+- less crowded
+- more readable
+- more balanced
+- more refined in rhythm
+
+Do not add loud effects.
+Do not add unnecessary decoration.
+Do not make it look like a SaaS landing page or a generic agency page.
+
+================================
+2. SPACING REFINEMENT
+================================
+
+Review and refine spacing across the entire About page.
+
+Please improve:
+- top and bottom padding of each section
+- spacing between eyebrow, heading, paragraph, and supporting elements
+- spacing between text blocks
+- spacing between cards/items
+- spacing between image and text columns
+- vertical rhythm between sections
+
+Requirements:
+- add more breathing room where sections feel tight
+- reduce dead empty space where spacing feels disconnected
+- keep section spacing consistent but not mechanically identical
+- create a more intentional cadence as the user scrolls
+
+The page should feel comfortably spacious, not stretched or cramped.
+
+================================
+3. TYPOGRAPHY HIERARCHY
+================================
+
+Refine the typography system on the About page.
+
+Please review and improve:
+- hero heading size and weight
+- section heading sizes
+- eyebrow size / tracking / letter spacing
+- paragraph width and line length
+- body text readability
+- quote text styling
+- card title and card body hierarchy
+
+Requirements:
+- headings should feel strong and premium
+- body text should remain easy to read
+- avoid oversized headings that feel heavy
+- avoid too-small body text that feels weak
+- make sure line-height is comfortable for Vietnamese text
+- reduce visual noise from overly similar text sizes
+
+The typography should feel editorial and intentional, with clear hierarchy.
+
+================================
+4. CONTENT WIDTH / READABILITY
+================================
+
+Review text container widths across the page.
+
+Requirements:
+- long text blocks should not run too wide
+- keep paragraph max-width refined for readability
+- heading width should be visually balanced
+- cards should not feel too compressed or too loose
+- hero text width and intro text width should feel deliberate
+
+The page should read comfortably on desktop, tablet, and mobile.
+
+================================
+5. HERO POLISH
+================================
+
+Polish the About page hero section.
+
+Review and improve:
+- text/image balance
+- portrait framing
+- hero content width
+- heading line breaks
+- vertical alignment
+- CTA spacing if present
+- background depth and subtle texture
+- overall calmness and visual confidence
+
+Requirements:
+- hero should feel premium and anchored
+- portrait should have elegant presence, not dominate awkwardly
+- text should feel balanced with the image
+- layout should avoid looking too empty on wide screens
+- maintain the dark teal premium brand aesthetic
+
+If needed, improve:
+- portrait card proportions
+- image corner radius
+- image shadow/subtle frame
+- hero grid proportions
+
+================================
+6. IMAGE USAGE / VISUAL BALANCE
+================================
+
+Review image and visual usage throughout the page.
+
+Requirements:
+- avoid repetitive image usage
+- if there is only one main portrait, let it be used with purpose
+- supporting sections should rely more on layout, text rhythm, subtle dividers, and clean composition
+- use abstract or understated visual support rather than repeating the same visual treatment
+
+If another visual is needed in lower sections:
+- use subtle background texture
+- quote treatment
+- line/divider rhythm
+- understated iconography
+- elegant card grouping
+
+Do not make the page visually noisy.
+
+================================
+7. SECTION RHYTHM / FLOW
+================================
+
+Improve the visual rhythm from one section to the next.
+
+Requirements:
+- each section should feel like a distinct chapter
+- transitions between sections should feel smooth
+- avoid sections that look too similar one after another
+- alternate visual density subtly:
+  - one section may be more text-led
+  - next may be more card-led
+  - next may be more timeline-led
+- maintain cohesion while creating rhythm
+
+The page should feel authored, not assembled from repeated blocks.
+
+================================
+8. CARD / BLOCK REFINEMENT
+================================
+
+Polish all card-based and structured content blocks.
+
+This includes:
+- core value cards
+- checklist blocks
+- audience blocks
+- any quote or highlighted content blocks
+- timeline step items if card-like
+
+Please improve:
+- corner radius consistency
+- border softness
+- shadow subtlety
+- padding inside cards
+- card-to-card spacing
+- title/body hierarchy
+- hover behavior only if needed
+
+Requirements:
+- cards should feel premium and clean
+- not too flat, not too glossy
+- do not overuse shadow
+- keep a calm executive editorial feel
+
+================================
+9. TIMELINE / PROCESS SECTION POLISH
+================================
+
+If the About page includes the “Cách tôi xây giá trị và đồng hành...” section, refine it visually.
+
+Please improve:
+- connector line weight and subtlety
+- step number styling
+- step spacing
+- text alignment
+- mobile conversion of horizontal layout to vertical stack if necessary
+- overall elegance of the section
+
+Requirements:
+- the process section should feel clearer and more premium
+- reduce mechanical feeling
+- improve readability of each step
+- make desktop and mobile both feel intentional
+
+================================
+10. DIVIDERS / MICRO VISUAL DETAILS
+================================
+
+Use subtle visual details to improve editorial quality.
+
+Possible refinements:
+- understated divider lines
+- gentle section separators
+- refined eyebrow accent line
+- soft background variation between sections
+- subtle alignment anchors
+- tighter control of visual edges
+
+Requirements:
+- keep these details subtle
+- they should support rhythm, not distract
+- avoid decorative clutter
+
+================================
+11. COLOR / SURFACE BALANCE
+================================
+
+Review how background colors and surfaces are used.
+
+Requirements:
+- maintain the premium dark teal / off-white / charcoal system
+- ensure enough contrast for readability
+- avoid too many sections with identical visual weight
+- use surface changes or tonal shifts strategically to create rhythm
+- keep it cohesive with the homepage and articles pages
+
+The About page should feel unified with the rest of the site, but slightly more curated and editorial.
+
+================================
+12. MOBILE POLISH
+================================
+
+Carefully refine the About page for mobile.
+
+Please review:
+- heading wrapping
+- paragraph spacing
+- section padding
+- card stacking
+- portrait scaling
+- timeline stacking
+- CTA button stacking and spacing
+
+Requirements:
+- mobile should feel premium too, not just functional
+- avoid giant text blocks
+- avoid cramped cards
+- preserve rhythm and readability
+
+================================
+13. FINAL CTA POLISH
+================================
+
+Refine the final CTA block on the About page.
+
+Please improve:
+- spacing around heading/subheading/buttons
+- contrast and readability
+- button hierarchy
+- background treatment
+- relationship to the section above
+
+Requirements:
+- it should feel like a soft but confident ending
+- premium, not salesy
+- aligned with the site’s CTA design system
+
+================================
+14. REMOVE TEMPLATE FEEL
+================================
+
+Across the full page, reduce anything that feels:
+- generic
+- repetitive
+- auto-generated
+- too symmetrical without purpose
+- too boxed in
+- too much like a standard block-based site template
+
+Increase:
+- compositional confidence
+- whitespace discipline
+- visual restraint
+- premium editorial quality
+
+================================
+15. FINAL EXPECTED RESULT
+================================
+
+After polishing, the About page should feel:
+- significantly more premium
+- better spaced
+- easier to read
+- more visually balanced
+- more editorial in tone
+- less templated
+- more aligned with a serious personal brand in finance/investing
+
+Do not rewrite the content heavily.
+Do not change the page architecture more than necessary.
+Focus on making the existing About page feel much more refined and high quality.
+
+Please implement this About page polish directly.
