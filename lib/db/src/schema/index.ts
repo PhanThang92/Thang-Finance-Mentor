@@ -21,3 +21,4 @@ export * from "./news";
 export * from "./cms";
 export * from "./content";
 export * from "./media";
+export * from "./analytics";

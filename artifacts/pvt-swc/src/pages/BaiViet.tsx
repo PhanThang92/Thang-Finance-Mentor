@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Search, Clock } from "lucide-react";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
 import { useSeoMeta } from "@/hooks/useSeoMeta";
+import { trackArticleClick } from "@/lib/analytics";
 import {
   getPublishedArticles,
   getFeaturedArticles,
@@ -33,6 +34,7 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
     <motion.a
       variants={fadeUp}
       href={`/tin-tuc/${article.categorySlug ?? "bai-viet"}/${article.slug}`}
+      onClick={() => trackArticleClick(article.slug, article.title ?? undefined)}
       style={{
         display: "flex",
         flexDirection: featured ? "column" : "column",

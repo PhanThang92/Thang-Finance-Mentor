@@ -4,6 +4,7 @@ import { ArrowRight, Play, Search } from "lucide-react";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
 import { useSeoMeta } from "@/hooks/useSeoMeta";
 import { YOUTUBE_CHANNEL_URL } from "@/config/siteConfig";
+import { trackVideoClick, trackCtaClick } from "@/lib/analytics";
 import {
   getFeaturedVideo,
   getVideosByCategory,
@@ -109,6 +110,7 @@ function VideoCard({ video }: { video: Video }) {
       href={video.youtubeUrl}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => trackVideoClick(video.slug ?? video.youtubeUrl ?? "", video.title ?? undefined)}
       style={{
         background: "hsl(var(--card))",
         border: `1px solid ${hovered ? "hsl(var(--primary) / 0.22)" : "hsl(var(--border) / 0.55)"}`,

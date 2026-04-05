@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "wouter";
 import { motion } from "framer-motion";
 import { newsApi, type NewsPost } from "@/lib/newsApi";
 import { getPostImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
+import { trackArticleView } from "@/lib/analytics";
 
 /* ── motion ────────────────────────────────────────────────────────── */
 const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] } } };
@@ -123,6 +124,10 @@ export default function TinTucArticle() {
     queryFn:  () => newsApi.getPost(slug!),
     enabled:  !!slug,
   });
+
+  useEffect(() => {
+    if (slug) trackArticleView(slug);
+  }, [slug]);
 
   /* ── Loading ── */
   if (isLoading) {

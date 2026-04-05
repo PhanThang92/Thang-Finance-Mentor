@@ -1,0 +1,576 @@
+Please upgrade the existing admin CMS for “Phan Van Thang SWC” by adding an internal analytics / tracking dashboard.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Build on top of the current admin CMS, Supabase/Postgres, and public website architecture.
+- Do NOT redesign the public site.
+- Do NOT overbuild a complex enterprise analytics system.
+- Focus on a practical, maintainable internal dashboard that gives useful content and website performance insights.
+
+GOAL:
+Create an analytics / tracking system inside the admin CMS so the site owner can understand how the website content is performing.
+
+This system should help answer questions such as:
+- Which articles are getting the most views?
+- Which videos are getting the most clicks?
+- Which topics/series are performing best?
+- Which homepage sections / CTA links are being clicked?
+- What content is new but already getting attention?
+- What should be promoted more?
+
+The dashboard should be useful for:
+- content decisions
+- homepage decisions
+- SEO/content strategy decisions
+- brand/content growth decisions
+
+================================
+1. FEATURE SCOPE
+================================
+
+Please implement a lightweight internal analytics system for at least:
+
+A. Page views
+B. Content clicks
+C. CTA clicks
+D. Basic content performance summaries
+E. Admin analytics dashboard UI
+
+Initial tracked entities:
+- Articles
+- Videos
+- Topics (if applicable)
+- Series (if applicable)
+- Homepage CTA buttons
+- Navigation clicks (optional if easy)
+- Outbound YouTube clicks (recommended)
+
+Do NOT try to replicate Google Analytics fully.
+Keep the system focused on the website’s own content/business needs.
+
+================================
+2. WHAT TO TRACK FIRST
+================================
+
+Please track the following events first:
+
+A. Article page view
+When a user visits an article detail page
+
+B. Video click
+When a user clicks a video card or “Xem video” link
+
+C. Article click
+When a user clicks from listing/homepage into an article
+
+D. Homepage CTA click
+Examples:
+- Khám phá bài viết
+- Tìm hiểu thêm
+- Xem kênh YouTube
+- Liên hệ kết nối
+- Xem thư viện video
+
+E. Knowledge hub / topic / series click
+When a user clicks into:
+- Chủ đề
+- Series nổi bật
+- Kiến thức sections
+
+Optional but useful:
+F. Contact CTA click
+G. External link click
+H. Navbar item click
+
+Requirements:
+- keep tracked events practical
+- prioritize meaningful business/content signals
+- avoid noisy tracking that creates too much useless data
+
+================================
+3. TRACKING DATA MODEL
+================================
+
+Create a clean analytics event model in the database.
+
+Suggested table:
+- `analytics_events`
+
+Recommended fields:
+- id (uuid, primary key)
+- event_type (text)
+- entity_type (text, nullable)
+- entity_id (uuid or text, nullable)
+- entity_slug (text, nullable)
+- event_label (text, nullable)
+- page_path (text)
+- referrer (text, nullable)
+- user_agent (text, nullable, optional)
+- session_id (text, nullable)
+- visitor_id (text, nullable, optional)
+- metadata (jsonb, optional)
+- created_at (timestamp)
+
+Examples:
+- event_type = "article_view"
+- entity_type = "article"
+- entity_slug = "dau-tu-dai-han-khong-bat-dau-tu-von-lon..."
+- page_path = "/bai-viet/..."
+
+Requirements:
+- schema should be flexible enough for multiple event types
+- keep it lightweight
+- preserve future expansion possibilities
+- avoid making the analytics model too rigid
+
+================================
+4. OPTIONAL AGGREGATED TABLES
+================================
+
+If useful for performance, create aggregated summary tables or helper views.
+
+Examples:
+- `analytics_daily_summary`
+- `content_performance_summary`
+
+This is optional.
+If current scale is small, on-demand aggregation is acceptable.
+
+But if you create summary structures, keep them simple and maintainable.
+
+================================
+5. TRACKING IMPLEMENTATION APPROACH
+================================
+
+Implement event tracking in a clean way appropriate to the current stack.
+
+Requirements:
+- article detail page should log article_view
+- article cards/links can log article_click
+- video links can log video_click
+- CTA buttons should log cta_click
+- topic/series cards should log topic_click / series_click where relevant
+
+Use a clean helper function or tracking service.
+
+Suggested helper examples:
+- trackEvent()
+- trackArticleView()
+- trackArticleClick()
+- trackVideoClick()
+- trackCtaClick()
+
+Requirements:
+- avoid scattering raw tracking code everywhere
+- centralize logic as much as possible
+- keep it maintainable
+
+================================
+6. SESSION / VISITOR LOGIC
+================================
+
+Add lightweight session or visitor support if practical.
+
+Requirements:
+- create a basic session identifier for analytics grouping
+- it does not need to be a full auth-based identity system
+- lightweight anonymous session tracking is acceptable
+- do not overcomplicate privacy handling
+
+If practical:
+- session_id can help distinguish repeated actions
+- unique visitor estimates are a bonus, not mandatory
+
+Keep it simple and privacy-conscious.
+
+================================
+7. ADMIN DASHBOARD PAGE
+================================
+
+Create a dedicated analytics dashboard inside admin.
+
+Suggested route:
+- `/admin/analytics`
+
+Visible Vietnamese page content:
+
+Page title:
+Phân tích nội dung
+
+Subtext:
+Theo dõi hiệu suất bài viết, video và các tương tác quan trọng trên website.
+
+Top summary cards:
+- Tổng lượt xem bài viết
+- Tổng lượt click video
+- Tổng lượt click CTA
+- Nội dung nổi bật tuần này
+
+Optional summary cards:
+- Bài viết mới được quan tâm
+- Chủ đề đang nổi bật
+- CTA hiệu quả nhất
+
+Requirements:
+- dashboard should feel clean and useful
+- not overloaded
+- clear at a glance
+- responsive enough for laptop/tablet use
+
+================================
+8. DASHBOARD SECTIONS
+================================
+
+Include practical sections such as:
+
+A. Overview cards
+B. Top performing articles
+C. Top performing videos
+D. Top clicked CTA buttons
+E. Top topics / series
+F. Recent activity trend
+G. Content needing attention (optional)
+
+Visible Vietnamese headings examples:
+- Tổng quan
+- Bài viết nổi bật
+- Video được quan tâm
+- CTA được click nhiều
+- Chủ đề hiệu quả
+- Xu hướng gần đây
+
+Requirements:
+- prioritize usefulness over decoration
+- sections should help decision-making
+- keep layout readable and clean
+
+================================
+9. DATE RANGE FILTERS
+================================
+
+Add useful time filtering controls.
+
+Visible Vietnamese filters:
+- 7 ngày
+- 30 ngày
+- 90 ngày
+- Tùy chọn
+
+Optional date inputs:
+- Từ ngày
+- Đến ngày
+
+Requirements:
+- dashboard metrics should update based on selected range
+- keep date filtering simple and practical
+- avoid overcomplicated reporting UI
+
+================================
+10. TOP PERFORMING ARTICLES SECTION
+================================
+
+Show a ranked list/table of best-performing articles.
+
+Visible Vietnamese columns/examples:
+- Bài viết
+- Lượt xem
+- Lượt click
+- Ngày đăng
+- Chủ đề
+- Trạng thái
+
+Requirements:
+- rank by article views by default
+- optionally include article clicks from homepage/listings
+- allow quick navigation to:
+  - Xem bài viết
+  - Sửa bài viết
+
+Visible actions:
+- Xem
+- Sửa
+
+This section should help identify which written content is strongest.
+
+================================
+11. TOP PERFORMING VIDEOS SECTION
+================================
+
+Show a ranked list/table of best-performing videos.
+
+Visible Vietnamese columns/examples:
+- Video
+- Lượt click
+- Ngày đăng
+- Chủ đề
+- Series
+- Trạng thái
+
+Requirements:
+- rank by video clicks
+- optionally separate:
+  - click từ homepage
+  - click từ thư viện video
+- allow quick actions:
+  - Xem video
+  - Sửa video
+
+Visible actions:
+- Xem
+- Sửa
+
+================================
+12. TOP CTA PERFORMANCE
+================================
+
+Show which CTA buttons or content entry points are performing best.
+
+Examples:
+- Khám phá bài viết
+- Xem kênh YouTube
+- Liên hệ kết nối
+- Tìm hiểu thêm
+- Xem thư viện video
+
+Visible Vietnamese columns:
+- CTA
+- Lượt click
+- Vị trí
+- Trang
+
+Requirements:
+- help identify which site entry points are effective
+- include homepage CTA data if possible
+- support simple ranking
+
+================================
+13. TOPICS / SERIES PERFORMANCE
+================================
+
+If Topics and Series are already implemented, show their performance.
+
+Visible Vietnamese columns/examples:
+- Chủ đề
+- Lượt click
+- Lượt xem liên quan
+- Nội dung liên quan
+
+And:
+- Series
+- Lượt click
+- Số nội dung
+- Hiệu suất
+
+Requirements:
+- give the admin an idea of which knowledge areas are attracting more attention
+- can be based on clicks into topic/series pages or associated content traffic
+- keep logic practical, not perfect
+
+================================
+14. RECENT TREND / SIMPLE CHARTS
+================================
+
+Add simple trend charts or visual summaries.
+
+Possible charts:
+- article views over time
+- video clicks over time
+- CTA clicks over time
+
+Requirements:
+- keep charts simple
+- clear labels in Vietnamese
+- no overcomplicated analytics UI
+- use them only where they add real value
+- the dashboard should remain readable without depending fully on charts
+
+Visible Vietnamese labels examples:
+- Xu hướng lượt xem
+- Xu hướng click video
+- Xu hướng CTA
+
+================================
+15. HOMEPAGE PERFORMANCE INSIGHTS
+================================
+
+If homepage featured content control already exists, add homepage performance insights.
+
+Possible metrics:
+- featured article clicks
+- featured video clicks
+- topic highlight clicks
+- series highlight clicks
+
+Visible Vietnamese examples:
+- Bài viết nổi bật trang chủ
+- Video nổi bật trang chủ
+- Chủ đề nổi bật trang chủ
+- Series nổi bật trang chủ
+
+Requirements:
+- help the admin understand whether featured homepage placements are working
+- useful for content rotation decisions
+- do not overcomplicate the logic
+
+================================
+16. LIGHTWEIGHT CONTENT INSIGHTS
+================================
+
+Add practical “content insight” helpers if useful.
+
+Examples:
+- bài viết mới nhưng tăng nhanh
+- video ít click hơn kỳ vọng
+- CTA được click tốt nhất
+- chủ đề đang được quan tâm
+
+Visible Vietnamese examples:
+- Đang tăng tốt
+- Cần chú ý thêm
+- Hiệu quả cao
+- Tăng trưởng nhanh
+
+This can be based on simple heuristics, not advanced AI.
+
+Requirements:
+- keep insights useful and honest
+- do not invent false precision
+- prefer simple transparent logic
+
+================================
+17. ADMIN NAVIGATION UPDATE
+================================
+
+Add the Analytics page to admin navigation.
+
+Visible Vietnamese labels:
+- Tổng quan
+- Bài viết
+- Video
+- Chủ đề
+- Series
+- Trang chủ
+- Thư viện ảnh
+- Phân tích nội dung
+
+Requirements:
+- analytics page should be easy to access
+- keep admin navigation clean
+
+================================
+18. EVENT TRACKING COVERAGE
+================================
+
+At minimum, implement tracking in these places:
+
+Public pages:
+- article detail pages
+- article cards on homepage and article listing page
+- video cards/links on homepage and video page
+- CTA buttons on homepage and key pages
+- topic/series cards if present
+
+Admin:
+- analytics dashboard queries and summaries
+
+Requirements:
+- do not slow down the public site noticeably
+- avoid duplicate event spam from a single page load where possible
+- keep tracking robust and lightweight
+
+================================
+19. DUPLICATE / NOISE CONTROL
+================================
+
+Reduce noisy duplicate tracking where practical.
+
+Requirements:
+- article_view should not fire excessively on the same page load
+- repeated rapid CTA clicks can be optionally throttled
+- keep data reasonably clean
+- do not overcomplicate anti-fraud logic at this stage
+
+Simple practical safeguards are enough.
+
+================================
+20. PRIVACY / BEST PRACTICES
+================================
+
+Keep the analytics system lightweight and privacy-conscious.
+
+Requirements:
+- avoid collecting unnecessary personal data
+- do not build invasive user profiles
+- anonymous session-based tracking is acceptable
+- keep the implementation reasonable and compliant in spirit
+- do not expose analytics event write endpoints unsafely
+
+================================
+21. SERVICE LAYER / QUERY HELPERS
+================================
+
+Create a clean analytics service layer.
+
+Suggested helpers:
+- trackEvent()
+- getDashboardOverview()
+- getTopArticles(range)
+- getTopVideos(range)
+- getTopCtas(range)
+- getTopicPerformance(range)
+- getSeriesPerformance(range)
+- getTrendData(range)
+
+Requirements:
+- keep analytics query logic out of UI components
+- make dashboard code maintainable
+- allow future expansion
+
+================================
+22. OPTIONAL SOURCE / POSITION METADATA
+================================
+
+If practical, track where a click came from.
+
+Examples:
+- homepage
+- bai-viet listing
+- video page
+- knowledge hub
+- navbar
+- footer
+
+Metadata example:
+- source_section
+- source_page
+- cta_name
+- card_position
+
+This is optional but very useful for homepage/content optimization.
+
+Keep it simple if implemented.
+
+================================
+23. DOCUMENTATION / HANDOFF
+================================
+
+Add simple notes/comments/documentation for:
+- where analytics events are tracked
+- how the dashboard queries work
+- what each event type means
+- how date filtering works
+- how to add new tracked events later
+
+================================
+24. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- the admin CMS has a useful analytics dashboard
+- article views, video clicks, and CTA clicks are tracked
+- homepage/content performance becomes measurable
+- the site owner can make better content and homepage decisions
+- the system remains lightweight, maintainable, and scalable
+
+Please implement this analytics / tracking dashboard directly into the admin CMS.

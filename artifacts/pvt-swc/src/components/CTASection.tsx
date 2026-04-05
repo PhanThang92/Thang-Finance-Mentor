@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { trackCtaClick } from "@/lib/analytics";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -94,6 +95,7 @@ export function CTASection() {
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <a
               href="/tin-tuc"
+              onClick={() => trackCtaClick("Xem bài viết mới", "cta_section")}
               className="inline-flex items-center gap-2"
               style={{
                 height: "2.875rem",
@@ -125,6 +127,7 @@ export function CTASection() {
 
             <a
               href="/cong-dong"
+              onClick={() => trackCtaClick("Liên hệ kết nối", "cta_section")}
               className="inline-flex items-center gap-2"
               style={{
                 height: "2.875rem",

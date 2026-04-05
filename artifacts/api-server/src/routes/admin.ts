@@ -5,8 +5,8 @@ import { randomBytes } from "crypto";
 import { Router, type Request, type Response, type NextFunction } from "express";
 import multer from "multer";
 import sharp from "sharp";
-import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable } from "@workspace/db";
-import { eq, sql, desc, ilike, or, and } from "drizzle-orm";
+import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable } from "@workspace/db";
+import { eq, sql, desc, ilike, or, and, isNotNull, gte, lte } from "drizzle-orm";
 
 /* ── Upload dirs ─────────────────────────────────────────────────────── */
 const UPLOADS_DIR = path.join(process.cwd(), "uploads");
@@ -868,6 +868,165 @@ router.delete("/media/:id", async (req, res) => {
 
     await db.delete(mediaAssetsTable).where(eq(mediaAssetsTable.id, id));
     res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+/* ── Analytics ────────────────────────────────────────────────────────── */
+router.get("/analytics", async (req, res) => {
+  try {
+    const days = Math.min(Math.max(Number(req.query.days ?? 30), 1), 365);
+    const from = req.query.from
+      ? new Date(String(req.query.from))
+      : new Date(Date.now() - days * 86_400_000);
+    const to   = req.query.to ? new Date(String(req.query.to)) : new Date();
+
+    const [agg] = await db.select({
+      totalArticleViews:  sql<number>`SUM(CASE WHEN event_type = 'article_view'  THEN 1 ELSE 0 END)::int`,
+      totalArticleClicks: sql<number>`SUM(CASE WHEN event_type = 'article_click' THEN 1 ELSE 0 END)::int`,
+      totalVideoClicks:   sql<number>`SUM(CASE WHEN event_type = 'video_click'   THEN 1 ELSE 0 END)::int`,
+      totalCtaClicks:     sql<number>`SUM(CASE WHEN event_type = 'cta_click'     THEN 1 ELSE 0 END)::int`,
+      uniqueVisitors:     sql<number>`COUNT(DISTINCT CASE WHEN visitor_id IS NOT NULL THEN visitor_id END)::int`,
+    }).from(analyticsEventsTable)
+      .where(and(gte(analyticsEventsTable.createdAt, from), lte(analyticsEventsTable.createdAt, to)));
+
+    const rawArticles = await db.select({
+      slug:   analyticsEventsTable.entitySlug,
+      views:  sql<number>`SUM(CASE WHEN event_type = 'article_view'  THEN 1 ELSE 0 END)::int`,
+      clicks: sql<number>`SUM(CASE WHEN event_type = 'article_click' THEN 1 ELSE 0 END)::int`,
+      total:  sql<number>`COUNT(*)::int`,
+    }).from(analyticsEventsTable)
+      .where(and(
+        eq(analyticsEventsTable.entityType, "article"),
+        isNotNull(analyticsEventsTable.entitySlug),
+        gte(analyticsEventsTable.createdAt, from),
+        lte(analyticsEventsTable.createdAt, to),
+      ))
+      .groupBy(analyticsEventsTable.entitySlug)
+      .orderBy(desc(sql`COUNT(*)`))
+      .limit(20);
+
+    const rawVideos = await db.select({
+      slug:   analyticsEventsTable.entitySlug,
+      clicks: sql<number>`COUNT(*)::int`,
+    }).from(analyticsEventsTable)
+      .where(and(
+        eq(analyticsEventsTable.eventType, "video_click"),
+        isNotNull(analyticsEventsTable.entitySlug),
+        gte(analyticsEventsTable.createdAt, from),
+        lte(analyticsEventsTable.createdAt, to),
+      ))
+      .groupBy(analyticsEventsTable.entitySlug)
+      .orderBy(desc(sql`COUNT(*)`))
+      .limit(20);
+
+    const topCtas = await db.select({
+      label:  analyticsEventsTable.eventLabel,
+      clicks: sql<number>`COUNT(*)::int`,
+    }).from(analyticsEventsTable)
+      .where(and(
+        eq(analyticsEventsTable.eventType, "cta_click"),
+        isNotNull(analyticsEventsTable.eventLabel),
+        gte(analyticsEventsTable.createdAt, from),
+        lte(analyticsEventsTable.createdAt, to),
+      ))
+      .groupBy(analyticsEventsTable.eventLabel)
+      .orderBy(desc(sql`COUNT(*)`))
+      .limit(20);
+
+    const rawTopics = await db.select({
+      slug:   analyticsEventsTable.entitySlug,
+      clicks: sql<number>`COUNT(*)::int`,
+    }).from(analyticsEventsTable)
+      .where(and(
+        eq(analyticsEventsTable.eventType, "topic_click"),
+        isNotNull(analyticsEventsTable.entitySlug),
+        gte(analyticsEventsTable.createdAt, from),
+        lte(analyticsEventsTable.createdAt, to),
+      ))
+      .groupBy(analyticsEventsTable.entitySlug)
+      .orderBy(desc(sql`COUNT(*)`))
+      .limit(10);
+
+    // ── Title resolution via bulk IN lookups ──
+    const articleSlugs = rawArticles.map((r) => r.slug).filter(Boolean) as string[];
+    const videoSlugs   = rawVideos.map((r) => r.slug).filter(Boolean) as string[];
+    const topicSlugs   = rawTopics.map((r) => r.slug).filter(Boolean) as string[];
+
+    const [kbTitles, newsTitles, videoTitles, topicTitles] = await Promise.all([
+      articleSlugs.length
+        ? db.select({ slug: articlesTable.slug, title: articlesTable.title }).from(articlesTable)
+            .where(sql`slug = ANY(${sql.raw("ARRAY[" + articleSlugs.map((s) => `'${s.replace(/'/g, "''")}'`).join(",") + "]")})`).limit(20)
+        : Promise.resolve([] as { slug: string; title: string }[]),
+      articleSlugs.length
+        ? db.select({ slug: newsPostsTable.slug, title: newsPostsTable.title }).from(newsPostsTable)
+            .where(sql`slug = ANY(${sql.raw("ARRAY[" + articleSlugs.map((s) => `'${s.replace(/'/g, "''")}'`).join(",") + "]")})`).limit(20)
+        : Promise.resolve([] as { slug: string; title: string }[]),
+      videoSlugs.length
+        ? db.select({ slug: videosTable.slug, title: videosTable.title }).from(videosTable)
+            .where(sql`slug = ANY(${sql.raw("ARRAY[" + videoSlugs.map((s) => `'${s.replace(/'/g, "''")}'`).join(",") + "]")})`).limit(20)
+        : Promise.resolve([] as { slug: string; title: string }[]),
+      topicSlugs.length
+        ? db.select({ slug: topicsTable.slug, title: topicsTable.title }).from(topicsTable)
+            .where(sql`slug = ANY(${sql.raw("ARRAY[" + topicSlugs.map((s) => `'${s.replace(/'/g, "''")}'`).join(",") + "]")})`).limit(10)
+        : Promise.resolve([] as { slug: string; title: string }[]),
+    ]);
+
+    const articleTitleMap = new Map<string, string>();
+    for (const r of kbTitles)  articleTitleMap.set(r.slug, r.title);
+    for (const r of newsTitles) if (!articleTitleMap.has(r.slug)) articleTitleMap.set(r.slug, r.title);
+    const videoTitleMap = new Map(videoTitles.map((r) => [r.slug, r.title]));
+    const topicTitleMap = new Map(topicTitles.map((r) => [r.slug, r.title]));
+
+    const topArticles = rawArticles.map((r) => ({
+      slug:   r.slug,
+      title:  r.slug ? (articleTitleMap.get(r.slug) ?? null) : null,
+      views:  r.views  ?? 0,
+      clicks: r.clicks ?? 0,
+      total:  r.total  ?? 0,
+    }));
+    const topVideos = rawVideos.map((r) => ({
+      slug:   r.slug,
+      title:  r.slug ? (videoTitleMap.get(r.slug) ?? null) : null,
+      clicks: r.clicks ?? 0,
+    }));
+    const topTopics = rawTopics.map((r) => ({
+      slug:   r.slug,
+      title:  r.slug ? (topicTitleMap.get(r.slug) ?? null) : null,
+      clicks: r.clicks ?? 0,
+    }));
+
+    const trend = await db.select({
+      date:          sql<string>`DATE_TRUNC('day', created_at)::date::text`,
+      articleViews:  sql<number>`SUM(CASE WHEN event_type = 'article_view'  THEN 1 ELSE 0 END)::int`,
+      articleClicks: sql<number>`SUM(CASE WHEN event_type = 'article_click' THEN 1 ELSE 0 END)::int`,
+      videoClicks:   sql<number>`SUM(CASE WHEN event_type = 'video_click'   THEN 1 ELSE 0 END)::int`,
+      ctaClicks:     sql<number>`SUM(CASE WHEN event_type = 'cta_click'     THEN 1 ELSE 0 END)::int`,
+    }).from(analyticsEventsTable)
+      .where(and(gte(analyticsEventsTable.createdAt, from), lte(analyticsEventsTable.createdAt, to)))
+      .groupBy(sql`DATE_TRUNC('day', created_at)`)
+      .orderBy(sql`DATE_TRUNC('day', created_at) ASC`)
+      .limit(120);
+
+    res.json({
+      summary: {
+        totalArticleViews:  agg?.totalArticleViews  ?? 0,
+        totalArticleClicks: agg?.totalArticleClicks ?? 0,
+        totalVideoClicks:   agg?.totalVideoClicks   ?? 0,
+        totalCtaClicks:     agg?.totalCtaClicks     ?? 0,
+        uniqueVisitors:     agg?.uniqueVisitors     ?? 0,
+      },
+      topArticles: topArticles.map((r) => ({ slug: r.slug, title: r.title, views: r.views ?? 0, clicks: r.clicks ?? 0, total: r.total ?? 0 })),
+      topVideos:   topVideos.map((r)   => ({ slug: r.slug, title: r.title, clicks: r.clicks ?? 0 })),
+      topCtas:     topCtas.map((r)     => ({ label: r.label, clicks: r.clicks ?? 0 })),
+      topTopics:   topTopics.map((r)   => ({ slug: r.slug, title: r.title, clicks: r.clicks ?? 0 })),
+      trend:       trend.map((r)       => ({
+        date:          r.date,
+        articleViews:  r.articleViews  ?? 0,
+        articleClicks: r.articleClicks ?? 0,
+        videoClicks:   r.videoClicks   ?? 0,
+        ctaClicks:     r.ctaClicks     ?? 0,
+      })),
+    });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 
