@@ -1,0 +1,159 @@
+Review and fix the article editor + article frontend rendering system.
+
+IMPORTANT:
+- Do not redesign the whole admin or website.
+- Keep the current premium Thang SWC visual style.
+- Focus on fixing content structure rendering, readability, and typography.
+- The current issue is not the article content itself, but the way the editor content is being parsed and displayed on the frontend.
+
+PROBLEM:
+The article content entered in admin looks structured, with paragraphs, markdown-like headings, and lists.
+But on the frontend, the article is rendered badly:
+- headings become too large and swallow too much text
+- multiple paragraphs are merged together
+- bullet lists are not displayed cleanly
+- spacing between sections is weak or inconsistent
+- the page feels heavy, messy, and hard to read
+
+GOAL:
+Make article writing in admin and article reading on the frontend feel clean, editorial, readable, and premium.
+
+========================================
+1. FIX CONTENT RENDERING LOGIC
+========================================
+
+Please inspect how article content is currently stored and rendered.
+
+I need the system to correctly support structured article formatting.
+
+At minimum, fix these rules:
+
+- H2 syntax should render as a proper H2 only
+- H3 syntax should render as a proper H3 only
+- normal lines after a heading should render as paragraphs, not continue as heading text
+- lines starting with "-" should render as proper unordered lists
+- blank lines should create clear paragraph separation
+- bold text should render correctly without breaking paragraph flow
+- links should render correctly
+- no more collapsing large blocks of text into oversized title-like sections
+
+If the current editor stores markdown, render markdown properly.
+If the current editor stores HTML or pseudo-markdown, normalize it and render it consistently.
+
+Most important:
+The frontend must preserve the intended structure of:
+- heading
+- paragraph
+- list
+- emphasis
+
+========================================
+2. IMPROVE ARTICLE TYPOGRAPHY ON FRONTEND
+========================================
+
+The frontend article page currently feels too heavy and visually noisy.
+
+Please polish the article reading experience with better editorial typography.
+
+Recommended direction:
+- content max width around 720–760px
+- body font size around 18px
+- generous line height around 1.8–1.9
+- softer paragraph spacing with clear breathing room
+- H2 should be strong but not oversized
+- H3 should clearly sit below H2
+- lists should have proper indentation and spacing
+- bold text should emphasize key phrases without making the page look overloaded
+- horizontal dividers should be subtle and elegant
+- overall feel should be clean, premium, calm, and readable
+
+The page should feel like a high-quality knowledge article, not like raw admin text dumped onto the screen.
+
+========================================
+3. IMPROVE VISUAL HIERARCHY
+========================================
+
+I need clearer distinction between:
+- headings
+- paragraphs
+- lists
+- emphasized text
+- closing takeaway sections
+
+Please make the article feel easier to scan.
+
+For example:
+- H2 sections should clearly introduce a new block
+- body paragraphs should feel lighter and calmer
+- lists should be visually separated from normal paragraphs
+- strong conclusions should stand out without feeling like giant headlines
+
+========================================
+4. ADMIN EDITOR IMPROVEMENTS
+========================================
+
+Keep the current admin editor simple if needed, but improve usability.
+
+Please check and improve:
+- heading buttons
+- list button
+- bold / italic behavior
+- link insertion
+- line break handling
+- preview consistency
+
+If possible, add a better content preview so the admin can see something much closer to the final frontend result.
+
+Important:
+The admin writing experience should not mislead the editor.
+What looks structured in admin must also look structured on the live article page.
+
+========================================
+5. DO NOT OVER-STYLIZE
+========================================
+
+Avoid:
+- giant headings
+- overly bold body text
+- cramped sections
+- excessive decorative effects
+- blog typography that feels flashy or noisy
+
+Use:
+- calm editorial spacing
+- premium typography
+- clean hierarchy
+- restrained emphasis
+- consistent paragraph rhythm
+
+========================================
+6. QUALITY CHECKS
+========================================
+
+Please verify these before finishing:
+
+- headings render correctly
+- paragraphs are separated correctly
+- bullet lists display properly
+- no heading swallows multiple body paragraphs
+- article width feels comfortable for reading
+- typography feels lighter and more premium
+- admin content and frontend output are consistent
+- no broken markdown formatting remains
+
+========================================
+7. WORKFLOW
+========================================
+
+Please proceed in this order:
+1. Inspect the current article editor and frontend article rendering pipeline
+2. Identify why structured content is being rendered incorrectly
+3. Fix the parsing/rendering logic
+4. Polish the frontend article typography
+5. Improve admin editing consistency where needed
+6. Summarize exactly what was fixed
+
+FINAL INSTRUCTION:
+This is primarily a content rendering and readability problem.
+Fix the structure first, then polish the typography.
+The final result should feel like a premium editorial knowledge article inside the Thang SWC website.

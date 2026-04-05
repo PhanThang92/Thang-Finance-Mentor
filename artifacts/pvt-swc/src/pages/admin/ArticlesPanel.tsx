@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { adminApi, type Article, type Topic, type Series } from "@/lib/newsApi";
 import { A, s, fmtDate, slugify } from "./shared";
 import { ImageUploadField } from "./ImageUploadField";
+import { Prose } from "@/components/Prose";
 
 /* ── Category options ────────────────────────────────────────────────── */
 const CATEGORY_OPTIONS = [
@@ -105,6 +106,28 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
   const [toast, setToast]       = useState<{ msg: string; type: "ok" | "err" } | null>(null);
   const [showSeo, setShowSeo]   = useState(false);
   const [ogGenerating, setOgGenerating] = useState(false);
+  const [contentTab, setContentTab] = useState<"write" | "preview">("write");
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
+  const insertAtCursor = useCallback((prefix: string, suffix = "", placeholder = "") => {
+    const el = contentRef.current;
+    if (!el) return;
+    const start = el.selectionStart ?? 0;
+    const end   = el.selectionEnd ?? 0;
+    const selected = el.value.slice(start, end) || placeholder;
+    const before = el.value.slice(0, start);
+    const after  = el.value.slice(end);
+    const needsNewlineBefore = before.length > 0 && !before.endsWith("\n") && (prefix.startsWith("#") || prefix.startsWith("-") || prefix.startsWith(">") || prefix === "---\n");
+    const newValue = (needsNewlineBefore ? before + "\n" : before) + prefix + selected + suffix + after;
+    setField("content", newValue);
+    const newPos = (needsNewlineBefore ? before.length + 1 : before.length) + prefix.length + selected.length + suffix.length;
+    requestAnimationFrame(() => {
+      if (contentRef.current) {
+        contentRef.current.focus();
+        contentRef.current.setSelectionRange(newPos, newPos);
+      }
+    });
+  }, []);
 
   const [q, setQ]               = useState("");
   const [fStatus, setFStatus]   = useState("all");
@@ -416,8 +439,129 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
 
         {/* 2. Nội dung */}
         <div style={s.card}>
-          <SectionHeading label="Nội dung" />
-          <textarea value={form.content ?? ""} onChange={(e) => setField("content", e.target.value)} rows={18} placeholder="Viết nội dung bài viết tại đây... (hỗ trợ Markdown)" style={{ ...s.textarea, fontFamily: "monospace", fontSize: "13px" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.875rem" }}>
+            <h3 style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textMuted, margin: 0 }}>Nội dung</h3>
+            <div style={{ display: "flex", gap: "2px", background: "#f3f4f6", borderRadius: "7px", padding: "2px" }}>
+              {(["write", "preview"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setContentTab(tab)}
+                  style={{
+                    padding: "4px 14px", borderRadius: "5px", border: "none", cursor: "pointer",
+                    fontSize: "11.5px", fontWeight: 600,
+                    background: contentTab === tab ? "#fff" : "transparent",
+                    color: contentTab === tab ? A.primary : A.textMuted,
+                    boxShadow: contentTab === tab ? "0 1px 3px rgba(0,0,0,0.10)" : "none",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  {tab === "write" ? "Soạn thảo" : "Xem trước"}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {contentTab === "write" && (
+            <>
+              {/* Toolbar */}
+              <div style={{
+                display: "flex", flexWrap: "wrap", gap: "3px",
+                padding: "6px 8px", marginBottom: "6px",
+                background: "#f8f9fa", borderRadius: "7px 7px 0 0",
+                border: `1px solid ${A.border}`, borderBottom: "none",
+              }}>
+                {[
+                  { label: "H2", title: "Tiêu đề lớn (##)", action: () => insertAtCursor("## ", "", "Tiêu đề lớn") },
+                  { label: "H3", title: "Tiêu đề nhỏ (###)", action: () => insertAtCursor("### ", "", "Tiêu đề nhỏ") },
+                  { label: "H4", title: "Tiêu đề phụ (####)", action: () => insertAtCursor("#### ", "", "Tiêu đề phụ") },
+                ].map(({ label, title, action }) => (
+                  <button key={label} type="button" onClick={action} title={title}
+                    style={{ padding: "3px 10px", border: `1px solid ${A.border}`, borderRadius: "4px", background: "#fff", cursor: "pointer", fontSize: "11.5px", fontWeight: 700, color: A.text, lineHeight: 1.4 }}>
+                    {label}
+                  </button>
+                ))}
+                <div style={{ width: "1px", background: A.border, margin: "1px 3px", alignSelf: "stretch" }} />
+                {[
+                  { label: "B", title: "In đậm (**text**)", action: () => insertAtCursor("**", "**", "văn bản đậm"), style: { fontWeight: 800 } },
+                  { label: "I", title: "In nghiêng (*text*)", action: () => insertAtCursor("*", "*", "văn bản nghiêng"), style: { fontStyle: "italic" } },
+                  { label: "`c`", title: "Code nội tuyến (`code`)", action: () => insertAtCursor("`", "`", "code") },
+                ].map(({ label, title, action, style: btnStyle }) => (
+                  <button key={label} type="button" onClick={action} title={title}
+                    style={{ padding: "3px 9px", border: `1px solid ${A.border}`, borderRadius: "4px", background: "#fff", cursor: "pointer", fontSize: "11.5px", color: A.text, lineHeight: 1.4, ...(btnStyle ?? {}) }}>
+                    {label}
+                  </button>
+                ))}
+                <div style={{ width: "1px", background: A.border, margin: "1px 3px", alignSelf: "stretch" }} />
+                <button type="button" onClick={() => insertAtCursor("- ", "", "mục danh sách")} title="Danh sách gạch đầu dòng"
+                  style={{ padding: "3px 9px", border: `1px solid ${A.border}`, borderRadius: "4px", background: "#fff", cursor: "pointer", fontSize: "11.5px", color: A.text, lineHeight: 1.4 }}>
+                  — Danh sách
+                </button>
+                <button type="button" onClick={() => insertAtCursor("1. ", "", "mục danh sách")} title="Danh sách có số"
+                  style={{ padding: "3px 9px", border: `1px solid ${A.border}`, borderRadius: "4px", background: "#fff", cursor: "pointer", fontSize: "11.5px", color: A.text, lineHeight: 1.4 }}>
+                  1. Đánh số
+                </button>
+                <button type="button" onClick={() => insertAtCursor("> ", "", "trích dẫn")} title="Trích dẫn (>)"
+                  style={{ padding: "3px 9px", border: `1px solid ${A.border}`, borderRadius: "4px", background: "#fff", cursor: "pointer", fontSize: "11.5px", color: A.text, lineHeight: 1.4 }}>
+                  " Trích dẫn
+                </button>
+                <button type="button" onClick={() => insertAtCursor("\n---\n")} title="Kẻ ngang phân tách"
+                  style={{ padding: "3px 9px", border: `1px solid ${A.border}`, borderRadius: "4px", background: "#fff", cursor: "pointer", fontSize: "11.5px", color: A.text, lineHeight: 1.4 }}>
+                  — Ngắt đoạn
+                </button>
+                <button type="button" onClick={() => insertAtCursor("[", "](https://)", "văn bản liên kết")} title="Chèn liên kết [text](url)"
+                  style={{ padding: "3px 9px", border: `1px solid ${A.border}`, borderRadius: "4px", background: "#fff", cursor: "pointer", fontSize: "11.5px", color: A.primary, lineHeight: 1.4 }}>
+                  Liên kết
+                </button>
+              </div>
+              <textarea
+                ref={contentRef}
+                value={form.content ?? ""}
+                onChange={(e) => setField("content", e.target.value)}
+                rows={22}
+                placeholder={`Viết nội dung bài viết tại đây. Dùng các nút bên trên để chèn định dạng.\n\nVí dụ:\n## Tiêu đề phần\n\nNội dung đoạn văn bình thường.\n\n- Mục danh sách 1\n- Mục danh sách 2\n\n> Trích dẫn quan trọng`}
+                style={{ ...s.textarea, fontFamily: "'Courier New', Courier, monospace", fontSize: "13px", lineHeight: 1.72, borderRadius: "0 0 7px 7px" }}
+              />
+              {/* Syntax reference */}
+              <div style={{ marginTop: "8px", padding: "9px 13px", background: "#f8f9fa", borderRadius: "6px", border: `1px solid ${A.border}` }}>
+                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: A.textLight, margin: "0 0 5px" }}>Hướng dẫn cú pháp nhanh</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 20px" }}>
+                  {[
+                    { code: "## Tiêu đề", label: "Tiêu đề H2" },
+                    { code: "### Tiêu đề", label: "Tiêu đề H3" },
+                    { code: "**đậm**", label: "In đậm" },
+                    { code: "*nghiêng*", label: "In nghiêng" },
+                    { code: "- Mục", label: "Danh sách" },
+                    { code: "1. Mục", label: "Đánh số" },
+                    { code: "> Trích dẫn", label: "Trích dẫn" },
+                    { code: "---", label: "Kẻ ngang" },
+                    { code: "[text](url)", label: "Liên kết" },
+                  ].map(({ code, label }) => (
+                    <span key={code} style={{ fontSize: "11px", color: A.textMuted, display: "flex", alignItems: "center", gap: "5px" }}>
+                      <code style={{ fontFamily: "monospace", fontSize: "11px", background: "#eee", padding: "1px 5px", borderRadius: "3px", color: A.text }}>{code}</code>
+                      <span>{label}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {contentTab === "preview" && (
+            <div style={{
+              minHeight: "320px", padding: "1.5rem 1.625rem",
+              border: `1px solid ${A.border}`, borderRadius: "7px",
+              background: "#fff",
+            }}>
+              {form.content?.trim() ? (
+                <Prose content={form.content} />
+              ) : (
+                <p style={{ color: A.textLight, fontStyle: "italic", fontSize: "13.5px" }}>
+                  Chưa có nội dung để xem trước.
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* 3. Ảnh bìa */}

@@ -139,7 +139,7 @@ export default function BaiVietArticle() {
         background: "linear-gradient(160deg, hsl(var(--primary) / 0.042) 0%, hsl(var(--background)) 55%)",
         borderBottom: "1px solid hsl(var(--border) / 0.35)",
       }}>
-        <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
+        <div style={{ maxWidth: "740px", margin: "0 auto", padding: "0 1.5rem" }}>
           <motion.div initial="hidden" animate="visible" variants={stagger}>
 
             {/* ── Breadcrumb ── */}
@@ -257,7 +257,7 @@ export default function BaiVietArticle() {
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.18 }}
-          style={{ maxWidth: "700px", margin: "2.75rem auto 0", padding: "0 1.5rem" }}
+          style={{ maxWidth: "740px", margin: "2.75rem auto 0", padding: "0 1.5rem" }}
         >
           <div style={{
             borderRadius: "12px", overflow: "hidden",
@@ -275,7 +275,7 @@ export default function BaiVietArticle() {
 
       {/* ── Article body ── */}
       <section style={{ padding: "3rem 0 5rem" }}>
-        <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
+        <div style={{ maxWidth: "740px", margin: "0 auto", padding: "0 1.5rem" }}>
 
           {article.content
             ? <Prose content={article.content} />
@@ -382,7 +382,7 @@ export default function BaiVietArticle() {
           borderTop: "1px solid hsl(var(--border) / 0.40)",
           background: "hsl(var(--muted) / 0.28)",
         }}>
-          <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
+          <div style={{ maxWidth: "740px", margin: "0 auto", padding: "0 1.5rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.375rem" }}>
               <div style={{ width: "1.5rem", height: "1.5px", background: "hsl(var(--primary) / 0.50)", borderRadius: "999px" }} />
               <p style={{
