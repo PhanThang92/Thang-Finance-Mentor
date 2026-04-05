@@ -10,6 +10,7 @@ import ProductAtlas from "@/pages/ProductAtlas";
 import CongDong from "@/pages/CongDong";
 import TinTuc from "@/pages/TinTuc";
 import TinTucArticle from "@/pages/TinTucArticle";
+import HuyDangKy    from "@/pages/HuyDangKy";
 import Admin from "@/pages/Admin";
 import GioiThieu from "@/pages/GioiThieu";
 import KienThuc from "@/pages/KienThuc";
@@ -42,6 +43,7 @@ function PublicRoutes() {
         <Route path="/tin-tuc/san-pham/atlas" component={() => <TinTuc productSlug="atlas" />} />
         <Route path="/tin-tuc/tag/:slug" component={({ params }) => <TinTuc tagSlug={params.slug} />} />
         <Route path="/tin-tuc/:category/:slug" component={TinTucArticle} />
+        <Route path="/huy-dang-ky" component={HuyDangKy} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

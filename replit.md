@@ -38,7 +38,7 @@ A Next.js application with a dark-teal design system, targeting a Vietnamese aud
 
 -   **Authentication**: Uses a configurable `ADMIN_KEY` stored in localStorage.
 -   **Isolation**: Separated from the public site.
--   **Modules**: Includes Dashboard, Content (Posts, Categories, Tags, Articles, Videos, Topics, Series), Ecosystem (Products, Leads), Operations (Community, Settings), and System (Account).
+-   **Modules**: Includes Dashboard, Content (Posts, Categories, Tags, Articles, Videos, Topics, Series), Ecosystem (Products, Leads), Operations (Community, Settings), Analytics, Email (Subscribers, Campaigns, Sequences), and System (Account).
 -   **Dynamic Content Storage**: Product extra fields, community settings, and site settings are stored as JSON in the `site_settings` table.
 -   **Content Management**: Full CRUD operations for articles, videos, topics, and series, including SEO fields, `showOnHomepage`, and `displayOrder`.
 -   **Image Upload Pipeline**: Integrated into forms, supporting multiple formats, server-side processing (watermarking, compression to WebP), and storing multiple resolutions (display, thumbnail).
@@ -88,6 +88,72 @@ Schema fields: `id` (serial PK), `event_type`, `entity_type`, `entity_slug`, `ev
 - Top topics list with click counts
 - Title resolution: two-step approach — get slugs first, then bulk lookup via separate queries (no correlated subqueries)
 
+### CRM / Leads System
+
+A full CRM system for tracking potential clients and interactions.
+
+**Database tables**: `leads` (19 columns) + `lead_notes`
+
+`leads` columns: `id`, `name`, `email`, `phone`, `source_type`, `source_page`, `product_ref`, `message`, `status`, `notes`, `interest_topic`, `form_type`, `lead_stage`, `tags` (JSONB), `last_contacted_at`, `next_follow_up_at`, `consent_status`, `created_at`, `updated_at`
+
+**6 lead statuses**: `moi`, `da-lien-he`, `dang-quan-tam`, `nuoi-duong`, `da-chuyen-doi`, `da-dong`
+
+**API routes** (all under `/api/admin/`):
+- `GET /leads` — paginated list with filtering
+- `PATCH /leads/:id` — update status, notes, interest, follow-up date
+- `DELETE /leads/:id` — remove lead
+- `GET /leads/:id/notes` — interaction history
+- `POST /leads/:id/notes` — add note (types: internal, call, email, meeting)
+- `DELETE /leads/:id/notes/:noteId` — remove note
+
+**Forms that capture leads**:
+- `LeadFormSection.tsx` — homepage "Liên hệ" section (email + name + phone + interest + honeypot)
+- `CompactLeadForm.tsx` — compact form used in TinTucArticle.tsx (after related articles) and Video.tsx (at bottom)
+- Various product/community forms
+
+**Admin panel**: `artifacts/pvt-swc/src/pages/admin/LeadsPanel.tsx`
+- Notes timeline with type badges (internal, call, email, meeting)
+- Follow-up date picker with orange badge in header
+- Quick status change inline + status pills in detail panel
+- CSV export
+
+### Email Marketing System
+
+Full email marketing system with subscriber management, campaigns, and automated sequences.
+
+**Database tables** (6 tables):
+- `email_subscribers` — subscribers with unsubscribe token, source tracking, CRM link
+- `email_campaigns` — newsletter broadcasts (draft → sent)
+- `email_events` — sent / opened / clicked event log
+- `email_sequences` — nurture sequence definitions
+- `email_sequence_steps` — individual steps with delay_days
+- `email_sequence_enrollments` — per-subscriber progress tracker
+
+**Public API routes** (under `/api/email/`):
+- `POST /subscribe` — newsletter signup (honeypot, rate limiting, CRM dedup, auto-link to lead)
+- `GET /unsubscribe?token=` — one-click unsubscribe (returns JSON); triggers enrollment cancellations
+
+**Admin API routes** (under `/api/admin/email/`, requires Bearer admin key):
+- `GET /stats` — subscriber counts, campaign totals, recent campaigns
+- `GET /subscribers`, `PATCH /subscribers/:id` — subscriber management
+- `GET|POST /campaigns`, `GET|PUT|DELETE /campaigns/:id` — campaign CRUD
+- `POST /campaigns/:id/send` — broadcast to subscribers
+- `POST /campaigns/:id/test` — send test email
+- `GET|POST /sequences`, `PUT|DELETE /sequences/:id` — sequence CRUD
+- `GET|POST /sequences/:id/steps`, `PUT|DELETE /steps/:id` — step CRUD
+
+**Services**:
+- `emailService.ts` — Resend SDK wrapper; graceful no-op if `RESEND_API_KEY` not set
+- `emailTemplates.ts` — HTML email templates (welcome, campaign, unsubscribe page)
+- `sequenceWorker.ts` — background worker checks every 30 min for pending sequence emails
+
+**Config env vars**: `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `RESEND_FROM_NAME`, `SITE_URL`
+
+**Frontend**:
+- `emailApi.subscribe()` + `emailApi.unsubscribe()` in `newsApi.ts`
+- `HuyDangKy.tsx` — unsubscribe page at `/huy-dang-ky?token=...`
+- Admin panels: `EmailSubscribersPanel.tsx`, `EmailCampaignsPanel.tsx`, `EmailSequencesPanel.tsx`
+
 # External Dependencies
 
 -   **Monorepo Tool**: pnpm workspaces
@@ -99,6 +165,7 @@ Schema fields: `id` (serial PK), `event_type`, `entity_type`, `entity_slug`, `ev
 -   **API Codegen**: Orval
 -   **Build Tool**: esbuild
 -   **Image Processing**: sharp
+-   **Email Provider**: Resend (`resend` npm package) — requires `RESEND_API_KEY` env var; graceful no-op if not set
 -   **Frontend Framework**: Next.js
 -   **Data Fetching/State Management**: React Query
 -   **TypeScript**: v5.9

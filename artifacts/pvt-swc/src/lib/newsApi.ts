@@ -133,6 +133,36 @@ export interface ContentMeta {
   series: Series[];
 }
 
+/* ── Email types ────────────────────────────────────────────────────── */
+export interface EmailSubscriber {
+  id: number; email: string; fullName: string | null;
+  subscriberStatus: string; sourceType: string | null; sourcePage: string | null; sourceSection: string | null;
+  consentStatus: string | null; unsubscribeToken: string;
+  linkedLeadId: number | null; tags: string[] | null;
+  subscribedAt: string | null; unsubscribedAt: string | null;
+  createdAt: string; updatedAt: string;
+}
+
+export interface EmailCampaign {
+  id: number; title: string; subject: string; previewText: string | null;
+  campaignType: string; status: string; contentBody: string | null;
+  targetType: string | null; targetTags: string[] | null;
+  recipientCount: number | null; sentAt: string | null; scheduledAt: string | null;
+  createdAt: string; updatedAt: string;
+}
+
+export interface EmailSequence {
+  id: number; title: string; description: string | null;
+  status: string; triggerType: string | null;
+  createdAt: string; updatedAt: string;
+}
+
+export interface EmailSequenceStep {
+  id: number; sequenceId: number; stepOrder: number; delayDays: number;
+  subject: string; previewText: string | null; contentBody: string | null;
+  isActive: boolean; createdAt: string; updatedAt: string;
+}
+
 const BASE = "/api";
 
 async function get<T>(path: string, adminKey?: string): Promise<T> {
@@ -175,6 +205,16 @@ export const leadsApi = {
     message?: string; interestTopic?: string; formType?: string; consentStatus?: string;
     hp?: string; // honeypot — always send empty string
   }) => mutate<{ ok: boolean; id: number }>("POST", "/leads", data),
+};
+
+export const emailApi = {
+  subscribe: (data: {
+    email: string; fullName?: string; sourceType?: string;
+    sourcePage?: string; sourceSection?: string; hp?: string;
+  }) => mutate<{ ok: boolean; id?: number; alreadySubscribed?: boolean }>("POST", "/email/subscribe", data),
+
+  unsubscribe: (token: string) =>
+    get<{ ok: boolean; email?: string; error?: string }>(`/email/unsubscribe?token=${encodeURIComponent(token)}`),
 };
 
 /* ── Admin API ──────────────────────────────────────────────────────── */
@@ -282,4 +322,54 @@ export const adminApi = {
     mutate<{ ok: boolean } | { error: string; usages: MediaUsages }>(
       "DELETE", `/admin/media/${id}${force ? "?force=1" : ""}`, undefined, key,
     ),
+
+  /* email — stats */
+  getEmailStats: (key: string) =>
+    get<{
+      totalSubscribers: number; activeSubscribers: number; recentSubscribers: number;
+      totalCampaigns: number; sentCampaigns: number; totalEmailsSent: number; activeSequences: number;
+      recentCampaigns: Pick<EmailCampaign, "id" | "title" | "status" | "sentAt" | "recipientCount">[];
+    }>("/admin/email/stats", key),
+
+  /* email — subscribers */
+  getSubscribers: (key: string, params?: { q?: string; status?: string }) => {
+    const qs = new URLSearchParams(Object.entries(params ?? {}).filter(([, v]) => !!v) as [string, string][]).toString();
+    return get<{ subscribers: EmailSubscriber[] }>(`/admin/email/subscribers${qs ? `?${qs}` : ""}`, key).then((d) => d.subscribers);
+  },
+  updateSubscriber: (key: string, id: number, data: { subscriberStatus?: string; fullName?: string; tags?: string[] }) =>
+    mutate<{ subscriber: EmailSubscriber }>("PATCH", `/admin/email/subscribers/${id}`, data, key).then((d) => d.subscriber),
+
+  /* email — campaigns */
+  getCampaigns: (key: string) =>
+    get<{ campaigns: EmailCampaign[] }>("/admin/email/campaigns", key).then((d) => d.campaigns),
+  createCampaign: (key: string, data: Partial<EmailCampaign>) =>
+    mutate<{ campaign: EmailCampaign }>("POST", "/admin/email/campaigns", data, key).then((d) => d.campaign),
+  updateCampaign: (key: string, id: number, data: Partial<EmailCampaign>) =>
+    mutate<{ campaign: EmailCampaign }>("PUT", `/admin/email/campaigns/${id}`, data, key).then((d) => d.campaign),
+  deleteCampaign: (key: string, id: number) =>
+    mutate<{ ok: boolean }>("DELETE", `/admin/email/campaigns/${id}`, undefined, key),
+  sendCampaign: (key: string, id: number) =>
+    mutate<{ ok: boolean; recipientCount?: number; error?: string }>("POST", `/admin/email/campaigns/${id}/send`, {}, key),
+  testCampaign: (key: string, id: number, testEmail: string) =>
+    mutate<{ ok: boolean; error?: string }>("POST", `/admin/email/campaigns/${id}/test`, { testEmail }, key),
+
+  /* email — sequences */
+  getSequences: (key: string) =>
+    get<{ sequences: EmailSequence[] }>("/admin/email/sequences", key).then((d) => d.sequences),
+  createSequence: (key: string, data: Partial<EmailSequence>) =>
+    mutate<{ sequence: EmailSequence }>("POST", "/admin/email/sequences", data, key).then((d) => d.sequence),
+  updateSequence: (key: string, id: number, data: Partial<EmailSequence>) =>
+    mutate<{ sequence: EmailSequence }>("PUT", `/admin/email/sequences/${id}`, data, key).then((d) => d.sequence),
+  deleteSequence: (key: string, id: number) =>
+    mutate<{ ok: boolean }>("DELETE", `/admin/email/sequences/${id}`, undefined, key),
+
+  /* email — sequence steps */
+  getSequenceSteps: (key: string, sequenceId: number) =>
+    get<{ steps: EmailSequenceStep[] }>(`/admin/email/sequences/${sequenceId}/steps`, key).then((d) => d.steps),
+  createSequenceStep: (key: string, sequenceId: number, data: Partial<EmailSequenceStep>) =>
+    mutate<{ step: EmailSequenceStep }>("POST", `/admin/email/sequences/${sequenceId}/steps`, data, key).then((d) => d.step),
+  updateSequenceStep: (key: string, id: number, data: Partial<EmailSequenceStep>) =>
+    mutate<{ step: EmailSequenceStep }>("PUT", `/admin/email/steps/${id}`, data, key).then((d) => d.step),
+  deleteSequenceStep: (key: string, id: number) =>
+    mutate<{ ok: boolean }>("DELETE", `/admin/email/steps/${id}`, undefined, key),
 };

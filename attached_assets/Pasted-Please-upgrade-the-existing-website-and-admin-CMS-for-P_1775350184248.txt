@@ -1,0 +1,663 @@
+Please upgrade the existing website and admin CMS for “Phan Van Thang SWC” by adding a lightweight newsletter / email sequence / basic automation system.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Build on top of the current website, admin CMS, Supabase/Postgres, lead forms, and mini CRM.
+- Do NOT build a heavy enterprise marketing automation platform.
+- Focus on a practical, maintainable, lightweight email system suitable for a personal brand / content / consulting website.
+
+GOAL:
+Create a basic email communication system so the website can:
+1. collect newsletter subscribers
+2. send welcome emails
+3. send simple email broadcasts/newsletters
+4. support basic automated nurturing sequences
+5. connect email activity with the lead/CRM system
+6. give the admin a usable internal workflow for follow-up communication
+
+This system should support:
+- newsletter signup
+- content update emails
+- simple nurture flows
+- relationship-building, not spammy marketing
+- future expansion if needed
+
+================================
+1. FEATURE SCOPE
+================================
+
+Please implement:
+
+A. Newsletter subscription handling
+B. Email subscriber management
+C. Basic email templates
+D. Welcome email automation
+E. Simple email sequence / nurture flow
+F. Manual broadcast / newsletter sending
+G. Basic email activity tracking in admin
+H. CRM integration with lead records
+
+Do NOT build advanced segmentation engines, complex campaign branching, or enterprise-grade automation yet.
+Keep it useful, simple, and extendable.
+
+================================
+2. PRIMARY USE CASES
+================================
+
+Support these practical use cases first:
+
+A. Newsletter signup
+A visitor enters email (and optional name) to receive new content updates
+
+B. Welcome email
+After signup, send a calm branded welcome email
+
+C. Simple nurture sequence
+A few automated emails sent over time to build trust and introduce content
+
+D. Manual newsletter / broadcast
+Admin can send an update email to selected subscribers/leads
+
+E. Basic lead-to-subscriber flow
+A lead captured from forms can also become an email subscriber if consent exists
+
+Requirements:
+- tone must remain premium, calm, helpful, and trustworthy
+- no aggressive marketing style
+- no spammy urgency tactics
+
+================================
+3. EMAIL DELIVERY APPROACH
+================================
+
+Integrate a clean email sending solution appropriate to the stack.
+
+Use a practical provider or architecture suitable for:
+- transactional emails
+- light newsletter sending
+- welcome sequences
+- maintainability
+
+Requirements:
+- keep email sending isolated in a clean service layer
+- do not hardcode provider-specific logic everywhere
+- use environment variables for credentials
+- keep architecture future-ready
+
+If the current stack already uses a provider, build on that.
+If not, add a reasonable lightweight email sending setup.
+
+================================
+4. DATABASE / DATA MODEL
+================================
+
+Extend the current CRM / lead system with email-related data.
+
+Recommended additions:
+
+A. `email_subscribers` table
+Fields such as:
+- id
+- email
+- full_name (nullable)
+- subscriber_status (subscribed / unsubscribed / bounced / paused)
+- source_page
+- source_section
+- source_type
+- consent_status
+- subscribed_at
+- unsubscribed_at
+- linked_lead_id (nullable)
+- tags (optional)
+- created_at
+- updated_at
+
+B. `email_campaigns` table
+Fields such as:
+- id
+- title
+- subject
+- preview_text (optional)
+- campaign_type (newsletter / broadcast / automation)
+- status (draft / scheduled / sent)
+- content_html or content_body
+- target_type (all / filtered / tagged / manual selection)
+- sent_at
+- created_at
+- updated_at
+
+C. `email_events` table
+Fields such as:
+- id
+- subscriber_id
+- campaign_id
+- event_type (sent / delivered / opened / clicked / bounced / unsubscribed)
+- event_metadata (optional jsonb)
+- created_at
+
+D. Optional `email_sequences` table
+Fields such as:
+- id
+- title
+- status
+- trigger_type
+- description
+- created_at
+- updated_at
+
+E. Optional `email_sequence_steps` table
+Fields such as:
+- id
+- sequence_id
+- step_order
+- delay_days
+- subject
+- preview_text
+- content_html or content_body
+- is_active
+- created_at
+- updated_at
+
+Requirements:
+- keep schema simple and future-ready
+- do not overcomplicate automation modeling
+- maintain compatibility with leads/CRM
+
+================================
+5. NEWSLETTER SUBSCRIPTION FLOW
+================================
+
+Add or improve newsletter subscription handling on the public site.
+
+Possible entry points:
+- homepage newsletter block
+- article CTA block
+- footer subscribe form
+- content update signup form
+- lead form opt-in checkbox where appropriate
+
+Visible Vietnamese examples:
+- Đăng ký nhận nội dung mới
+- Nhận bài viết và chia sẻ mới qua email
+- Cập nhật nội dung mới dành cho bạn
+
+Fields:
+- Họ và tên (optional or recommended)
+- Email
+
+Buttons:
+- Đăng ký
+- Nhận nội dung mới
+- Theo dõi qua email
+
+Success states:
+- Đăng ký thành công.
+- Cảm ơn bạn, bạn sẽ nhận được những cập nhật phù hợp qua email.
+- Vui lòng kiểm tra email để xác nhận nếu cần.
+
+Requirements:
+- keep the UX simple
+- validate email
+- store subscription cleanly
+- connect to CRM/lead system if appropriate
+
+================================
+6. CONSENT / OPT-IN HANDLING
+================================
+
+Handle email consent clearly and responsibly.
+
+Requirements:
+- if a lead form also adds someone to email updates, this should be explicit
+- store consent status where appropriate
+- avoid silently subscribing people without clear logic
+- support opt-in checkbox if necessary
+
+Visible Vietnamese examples:
+- Tôi đồng ý nhận email cập nhật nội dung
+- Tôi muốn nhận thêm chia sẻ phù hợp qua email
+
+Keep the consent UX light but clear.
+
+================================
+7. WELCOME EMAIL AUTOMATION
+================================
+
+Implement a welcome email triggered after successful newsletter signup or eligible lead opt-in.
+
+Visible admin label examples:
+- Email chào mừng
+- Bật email chào mừng tự động
+
+Suggested welcome email goals:
+- thank the subscriber
+- set expectations
+- introduce brand tone
+- direct them to useful content
+- keep the email warm, clear, and non-salesy
+
+Suggested Vietnamese tone for the email content:
+- calm
+- thoughtful
+- practical
+- long-term oriented
+
+Requirements:
+- welcome email should send automatically
+- keep the template branded and simple
+- avoid heavy marketing language
+- make content editable in admin if practical
+
+================================
+8. BASIC NURTURE SEQUENCE
+================================
+
+Create a simple email nurture sequence system.
+
+Minimum version:
+- one default sequence for new subscribers
+
+Suggested sequence example:
+Step 1: welcome email
+Step 2: a useful foundational content email after a delay
+Step 3: a follow-up email highlighting key articles/videos
+Step 4: a soft invitation to connect / explore more
+
+Visible Vietnamese admin examples:
+- Chuỗi email
+- Email số 1
+- Email số 2
+- Trì hoãn (ngày)
+- Kích hoạt tự động
+
+Requirements:
+- sequence should be lightweight
+- support delay in days
+- support active/inactive state
+- not require complex branching logic
+- enough for basic trust-building
+
+================================
+9. EMAIL TEMPLATE SYSTEM
+================================
+
+Create a reusable email template system.
+
+Recommended templates:
+- welcome email
+- newsletter/broadcast email
+- automation sequence email
+
+Design direction:
+- premium
+- calm
+- readable
+- consistent with brand
+- simple email-safe layout
+- mobile-friendly
+
+Suggested visible content style:
+- Phan Van Thang SWC
+- clean header
+- readable body copy
+- CTA buttons if needed
+- soft footer with unsubscribe link
+
+Requirements:
+- use a shared template structure
+- support subject + preview text + body
+- keep emails visually professional but not overdesigned
+
+================================
+10. ADMIN EMAIL DASHBOARD
+================================
+
+Add a dedicated email section in admin.
+
+Suggested routes:
+- `/admin/email`
+- `/admin/email/subscribers`
+- `/admin/email/campaigns`
+- `/admin/email/sequences`
+
+Visible Vietnamese navigation labels:
+- Email
+- Người đăng ký
+- Chiến dịch email
+- Chuỗi email
+
+Requirements:
+- keep admin structure clear
+- do not clutter the main admin nav too much
+- make email workflow easy to understand
+
+================================
+11. SUBSCRIBERS MANAGEMENT PAGE
+================================
+
+Create a subscriber management page.
+
+Visible Vietnamese page title:
+Người đăng ký email
+
+Columns:
+- Họ và tên
+- Email
+- Trạng thái
+- Nguồn
+- Ngày đăng ký
+- Hành động
+
+Filters:
+- Tất cả
+- Đang đăng ký
+- Đã hủy
+- Theo nguồn
+- Theo ngày
+
+Actions:
+- Xem chi tiết
+- Hủy đăng ký
+- Gắn thẻ
+- Thêm vào chiến dịch
+
+Requirements:
+- searchable by email/name
+- filterable by status/source
+- clean and practical
+- if linked to a lead, show that relationship if useful
+
+================================
+12. CAMPAIGNS / NEWSLETTER BROADCAST PAGE
+================================
+
+Create a simple campaigns page for manual newsletters/broadcasts.
+
+Visible Vietnamese page title:
+Chiến dịch email
+
+Primary actions:
+- Tạo chiến dịch mới
+- Gửi thử
+- Lên lịch gửi (optional)
+- Gửi ngay
+
+Fields for a campaign:
+- Tiêu đề chiến dịch
+- Tiêu đề email
+- Preview text
+- Nội dung email
+- Đối tượng nhận
+- Trạng thái
+
+Possible recipient targeting:
+- tất cả người đăng ký
+- theo thẻ
+- theo nguồn
+- chọn thủ công
+
+Requirements:
+- keep targeting simple
+- support draft / sent / scheduled states
+- allow preview before sending
+- allow test email if practical
+
+================================
+13. SEQUENCES PAGE
+================================
+
+Create a basic automation sequences page.
+
+Visible Vietnamese page title:
+Chuỗi email tự động
+
+Capabilities:
+- create a sequence
+- edit sequence details
+- manage sequence steps
+- activate/deactivate sequence
+
+Visible fields/examples:
+- Tên chuỗi
+- Mô tả
+- Trạng thái
+- Email số 1
+- Email số 2
+- Trì hoãn gửi
+- Kích hoạt tự động
+
+Requirements:
+- keep it simple
+- enough for one welcome/nurture flow
+- no advanced conditional branching yet
+
+================================
+14. EMAIL EDITOR EXPERIENCE
+================================
+
+Support practical email editing.
+
+Minimum viable option:
+- subject field
+- preview text field
+- body editor (textarea or lightweight rich text editor)
+- test send action if practical
+
+Visible Vietnamese labels:
+- Tiêu đề email
+- Preview text
+- Nội dung email
+- Gửi thử
+- Xem trước
+
+Requirements:
+- avoid overly complex WYSIWYG if unnecessary
+- prioritize reliability and maintainability
+- support reusable branded layout wrapper
+
+================================
+15. SEND / SCHEDULE LOGIC
+================================
+
+Support these send states:
+- draft
+- scheduled (optional)
+- sent
+
+Minimum requirement:
+- draft + send now
+
+If scheduling is practical, support:
+- ngày gửi
+- giờ gửi
+
+Visible Vietnamese examples:
+- Bản nháp
+- Đã gửi
+- Lên lịch
+- Gửi ngay
+
+Requirements:
+- keep state handling clear
+- prevent duplicate sends
+- show send status in admin
+
+================================
+16. EMAIL EVENT TRACKING
+================================
+
+Track basic email activity where supported.
+
+At minimum:
+- sent
+Optional but valuable:
+- delivered
+- opened
+- clicked
+- bounced
+- unsubscribed
+
+Requirements:
+- keep tracking realistic based on chosen provider
+- if opens are unreliable, do not overpromise precision
+- show basic engagement summaries in admin when available
+
+Visible Vietnamese examples:
+- Đã gửi
+- Đã mở
+- Đã click
+- Bị trả lại
+- Đã hủy đăng ký
+
+================================
+17. UNSUBSCRIBE FLOW
+================================
+
+Implement a clean unsubscribe flow.
+
+Requirements:
+- every subscriber-targeted email should support unsubscribe
+- unsubscribed users should not continue receiving newsletters
+- status should update in database
+- keep the UX respectful and simple
+
+Visible Vietnamese examples:
+- Hủy đăng ký
+- Bạn đã hủy nhận email thành công
+- Đăng ký lại
+
+Do not make unsubscribe difficult.
+
+================================
+18. CRM INTEGRATION
+================================
+
+Connect email subscribers with leads / CRM where practical.
+
+Requirements:
+- if a subscriber is already a lead, link records if possible
+- if a lead opts into email, reflect that relationship
+- do not create unnecessary duplicate identities
+- keep the data model understandable
+
+Useful possible fields:
+- linked_lead_id
+- subscriber_status
+- consent_status
+
+================================
+19. ADMIN ANALYTICS FOR EMAIL
+================================
+
+Add lightweight email analytics in admin if practical.
+
+Examples:
+- tổng số người đăng ký
+- tăng trưởng người đăng ký 30 ngày
+- email chào mừng đã gửi
+- chiến dịch gần đây
+- tỷ lệ mở / click (if supported)
+
+Visible Vietnamese examples:
+- Tổng người đăng ký
+- Tăng trưởng gần đây
+- Chiến dịch mới nhất
+- Hiệu quả email
+
+Requirements:
+- keep it lightweight
+- useful but not overbuilt
+- fine if this starts simple
+
+================================
+20. AUTOMATION TRIGGER LOGIC
+================================
+
+Support practical automation triggers such as:
+- on newsletter signup
+- on confirmed opt-in
+- on becoming a qualified lead (optional later)
+
+Minimum requirement:
+- one trigger for new subscriber welcome / nurture sequence
+
+Requirements:
+- clear logic
+- prevent duplicate enrollment where appropriate
+- keep behavior understandable in admin
+
+================================
+21. DUPLICATE / IDENTITY HANDLING
+================================
+
+Handle duplicate email identities sensibly.
+
+Requirements:
+- one subscriber per email is generally preferred
+- repeated signup should not create messy duplicates
+- if email already exists, update or reuse subscriber record
+- document chosen logic clearly
+
+================================
+22. SECURITY / BEST PRACTICES
+================================
+
+Use safe and practical email system practices:
+- protect admin routes
+- secure send actions
+- use environment variables
+- avoid unsafe public email sending endpoints
+- validate inputs
+- keep unsubscribe secure enough
+
+Do not expose a fragile email system publicly.
+
+================================
+23. SERVICE LAYER / HELPERS
+================================
+
+Create a clean service layer.
+
+Suggested helpers:
+- subscribeEmail()
+- unsubscribeEmail()
+- createCampaign()
+- sendCampaign()
+- sendTestEmail()
+- getSubscribers()
+- createSequence()
+- enqueueSequenceStep()
+- triggerWelcomeSequence()
+
+Requirements:
+- keep logic out of UI components
+- make the system maintainable
+- prepare for future automation expansion
+
+================================
+24. DOCUMENTATION / HANDOFF
+================================
+
+Add simple notes/comments/documentation for:
+- where email provider config lives
+- how subscriber records work
+- how campaigns are stored
+- how sequence steps are triggered
+- how unsubscribe works
+- how CRM and email records connect
+
+================================
+25. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- the website can collect email subscribers
+- welcome emails can be sent automatically
+- a basic nurture sequence exists
+- admin can send manual newsletters/broadcasts
+- subscriber data is manageable in admin
+- the email system is connected to the CRM/lead system
+- the website becomes a stronger long-term relationship-building platform
+
+Please implement this lightweight newsletter / email sequence / automation system directly into the website and admin CMS.

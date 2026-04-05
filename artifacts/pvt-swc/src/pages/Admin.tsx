@@ -12,8 +12,11 @@ import { VideosPanel }     from "./admin/VideosPanel";
 import { TopicsPanel }     from "./admin/TopicsPanel";
 import { SeriesPanel }     from "./admin/SeriesPanel";
 import { MediaPanel }      from "./admin/MediaPanel";
-import { AnalyticsPanel }  from "./admin/AnalyticsPanel";
-import { A }               from "./admin/shared";
+import { AnalyticsPanel }          from "./admin/AnalyticsPanel";
+import { EmailSubscribersPanel }  from "./admin/EmailSubscribersPanel";
+import { EmailCampaignsPanel }    from "./admin/EmailCampaignsPanel";
+import { EmailSequencesPanel }    from "./admin/EmailSequencesPanel";
+import { A }                      from "./admin/shared";
 
 /* ── Types ────────────────────────────────────────────────────────── */
 type Section =
@@ -31,7 +34,10 @@ type Section =
   | "topics"
   | "series"
   | "media"
-  | "analytics";
+  | "analytics"
+  | "email-subscribers"
+  | "email-campaigns"
+  | "email-sequences";
 
 interface NavItem { id: Section; label: string; icon: string; }
 type NavGroup = { group: string; items: NavItem[] };
@@ -87,6 +93,14 @@ const NAV_STRUCTURE: NavGroup[] = [
     ],
   },
   {
+    group: "Email",
+    items: [
+      { id: "email-subscribers" as Section, label: "Người đăng ký",  icon: "◎" },
+      { id: "email-campaigns"   as Section, label: "Chiến dịch",      icon: "≡" },
+      { id: "email-sequences"   as Section, label: "Chuỗi email",     icon: "⋮" },
+    ],
+  },
+  {
     group: "Hệ thống",
     items: [
       { id: "account", label: "Tài khoản", icon: "○" },
@@ -108,13 +122,16 @@ const SECTION_TITLES: Record<Section, string> = {
   videos:     "Kiến thức · Video",
   topics:     "Kiến thức · Chủ đề",
   series:     "Kiến thức · Series",
-  media:      "Thư viện ảnh",
-  analytics:  "Phân tích nội dung",
+  media:               "Thư viện ảnh",
+  analytics:           "Phân tích nội dung",
+  "email-subscribers": "Email · Người đăng ký",
+  "email-campaigns":   "Email · Chiến dịch",
+  "email-sequences":   "Email · Chuỗi tự động",
 };
 
 const STORAGE_KEY = "swc_admin_key";
 
-const FULL_HEIGHT_SECTIONS: Section[] = ["leads"];
+const FULL_HEIGHT_SECTIONS: Section[] = ["leads", "email-subscribers"];
 
 /* ── Login ────────────────────────────────────────────────────────── */
 function LoginScreen({ onLogin }: { onLogin: (key: string) => void }) {
@@ -334,7 +351,10 @@ export default function Admin() {
           {section === "topics"     && <TopicsPanel     adminKey={adminKey} />}
           {section === "series"     && <SeriesPanel     adminKey={adminKey} />}
           {section === "media"      && <MediaPanel      adminKey={adminKey} />}
-          {section === "analytics"  && <AnalyticsPanel  adminKey={adminKey} />}
+          {section === "analytics"         && <AnalyticsPanel        adminKey={adminKey} />}
+          {section === "email-subscribers" && <EmailSubscribersPanel  adminKey={adminKey} />}
+          {section === "email-campaigns"   && <EmailCampaignsPanel    adminKey={adminKey} />}
+          {section === "email-sequences"   && <EmailSequencesPanel    adminKey={adminKey} />}
         </main>
       </div>
     </div>
