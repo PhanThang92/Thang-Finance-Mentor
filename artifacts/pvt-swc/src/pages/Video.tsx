@@ -5,6 +5,7 @@ import { BackgroundDecor } from "@/components/BackgroundDecor";
 import { useSeoMeta } from "@/hooks/useSeoMeta";
 import { YOUTUBE_CHANNEL_URL } from "@/config/siteConfig";
 import { trackVideoClick, trackCtaClick } from "@/lib/analytics";
+import { CompactLeadForm } from "@/components/CompactLeadForm";
 import {
   getFeaturedVideo,
   getVideosByCategory,
@@ -463,6 +464,16 @@ export default function VideoLibrary() {
           </motion.div>
         </div>
       </section>
+
+      {/* Lead capture form */}
+      <CompactLeadForm
+        title="Nhận cập nhật video mới"
+        description="Để lại thông tin để nhận thông báo khi có video mới và nội dung được chọn lọc phù hợp với anh/chị."
+        sourceType="video-page"
+        sourcePage="/video"
+        formType="email-capture"
+        buttonLabel="Đăng ký nhận cập nhật"
+      />
     </>
   );
 }

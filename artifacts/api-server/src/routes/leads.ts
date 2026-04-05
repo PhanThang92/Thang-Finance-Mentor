@@ -1,20 +1,99 @@
 import { Router } from "express";
 import { db, leadsTable } from "@workspace/db";
+import { eq } from "drizzle-orm";
 
 const router = Router();
 
-// Public lead submission (no auth required)
+// In-memory rate limiter: max 3 submissions per email per hour
+const submissionLog = new Map<string, number[]>();
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const hits = (submissionLog.get(key) ?? []).filter((t) => now - t < 3_600_000);
+  if (hits.length >= 3) return true;
+  hits.push(now);
+  submissionLog.set(key, hits);
+  return false;
+}
+
+// Public lead submission — no auth required
 router.post("/", async (req, res) => {
   try {
-    const { name, email, phone, sourceType, sourcePage, productRef, message } = req.body;
-    if (!name || !name.trim()) { res.status(400).json({ error: "Họ và tên là bắt buộc" }); return; }
+    const {
+      name, email, phone,
+      sourceType, sourcePage, productRef,
+      message, interestTopic, formType, consentStatus,
+      hp, // honeypot — must be empty
+    } = req.body;
+
+    // Honeypot: bots fill hidden fields; silently succeed without saving
+    if (hp && String(hp).trim() !== "") {
+      res.json({ ok: true });
+      return;
+    }
+
+    if (!name || !String(name).trim()) {
+      res.status(400).json({ error: "Họ và tên là bắt buộc" });
+      return;
+    }
+
+    const trimmedEmail = email?.trim() || null;
+
+    if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      res.status(400).json({ error: "Email không hợp lệ" });
+      return;
+    }
+
+    // Rate limit by email (or fallback to ip)
+    const rateKey = trimmedEmail?.toLowerCase() ?? (req.ip ?? "anon");
+    if (isRateLimited(rateKey)) {
+      // Silent: no error shown to visitor; avoids leaking rate-limit logic
+      res.json({ ok: true });
+      return;
+    }
+
+    // Email deduplication — Option A: update existing record
+    if (trimmedEmail) {
+      const [existing] = await db
+        .select()
+        .from(leadsTable)
+        .where(eq(leadsTable.email, trimmedEmail))
+        .limit(1);
+
+      if (existing) {
+        await db.update(leadsTable).set({
+          name: String(name).trim(),
+          phone: phone?.trim() || existing.phone,
+          sourceType: sourceType || existing.sourceType,
+          sourcePage: sourcePage || existing.sourcePage,
+          productRef: productRef || existing.productRef,
+          message: message?.trim() || existing.message,
+          interestTopic: interestTopic || existing.interestTopic,
+          formType: formType || existing.formType,
+          consentStatus: consentStatus || existing.consentStatus,
+          updatedAt: new Date(),
+        }).where(eq(leadsTable.id, existing.id));
+        res.json({ ok: true, id: existing.id });
+        return;
+      }
+    }
+
     const [lead] = await db.insert(leadsTable).values({
-      name: name.trim(), email: email?.trim() || null, phone: phone?.trim() || null,
-      sourceType: sourceType || null, sourcePage: sourcePage || null,
-      productRef: productRef || null, message: message?.trim() || null,
+      name: String(name).trim(),
+      email: trimmedEmail,
+      phone: phone?.trim() || null,
+      sourceType: sourceType || null,
+      sourcePage: sourcePage || null,
+      productRef: productRef || null,
+      message: message?.trim() || null,
+      interestTopic: interestTopic || null,
+      formType: formType || null,
+      consentStatus: consentStatus || null,
     }).returning();
+
     res.json({ ok: true, id: lead.id });
-  } catch (e) { res.status(500).json({ error: String(e) }); }
+  } catch (e) {
+    res.status(500).json({ error: String(e) });
+  }
 });
 
 export default router;

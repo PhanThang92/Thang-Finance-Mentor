@@ -7,6 +7,7 @@ import { TopicsSection } from "@/components/TopicsSection";
 import { YoutubeSection } from "@/components/YoutubeSection";
 import { AboutPersonSection } from "@/components/AboutPersonSection";
 import { CTASection } from "@/components/CTASection";
+import { LeadFormSection } from "@/components/LeadFormSection";
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
       <YoutubeSection />
       <AboutPersonSection />
       <CTASection />
+      <LeadFormSection />
     </>
   );
 }

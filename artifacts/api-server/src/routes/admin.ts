@@ -5,7 +5,7 @@ import { randomBytes } from "crypto";
 import { Router, type Request, type Response, type NextFunction } from "express";
 import multer from "multer";
 import sharp from "sharp";
-import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable } from "@workspace/db";
+import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, leadNotesTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable } from "@workspace/db";
 import { eq, sql, desc, ilike, or, and, isNotNull, gte, lte } from "drizzle-orm";
 
 /* ── Upload dirs ─────────────────────────────────────────────────────── */
@@ -341,11 +341,17 @@ router.get("/leads", async (req, res) => {
 
 router.patch("/leads/:id", async (req, res) => {
   try {
-    const { status, notes } = req.body;
+    const { status, notes, interestTopic, formType, leadStage, tags, lastContactedAt, nextFollowUpAt } = req.body;
     const now = new Date();
     const updateData: Record<string, unknown> = { updatedAt: now };
-    if (status !== undefined) updateData.status = status;
-    if (notes !== undefined) updateData.notes = notes;
+    if (status          !== undefined) updateData.status          = status;
+    if (notes           !== undefined) updateData.notes           = notes;
+    if (interestTopic   !== undefined) updateData.interestTopic   = interestTopic;
+    if (formType        !== undefined) updateData.formType        = formType;
+    if (leadStage       !== undefined) updateData.leadStage       = leadStage;
+    if (tags            !== undefined) updateData.tags            = tags;
+    if (lastContactedAt !== undefined) updateData.lastContactedAt = lastContactedAt ? new Date(lastContactedAt) : null;
+    if (nextFollowUpAt  !== undefined) updateData.nextFollowUpAt  = nextFollowUpAt  ? new Date(nextFollowUpAt)  : null;
     const [lead] = await db.update(leadsTable).set(updateData as never).where(eq(leadsTable.id, Number(req.params.id))).returning();
     res.json({ lead });
   } catch (e) { res.status(500).json({ error: String(e) }); }
@@ -354,6 +360,41 @@ router.patch("/leads/:id", async (req, res) => {
 router.delete("/leads/:id", async (req, res) => {
   try {
     await db.delete(leadsTable).where(eq(leadsTable.id, Number(req.params.id)));
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+// ── Lead notes ────────────────────────────────────────────────────────────────
+router.get("/leads/:id/notes", async (req, res) => {
+  try {
+    const notes = await db.select().from(leadNotesTable)
+      .where(eq(leadNotesTable.leadId, Number(req.params.id)))
+      .orderBy(desc(leadNotesTable.createdAt));
+    res.json({ notes });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.post("/leads/:id/notes", async (req, res) => {
+  try {
+    const { note, noteType } = req.body;
+    if (!note || !String(note).trim()) { res.status(400).json({ error: "Nội dung ghi chú không được để trống" }); return; }
+    const [created] = await db.insert(leadNotesTable).values({
+      leadId: Number(req.params.id),
+      note: String(note).trim(),
+      noteType: noteType || "internal",
+    }).returning();
+    // Also update the lead's lastContactedAt if noteType is "call" or "email"
+    if (noteType === "call" || noteType === "email" || noteType === "meeting") {
+      await db.update(leadsTable).set({ lastContactedAt: new Date(), updatedAt: new Date() })
+        .where(eq(leadsTable.id, Number(req.params.id)));
+    }
+    res.json({ note: created });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.delete("/leads/notes/:noteId", async (req, res) => {
+  try {
+    await db.delete(leadNotesTable).where(eq(leadNotesTable.id, Number(req.params.noteId)));
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });

@@ -114,12 +114,14 @@ export function slugify(s: string) {
   return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 }
 
-// Status labels
+// Status labels — 6-stage CRM workflow
 export const LEAD_STATUSES: { value: string; label: string; color: string }[] = [
-  { value: "moi",          label: "Mới",          color: "#2563eb" },
-  { value: "da-lien-he",   label: "Đã liên hệ",   color: "#7c3aed" },
-  { value: "dang-theo-doi",label: "Đang theo dõi", color: "#d97706" },
-  { value: "hoan-tat",     label: "Hoàn tất",      color: "#16a34a" },
+  { value: "moi",           label: "Mới",             color: "#2563eb" },
+  { value: "da-lien-he",    label: "Đã liên hệ",      color: "#7c3aed" },
+  { value: "dang-quan-tam", label: "Đang quan tâm",   color: "#ea580c" },
+  { value: "nuoi-duong",    label: "Nuôi dưỡng",      color: "#d97706" },
+  { value: "da-chuyen-doi", label: "Đã chuyển đổi",   color: "#16a34a" },
+  { value: "da-dong",       label: "Đã đóng",         color: "#6b7280" },
 ];
 export function leadStatusLabel(s: string) { return LEAD_STATUSES.find((x) => x.value === s)?.label ?? s; }
 export function leadStatusColor(s: string) { return LEAD_STATUSES.find((x) => x.value === s)?.color ?? A.textMuted; }

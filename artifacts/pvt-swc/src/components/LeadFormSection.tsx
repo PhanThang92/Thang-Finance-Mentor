@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { CheckCircle2, Check } from "lucide-react";
+import { leadsApi } from "@/lib/newsApi";
 
 type FormData = {
   fullName: string;
@@ -39,6 +40,9 @@ const inputClass =
 
 export function LeadFormSection() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading]         = useState(false);
+  const [apiError, setApiError]       = useState("");
+  const [hp, setHp]                   = useState(""); // honeypot
 
   const {
     register,
@@ -46,7 +50,28 @@ export function LeadFormSection() {
     formState: { errors },
   } = useForm<FormData>({ defaultValues: { fullName: "", email: "", phone: "", interest: "" } });
 
-  const onSubmit = (_data: FormData) => setIsSubmitted(true);
+  const onSubmit = async (data: FormData) => {
+    setApiError("");
+    setLoading(true);
+    try {
+      await leadsApi.submit({
+        name: data.fullName,
+        email: data.email,
+        phone: data.phone || undefined,
+        interestTopic: data.interest || undefined,
+        formType: "email-capture",
+        sourceType: "homepage",
+        sourcePage: "/",
+        consentStatus: "given",
+        hp,
+      });
+      setIsSubmitted(true);
+    } catch {
+      setApiError("Có lỗi xảy ra, vui lòng thử lại.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section id="lien-he" className="py-24 md:py-32 bg-card">
@@ -185,6 +210,17 @@ export function LeadFormSection() {
                   initial={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
+                  {/* Honeypot — hidden from humans */}
+                  <input
+                    type="text"
+                    name="website"
+                    value={hp}
+                    onChange={(e) => setHp(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    style={{ position: "absolute", left: "-9999px", opacity: 0, pointerEvents: "none", height: 0, width: 0 }}
+                    aria-hidden="true"
+                  />
                   {/* Name */}
                   <div className="space-y-1.5">
                     <label
@@ -283,24 +319,30 @@ export function LeadFormSection() {
                     </select>
                   </div>
 
+                  {/* API error */}
+                  {apiError && (
+                    <p style={{ fontSize: "12.5px", color: "hsl(var(--destructive))", margin: "0" }}>{apiError}</p>
+                  )}
+
                   {/* Submit */}
                   <button
                     type="submit"
+                    disabled={loading}
                     className="w-full rounded-full text-white transition-all duration-200 active:scale-[0.98] mt-2"
                     style={{
                       height: "2.75rem",
                       fontSize: "13.5px",
                       fontWeight: 500,
                       letterSpacing: "0.012em",
-                      background: "hsl(var(--primary))",
+                      background: loading ? "hsl(var(--primary) / 0.65)" : "hsl(var(--primary))",
                       boxShadow: "0 2px 10px rgba(10,40,35,0.12)",
+                      cursor: loading ? "not-allowed" : "pointer",
                     }}
                     onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLElement).style.background =
-                        "hsl(var(--primary) / 0.88)";
+                      if (!loading) (e.currentTarget as HTMLElement).style.background = "hsl(var(--primary) / 0.88)";
                     }}
                     onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.background = "hsl(var(--primary))";
+                      if (!loading) (e.currentTarget as HTMLElement).style.background = "hsl(var(--primary))";
                     }}
                     data-testid="btn-submit-form"
                   >

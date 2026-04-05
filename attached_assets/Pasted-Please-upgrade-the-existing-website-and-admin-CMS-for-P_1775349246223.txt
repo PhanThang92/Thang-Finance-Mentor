@@ -1,0 +1,680 @@
+Please upgrade the existing website and admin CMS for “Phan Van Thang SWC” by adding email capture / lead forms and a lightweight built-in CRM system.
+
+IMPORTANT:
+- Write implementation and code in English.
+- Keep all visible UI text in Vietnamese.
+- Build on top of the current website, admin CMS, Supabase/Postgres, and existing content system.
+- Do NOT redesign the whole public site.
+- Do NOT build an overly complex enterprise CRM.
+- Focus on a practical lead capture and follow-up system that fits a personal brand / content / consulting website.
+
+GOAL:
+Create a lightweight lead generation and CRM workflow so the website can:
+1. capture contact information from interested visitors
+2. store leads cleanly in the database
+3. classify and manage leads inside admin
+4. support basic follow-up status tracking
+5. connect lead capture to homepage / contact / content CTA flows
+6. give the site owner a simple, usable internal CRM
+
+This system should support the website as:
+- a content platform
+- a personal brand site
+- a trust-building funnel
+- a future consulting / product / community growth system
+
+================================
+1. FEATURE SCOPE
+================================
+
+Please implement:
+
+A. Public lead capture forms
+B. Database-backed lead storage
+C. Admin lead management page
+D. Basic lead status tracking
+E. Basic source tracking
+F. Optional notes / follow-up history
+G. Optional simple analytics summaries for leads
+
+Do NOT build a full sales pipeline platform.
+Keep it focused, lightweight, and maintainable.
+
+================================
+2. PUBLIC LEAD CAPTURE USE CASES
+================================
+
+Add lead capture capability in practical places across the public website.
+
+Recommended places:
+- homepage CTA section
+- contact page
+- article page CTA blocks
+- video page CTA blocks
+- community / product interest sections if relevant
+
+Possible use cases:
+- người muốn nhận tư vấn
+- người muốn kết nối
+- người muốn nhận bài viết mới
+- người muốn theo dõi nội dung/series
+- người quan tâm sản phẩm / cộng đồng
+
+Requirements:
+- forms should feel natural, not spammy
+- the tone should remain premium, calm, and trustworthy
+- no aggressive popups unless already part of site strategy
+- prioritize inline forms and thoughtful CTA blocks
+
+================================
+3. LEAD FORM TYPES
+================================
+
+Please support at least two public form types:
+
+A. Simple email capture form
+For newsletter / content updates / follow-up
+
+Fields:
+- Họ và tên
+- Email
+Optional:
+- Số điện thoại
+- Nội dung quan tâm
+
+B. Contact / consultation interest form
+For stronger intent leads
+
+Fields:
+- Họ và tên
+- Email
+- Số điện thoại
+- Nội dung quan tâm
+- Ghi chú / nhu cầu
+
+Requirements:
+- forms should be reusable components
+- support different placements and intents
+- save source/context of each submission
+- keep the UX simple and trustworthy
+
+================================
+4. PUBLIC FORM TEXT SUGGESTIONS
+================================
+
+Use Vietnamese UI text such as:
+
+Form title examples:
+- Đăng ký nhận nội dung mới
+- Để lại thông tin để kết nối
+- Nhận thêm chia sẻ phù hợp với bạn
+- Quan tâm nội dung này? Hãy để lại thông tin
+
+Field labels:
+- Họ và tên
+- Email
+- Số điện thoại
+- Nội dung quan tâm
+- Ghi chú
+
+Placeholder examples:
+- Nhập họ và tên
+- Nhập email của bạn
+- Nhập số điện thoại
+- Ví dụ: đầu tư dài hạn, tài chính cá nhân...
+- Chia sẻ ngắn nhu cầu của bạn
+
+Buttons:
+- Gửi thông tin
+- Đăng ký
+- Kết nối với tôi
+- Nhận nội dung mới
+
+Success states:
+- Cảm ơn bạn, thông tin đã được ghi nhận.
+- Tôi sẽ cập nhật hoặc kết nối với bạn trong thời gian phù hợp.
+- Đăng ký thành công.
+
+Error states:
+- Có lỗi xảy ra, vui lòng thử lại.
+- Vui lòng kiểm tra lại thông tin.
+- Email không hợp lệ.
+
+Requirements:
+- keep language professional and warm
+- no hype
+- no salesy pressure
+
+================================
+5. DATABASE DESIGN
+================================
+
+Create a clean CRM / leads data model.
+
+Suggested table:
+- `leads`
+
+Recommended fields:
+- id (uuid, primary key)
+- full_name
+- email
+- phone
+- interest_topic (nullable)
+- note (nullable)
+- source_page (nullable)
+- source_section (nullable)
+- source_type (nullable)
+- form_type (nullable)
+- lead_status (text)
+- lead_stage (optional text)
+- tags (optional text[] or jsonb)
+- assigned_to (optional, future-ready)
+- last_contacted_at (nullable)
+- next_follow_up_at (nullable)
+- consent_status (optional)
+- created_at
+- updated_at
+
+Minimum recommended statuses:
+- new
+- contacted
+- interested
+- nurturing
+- converted
+- closed
+
+Optional:
+- archived
+- spam
+
+Requirements:
+- keep schema practical and future-ready
+- preserve easy filtering
+- support multiple lead sources
+- do not overcomplicate with too many pipeline stages at first
+
+================================
+6. OPTIONAL CRM NOTES TABLE
+================================
+
+If helpful, add a related notes/history table.
+
+Suggested table:
+- `lead_notes`
+
+Fields:
+- id
+- lead_id
+- note
+- note_type (optional)
+- created_at
+- created_by (optional)
+
+Purpose:
+- record follow-up notes
+- basic interaction history
+- internal context for future conversations
+
+This is recommended if easy to implement.
+If not, a single notes field on lead is acceptable for phase one.
+
+================================
+7. LEAD SOURCE TRACKING
+================================
+
+Capture where the lead came from.
+
+Examples:
+- homepage
+- article detail page
+- video page
+- contact page
+- community page
+- product page
+- homepage CTA
+- article CTA
+- footer form
+
+Save source fields such as:
+- source_page
+- source_section
+- form_type
+- source_type
+
+Requirements:
+- lead source should be visible in admin
+- this is very useful for understanding which content/pages generate interest
+- keep it simple and reliable
+
+================================
+8. PUBLIC FORM SUBMISSION FLOW
+================================
+
+Implement clean submission flow.
+
+Requirements:
+- validate fields properly
+- save lead to database
+- show clear success/error feedback
+- prevent duplicate accidental submits
+- avoid page refresh issues if possible
+- support reusable form handling functions
+
+Optional but useful:
+- deduplicate by email if appropriate
+- if same email submits multiple times, update existing lead or log new interaction depending on chosen logic
+
+Choose a practical approach and document it clearly.
+
+================================
+9. ADMIN CRM OVERVIEW PAGE
+================================
+
+Create a dedicated CRM / leads page in admin.
+
+Suggested routes:
+- `/admin/leads`
+- `/admin/leads/[id]`
+
+Visible Vietnamese page title:
+Khách hàng tiềm năng
+
+Subtext:
+Quản lý thông tin người quan tâm và theo dõi trạng thái kết nối.
+
+Top summary cards examples:
+- Lead mới
+- Đang quan tâm
+- Đã liên hệ
+- Đã chuyển đổi
+
+Requirements:
+- keep this page practical and easy to scan
+- this is the heart of the mini CRM
+- must support filtering and follow-up actions
+
+================================
+10. LEADS LIST PAGE
+================================
+
+Create an admin leads list page.
+
+Visible Vietnamese columns:
+- Họ và tên
+- Email
+- Số điện thoại
+- Nguồn
+- Nội dung quan tâm
+- Trạng thái
+- Ngày tạo
+- Hành động
+
+Primary controls:
+- Tìm kiếm lead...
+- Tất cả
+- Lead mới
+- Đã liên hệ
+- Đang quan tâm
+- Đã chuyển đổi
+
+Optional filters:
+- Theo nguồn
+- Theo chủ đề quan tâm
+- Theo ngày
+- Theo trạng thái
+
+Row actions:
+- Xem chi tiết
+- Sửa
+- Thêm ghi chú
+- Đổi trạng thái
+
+Requirements:
+- searchable by name/email/phone
+- filterable by status/source
+- clean and readable
+- card view on smaller screens if needed
+
+================================
+11. LEAD DETAIL PAGE
+================================
+
+Create a lead detail page in admin.
+
+Visible Vietnamese fields/sections:
+- Thông tin liên hệ
+- Họ và tên
+- Email
+- Số điện thoại
+- Nội dung quan tâm
+- Ghi chú
+- Nguồn đăng ký
+- Trạng thái
+- Ngày tạo
+- Lần liên hệ gần nhất
+- Lần cần theo dõi tiếp theo
+
+Actions:
+- Cập nhật trạng thái
+- Thêm ghi chú
+- Đánh dấu đã liên hệ
+- Đặt lịch theo dõi
+- Xóa lead
+
+If lead notes/history is implemented, show a history/timeline section:
+- Ghi chú nội bộ
+- Lịch sử cập nhật
+
+Requirements:
+- detail page should feel useful, not overloaded
+- easy to update lead state
+- easy to understand context/source
+
+================================
+12. LEAD STATUS WORKFLOW
+================================
+
+Implement a simple but useful lead status workflow.
+
+Visible Vietnamese statuses:
+- Lead mới
+- Đã liên hệ
+- Đang quan tâm
+- Nuôi dưỡng
+- Đã chuyển đổi
+- Đã đóng
+
+Requirements:
+- status can be changed easily in admin
+- admin can quickly identify where each lead is in the relationship
+- do not create too many stages
+- keep status logic practical and human-friendly
+
+Optional helper actions:
+- Đánh dấu đã liên hệ
+- Đánh dấu đang quan tâm
+- Đánh dấu đã chuyển đổi
+
+================================
+13. TAGS / INTEREST CLASSIFICATION
+================================
+
+Allow light classification of leads.
+
+Suggested fields:
+- interest_topic
+- tags
+
+Examples:
+- đầu tư dài hạn
+- tài chính cá nhân
+- cộng đồng
+- sản phẩm
+- tư vấn
+- YouTube
+- bài viết
+- video
+
+Requirements:
+- help the admin group similar leads
+- useful for filtering and future outreach
+- keep tagging simple
+
+================================
+14. FOLLOW-UP SUPPORT
+================================
+
+Add lightweight follow-up support.
+
+Visible Vietnamese fields:
+- Lần liên hệ gần nhất
+- Lần cần theo dõi tiếp theo
+- Ghi chú nội bộ
+
+Optional actions:
+- Thêm ghi chú
+- Đặt ngày theo dõi
+- Đánh dấu đã xử lý
+
+Requirements:
+- do not build a full calendar CRM
+- just support simple next-step tracking
+- enough for one owner/admin to manage leads practically
+
+================================
+15. ADMIN DASHBOARD INTEGRATION
+================================
+
+Add lead summary insights to the admin dashboard if helpful.
+
+Examples:
+- số lead mới 7 ngày qua
+- nguồn lead hiệu quả nhất
+- CTA tạo lead tốt nhất
+- chủ đề quan tâm nhiều nhất
+
+Visible Vietnamese examples:
+- Lead mới 7 ngày qua
+- Nguồn hiệu quả
+- Chủ đề được quan tâm
+- CTA tạo lead tốt nhất
+
+Requirements:
+- keep it lightweight
+- useful for decision-making
+- optional but recommended
+
+================================
+16. CTA / FORM SOURCE ANALYTICS
+================================
+
+Connect lead capture to source analytics where possible.
+
+Examples:
+- homepage CTA generated X leads
+- article CTA generated Y leads
+- contact page generated Z leads
+- video library generated N leads
+
+Requirements:
+- source data should be queryable in admin
+- useful for content and conversion decisions
+- avoid complex attribution models
+- simple first-touch source is enough
+
+================================
+17. EMAIL DUPLICATE HANDLING
+================================
+
+Handle duplicate email submissions sensibly.
+
+Choose a practical strategy:
+Option A:
+- one lead per email, update existing record
+Option B:
+- multiple submissions allowed, but linked to same email identity
+Option C:
+- lead stays unique, submission history is logged separately
+
+Choose the cleanest approach for the current scale.
+
+Requirements:
+- document chosen logic
+- avoid messy duplicate lead records where possible
+- do not lose important repeat-interest data
+
+================================
+18. OPTIONAL LEAD SUBMISSIONS TABLE
+================================
+
+If useful, create a separate `lead_submissions` table.
+
+Purpose:
+- preserve every form submission
+- while keeping a cleaner main `leads` table
+
+Suggested fields:
+- id
+- lead_id
+- form_type
+- source_page
+- source_section
+- message/note
+- submitted_at
+
+This is optional but valuable if duplicate/repeat submissions matter.
+
+If current scale is simple, you may keep only the `leads` table for now.
+
+================================
+19. EMAIL NOTIFICATION READY STRUCTURE
+================================
+
+Do not build a full email automation engine yet unless lightweight.
+But prepare the system so future email notifications or sequences can be added.
+
+Examples:
+- admin notification on new lead
+- welcome email
+- newsletter opt-in workflow
+
+Requirements:
+- structure DB and services cleanly
+- avoid blocking future email integration
+- keep current implementation simple
+
+================================
+20. FORM VALIDATION / UX
+================================
+
+Add proper public form validation.
+
+Requirements:
+- validate required fields
+- validate email format
+- validate phone lightly if needed
+- clear error messages in Vietnamese
+- clear success states
+- clean loading states
+
+Visible Vietnamese examples:
+- Đang gửi thông tin...
+- Vui lòng nhập họ và tên
+- Email không hợp lệ
+- Thông tin đã được gửi thành công
+
+================================
+21. SECURITY / SPAM PREVENTION
+================================
+
+Add practical spam protection and security measures.
+
+Requirements:
+- validate inputs on server side as well if applicable
+- prevent abusive repeated submissions where practical
+- use lightweight protection:
+  - honeypot field
+  - rate limiting
+  - basic throttling
+- do not expose unsafe public write operations
+- keep user data reasonably protected
+
+Do not overbuild anti-spam, but do not leave forms completely unprotected.
+
+================================
+22. ADMIN NAVIGATION UPDATE
+================================
+
+Add the CRM section to admin navigation.
+
+Visible Vietnamese labels:
+- Tổng quan
+- Bài viết
+- Video
+- Chủ đề
+- Series
+- Trang chủ
+- Thư viện ảnh
+- Phân tích nội dung
+- Khách hàng tiềm năng
+
+Requirements:
+- CRM should be easy to access
+- keep nav clean and practical
+
+================================
+23. SERVICE LAYER / HELPERS
+================================
+
+Create a clean service layer for lead management.
+
+Suggested helpers:
+- createLead()
+- updateLead()
+- getLeads()
+- getLeadById()
+- updateLeadStatus()
+- addLeadNote()
+- getLeadStats()
+- getLeadSourcePerformance()
+
+Requirements:
+- keep DB logic out of UI components
+- make public form handling reusable
+- make admin CRM queries maintainable
+
+================================
+24. OPTIONAL CSV EXPORT
+================================
+
+If lightweight and practical, add export support.
+
+Visible Vietnamese action:
+- Xuất CSV
+
+Possible use cases:
+- export all leads
+- export filtered leads
+- export leads by date range/status/source
+
+This is optional but useful.
+Do not build complicated reporting exports unless easy.
+
+================================
+25. PRIVACY / DATA HANDLING
+================================
+
+Handle lead data responsibly.
+
+Requirements:
+- do not expose lead data publicly
+- keep admin-only access
+- protect personal information appropriately
+- use clear DB access rules
+- preserve future compatibility with better permissions/roles
+
+================================
+26. DOCUMENTATION / HANDOFF
+================================
+
+Add simple notes/comments/documentation for:
+- where lead forms are defined
+- where submissions are processed
+- how duplicates are handled
+- how lead status workflow works
+- how source tracking works
+- how future email integration could be added
+
+================================
+27. FINAL EXPECTED RESULT
+================================
+
+After implementation:
+- the website can capture leads from public forms
+- submissions are stored cleanly in the database
+- admin has a mini CRM to manage interested contacts
+- lead status and follow-up become trackable
+- sources and CTA performance become more meaningful
+- the website evolves from a content site into a real relationship-building system
+
+Please implement this email capture / lead form + mini CRM system directly into the website and admin CMS.

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { newsApi, type NewsPost } from "@/lib/newsApi";
 import { getPostImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
 import { trackArticleView } from "@/lib/analytics";
+import { CompactLeadForm } from "@/components/CompactLeadForm";
 
 /* ── motion ────────────────────────────────────────────────────────── */
 const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] } } };
@@ -468,6 +469,16 @@ export default function TinTucArticle() {
           </div>
         </section>
       )}
+
+      {/* ── Lead capture form ── */}
+      <CompactLeadForm
+        title="Nhận thêm nội dung phù hợp"
+        description="Để lại thông tin để nhận những bài viết và chia sẻ mới phù hợp với mối quan tâm của anh/chị."
+        sourceType="tin-tuc"
+        sourcePage="/tin-tuc"
+        formType="email-capture"
+        buttonLabel="Đăng ký nhận nội dung"
+      />
     </div>
   );
 }

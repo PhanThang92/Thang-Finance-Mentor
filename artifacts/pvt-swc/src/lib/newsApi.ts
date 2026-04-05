@@ -16,7 +16,14 @@ export interface Lead {
   id: number; name: string; email: string | null; phone: string | null;
   sourceType: string | null; sourcePage: string | null; productRef: string | null;
   message: string | null; status: string; notes: string | null;
+  interestTopic: string | null; formType: string | null; leadStage: string | null;
+  tags: string[] | null;
+  lastContactedAt: string | null; nextFollowUpAt: string | null;
+  consentStatus: string | null;
   createdAt: string; updatedAt: string;
+}
+export interface LeadNote {
+  id: number; leadId: number; note: string; noteType: string | null; createdAt: string;
 }
 export interface DashboardData {
   publishedCount: number; draftCount: number; productCount: number;
@@ -162,8 +169,12 @@ export const newsApi = {
 };
 
 export const leadsApi = {
-  submit: (data: { name: string; email?: string; phone?: string; sourceType?: string; sourcePage?: string; productRef?: string; message?: string }) =>
-    mutate<{ ok: boolean; id: number }>("POST", "/leads", data),
+  submit: (data: {
+    name: string; email?: string; phone?: string;
+    sourceType?: string; sourcePage?: string; productRef?: string;
+    message?: string; interestTopic?: string; formType?: string; consentStatus?: string;
+    hp?: string; // honeypot — always send empty string
+  }) => mutate<{ ok: boolean; id: number }>("POST", "/leads", data),
 };
 
 /* ── Admin API ──────────────────────────────────────────────────────── */
@@ -213,8 +224,16 @@ export const adminApi = {
     const qs = new URLSearchParams(Object.entries(params ?? {}).filter(([, v]) => !!v) as [string, string][]).toString();
     return get<{ leads: Lead[] }>(`/admin/leads${qs ? `?${qs}` : ""}`, key).then((d) => d.leads);
   },
-  updateLead: (key: string, id: number, data: { status?: string; notes?: string }) => mutate<{ lead: Lead }>("PATCH", `/admin/leads/${id}`, data, key).then((d) => d.lead),
+  updateLead: (key: string, id: number, data: {
+    status?: string; notes?: string; interestTopic?: string | null;
+    formType?: string | null; leadStage?: string | null; tags?: string[] | null;
+    lastContactedAt?: string | null; nextFollowUpAt?: string | null;
+  }) => mutate<{ lead: Lead }>("PATCH", `/admin/leads/${id}`, data, key).then((d) => d.lead),
   deleteLead: (key: string, id: number) => mutate<{ ok: boolean }>("DELETE", `/admin/leads/${id}`, undefined, key),
+  /* lead notes */
+  getLeadNotes: (key: string, leadId: number) => get<{ notes: LeadNote[] }>(`/admin/leads/${leadId}/notes`, key).then((d) => d.notes),
+  addLeadNote: (key: string, leadId: number, note: string, noteType?: string) => mutate<{ note: LeadNote }>("POST", `/admin/leads/${leadId}/notes`, { note, noteType: noteType ?? "internal" }, key).then((d) => d.note),
+  deleteLeadNote: (key: string, noteId: number) => mutate<{ ok: boolean }>("DELETE", `/admin/leads/notes/${noteId}`, undefined, key),
 
   /* settings */
   getSettings: (key: string) => get<{ settings: Record<string, string | null> }>("/admin/settings", key).then((d) => d.settings),

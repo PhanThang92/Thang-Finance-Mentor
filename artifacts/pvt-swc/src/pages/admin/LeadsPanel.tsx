@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { adminApi, type Lead } from "@/lib/newsApi";
+import { adminApi, type Lead, type LeadNote } from "@/lib/newsApi";
 import { A, s, fmtDate, fmtDateTime, LEAD_STATUSES, leadStatusLabel, leadStatusColor } from "./shared";
 
 /* ── Source helpers ──────────────────────────────────────────────── */
@@ -266,31 +266,112 @@ function EmptyState({ hasLeads }: { hasLeads: boolean }) {
   );
 }
 
+const NOTE_TYPE_LABELS: Record<string, { label: string; color: string }> = {
+  internal: { label: "Nội bộ",  color: A.textMuted },
+  call:     { label: "Gọi điện", color: "#7c3aed" },
+  email:    { label: "Email",    color: "#0284c7" },
+  meeting:  { label: "Gặp mặt", color: "#15803d" },
+};
+
+function NoteItem({ note, onDelete }: { note: LeadNote; onDelete: () => void }) {
+  const meta = NOTE_TYPE_LABELS[note.noteType ?? "internal"] ?? NOTE_TYPE_LABELS.internal;
+  return (
+    <div style={{
+      padding: "9px 11px", borderRadius: "7px", border: `1px solid ${A.border}`,
+      background: "#fff", display: "flex", gap: "0.5rem",
+    }}>
+      <div style={{ flex: 1 }}>
+        <div style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "4px" }}>
+          <span style={{ fontSize: "10px", fontWeight: 700, color: meta.color, letterSpacing: "0.06em" }}>{meta.label}</span>
+          <span style={{ fontSize: "10.5px", color: A.textLight }}>{fmtDateTime(note.createdAt)}</span>
+        </div>
+        <p style={{ margin: 0, fontSize: "13px", color: A.text, lineHeight: 1.55 }}>{note.note}</p>
+      </div>
+      <button
+        onClick={onDelete}
+        style={{ flexShrink: 0, padding: "2px 7px", borderRadius: "5px", border: "1px solid rgba(193,51,51,0.22)", cursor: "pointer", fontSize: "11px", color: A.danger, background: "transparent" }}
+      >
+        Xoá
+      </button>
+    </div>
+  );
+}
+
 /* ── Lead detail panel ───────────────────────────────────────────── */
 function LeadDetail({
   lead, adminKey, onUpdated, onClose,
 }: {
   lead: Lead; adminKey: string; onUpdated: (l: Lead) => void; onClose: () => void;
 }) {
-  const [notesEdit, setNotesEdit] = useState(lead.notes ?? "");
-  const [statusEdit, setStatusEdit] = useState(lead.status);
-  const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState("");
+  const [notesEdit, setNotesEdit]       = useState(lead.notes ?? "");
+  const [statusEdit, setStatusEdit]     = useState(lead.status);
+  const [interestEdit, setInterestEdit] = useState(lead.interestTopic ?? "");
+  const [followUpAt, setFollowUpAt]     = useState(lead.nextFollowUpAt ? lead.nextFollowUpAt.slice(0, 10) : "");
+  const [saving, setSaving]             = useState(false);
+  const [msg, setMsg]                   = useState("");
+
+  const [notesList, setNotesList]       = useState<LeadNote[]>([]);
+  const [notesLoading, setNotesLoading] = useState(false);
+  const [newNote, setNewNote]           = useState("");
+  const [newNoteType, setNewNoteType]   = useState("internal");
+  const [addingNote, setAddingNote]     = useState(false);
 
   useEffect(() => {
     setNotesEdit(lead.notes ?? "");
     setStatusEdit(lead.status);
-    setMsg("");
-  }, [lead.id]);
+    setInterestEdit(lead.interestTopic ?? "");
+    setFollowUpAt(lead.nextFollowUpAt ? lead.nextFollowUpAt.slice(0, 10) : "");
+    setMsg(""); setNewNote("");
+    setNotesLoading(true);
+    adminApi.getLeadNotes(adminKey, lead.id)
+      .then(setNotesList).catch(console.error).finally(() => setNotesLoading(false));
+  }, [lead.id, adminKey]);
 
   const save = async () => {
     setSaving(true); setMsg("");
     try {
-      const updated = await adminApi.updateLead(adminKey, lead.id, { status: statusEdit, notes: notesEdit });
+      const updated = await adminApi.updateLead(adminKey, lead.id, {
+        status: statusEdit, notes: notesEdit,
+        interestTopic: interestEdit || null,
+        nextFollowUpAt: followUpAt ? new Date(followUpAt).toISOString() : null,
+      });
       onUpdated(updated);
       setMsg("Đã lưu.");
     } catch (e) { setMsg(String(e)); }
     finally { setSaving(false); }
+  };
+
+  const markContacted = async () => {
+    try {
+      const updated = await adminApi.updateLead(adminKey, lead.id, {
+        status: "da-lien-he", lastContactedAt: new Date().toISOString(),
+      });
+      onUpdated(updated); setStatusEdit("da-lien-he");
+      setMsg("Đã đánh dấu liên hệ.");
+    } catch (e) { setMsg(String(e)); }
+  };
+
+  const addNote = async () => {
+    if (!newNote.trim()) return;
+    setAddingNote(true);
+    try {
+      const created = await adminApi.addLeadNote(adminKey, lead.id, newNote, newNoteType);
+      setNotesList((prev) => [created, ...prev]);
+      setNewNote("");
+      if (newNoteType !== "internal") {
+        const updated = await adminApi.updateLead(adminKey, lead.id, { lastContactedAt: new Date().toISOString() });
+        onUpdated(updated);
+      }
+    } catch (e) { setMsg(String(e)); }
+    finally { setAddingNote(false); }
+  };
+
+  const deleteNote = async (noteId: number) => {
+    if (!confirm("Xoá ghi chú này?")) return;
+    try {
+      await adminApi.deleteLeadNote(adminKey, noteId);
+      setNotesList((prev) => prev.filter((n) => n.id !== noteId));
+    } catch (e) { alert(String(e)); }
   };
 
   const statusChanged = statusEdit !== lead.status;
@@ -305,18 +386,19 @@ function LeadDetail({
         flexShrink: 0,
       }}>
         <div>
-          <p style={{ fontSize: "15.5px", fontWeight: 700, color: A.text, margin: "0 0 5px" }}>
-            {lead.name}
-          </p>
-          <StatusBadge status={lead.status} />
+          <p style={{ fontSize: "15.5px", fontWeight: 700, color: A.text, margin: "0 0 5px" }}>{lead.name}</p>
+          <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
+            <StatusBadge status={lead.status} />
+            {lead.nextFollowUpAt && new Date(lead.nextFollowUpAt) > new Date() && (
+              <span style={{ fontSize: "10px", fontWeight: 600, background: "#fff7ed", color: "#ea580c", padding: "2px 7px", borderRadius: "4px", border: "1px solid #fed7aa" }}>
+                Theo dõi: {fmtDate(lead.nextFollowUpAt)}
+              </span>
+            )}
+          </div>
         </div>
         <button
           onClick={onClose}
-          style={{
-            width: "28px", height: "28px", borderRadius: "6px", border: "none",
-            background: "rgba(0,0,0,0.05)", cursor: "pointer", fontSize: "14px",
-            color: A.textMuted, display: "flex", alignItems: "center", justifyContent: "center",
-          }}
+          style={{ width: "28px", height: "28px", borderRadius: "6px", border: "none", background: "rgba(0,0,0,0.05)", cursor: "pointer", fontSize: "14px", color: A.textMuted, display: "flex", alignItems: "center", justifyContent: "center" }}
         >
           ✕
         </button>
@@ -335,46 +417,54 @@ function LeadDetail({
         <DetailSection label="Nguồn tiếp cận">
           <DetailRow label="Loại nguồn" value={sourceLabel(lead.sourceType)} />
           <DetailRow label="Trang nguồn" value={lead.sourcePage} mono />
+          <DetailRow label="Loại form" value={lead.formType} />
           <DetailRow label="Sản phẩm" value={lead.productRef} highlight />
         </DetailSection>
 
         {/* Message */}
         {lead.message && (
-          <DetailSection label="Lời nhắn / Mối quan tâm">
-            <div style={{
-              fontSize: "13px", color: A.text, background: "rgba(0,0,0,0.025)",
-              padding: "10px 12px", borderRadius: "7px", lineHeight: 1.65,
-              border: `1px solid ${A.border}`,
-            }}>
+          <DetailSection label="Lời nhắn">
+            <div style={{ fontSize: "13px", color: A.text, background: "rgba(0,0,0,0.025)", padding: "10px 12px", borderRadius: "7px", lineHeight: 1.65, border: `1px solid ${A.border}` }}>
               {lead.message}
             </div>
           </DetailSection>
         )}
 
-        {/* Dates */}
-        <DetailSection label="Thời gian">
+        {/* Interest topic (editable) */}
+        <DetailSection label="Chủ đề quan tâm">
+          <input
+            type="text" value={interestEdit}
+            onChange={(e) => setInterestEdit(e.target.value)}
+            style={{ ...s.field, fontSize: "13px" }}
+            placeholder="Ví dụ: đầu tư dài hạn, tài chính cá nhân..."
+          />
+        </DetailSection>
+
+        {/* Dates & follow-up */}
+        <DetailSection label="Thời gian & Theo dõi">
           <DetailRow label="Đăng ký" value={fmtDateTime(lead.createdAt)} />
-          {lead.updatedAt !== lead.createdAt && (
-            <DetailRow label="Cập nhật" value={fmtDateTime(lead.updatedAt)} />
-          )}
+          {lead.lastContactedAt && <DetailRow label="Liên hệ gần nhất" value={fmtDateTime(lead.lastContactedAt)} />}
+          <div>
+            <span style={{ fontSize: "11px", color: A.textLight, display: "block", marginBottom: "4px" }}>Theo dõi tiếp theo</span>
+            <input
+              type="date" value={followUpAt}
+              onChange={(e) => setFollowUpAt(e.target.value)}
+              style={{ ...s.field, fontSize: "13px", maxWidth: "180px" }}
+            />
+          </div>
         </DetailSection>
 
         {/* Status */}
         <DetailSection label="Cập nhật trạng thái">
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
             {LEAD_STATUSES.map((st) => (
-              <button
-                key={st.value}
-                onClick={() => setStatusEdit(st.value)}
-                style={{
-                  padding: "6px 13px", borderRadius: "6px", cursor: "pointer", fontSize: "12.5px",
-                  border: `1px solid ${statusEdit === st.value ? leadStatusColor(st.value) : A.border}`,
-                  background: statusEdit === st.value ? `${leadStatusColor(st.value)}12` : "#fff",
-                  color: statusEdit === st.value ? leadStatusColor(st.value) : A.textMuted,
-                  fontWeight: statusEdit === st.value ? 600 : 400,
-                  transition: "all 0.12s ease",
-                }}
-              >
+              <button key={st.value} onClick={() => setStatusEdit(st.value)} style={{
+                padding: "5px 11px", borderRadius: "6px", cursor: "pointer", fontSize: "12px",
+                border: `1px solid ${statusEdit === st.value ? leadStatusColor(st.value) : A.border}`,
+                background: statusEdit === st.value ? `${leadStatusColor(st.value)}12` : "#fff",
+                color: statusEdit === st.value ? leadStatusColor(st.value) : A.textMuted,
+                fontWeight: statusEdit === st.value ? 600 : 400, transition: "all 0.12s ease",
+              }}>
                 {st.label}
               </button>
             ))}
@@ -386,27 +476,73 @@ function LeadDetail({
           )}
         </DetailSection>
 
-        {/* Notes */}
-        <DetailSection label="Ghi chú nội bộ">
+        {/* Internal notes (quick field) */}
+        <DetailSection label="Ghi chú nhanh">
           <textarea
-            value={notesEdit}
-            onChange={(e) => setNotesEdit(e.target.value)}
-            style={{ ...s.textarea, height: "90px", fontSize: "13px" }}
-            placeholder="Ghi chú riêng của team, không hiển thị cho khách..."
+            value={notesEdit} onChange={(e) => setNotesEdit(e.target.value)}
+            style={{ ...s.textarea, height: "65px", fontSize: "13px" }}
+            placeholder="Ghi chú riêng, không hiển thị cho khách..."
           />
         </DetailSection>
 
-        {/* Save */}
-        <div style={{ display: "flex", gap: "0.625rem", alignItems: "center", paddingBottom: "1rem" }}>
+        {/* Actions + Save */}
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "0.75rem", flexWrap: "wrap" }}>
           <button style={s.btnPrimary} disabled={saving} onClick={save}>
             {saving ? "Đang lưu..." : "Lưu thay đổi"}
           </button>
+          <button
+            onClick={markContacted}
+            style={{ ...s.btnSecondary, fontSize: "12px", color: "#7c3aed", borderColor: "#7c3aed44" }}
+          >
+            Đánh dấu đã liên hệ
+          </button>
           {msg && (
-            <span style={{ fontSize: "12.5px", color: msg.startsWith("Đã") ? A.primary : A.danger }}>
-              {msg}
-            </span>
+            <span style={{ fontSize: "12.5px", color: msg.startsWith("Đã") ? A.primary : A.danger }}>{msg}</span>
           )}
         </div>
+
+        {/* Divider */}
+        <div style={{ height: "1px", background: A.border, margin: "0.75rem 0 1.375rem" }} />
+
+        {/* Notes history */}
+        <DetailSection label="Ghi chú & Lịch sử liên hệ">
+          {/* Add note */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" }}>
+            <div style={{ display: "flex", gap: "0.5rem", alignItems: "flex-start" }}>
+              <select
+                value={newNoteType} onChange={(e) => setNewNoteType(e.target.value)}
+                style={{ ...s.select, width: "100px", fontSize: "12px", flexShrink: 0 }}
+              >
+                <option value="internal">Nội bộ</option>
+                <option value="call">Gọi điện</option>
+                <option value="email">Email</option>
+                <option value="meeting">Gặp mặt</option>
+              </select>
+              <textarea
+                value={newNote} onChange={(e) => setNewNote(e.target.value)}
+                style={{ ...s.textarea, height: "55px", fontSize: "12.5px", flex: 1, resize: "none" }}
+                placeholder="Nội dung ghi chú hoặc cập nhật lịch sử..."
+              />
+            </div>
+            <button
+              onClick={addNote} disabled={addingNote || !newNote.trim()}
+              style={{ ...s.btnSecondary, alignSelf: "flex-start", fontSize: "12px" }}
+            >
+              {addingNote ? "Đang thêm..." : "+ Thêm ghi chú"}
+            </button>
+          </div>
+
+          {/* Notes list */}
+          {notesLoading ? (
+            <p style={{ fontSize: "12px", color: A.textLight }}>Đang tải...</p>
+          ) : notesList.length === 0 ? (
+            <p style={{ fontSize: "12px", color: A.textLight, fontStyle: "italic" }}>Chưa có ghi chú nào.</p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem", paddingBottom: "1rem" }}>
+              {notesList.map((n) => <NoteItem key={n.id} note={n} onDelete={() => deleteNote(n.id)} />)}
+            </div>
+          )}
+        </DetailSection>
       </div>
     </div>
   );
