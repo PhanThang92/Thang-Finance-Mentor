@@ -1,0 +1,62 @@
+Review the SWC Pass product page you just built and do a full polish pass.
+
+Goals:
+- improve clarity, trust, and premium presentation
+- make the page feel fully native to the Phan Van Thang SWC website
+- reduce any hype-driven or overly salesy language
+- strengthen the mentor-led, system-based positioning
+- polish layout, spacing, typography, cards, and CTA hierarchy without redesigning the whole site
+
+Please check and improve these areas carefully:
+
+1. Messaging and copy
+- rewrite any lines that feel too aggressive, too promotional, or too “get rich quick”
+- make the tone calmer, clearer, more premium, and more trustworthy
+- reinforce this positioning:
+  SWC Pass is a structured gateway into the SWC ecosystem, not a hype-driven offer
+- make Road to a Million wording safer and more educational, not outcome-promising
+- keep all copy in Vietnamese and aligned with Phan Van Thang SWC voice
+
+2. Hero section
+- improve headline/subheadline hierarchy
+- make the hero clearer in 3 seconds
+- ensure CTAs are obvious and useful
+- keep the visual atmosphere premium, strategic, and calm
+
+3. Section quality
+- tighten the “SWC Pass là gì?” section
+- make “SWC Pass giúp giải quyết điều gì?” more practical and less generic
+- improve the value blocks for SWC Field, Road to a Million, Analysis & Advisory, and Ecosystem Expansion
+- make “Cách tôi khuyên anh/chị tiếp cận SWC Pass” feel more personal, mentor-like, and believable
+- improve FAQ clarity and readability
+
+4. Pricing section
+- improve card hierarchy and comparison clarity
+- make Essential / Plus / Ultimate easier to scan
+- ensure benefits are clean and not repetitive
+- make any editable pricing note easy to maintain
+- improve CTA clarity around plan selection or consultation
+
+5. UX and visual polish
+- fix spacing, alignment, line lengths, white space, and card balance
+- improve responsive behavior on tablet and mobile
+- make section transitions smoother
+- ensure the final CTA section feels strong and intentional
+- remove any visual clutter or duplicated patterns
+
+6. Conversion polish
+- make “Explore plans” scroll correctly
+- make “Request consultation” connect correctly to the contact flow
+- if there is a plan inquiry form, make it simple, elegant, and friction-light
+- ensure the page supports soft conversion, not pressure-selling
+
+7. Final quality checks
+- verify headings, semantic structure, and SEO basics
+- verify all links and anchors
+- verify visual consistency with the rest of the website
+- fix any placeholder text, awkward wording, or unfinished states
+
+Then:
+- summarize exactly what you improved
+- list any copy changes you made for tone and positioning
+- mention any remaining suggestions for a future polish pass
