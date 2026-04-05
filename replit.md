@@ -24,7 +24,15 @@ Utilizes Drizzle ORM with PostgreSQL. It exports a Drizzle client and schema mod
 
 ## Frontend Application (Personal Brand Landing Page)
 
-A Next.js application with a dark-teal design system, targeting a Vietnamese audience.
+A React + Vite application with a dark-teal design system, targeting a Vietnamese audience.
+
+### Article Routing
+
+There are two separate content systems with their own routes:
+- **Tin tức** (`/tin-tuc`) — news posts from `news_posts` table. Article detail at `/tin-tuc/:category/:slug` → `TinTucArticle.tsx` fetches from `/api/news/posts/:slug`
+- **Bài viết** (`/bai-viet`) — knowledge-hub articles from `articles` table. Article detail at `/bai-viet/:slug` → `BaiVietArticle.tsx` fetches from `/api/content/articles/:slug`
+
+Do NOT link `/bai-viet` articles to the `/tin-tuc/:category/:slug` route — they live in different database tables and have different slugs.
 
 ### UI/UX and Design
 
@@ -108,7 +116,7 @@ A full CRM system for tracking potential clients and interactions.
 
 **Forms that capture leads**:
 - `LeadFormSection.tsx` — homepage "Liên hệ" section (email + name + phone + interest + honeypot)
-- `CompactLeadForm.tsx` — compact form used in TinTucArticle.tsx (after related articles) and Video.tsx (at bottom)
+- `CompactLeadForm.tsx` — compact form used in TinTucArticle.tsx, BaiVietArticle.tsx (after related articles) and Video.tsx (at bottom)
 - Various product/community forms
 
 **Admin panel**: `artifacts/pvt-swc/src/pages/admin/LeadsPanel.tsx`

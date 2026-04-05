@@ -6,7 +6,7 @@ import { ArrowDown } from "lucide-react";
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.85, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.85, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
 });
 
 const trustItems = [
@@ -168,7 +168,7 @@ export function HeroSection() {
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.1, delay: 0.3, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
             className="flex justify-center lg:justify-end"
           >
             <div className="w-60 sm:w-72 lg:w-full max-w-[360px]">

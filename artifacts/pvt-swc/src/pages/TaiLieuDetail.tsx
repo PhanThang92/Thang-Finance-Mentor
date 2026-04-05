@@ -250,6 +250,17 @@ export default function TaiLieuDetail() {
   const [unlocked, setUnlocked] = useState<UnlockResult | null>(null);
 
   useEffect(() => {
+    if (!resource) return;
+    const title = resource.seoTitle || resource.title;
+    document.title = `${title} — Phan Văn Thắng SWC`;
+    const desc = resource.seoDescription || resource.shortDescription || "";
+    let metaDesc = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
+    if (!metaDesc) { metaDesc = document.createElement("meta"); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
+    metaDesc.content = desc;
+    return () => { document.title = "Thắng SWC"; };
+  }, [resource]);
+
+  useEffect(() => {
     if (!slug) return;
     setLoading(true);
     resourcesApi.getResource(slug)
@@ -283,14 +294,6 @@ export default function TaiLieuDetail() {
 
   return (
     <>
-      <Helmet>
-        <title>{seoTitle} — Phan Văn Thắng SWC</title>
-        {seoDesc && <meta name="description" content={seoDesc} />}
-        {ogImg   && <meta property="og:image" content={ogImg} />}
-        <meta property="og:title" content={seoTitle} />
-        {seoDesc && <meta property="og:description" content={seoDesc} />}
-      </Helmet>
-
       <div style={{ background: "#fafaf9", minHeight: "80vh" }}>
         {/* Hero */}
         <div

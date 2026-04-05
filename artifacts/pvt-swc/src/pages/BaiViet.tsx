@@ -14,7 +14,7 @@ import {
 /* ── Animation ── */
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 
@@ -33,7 +33,7 @@ function ArticleCard({ article, featured = false }: { article: Article; featured
   return (
     <motion.a
       variants={fadeUp}
-      href={`/tin-tuc/${article.categorySlug ?? "bai-viet"}/${article.slug}`}
+      href={`/bai-viet/${article.slug}`}
       onClick={() => trackArticleClick(article.slug, article.title ?? undefined)}
       style={{
         display: "flex",

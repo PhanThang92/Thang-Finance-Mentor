@@ -45,7 +45,7 @@ export interface LeadNote {
 export interface DashboardData {
   publishedCount: number; draftCount: number; productCount: number;
   totalLeads: number; newLeads: number;
-  recentPosts: Pick<NewsPost, "id" | "title" | "status" | "publishedAt" | "createdAt" | "updatedAt"> & { categoryName: string | null }[];
+  recentPosts: (Pick<NewsPost, "id" | "title" | "status" | "publishedAt" | "createdAt" | "updatedAt"> & { categoryName: string | null })[];
   recentLeads: Lead[];
   articlesPublished: number; articlesDraft: number;
   videosPublished: number; videosDraft: number;
@@ -272,6 +272,7 @@ export const leadsApi = {
     sourceType?: string; sourcePage?: string; sourceSection?: string; productRef?: string;
     message?: string; interestTopic?: string; formType?: string; consentStatus?: string;
     utmSource?: string; utmMedium?: string; utmCampaign?: string; referrer?: string;
+    articleSlug?: string; articleTitle?: string;
     hp?: string; // honeypot — always send empty string
   }) => mutate<{ ok: boolean; id: number }>("POST", "/leads", data),
 };

@@ -7,7 +7,7 @@ import { useSeoMeta } from "@/hooks/useSeoMeta";
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.10 } } };
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.68, ease: [0.22, 1, 0.36, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.68, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 const VP = { once: true, margin: "-56px" };
 

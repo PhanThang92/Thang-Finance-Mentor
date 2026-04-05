@@ -8,11 +8,11 @@ import { useSeoMeta } from "@/hooks/useSeoMeta";
 
 /* ── motion ──────────────────────────────────────────────────────────── */
 const stagger  = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
-const fadeUp   = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.48, ease: [0.22, 1, 0.36, 1] } } };
+const fadeUp   = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.48, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } } };
 const gridFade = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.28, ease: "easeOut" } } };
 const cardVar  = {
   initial: { y: 0, boxShadow: "0 2px 10px rgba(10,40,35,0.05)" },
-  hover:   { y: -3, boxShadow: "0 8px 28px rgba(10,40,35,0.12)", transition: { duration: 0.24, ease: [0.22, 1, 0.36, 1] } },
+  hover:   { y: -3, boxShadow: "0 8px 28px rgba(10,40,35,0.12)", transition: { duration: 0.24, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
 /* ── helpers ─────────────────────────────────────────────────────────── */
@@ -387,7 +387,7 @@ export default function TinTuc({ catSlug, productSlug, tagSlug }: { catSlug?: st
                 initial={{ opacity: 0, height: 0, marginTop: 0 }}
                 animate={{ opacity: 1, height: "auto", marginTop: "0.875rem" }}
                 exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
                 style={{ overflow: "hidden" }}>
                 <div style={{
                   display: "flex", alignItems: "center", flexWrap: "wrap", gap: "0.5rem",

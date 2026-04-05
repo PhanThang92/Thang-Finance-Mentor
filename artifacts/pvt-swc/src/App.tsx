@@ -14,8 +14,9 @@ import HuyDangKy    from "@/pages/HuyDangKy";
 import Admin from "@/pages/Admin";
 import GioiThieu from "@/pages/GioiThieu";
 import KienThuc from "@/pages/KienThuc";
-import BaiViet    from "@/pages/BaiViet";
-import Video       from "@/pages/Video";
+import BaiViet       from "@/pages/BaiViet";
+import BaiVietArticle from "@/pages/BaiVietArticle";
+import Video          from "@/pages/Video";
 import ChuDe       from "@/pages/ChuDe";
 import Series      from "@/pages/Series";
 import TaiLieu     from "@/pages/TaiLieu";
@@ -36,6 +37,7 @@ function PublicRoutes() {
         <Route path="/gioi-thieu" component={GioiThieu} />
         <Route path="/kien-thuc" component={KienThuc} />
         <Route path="/bai-viet" component={BaiViet} />
+        <Route path="/bai-viet/:slug" component={BaiVietArticle} />
         <Route path="/video" component={Video} />
         <Route path="/chu-de" component={ChuDe} />
         <Route path="/series" component={Series} />

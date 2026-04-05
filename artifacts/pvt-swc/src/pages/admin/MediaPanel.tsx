@@ -313,7 +313,7 @@ function DetailModal({
                 <p style={{ fontSize: "13.5px", fontWeight: 600, color: A.danger, margin: "0 0 4px" }}>Bạn có chắc chắn muốn xóa ảnh này?</p>
                 <p style={{ fontSize: "12.5px", color: A.textMuted, margin: "0 0 1rem" }}>Hành động này không thể hoàn tác.</p>
                 <div style={{ display: "flex", gap: "8px" }}>
-                  <button onClick={() => handleDelete(false)} disabled={delPhase === "saving" as unknown as boolean} style={{ padding: "7px 16px", borderRadius: "6px", border: "none", background: A.danger, color: "#fff", fontSize: "12.5px", fontWeight: 600, cursor: "pointer" }}>Xóa ảnh</button>
+                  <button onClick={() => handleDelete(false)} style={{ padding: "7px 16px", borderRadius: "6px", border: "none", background: A.danger, color: "#fff", fontSize: "12.5px", fontWeight: 600, cursor: "pointer" }}>Xóa ảnh</button>
                   <button onClick={() => setDelPhase("idle")} style={{ padding: "7px 14px", borderRadius: "6px", border: `1px solid ${A.border}`, background: "#fff", fontSize: "12.5px", cursor: "pointer", color: A.textMuted }}>Hủy</button>
                 </div>
               </div>

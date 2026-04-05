@@ -19,6 +19,7 @@ export interface Article {
   content: string | null;
   coverImageUrl: string | null;
   coverImageAlt: string | null;
+  coverThumbnailUrl: string | null;
   category: string | null;
   categorySlug: string | null;
   tags: string[] | null;
@@ -28,6 +29,16 @@ export interface Article {
   readingTime: string | null;
   topicSlug: string | null;
   seriesSlug: string | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  seoKeywords: string | null;
+  ogTitle: string | null;
+  ogDescription: string | null;
+  ogImageUrl: string | null;
+  canonicalUrl: string | null;
+  noindex: boolean;
+  showOnHomepage: boolean;
+  displayOrder: number;
   createdAt: string;
   updatedAt: string;
 }

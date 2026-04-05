@@ -11,7 +11,7 @@ const inUp = (delay = 0) => ({
   initial:   { opacity: 0, y: 18 },
   whileInView: { opacity: 1, y: 0 },
   viewport:  { once: true, margin: "-50px" },
-  transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1], delay },
+  transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay },
 });
 const heroStagger = {
   hidden:  {},
@@ -19,7 +19,7 @@ const heroStagger = {
 };
 const heroChild = {
   hidden:  { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
 /* ── Types ────────────────────────────────────────────────────────── */
@@ -470,7 +470,7 @@ export default function LienHe() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.60, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+              transition={{ duration: 0.60, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.08 }}
               style={{
                 background:   "hsl(var(--background))",
                 border:       "1px solid hsl(var(--border) / 0.50)",
