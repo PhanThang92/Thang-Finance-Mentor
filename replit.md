@@ -26,6 +26,14 @@ Utilizes Drizzle ORM with PostgreSQL. It exports a Drizzle client and schema mod
 
 A React + Vite application with a dark-teal design system, targeting a Vietnamese audience.
 
+### Article Content System
+
+Articles store content in two formats (auto-detected at render time):
+- **HTML** (new): Produced by the TipTap WYSIWYG editor in the admin CMS. Detected when `content.trimStart().startsWith("<")`. Rendered via `ArticleHtml.tsx` which applies matching typography styles via injected CSS.
+- **Markdown** (legacy): Produced by the old textarea editor. Rendered via `Prose.tsx` line-by-line parser. Full backward compatibility maintained.
+
+The admin CMS uses TipTap (`@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-link`, `@tiptap/extension-placeholder`, `@tiptap/extension-underline`) with a custom toolbar in `RichEditor.tsx`. New articles created in the admin will store clean HTML.
+
 ### Article Routing
 
 There are two separate content systems with their own routes:

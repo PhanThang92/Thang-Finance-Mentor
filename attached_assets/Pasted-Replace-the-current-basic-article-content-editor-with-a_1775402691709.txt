@@ -1,0 +1,177 @@
+Replace the current basic article content editor with a proper modern rich text editor inside the admin CMS.
+
+IMPORTANT:
+- Keep the current admin layout, visual style, spacing, and card design.
+- Do NOT redesign unrelated pages.
+- The new editor must feel native to the existing Thang SWC admin UI.
+- This is not just a toolbar patch. I want a real structured rich text editor.
+
+GOAL:
+Upgrade the article writing experience so content can be created, edited, saved, and rendered cleanly without broken formatting.
+
+CURRENT PROBLEM:
+The current editor is too primitive and causes poor frontend output:
+- headings are unreliable
+- paragraphs and line breaks are inconsistent
+- lists are messy
+- formatting is too limited
+- article rendering feels raw and hard to control
+
+I want a proper rich text editor that supports structured editorial writing for knowledge articles.
+
+========================================
+1. USE A REAL RICH TEXT EDITOR
+========================================
+
+Please replace the current textarea / pseudo-editor with a proper rich text editor.
+
+Use a stable modern editor that fits the current stack well, such as:
+- TipTap
+- Lexical
+- ProseMirror-based implementation
+- or another clean production-grade editor
+
+Choose the best option for the current codebase, but it must support structured content properly.
+
+========================================
+2. REQUIRED EDITOR FEATURES
+========================================
+
+The editor must support:
+
+Basic formatting:
+- Paragraph
+- H2
+- H3
+- Bold
+- Italic
+- Underline if easy
+- Bullet list
+- Numbered list
+- Blockquote
+- Link
+- Divider / horizontal rule
+
+Optional but preferred:
+- Undo / redo
+- Clear formatting
+- Code block disabled unless already useful
+- Simple keyboard shortcuts
+
+Content behavior:
+- clean paragraph separation
+- proper heading blocks
+- proper list blocks
+- no broken inline markdown behavior
+- no fake formatting that looks right in admin but breaks on frontend
+
+========================================
+3. STORAGE FORMAT
+========================================
+
+Store article content in a structured format that is reliable.
+
+Preferred options:
+- clean HTML
+- or structured JSON document format if the project already supports it well
+
+But most important:
+- the saved content must render consistently on the frontend
+- no more ambiguous pseudo-markdown parsing
+- no more broken heading/list behavior
+
+If migration is needed, preserve old article content as safely as possible.
+
+========================================
+4. FRONTEND RENDERING COMPATIBILITY
+========================================
+
+Make sure article pages render the new editor content properly.
+
+Requirements:
+- H2 renders as real H2
+- H3 renders as real H3
+- paragraphs render correctly
+- bullet and numbered lists render correctly
+- links render correctly
+- blockquotes render cleanly
+- divider renders elegantly
+- spacing between blocks is consistent
+
+The editor output and frontend rendering must match closely.
+
+========================================
+5. ADMIN UX REQUIREMENTS
+========================================
+
+The editor should feel clean and professional.
+
+Please include:
+- a polished toolbar
+- good spacing
+- active state for selected formatting
+- placeholder text when empty
+- sticky or well-positioned toolbar if appropriate
+- preview consistency with frontend article style
+
+Do not make it bloated.
+Keep it editorial, focused, and easy to use.
+
+========================================
+6. ARTICLE AUTHORING EXPERIENCE
+========================================
+
+Optimize for long-form knowledge writing.
+
+The editor should be good for:
+- educational articles
+- structured financial knowledge posts
+- mentor-style long-form content
+- clear section-based writing
+
+It should help the writer create:
+- strong section hierarchy
+- readable paragraphs
+- clean lists
+- controlled emphasis
+
+========================================
+7. MIGRATION / SAFETY
+========================================
+
+If existing articles use old content format:
+- do not break them
+- add backward compatibility if needed
+- or add a safe migration path
+
+Important:
+Existing published articles should still display correctly.
+
+========================================
+8. IMPLEMENTATION DETAILS
+========================================
+
+Please:
+1. inspect the current article editor and content storage method
+2. choose the best rich text editor for the current stack
+3. implement the editor cleanly in admin
+4. connect it to proper save/load behavior
+5. ensure frontend rendering works correctly
+6. preserve old content compatibility where needed
+7. summarize the final content format being used
+
+========================================
+9. SUCCESS CRITERIA
+========================================
+
+This is successful only if:
+- article writing in admin feels like a real modern editor
+- headings, paragraphs, lists, and links work cleanly
+- saved content reloads correctly in admin
+- frontend article output matches the written structure
+- the editor feels native to the current Thang SWC CMS
+- old content is not broken
+
+FINAL INSTRUCTION:
+Build a proper rich text editor for article writing, not a patched textarea.
+Prioritize structure reliability, clean frontend rendering, and a premium editorial writing experience.

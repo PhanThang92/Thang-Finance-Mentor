@@ -6,6 +6,7 @@ import { getArticleBySlug, type Article } from "@/lib/articles";
 import { trackArticleView } from "@/lib/analytics";
 import { CompactLeadForm } from "@/components/CompactLeadForm";
 import { Prose } from "@/components/Prose";
+import { ArticleHtml, isHtmlContent } from "@/components/ArticleHtml";
 
 const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.07 } } };
@@ -278,7 +279,11 @@ export default function BaiVietArticle() {
         <div style={{ maxWidth: "740px", margin: "0 auto", padding: "0 1.5rem" }}>
 
           {article.content
-            ? <Prose content={article.content} />
+            ? (
+              isHtmlContent(article.content)
+                ? <ArticleHtml content={article.content} />
+                : <Prose content={article.content} />
+            )
             : (
               <p style={{ color: "hsl(var(--foreground) / 0.32)", fontStyle: "italic", fontSize: "15px" }}>
                 Nội dung đang được cập nhật.
