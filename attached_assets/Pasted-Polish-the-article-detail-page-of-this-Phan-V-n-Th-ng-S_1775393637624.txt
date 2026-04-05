@@ -1,0 +1,57 @@
+Polish the article detail page of this Phan Văn Thắng SWC website to make it feel like a finished premium editorial page.
+
+Important priority:
+The biggest issue is that article content is currently showing raw markdown syntax such as ### headings, **bold**, and > blockquotes. Fix this first by rendering article content properly as rich formatted content.
+
+Please improve the article detail page with these goals:
+
+1. Fix article content rendering
+- render headings, bold text, blockquotes, lists, and paragraphs correctly
+- do not show raw markdown syntax in the final page
+- improve spacing between paragraphs and sections
+- create clear visual hierarchy for H2, H3, bold highlights, and disclaimer text
+
+2. Improve editorial reading experience
+- make the body feel more premium, readable, and structured
+- add better paragraph rhythm
+- improve font contrast for body text
+- style important takeaways and key statements more clearly
+- make the article feel like a polished finance/mentor editorial page, not raw CMS text
+
+3. Improve the hero/article intro area
+- keep the current structure but refine spacing and hierarchy
+- make title, subtitle, author, publish date, and reading time feel cleaner
+- reduce any awkward empty spacing
+- keep the page elegant and minimal
+
+4. Improve featured image presentation
+- keep the current cover image component but refine its presentation
+- make it feel more intentional and integrated with the article
+- maintain premium styling and good spacing
+- if needed, improve border radius, shadow, or caption behavior subtly
+
+5. Improve end-of-article section
+- make the ending feel more intentional, not abrupt
+- style disclaimer as a subtle editorial note box
+- improve the CTA section so it feels connected to the article topic
+- keep the CTA simple, trust-based, and relevant to finance/tích sản content
+- if helpful, add a lightweight related articles section below
+
+6. Keep the overall brand direction
+- calm
+- premium
+- trustworthy
+- mentor-style
+- teal / dark teal accents used sparingly
+- Vietnamese editorial tone
+
+7. Do not redesign the whole website
+- only improve the article detail template
+- preserve the current site style
+- use the smallest safe implementation possible
+
+After changes, provide:
+1. what was fixed in the article renderer
+2. what was improved in the article detail layout
+3. what was improved in the end-of-article experience
+4. any limitations still remaining

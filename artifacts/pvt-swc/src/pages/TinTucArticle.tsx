@@ -6,6 +6,7 @@ import { newsApi, type NewsPost } from "@/lib/newsApi";
 import { getPostImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
 import { trackArticleView } from "@/lib/analytics";
 import { CompactLeadForm } from "@/components/CompactLeadForm";
+import { Prose } from "@/components/Prose";
 
 /* ── motion ────────────────────────────────────────────────────────── */
 const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } } };
@@ -14,6 +15,10 @@ const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.07 } }
 function fmtDate(iso: string | null) {
   if (!iso) return "";
   return new Date(iso).toLocaleDateString("vi-VN", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function readingTime(content: string) {
+  return Math.max(1, Math.ceil(content.split(/\s+/).length / 200));
 }
 
 /* ── Related card ───────────────────────────────────────────────────── */
@@ -25,8 +30,7 @@ function RelatedCard({ post }: { post: NewsPost }) {
           display: "flex", gap: "1rem", alignItems: "flex-start",
           padding: "1.125rem 1.25rem", borderRadius: "10px",
           border: "1px solid hsl(var(--border) / 0.70)",
-          background: "hsl(var(--background))",
-          cursor: "pointer",
+          background: "hsl(var(--background))", cursor: "pointer",
           transition: "border-color 0.20s ease, box-shadow 0.20s ease, background 0.20s ease",
         }}
         onMouseEnter={(e) => {
@@ -40,9 +44,7 @@ function RelatedCard({ post }: { post: NewsPost }) {
           e.currentTarget.style.background  = "hsl(var(--background))";
         }}
       >
-        {/* Left accent */}
         <div style={{ width: "3px", flexShrink: 0, alignSelf: "stretch", borderRadius: "999px", background: "hsl(var(--primary) / 0.30)", minHeight: "2.5rem" }} />
-
         <div style={{ flex: 1, minWidth: 0 }}>
           {post.category && (
             <span style={{
@@ -68,55 +70,6 @@ function RelatedCard({ post }: { post: NewsPost }) {
   );
 }
 
-/* ── Prose renderer ─────────────────────────────────────────────────── */
-function Prose({ content }: { content: string }) {
-  const blocks = content.split(/\n\n+/);
-  return (
-    <div style={{ fontFamily: "'Be Vietnam Pro', sans-serif" }}>
-      {blocks.map((p, i) => {
-        if (p.startsWith("# ")) return (
-          <h2 key={i} style={{
-            fontSize: "1.35rem", fontWeight: 700, lineHeight: 1.30,
-            margin: "2.25rem 0 0.75rem", color: "hsl(var(--foreground))",
-            letterSpacing: "-0.01em",
-          }}>
-            {p.slice(2)}
-          </h2>
-        );
-        if (p.startsWith("## ")) return (
-          <h3 key={i} style={{
-            fontSize: "1.1rem", fontWeight: 700, lineHeight: 1.35,
-            margin: "1.875rem 0 0.625rem", color: "hsl(var(--foreground))",
-          }}>
-            {p.slice(3)}
-          </h3>
-        );
-        if (p.startsWith("- ")) {
-          const items = p.split("\n").filter((l) => l.startsWith("- ")).map((l) => l.slice(2));
-          return (
-            <ul key={i} style={{ margin: "1.125rem 0", paddingLeft: "1.375rem", display: "flex", flexDirection: "column", gap: "0.55rem" }}>
-              {items.map((item, j) => (
-                <li key={j} style={{ fontSize: "16px", lineHeight: 1.90, fontWeight: 300, color: "hsl(var(--foreground) / 0.78)" }}>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          );
-        }
-        return (
-          <p key={i} style={{
-            fontSize: "16px", lineHeight: 1.95, fontWeight: 300,
-            color: "hsl(var(--foreground) / 0.76)", margin: "0 0 1.5rem",
-            letterSpacing: "0.006em",
-          }}>
-            {p}
-          </p>
-        );
-      })}
-    </div>
-  );
-}
-
 /* ── Page ───────────────────────────────────────────────────────────── */
 export default function TinTucArticle() {
   const { slug } = useParams<{ slug: string }>();
@@ -129,6 +82,8 @@ export default function TinTucArticle() {
   useEffect(() => {
     if (slug) trackArticleView(slug);
   }, [slug]);
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [slug]);
 
   /* ── Loading ── */
   if (isLoading) {
@@ -156,24 +111,27 @@ export default function TinTucArticle() {
   const { post, related } = data;
   const imgSrc     = getPostImage(post);
   const isFallback = isFallbackImage(post);
+  const mins       = post.content ? readingTime(post.content) : 0;
 
   return (
     <div style={{ minHeight: "100vh", background: "hsl(var(--background))" }}>
 
-      {/* ── Article header ─────────────────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════════════════════
+          ARTICLE HEADER
+      ══════════════════════════════════════════════════════════════ */}
       <section style={{
-        padding: "5rem 0 3rem",
-        background: "linear-gradient(160deg, hsl(var(--primary) / 0.045) 0%, hsl(var(--background)) 52%)",
-        borderBottom: "1px solid hsl(var(--border) / 0.38)",
+        paddingTop:    "clamp(4.5rem, 9vw, 6rem)",
+        paddingBottom: "2.75rem",
+        background: "linear-gradient(160deg, hsl(var(--primary) / 0.042) 0%, hsl(var(--background)) 55%)",
+        borderBottom: "1px solid hsl(var(--border) / 0.35)",
       }}>
         <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
           <motion.div initial="hidden" animate="visible" variants={stagger}>
 
-            {/* ── Breadcrumb ── */}
+            {/* Breadcrumb */}
             <motion.nav variants={fadeUp} aria-label="Breadcrumb" style={{
               display: "flex", gap: "0.4rem", alignItems: "center",
-              marginBottom: "1.625rem",
-              fontSize: "12px",
+              marginBottom: "1.75rem", fontSize: "12px",
             }}>
               <Link href="/tin-tuc" style={{
                 color: "hsl(var(--primary))", textDecoration: "none", fontWeight: 500,
@@ -207,13 +165,12 @@ export default function TinTucArticle() {
               </span>
             </motion.nav>
 
-            {/* ── Category + product badges ── */}
-            <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1.125rem" }}>
+            {/* Category + product badges */}
+            <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1.25rem" }}>
               {post.category && (
                 <span style={{
                   fontSize: "9px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase",
-                  color: "hsl(var(--primary))",
-                  background: "hsl(var(--primary) / 0.10)",
+                  color: "hsl(var(--primary))", background: "hsl(var(--primary) / 0.10)",
                   padding: "4px 11px", borderRadius: "999px",
                   border: "1px solid hsl(var(--primary) / 0.22)",
                 }}>
@@ -223,8 +180,7 @@ export default function TinTucArticle() {
               {post.product && (
                 <span style={{
                   fontSize: "9px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase",
-                  color: "hsl(var(--foreground) / 0.46)",
-                  background: "hsl(var(--muted))",
+                  color: "hsl(var(--foreground) / 0.46)", background: "hsl(var(--muted))",
                   padding: "4px 11px", borderRadius: "999px",
                   border: "1px solid hsl(var(--border) / 0.60)",
                 }}>
@@ -233,36 +189,34 @@ export default function TinTucArticle() {
               )}
             </motion.div>
 
-            {/* ── Title ── */}
+            {/* Title */}
             <motion.h1 variants={fadeUp} style={{
-              fontSize: "clamp(1.75rem, 4.5vw, 2.65rem)", fontWeight: 800,
-              lineHeight: 1.16, letterSpacing: "-0.018em",
-              color: "hsl(var(--foreground))", margin: "0 0 1.125rem",
+              fontSize: "clamp(1.75rem, 4.5vw, 2.7rem)", fontWeight: 800,
+              lineHeight: 1.14, letterSpacing: "-0.020em",
+              color: "hsl(var(--foreground))", margin: "0 0 1.25rem",
             }}>
               {post.title}
             </motion.h1>
 
-            {/* ── Excerpt ── */}
+            {/* Excerpt */}
             {post.excerpt && (
               <motion.p variants={fadeUp} style={{
-                fontSize: "16.5px", lineHeight: 1.82, fontWeight: 300,
-                color: "hsl(var(--foreground) / 0.62)",
-                margin: "0 0 1.625rem",
-                fontStyle: "italic",
-                borderLeft: "2.5px solid hsl(var(--primary) / 0.30)",
+                fontSize: "clamp(15px, 2.2vw, 17px)", lineHeight: 1.80, fontWeight: 300,
+                color: "hsl(var(--foreground) / 0.58)",
+                margin: "0 0 1.75rem",
                 paddingLeft: "1rem",
+                borderLeft: "2.5px solid hsl(var(--primary) / 0.28)",
               }}>
                 {post.excerpt}
               </motion.p>
             )}
 
-            {/* ── Author row ── */}
+            {/* Author row */}
             <motion.div variants={fadeUp} style={{
               display: "flex", alignItems: "center", gap: "0.875rem",
-              paddingTop: "1.125rem",
-              borderTop: "1px solid hsl(var(--border) / 0.45)",
+              paddingTop: "1.25rem",
+              borderTop: "1px solid hsl(var(--border) / 0.42)",
             }}>
-              {/* Avatar */}
               <div style={{
                 width: "38px", height: "38px", borderRadius: "50%", flexShrink: 0,
                 background: "hsl(var(--primary) / 0.12)",
@@ -273,8 +227,6 @@ export default function TinTucArticle() {
                   {(post.authorName ?? "T")[0]}
                 </span>
               </div>
-
-              {/* Name + date */}
               <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
                 <span style={{ fontSize: "13px", fontWeight: 600, color: "hsl(var(--foreground) / 0.88)", lineHeight: 1.3 }}>
                   {post.authorName}
@@ -283,19 +235,16 @@ export default function TinTucArticle() {
                   {fmtDate(post.publishedAt)}
                 </span>
               </div>
-
-              {/* Reading time (decorative) */}
-              {post.content && (
+              {mins > 0 && (
                 <span style={{
-                  marginLeft: "auto",
-                  fontSize: "11.5px", color: "hsl(var(--foreground) / 0.28)",
+                  marginLeft: "auto", fontSize: "11.5px", color: "hsl(var(--foreground) / 0.28)",
                   display: "flex", alignItems: "center", gap: "4px",
                 }}>
                   <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
                     <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" strokeWidth="1.2"/>
                     <path d="M5.5 3.5V5.5l1.5 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
                   </svg>
-                  {Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200))} phút đọc
+                  {mins} phút đọc
                 </span>
               )}
             </motion.div>
@@ -304,55 +253,50 @@ export default function TinTucArticle() {
         </div>
       </section>
 
-      {/* ── Featured / fallback image ── */}
+      {/* ══════════════════════════════════════════════════════════════
+          FEATURED IMAGE
+      ══════════════════════════════════════════════════════════════ */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.15 }}
-        style={{ maxWidth: isFallback ? "960px" : "700px", margin: "2.5rem auto 0", padding: "0 1.5rem" }}
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.18 }}
+        style={{ maxWidth: isFallback ? "920px" : "700px", margin: "2.75rem auto 0", padding: "0 1.5rem" }}
       >
         <div style={{
-          borderRadius: isFallback ? "12px" : "10px",
-          overflow: "hidden",
-          background: isFallback ? "#091e1b" : "transparent",
+          borderRadius: "12px", overflow: "hidden",
+          background: isFallback ? "#091e1b" : "hsl(var(--muted) / 0.40)",
           boxShadow: isFallback
-            ? "0 2px 24px rgba(0,0,0,0.20)"
-            : "0 4px 24px rgba(10,40,35,0.10)",
-          border: isFallback ? "1px solid rgba(52,160,140,0.12)" : "none",
-          aspectRatio: "16/9",
-          position: "relative",
+            ? "0 2px 28px rgba(0,0,0,0.22)"
+            : "0 2px 18px rgba(10,40,35,0.08), 0 0 0 1px hsl(var(--border) / 0.35)",
+          aspectRatio: "16/9", position: "relative",
         }}>
           <img
             src={imgSrc} alt={post.title}
             style={{
               width: "100%", height: "100%", display: "block",
               objectFit: "cover",
-              filter: isFallback ? "none" : "brightness(0.97) contrast(1.01)",
+              filter: isFallback ? "none" : "brightness(0.98) contrast(1.01) saturate(0.98)",
             }}
           />
           {isFallback && (
             <div style={{
               position: "absolute", bottom: 0, right: 0,
-              padding: "0.45rem 0.85rem",
-              background: "rgba(5,22,19,0.72)",
+              padding: "0.45rem 0.875rem",
+              background: "rgba(5,22,19,0.75)",
               borderTop: "1px solid rgba(52,160,140,0.18)",
               borderLeft: "1px solid rgba(52,160,140,0.18)",
               fontSize: "10px", fontWeight: 600, letterSpacing: "0.12em",
-              color: "rgba(52,160,140,0.80)",
-              textTransform: "uppercase", pointerEvents: "none",
+              color: "rgba(52,160,140,0.80)", textTransform: "uppercase", pointerEvents: "none",
             }}>
               {getWatermarkText(post)}
             </div>
           )}
         </div>
-        {!isFallback && (
-          <p style={{ fontSize: "11px", color: "hsl(var(--foreground) / 0.30)", textAlign: "center", marginTop: "0.625rem", fontStyle: "italic" }}>
-            {post.title}
-          </p>
-        )}
       </motion.div>
 
-      {/* ── Article body ── */}
-      <section style={{ padding: "2.75rem 0 4.5rem" }}>
+      {/* ══════════════════════════════════════════════════════════════
+          ARTICLE BODY
+      ══════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "3rem 0 5rem" }}>
         <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
 
           {post.content
@@ -362,10 +306,10 @@ export default function TinTucArticle() {
 
           {/* ── Tags ── */}
           {(post.tags ?? []).length > 0 && (
-            <div style={{ marginTop: "3.25rem", paddingTop: "1.75rem", borderTop: "1px solid hsl(var(--border) / 0.45)" }}>
+            <div style={{ marginTop: "3.5rem", paddingTop: "1.75rem", borderTop: "1px solid hsl(var(--border) / 0.42)" }}>
               <p style={{
                 fontSize: "10px", fontWeight: 700, letterSpacing: "0.15em",
-                textTransform: "uppercase", color: "hsl(var(--foreground) / 0.32)",
+                textTransform: "uppercase", color: "hsl(var(--foreground) / 0.30)",
                 marginBottom: "0.75rem",
               }}>
                 Chủ đề
@@ -385,15 +329,15 @@ export default function TinTucArticle() {
                     }}
                     onMouseEnter={(e) => {
                       const el = e.currentTarget as HTMLElement;
-                      el.style.background   = "hsl(var(--primary) / 0.13)";
-                      el.style.borderColor  = "hsl(var(--primary) / 0.35)";
-                      el.style.color        = "hsl(var(--primary))";
+                      el.style.background  = "hsl(var(--primary) / 0.13)";
+                      el.style.borderColor = "hsl(var(--primary) / 0.35)";
+                      el.style.color       = "hsl(var(--primary))";
                     }}
                     onMouseLeave={(e) => {
                       const el = e.currentTarget as HTMLElement;
-                      el.style.background   = "hsl(var(--primary) / 0.07)";
-                      el.style.borderColor  = "hsl(var(--primary) / 0.18)";
-                      el.style.color        = "hsl(var(--primary) / 0.88)";
+                      el.style.background  = "hsl(var(--primary) / 0.07)";
+                      el.style.borderColor = "hsl(var(--primary) / 0.18)";
+                      el.style.color       = "hsl(var(--primary) / 0.88)";
                     }}
                   >
                     #{t.slug}
@@ -403,29 +347,58 @@ export default function TinTucArticle() {
             </div>
           )}
 
+          {/* ── Author card ── */}
+          <div style={{
+            marginTop: "3rem",
+            padding: "1.375rem 1.5rem",
+            borderRadius: "10px",
+            border: "1px solid hsl(var(--border) / 0.45)",
+            background: "hsl(var(--primary) / 0.025)",
+            display: "flex", gap: "1.125rem", alignItems: "flex-start",
+          }}>
+            <div style={{
+              width: "44px", height: "44px", borderRadius: "50%", flexShrink: 0,
+              background: "hsl(var(--primary) / 0.14)",
+              border: "1.5px solid hsl(var(--primary) / 0.24)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <span style={{ fontSize: "16px", fontWeight: 700, color: "hsl(var(--primary))" }}>
+                {(post.authorName ?? "T")[0]}
+              </span>
+            </div>
+            <div>
+              <p style={{ fontSize: "13px", fontWeight: 600, color: "hsl(var(--foreground) / 0.88)", margin: "0 0 0.25rem", lineHeight: 1.3 }}>
+                {post.authorName ?? "Phan Văn Thắng"}
+              </p>
+              <p style={{ fontSize: "12px", lineHeight: 1.68, color: "hsl(var(--foreground) / 0.44)", margin: 0, fontStyle: "italic" }}>
+                Mentor tài chính dài hạn. Chia sẻ kiến thức về tư duy tích sản, đầu tư và phát triển bản thân.
+              </p>
+            </div>
+          </div>
+
           {/* ── Back link ── */}
-          <div style={{ marginTop: "2.75rem" }}>
+          <div style={{ marginTop: "2.5rem" }}>
             <Link href="/tin-tuc"
               style={{
                 fontSize: "13px", fontWeight: 500,
-                color: "hsl(var(--foreground) / 0.50)",
+                color: "hsl(var(--foreground) / 0.48)",
                 textDecoration: "none",
                 display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                padding: "6px 14px 6px 10px",
-                border: "1px solid hsl(var(--border) / 0.55)",
+                padding: "7px 16px 7px 12px",
+                border: "1px solid hsl(var(--border) / 0.52)",
                 borderRadius: "999px",
                 transition: "color 0.18s ease, border-color 0.18s ease, background 0.18s ease",
               }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement;
-                el.style.color       = "hsl(var(--foreground) / 0.80)";
+                el.style.color       = "hsl(var(--foreground) / 0.78)";
                 el.style.borderColor = "hsl(var(--border))";
                 el.style.background  = "hsl(var(--muted) / 0.50)";
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement;
-                el.style.color       = "hsl(var(--foreground) / 0.50)";
-                el.style.borderColor = "hsl(var(--border) / 0.55)";
+                el.style.color       = "hsl(var(--foreground) / 0.48)";
+                el.style.borderColor = "hsl(var(--border) / 0.52)";
                 el.style.background  = "transparent";
               }}
             >
@@ -438,27 +411,25 @@ export default function TinTucArticle() {
         </div>
       </section>
 
-      {/* ── Related articles ── */}
+      {/* ══════════════════════════════════════════════════════════════
+          RELATED ARTICLES
+      ══════════════════════════════════════════════════════════════ */}
       {related.length > 0 && (
         <section style={{
-          padding: "2.75rem 0 5rem",
-          borderTop: "1px solid hsl(var(--border) / 0.40)",
-          background: "hsl(var(--muted) / 0.28)",
+          padding: "3rem 0 5rem",
+          borderTop: "1px solid hsl(var(--border) / 0.38)",
+          background: "hsl(var(--muted) / 0.26)",
         }}>
           <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
-
-            {/* Section label */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.375rem" }}>
-              <div style={{ width: "1.5rem", height: "1.5px", background: "hsl(var(--primary) / 0.50)", borderRadius: "999px" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.5rem" }}>
+              <div style={{ width: "1.5rem", height: "1.5px", background: "hsl(var(--primary) / 0.48)", borderRadius: "999px" }} />
               <p style={{
                 fontSize: "10px", fontWeight: 700, letterSpacing: "0.16em",
-                textTransform: "uppercase", color: "hsl(var(--foreground) / 0.36)", margin: 0,
+                textTransform: "uppercase", color: "hsl(var(--foreground) / 0.34)", margin: 0,
               }}>
                 Có thể anh/chị quan tâm
               </p>
             </div>
-
-            {/* Cards */}
             <div style={{
               display: "grid",
               gridTemplateColumns: related.length > 1 ? "repeat(auto-fit, minmax(260px, 1fr))" : "1fr",
@@ -470,7 +441,9 @@ export default function TinTucArticle() {
         </section>
       )}
 
-      {/* ── Lead capture form ── */}
+      {/* ══════════════════════════════════════════════════════════════
+          LEAD CAPTURE
+      ══════════════════════════════════════════════════════════════ */}
       <CompactLeadForm
         title="Nhận thêm nội dung phù hợp"
         description="Để lại thông tin để nhận những bài viết và chia sẻ mới phù hợp với mối quan tâm của anh/chị."

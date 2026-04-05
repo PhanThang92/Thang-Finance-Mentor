@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { getArticleBySlug, type Article } from "@/lib/articles";
 import { trackArticleView } from "@/lib/analytics";
 import { CompactLeadForm } from "@/components/CompactLeadForm";
+import { Prose } from "@/components/Prose";
 
 const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.07 } } };
@@ -66,55 +67,6 @@ function RelatedCard({ article }: { article: Article }) {
         </div>
       </div>
     </Link>
-  );
-}
-
-/* ── Prose renderer — mirrors TinTucArticle ── */
-function Prose({ content }: { content: string }) {
-  const blocks = content.split(/\n\n+/);
-  return (
-    <div style={{ fontFamily: "'Be Vietnam Pro', sans-serif" }}>
-      {blocks.map((p, i) => {
-        if (p.startsWith("# ")) return (
-          <h2 key={i} style={{
-            fontSize: "1.35rem", fontWeight: 700, lineHeight: 1.30,
-            margin: "2.25rem 0 0.75rem", color: "hsl(var(--foreground))",
-            letterSpacing: "-0.01em",
-          }}>
-            {p.slice(2)}
-          </h2>
-        );
-        if (p.startsWith("## ")) return (
-          <h3 key={i} style={{
-            fontSize: "1.1rem", fontWeight: 700, lineHeight: 1.35,
-            margin: "1.875rem 0 0.625rem", color: "hsl(var(--foreground))",
-          }}>
-            {p.slice(3)}
-          </h3>
-        );
-        if (p.startsWith("- ")) {
-          const items = p.split("\n").filter((l) => l.startsWith("- ")).map((l) => l.slice(2));
-          return (
-            <ul key={i} style={{ margin: "1.125rem 0", paddingLeft: "1.375rem", display: "flex", flexDirection: "column", gap: "0.55rem" }}>
-              {items.map((item, j) => (
-                <li key={j} style={{ fontSize: "16px", lineHeight: 1.90, fontWeight: 300, color: "hsl(var(--foreground) / 0.78)" }}>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          );
-        }
-        return (
-          <p key={i} style={{
-            fontSize: "16px", lineHeight: 1.95, fontWeight: 300,
-            color: "hsl(var(--foreground) / 0.76)", margin: "0 0 1.5rem",
-            letterSpacing: "0.006em",
-          }}>
-            {p}
-          </p>
-        );
-      })}
-    </div>
   );
 }
 
@@ -182,9 +134,10 @@ export default function BaiVietArticle() {
 
       {/* ── Article header ── */}
       <section style={{
-        padding: "5rem 0 3rem",
-        background: "linear-gradient(160deg, hsl(var(--primary) / 0.045) 0%, hsl(var(--background)) 52%)",
-        borderBottom: "1px solid hsl(var(--border) / 0.38)",
+        paddingTop:    "clamp(4.5rem, 9vw, 6rem)",
+        paddingBottom: "2.75rem",
+        background: "linear-gradient(160deg, hsl(var(--primary) / 0.042) 0%, hsl(var(--background)) 55%)",
+        borderBottom: "1px solid hsl(var(--border) / 0.35)",
       }}>
         <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
           <motion.div initial="hidden" animate="visible" variants={stagger}>
@@ -302,29 +255,26 @@ export default function BaiVietArticle() {
       {/* ── Cover image (if available) ── */}
       {hasCover && (
         <motion.div
-          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.15 }}
-          style={{ maxWidth: "700px", margin: "2.5rem auto 0", padding: "0 1.5rem" }}
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.18 }}
+          style={{ maxWidth: "700px", margin: "2.75rem auto 0", padding: "0 1.5rem" }}
         >
           <div style={{
-            borderRadius: "10px", overflow: "hidden",
-            boxShadow: "0 4px 24px rgba(10,40,35,0.10)",
+            borderRadius: "12px", overflow: "hidden",
+            boxShadow: "0 2px 18px rgba(10,40,35,0.08), 0 0 0 1px hsl(var(--border) / 0.35)",
             aspectRatio: "16/9",
           }}>
             <img
               src={article.coverImageUrl!}
               alt={article.coverImageAlt ?? article.title}
-              style={{ width: "100%", height: "100%", display: "block", objectFit: "cover", filter: "brightness(0.97) contrast(1.01)" }}
+              style={{ width: "100%", height: "100%", display: "block", objectFit: "cover", filter: "brightness(0.98) contrast(1.01) saturate(0.98)" }}
             />
           </div>
-          <p style={{ fontSize: "11px", color: "hsl(var(--foreground) / 0.30)", textAlign: "center", marginTop: "0.625rem", fontStyle: "italic" }}>
-            {article.coverImageAlt ?? article.title}
-          </p>
         </motion.div>
       )}
 
       {/* ── Article body ── */}
-      <section style={{ padding: hasCover ? "2.75rem 0 4.5rem" : "3.5rem 0 4.5rem" }}>
+      <section style={{ padding: "3rem 0 5rem" }}>
         <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
 
           {article.content
@@ -338,10 +288,10 @@ export default function BaiVietArticle() {
 
           {/* ── Tags ── */}
           {(article.tags ?? []).length > 0 && (
-            <div style={{ marginTop: "3.25rem", paddingTop: "1.75rem", borderTop: "1px solid hsl(var(--border) / 0.45)" }}>
+            <div style={{ marginTop: "3.5rem", paddingTop: "1.75rem", borderTop: "1px solid hsl(var(--border) / 0.42)" }}>
               <p style={{
                 fontSize: "10px", fontWeight: 700, letterSpacing: "0.15em",
-                textTransform: "uppercase", color: "hsl(var(--foreground) / 0.32)",
+                textTransform: "uppercase", color: "hsl(var(--foreground) / 0.30)",
                 marginBottom: "0.75rem",
               }}>
                 Chủ đề
@@ -363,29 +313,56 @@ export default function BaiVietArticle() {
             </div>
           )}
 
+          {/* ── Author card ── */}
+          <div style={{
+            marginTop: "3rem",
+            padding: "1.375rem 1.5rem",
+            borderRadius: "10px",
+            border: "1px solid hsl(var(--border) / 0.45)",
+            background: "hsl(var(--primary) / 0.025)",
+            display: "flex", gap: "1.125rem", alignItems: "flex-start",
+          }}>
+            <div style={{
+              width: "44px", height: "44px", borderRadius: "50%", flexShrink: 0,
+              background: "hsl(var(--primary) / 0.14)",
+              border: "1.5px solid hsl(var(--primary) / 0.24)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <span style={{ fontSize: "16px", fontWeight: 700, color: "hsl(var(--primary))" }}>T</span>
+            </div>
+            <div>
+              <p style={{ fontSize: "13px", fontWeight: 600, color: "hsl(var(--foreground) / 0.88)", margin: "0 0 0.25rem", lineHeight: 1.3 }}>
+                Phan Văn Thắng
+              </p>
+              <p style={{ fontSize: "12px", lineHeight: 1.68, color: "hsl(var(--foreground) / 0.44)", margin: 0, fontStyle: "italic" }}>
+                Mentor tài chính dài hạn. Chia sẻ kiến thức về tư duy tích sản, đầu tư và phát triển bản thân.
+              </p>
+            </div>
+          </div>
+
           {/* ── Back link ── */}
-          <div style={{ marginTop: "2.75rem" }}>
+          <div style={{ marginTop: "2.5rem" }}>
             <Link href="/bai-viet"
               style={{
                 fontSize: "13px", fontWeight: 500,
-                color: "hsl(var(--foreground) / 0.50)",
+                color: "hsl(var(--foreground) / 0.48)",
                 textDecoration: "none",
                 display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                padding: "6px 14px 6px 10px",
-                border: "1px solid hsl(var(--border) / 0.55)",
+                padding: "7px 16px 7px 12px",
+                border: "1px solid hsl(var(--border) / 0.52)",
                 borderRadius: "999px",
                 transition: "color 0.18s ease, border-color 0.18s ease, background 0.18s ease",
               }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement;
-                el.style.color       = "hsl(var(--foreground) / 0.80)";
+                el.style.color       = "hsl(var(--foreground) / 0.78)";
                 el.style.borderColor = "hsl(var(--border))";
                 el.style.background  = "hsl(var(--muted) / 0.50)";
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement;
-                el.style.color       = "hsl(var(--foreground) / 0.50)";
-                el.style.borderColor = "hsl(var(--border) / 0.55)";
+                el.style.color       = "hsl(var(--foreground) / 0.48)";
+                el.style.borderColor = "hsl(var(--border) / 0.52)";
                 el.style.background  = "transparent";
               }}
             >
