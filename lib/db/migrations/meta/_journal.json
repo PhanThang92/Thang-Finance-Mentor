@@ -15,6 +15,13 @@
       "when": 1775378577840,
       "tag": "0001_amused_logan",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1775378867574,
+      "tag": "0002_smart_loki",
+      "breakpoints": true
     }
   ]
 }

@@ -22,10 +22,22 @@ export const leadsTable = pgTable("leads", {
   utmSource: text("utm_source"),
   utmMedium: text("utm_medium"),
   utmCampaign: text("utm_campaign"),
+  utmTerm: text("utm_term"),
+  utmContent: text("utm_content"),
   assignedTo: text("assigned_to"),
   score: integer("score").default(0).notNull(),
   sourceSection: text("source_section"),
   referrer: text("referrer"),
+  // Article context (when form submitted from an article page)
+  articleSlug: text("article_slug"),
+  articleTitle: text("article_title"),
+  // External sync state
+  syncedToNotion: boolean("synced_to_notion").notNull().default(false),
+  notionPageId: text("notion_page_id"),
+  notionSyncedAt: timestamp("notion_synced_at", { withTimezone: true }),
+  syncedToSheets: boolean("synced_to_sheets").notNull().default(false),
+  sheetsSyncedAt: timestamp("sheets_synced_at", { withTimezone: true }),
+  syncError: text("sync_error"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });

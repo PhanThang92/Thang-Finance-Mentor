@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { db, leadsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import { triggerLeadSync } from "../services/leadSyncService.js";
 
 const router = Router();
 
@@ -22,7 +23,8 @@ router.post("/", async (req, res) => {
       name, email, phone,
       sourceType, sourcePage, sourceSection, productRef,
       message, interestTopic, formType, consentStatus,
-      utmSource, utmMedium, utmCampaign,
+      utmSource, utmMedium, utmCampaign, utmTerm, utmContent,
+      articleSlug, articleTitle,
       referrer,
       hp, // honeypot — must be empty
     } = req.body;
@@ -62,7 +64,7 @@ router.post("/", async (req, res) => {
         .limit(1);
 
       if (existing) {
-        await db.update(leadsTable).set({
+        const [updated] = await db.update(leadsTable).set({
           name: String(name).trim(),
           phone:         phone?.trim()    || existing.phone,
           sourceType:    sourceType       || existing.sourceType,
@@ -76,9 +78,14 @@ router.post("/", async (req, res) => {
           utmSource:     utmSource        || existing.utmSource,
           utmMedium:     utmMedium        || existing.utmMedium,
           utmCampaign:   utmCampaign      || existing.utmCampaign,
+          utmTerm:       utmTerm          || existing.utmTerm,
+          utmContent:    utmContent       || existing.utmContent,
+          articleSlug:   articleSlug      || existing.articleSlug,
+          articleTitle:  articleTitle     || existing.articleTitle,
           referrer:      referrer         || existing.referrer,
           updatedAt: new Date(),
-        }).where(eq(leadsTable.id, existing.id));
+        }).where(eq(leadsTable.id, existing.id)).returning();
+        if (updated) triggerLeadSync(updated);
         res.json({ ok: true, id: existing.id });
         return;
       }
@@ -99,9 +106,14 @@ router.post("/", async (req, res) => {
       utmSource:     utmSource       || null,
       utmMedium:     utmMedium       || null,
       utmCampaign:   utmCampaign     || null,
+      utmTerm:       utmTerm         || null,
+      utmContent:    utmContent      || null,
+      articleSlug:   articleSlug     || null,
+      articleTitle:  articleTitle    || null,
       referrer:      referrer        || null,
     }).returning();
 
+    triggerLeadSync(lead);
     res.json({ ok: true, id: lead.id });
   } catch (e) {
     res.status(500).json({ error: String(e) });

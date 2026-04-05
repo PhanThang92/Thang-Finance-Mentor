@@ -1,0 +1,390 @@
+Improve this existing “Phan Văn Thắng SWC” website project by focusing specifically on contact forms, lead capture, lead storage, lead management, and optional synchronization to Notion and Google Sheets.
+
+PROJECT CONTEXT
+This is a Vietnamese personal brand / finance website for Phan Văn Thắng SWC.
+The website includes or will include:
+- Homepage
+- Articles / News pages
+- Article detail pages
+- Contact page
+- Admin area
+- Lead/contact form collection
+- Premium finance / mentor brand identity
+- Vietnamese language content
+- Calm, trustworthy, professional tone
+
+MAIN GOAL
+Keep the current website working, but upgrade the contact and lead system so it becomes:
+1. Reliable for collecting leads
+2. Easy to manage internally
+3. Safe for future migration outside Replit
+4. Ready to sync to Notion and Google Sheets
+5. Easy for a non-technical admin to use
+
+CRITICAL RULES
+- Do NOT break the current website
+- Do NOT remove any working contact forms
+- Do NOT redesign the UI unless needed for functional improvements
+- Preserve Vietnamese language support
+- Keep the workflow simple
+- Prefer careful refactoring over rebuilding everything
+- If something must change, document it clearly
+
+PLEASE IMPLEMENT THE FOLLOWING
+
+==================================================
+1) AUDIT AND IMPROVE ALL CONTACT / LEAD FORMS
+==================================================
+
+Audit all existing forms related to contact, consultation requests, lead capture, article inquiries, CTA forms, or newsletter-style interest forms.
+
+Please:
+- identify all form entry points in the current website
+- centralize submission handling into a clean reusable lead capture system
+- keep the current frontend forms working
+- standardize validation and submission behavior
+- preserve or improve user experience
+
+Support forms such as:
+- Contact page form
+- Homepage CTA form
+- Article inquiry form
+- Consultation request form
+- Simple lead popup or banner form if any
+- Future lead forms using the same backend logic
+
+==================================================
+2) LEAD DATABASE STRUCTURE
+==================================================
+
+Create or improve a proper lead/contact data model in the database.
+
+Please make sure lead records support at least these fields or equivalent:
+
+CORE FIELDS
+- id
+- full_name
+- phone
+- email
+- message
+- source_page
+- source_type
+- campaign
+- referrer_url
+- utm_source
+- utm_medium
+- utm_campaign
+- utm_term
+- utm_content
+- status
+- notes_internal
+- assigned_to
+- synced_to_notion
+- synced_to_google_sheets
+- sync_error
+- created_at
+- updated_at
+
+OPTIONAL USEFUL FIELDS
+- article_slug
+- article_title
+- ip_address (only if already appropriate and safe in your project)
+- user_agent
+- preferred_contact_method
+
+Use safe defaults.
+If a different schema already exists, migrate carefully and preserve compatibility.
+
+STATUS FIELD
+Add a simple status system such as:
+- new
+- contacted
+- qualified
+- closed
+- spam
+
+Make sure the default status is:
+- new
+
+==================================================
+3) FORM VALIDATION AND UX
+==================================================
+
+Improve lead form validation and submission experience.
+
+Please implement:
+- required field validation where appropriate
+- proper validation for phone and email
+- server-side validation
+- client-side validation where useful
+- protection against empty or obviously invalid submissions
+- clear success and error messages in Vietnamese-friendly UX
+- graceful handling if sync fails but database save succeeds
+
+Important:
+- saving to database must be the first priority
+- Notion / Google Sheets sync must never block successful lead capture
+- if sync fails, keep the lead saved and mark sync status for retry
+
+==================================================
+4) SOURCE TRACKING
+==================================================
+
+Make lead capture more useful by recording where each lead comes from.
+
+Please capture and store:
+- current page URL
+- page type (homepage, article, contact, popup, landing page)
+- article slug/title if submitted from an article page
+- referrer if available
+- UTM parameters if present
+- source form name or source block identifier
+
+This should help later analysis such as:
+- which page generates the most leads
+- which article attracts inquiries
+- which campaign performs best
+
+==================================================
+5) ADMIN LEAD MANAGEMENT
+==================================================
+
+Create or improve a simple admin experience for lead management.
+
+Please add or improve:
+- admin page for viewing leads
+- lead list table
+- filters by:
+  - status
+  - date
+  - source_type
+  - campaign
+- search by:
+  - name
+  - phone
+  - email
+- lead detail view
+- ability to update:
+  - status
+  - internal notes
+  - assigned_to
+- created_at visible in a readable format
+
+Keep the admin UI simple, clean, and easy for non-technical use.
+Do NOT overcomplicate with a full CRM unless necessary.
+
+==================================================
+6) NOTION SYNC
+==================================================
+
+Add an optional sync integration from saved leads to Notion.
+
+SYNC RULES
+- database save must happen first
+- Notion sync happens after successful local/database save
+- if Notion sync fails, do not lose the lead
+- store sync result and error state
+- make retry possible later
+
+Please support syncing a lead into a Notion database with mapped fields such as:
+- Name
+- Phone
+- Email
+- Message
+- Source Page
+- Source Type
+- Campaign
+- Status
+- Created At
+
+Implementation requirements:
+- use environment variables for Notion API key and database ID
+- centralize Notion sync logic in a reusable service
+- document how field mapping works
+- make it easy to disable Notion sync via config
+- handle API errors gracefully
+- avoid duplicate sync if the same lead is already marked as synced
+
+==================================================
+7) GOOGLE SHEETS SYNC
+==================================================
+
+Add an optional sync integration from saved leads to Google Sheets.
+
+SYNC RULES
+- database save must happen first
+- Google Sheets sync happens after successful local/database save
+- if Google Sheets sync fails, do not lose the lead
+- store sync result and error state
+- make retry possible later
+
+Please support appending lead rows to a Google Sheet with columns such as:
+- Created At
+- Full Name
+- Phone
+- Email
+- Message
+- Source Page
+- Source Type
+- Campaign
+- UTM Source
+- UTM Medium
+- UTM Campaign
+- Status
+
+Implementation requirements:
+- use environment variables for Google credentials and spreadsheet configuration
+- centralize Google Sheets sync logic in a reusable service
+- make it easy to enable or disable
+- handle API errors gracefully
+- avoid duplicate row creation if possible
+- document setup clearly
+
+==================================================
+8) SYNC ARCHITECTURE AND SAFETY
+==================================================
+
+Design sync in a way that is safe and portable.
+
+Please implement:
+- local database is the primary source of truth
+- Notion and Google Sheets are secondary sync targets
+- sync status tracking per lead
+- sync retry mechanism or at least a clear retry path
+- meaningful logging
+- non-blocking design so third-party API issues do not break lead capture
+
+If a queue system is too heavy for this project, implement a clean lightweight retry-ready structure.
+
+Suggested logic:
+1. validate form
+2. save lead to database
+3. attempt Notion sync if enabled
+4. attempt Google Sheets sync if enabled
+5. store sync results
+6. return success to user even if external sync fails, as long as DB save succeeded
+
+==================================================
+9) ANTI-SPAM / BASIC PROTECTION
+==================================================
+
+Add reasonable lightweight anti-spam protection without hurting normal UX.
+
+Please consider implementing:
+- honeypot field
+- rate limiting if appropriate
+- minimal bot protection
+- duplicate submission detection
+- server-side safeguards
+
+Do not add overly aggressive friction unless necessary.
+
+==================================================
+10) PORTABILITY OUTSIDE REPLIT
+==================================================
+
+Refactor the lead system so it is easy to move later from Replit to external hosting.
+
+Please:
+- avoid hardcoded Replit-only assumptions
+- keep all secrets in environment variables
+- centralize API integration logic
+- centralize sync configuration
+- make database and sync modules portable
+- document clearly what is needed to run the same system outside Replit
+
+==================================================
+11) ENVIRONMENT VARIABLES
+==================================================
+
+Please move all configuration into environment variables and document them clearly.
+
+Expected environment variables may include:
+
+GENERAL
+- APP_BASE_URL
+- ADMIN_EMAIL or admin-related config if used
+
+DATABASE
+- DATABASE_URL
+
+NOTION
+- NOTION_API_KEY
+- NOTION_DATABASE_ID
+- ENABLE_NOTION_SYNC
+
+GOOGLE SHEETS
+- GOOGLE_CLIENT_EMAIL
+- GOOGLE_PRIVATE_KEY
+- GOOGLE_SPREADSHEET_ID
+- GOOGLE_SHEET_NAME
+- ENABLE_GOOGLE_SHEETS_SYNC
+
+OPTIONAL
+- LEAD_RATE_LIMIT settings
+- DEFAULT_LEAD_STATUS
+- RETRY_SYNC settings if implemented
+
+Use safe fallbacks where appropriate.
+
+==================================================
+12) BACKWARD COMPATIBILITY
+==================================================
+
+Do not break existing forms, existing leads, or current admin functionality.
+
+If the website already stores contact submissions:
+- preserve them
+- migrate carefully if needed
+- add fallbacks for old records
+- avoid forcing manual cleanup unless absolutely necessary
+
+==================================================
+13) DOCUMENTATION
+==================================================
+
+Create or update documentation explaining:
+- lead schema
+- lead flow
+- form handling flow
+- source tracking logic
+- Notion sync logic
+- Google Sheets sync logic
+- retry/error handling
+- environment variable setup
+- how to disable or enable each sync target
+- how to migrate the system later outside Replit
+
+Please create or update:
+- README_DEPLOY.md
+- MIGRATION_NOTES.md
+
+Also add a short admin-facing note if useful, explaining:
+- where to view leads
+- how lead statuses work
+- what happens if sync fails
+
+==================================================
+14) OUTPUT I EXPECT FROM YOU
+==================================================
+
+After making the changes, provide:
+1. Summary of lead form improvements
+2. Lead database structure summary
+3. Source tracking summary
+4. Admin lead management summary
+5. Notion sync behavior summary
+6. Google Sheets sync behavior summary
+7. Required environment variables
+8. Notes on backward compatibility
+9. Notes on portability outside Replit
+10. Remaining limitations or recommended next steps
+
+IMPORTANT PRIORITY ORDER
+1. Keep current website working
+2. Save every lead safely to the database
+3. Make sync non-blocking and reliable
+4. Keep forms simple and user-friendly
+5. Make admin lead management clear
+6. Make the system portable later
+7. Document everything clearly
