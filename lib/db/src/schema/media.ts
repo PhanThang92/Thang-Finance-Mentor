@@ -17,11 +17,17 @@ export const mediaAssetsTable = pgTable("media_assets", {
   sizeBytes:            integer("size_bytes"),
   width:                integer("width"),
   height:               integer("height"),
+  // Storage backend that holds the files (local | s3 | cloudinary …)
+  storageProvider:      text("storage_provider").notNull().default("local"),
+  // Relative paths — portable across storage backends
   storagePathOriginal:  text("storage_path_original"),
-  storagePathProcessed: text("storage_path_processed").notNull().default(""),
-  storagePathThumbnail: text("storage_path_thumbnail"),
-  publicUrl:            text("public_url").notNull().default(""),
-  thumbnailUrl:         text("thumbnail_url"),
+  storagePathProcessed: text("storage_path_processed").notNull().default(""),  // large / display
+  storagePathMedium:    text("storage_path_medium"),                           // medium (1280×720)
+  storagePathThumbnail: text("storage_path_thumbnail"),                        // thumbnail (800×450)
+  // Public URLs — absolute, ready to use in <img src>
+  publicUrl:            text("public_url").notNull().default(""),              // large / display
+  mediumUrl:            text("medium_url"),                                    // medium
+  thumbnailUrl:         text("thumbnail_url"),                                 // thumbnail
   altText:              text("alt_text"),
   watermarkEnabled:     boolean("watermark_enabled").notNull().default(true),
   watermarkText:        text("watermark_text"),

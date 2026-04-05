@@ -5,6 +5,7 @@ import { Router, type Request, type Response, type NextFunction } from "express"
 import multer from "multer";
 import sharp from "sharp";
 import { storage } from "../lib/storage.js";
+import { runImagePipeline } from "../services/imageService.js";
 import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, leadNotesTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable, contactWidgetSettingsTable, contactChannelsTable } from "@workspace/db";
 import { eq, sql, desc, ilike, or, and, isNotNull, gte, lte } from "drizzle-orm";
 
@@ -19,49 +20,7 @@ const upload = multer({
   },
 });
 
-/* ── Watermark ───────────────────────────────────────────────────────── */
-const TARGET_W = 1600;
-const TARGET_H = 900;
-
-function watermarkText(context: string): string {
-  if (context === "atlas")        return "THẮNG SWC · ATLAS";
-  if (context === "road-to-1m")   return "THẮNG SWC · ROAD TO $1M";
-  if (context === "tu-duy-dau-tu") return "THẮNG SWC · TÀI CHÍNH";
-  return "THẮNG SWC";
-}
-
-function buildWatermarkSvg(text: string): Buffer {
-  const W = 300, H = 30, pad = 4;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
-    <rect x="0" y="0" width="${W}" height="${H}" fill="rgba(0,0,0,0.22)" rx="3" ry="3"/>
-    <text x="${W - pad}" y="${H - 9}"
-      font-family="'Helvetica Neue',Arial,sans-serif"
-      font-size="9.5" font-weight="700" letter-spacing="1.9"
-      fill="rgba(255,255,255,0.72)" text-anchor="end">${text}</text>
-  </svg>`;
-  return Buffer.from(svg);
-}
-
-async function processImage(buffer: Buffer, context: string): Promise<Buffer> {
-  const wmSvg   = buildWatermarkSvg(watermarkText(context));
-  const wmLeft  = TARGET_W - 300 - 20;
-  const wmTop   = TARGET_H - 30  - 16;
-  return sharp(buffer)
-    .resize(TARGET_W, TARGET_H, { fit: "cover", position: "centre" })
-    .composite([{ input: wmSvg, left: wmLeft, top: wmTop, blend: "over" }])
-    .webp({ quality: 87 })
-    .toBuffer();
-}
-
-const THUMB_W = 800;
-const THUMB_H = 450;
-
-async function generateThumbnail(displayBuffer: Buffer): Promise<Buffer> {
-  return sharp(displayBuffer)
-    .resize(THUMB_W, THUMB_H, { fit: "cover", position: "centre" })
-    .webp({ quality: 82 })
-    .toBuffer();
-}
+// Image processing is handled by src/services/imageService.ts
 
 const router = Router();
 
@@ -226,20 +185,24 @@ router.post("/upload-image", upload.single("image"), async (req: Request, res: R
     const id      = randomBytes(12).toString("hex");
     const ext     = req.file.originalname.split(".").pop()?.toLowerCase() ?? "jpg";
 
-    const origName = `${id}.${ext}`;
-    const dispName = `${id}.webp`;
+    const origName   = `${id}.${ext}`;
+    const dispName   = `${id}.webp`;
+    const mediumName = `${id}_medium.webp`;
+    const thumbName  = `${id}_thumb.webp`;
 
-    const dispBuffer  = await processImage(req.file.buffer, context);
-    const thumbBuffer = await generateThumbnail(dispBuffer);
-    const thumbName   = `${id}_thumb.webp`;
+    // Run all processing variants in parallel
+    const { display, medium, thumbnail, watermarkText: wmText } =
+      await runImagePipeline(req.file.buffer, context);
 
-    const [origUrl, dispUrl, thumbUrl] = await Promise.all([
-      storage.save(req.file.buffer, `orig/${origName}`, req.file.mimetype),
-      storage.save(dispBuffer,      `disp/${dispName}`,  "image/webp"),
-      storage.save(thumbBuffer,     `thumb/${thumbName}`, "image/webp"),
+    // Persist all files via storage abstraction (local or S3)
+    const [origUrl, dispUrl, mediumUrl, thumbUrl] = await Promise.all([
+      storage.save(req.file.buffer, `orig/${origName}`,           req.file.mimetype),
+      storage.save(display,          `disp/${dispName}`,           "image/webp"),
+      storage.save(medium,           `disp/${mediumName}`,         "image/webp"),
+      storage.save(thumbnail,        `thumb/${thumbName}`,         "image/webp"),
     ]);
 
-    const dispMeta       = await sharp(dispBuffer).metadata();
+    const dispMeta       = await sharp(display).metadata();
     const contentTypeVal = (req.body.contentType as string | undefined) ?? "shared";
     const usageCtxVal    = (req.body.usageContext as string | undefined) ?? "cover";
     const altTextVal     = (req.body.altText as string | undefined) ?? null;
@@ -250,17 +213,20 @@ router.post("/upload-image", upload.single("image"), async (req: Request, res: R
       filename:             dispName,
       originalFilename:     req.file.originalname,
       mimeType:             "image/webp",
-      sizeBytes:            dispBuffer.length,
+      sizeBytes:            display.length,
       width:                dispMeta.width ?? null,
       height:               dispMeta.height ?? null,
+      storageProvider:      process.env.STORAGE_PROVIDER ?? "local",
       storagePathOriginal:  `orig/${origName}`,
       storagePathProcessed: `disp/${dispName}`,
+      storagePathMedium:    `disp/${mediumName}`,
       storagePathThumbnail: `thumb/${thumbName}`,
       publicUrl:            dispUrl,
+      mediumUrl,
       thumbnailUrl:         thumbUrl,
       altText:              altTextVal,
       watermarkEnabled:     true,
-      watermarkText:        watermarkText(context),
+      watermarkText:        wmText,
       contentType:          contentTypeVal,
       usageContext:         usageCtxVal,
     }).returning();
@@ -268,6 +234,7 @@ router.post("/upload-image", upload.single("image"), async (req: Request, res: R
     res.json({
       original:  origUrl,
       display:   dispUrl,
+      medium:    mediumUrl,
       thumbnail: thumbUrl,
       assetId:   mediaAsset?.id ?? null,
     });

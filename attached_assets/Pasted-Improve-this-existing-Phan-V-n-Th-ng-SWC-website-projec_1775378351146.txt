@@ -1,0 +1,315 @@
+Improve this existing “Phan Văn Thắng SWC” website project by focusing specifically on database structure, image upload handling, article media management, and automatic watermark processing for article images.
+
+PROJECT CONTEXT
+This is a Vietnamese personal brand / finance website for Phan Văn Thắng SWC.
+The site includes:
+- Homepage
+- Articles / News listing
+- Article detail pages
+- Admin area for creating/editing articles
+- Image upload for article thumbnails, featured images, and content images
+- Contact / lead collection
+- Premium finance brand style with teal / dark teal identity
+
+MAIN GOAL
+Keep the current website working, but upgrade the technical system for:
+1. Reliable database structure
+2. Safer and cleaner image upload flow
+3. Automatic image processing
+4. Automatic watermarking for article images
+5. Future portability from Replit to external hosting
+
+CRITICAL RULES
+- Do NOT break the current website
+- Do NOT remove existing content or admin workflows
+- Do NOT redesign the UI unless needed for functional improvements
+- Preserve all current article features
+- Keep the system easy for a non-technical admin to use
+- Prefer careful refactoring over rebuilding everything
+
+PLEASE IMPLEMENT THE FOLLOWING
+
+==================================================
+1) DATABASE AUDIT AND IMPROVEMENT
+==================================================
+
+Audit the current database setup and improve it for long-term stability and migration readiness.
+
+Please do the following:
+- Identify the current database type (SQLite, PostgreSQL, or other)
+- Centralize database access through a clean data layer
+- Ensure article data is properly structured
+- Ensure media/image records are properly structured
+- Ensure lead/contact data is safely stored
+- Prepare the schema so it can later migrate cleanly to PostgreSQL if needed
+
+Please make sure the database structure supports at least these models or equivalent:
+
+A. ARTICLES / POSTS
+- id
+- title
+- slug
+- excerpt
+- content
+- category
+- tags
+- featured_image_id
+- status (draft / published)
+- published_at
+- created_at
+- updated_at
+
+B. MEDIA / IMAGES
+- id
+- original_filename
+- stored_filename
+- mime_type
+- file_size
+- width
+- height
+- storage_provider
+- original_url
+- processed_url
+- thumbnail_url
+- medium_url
+- large_url
+- watermark_text
+- watermark_enabled
+- uploaded_by
+- related_article_id (if applicable)
+- alt_text
+- caption
+- created_at
+
+C. CONTACT / LEADS
+- id
+- name
+- phone
+- email
+- message
+- source_page
+- created_at
+
+If a different schema already exists, keep compatibility and migrate safely instead of breaking existing data.
+
+==================================================
+2) ARTICLE IMAGE UPLOAD SYSTEM
+==================================================
+
+Upgrade the article image upload system so it becomes more reliable, organized, and portable.
+
+Please implement:
+- image upload support in admin for:
+  - featured image
+  - thumbnail image
+  - optional in-article images
+- support common formats:
+  - JPG
+  - JPEG
+  - PNG
+  - WEBP
+- validate file type and file size
+- reject unsafe or invalid files
+- normalize file naming
+- prevent filename conflicts
+- store image metadata in the database
+- preserve linkage between images and articles
+
+Please make the upload system future-ready by abstracting storage so it can later work with:
+- local storage
+- Cloudinary
+- Supabase Storage
+- S3-compatible storage
+
+Keep current local behavior working if the site is currently using local uploads, but build it in a way that can later be switched to cloud storage without major rewrites.
+
+==================================================
+3) AUTOMATIC IMAGE PROCESSING
+==================================================
+
+Add automatic image processing for uploaded article images.
+
+Requirements:
+- preserve the original uploaded image
+- generate processed versions for website display
+- generate at least:
+  - thumbnail size
+  - medium size
+  - large size
+- optimize file size for web performance
+- maintain good visual quality
+- normalize orientation if needed
+- remove excessively large file dimensions where appropriate
+- keep aspect ratio unless a specific crop is required
+
+If article cards or article detail pages need fixed aspect ratios, apply safe intelligent cropping for those display versions only.
+Do NOT destroy the original uploaded image.
+
+==================================================
+4) AUTOMATIC WATERMARK FOR ARTICLE IMAGES
+==================================================
+
+Add an automatic watermark system for uploaded article images.
+
+WATERMARK GOAL
+When an admin uploads an article image, the system should automatically generate a watermarked version for website display while preserving the original image separately.
+
+DEFAULT WATERMARK TEXT
+Use this default watermark text for finance/article content:
+“Thắng SWC - Tài Chính”
+
+Please implement the watermark system with the following requirements:
+- watermark applied automatically to processed display images
+- original file remains unwatermarked and preserved
+- watermark text stored in database
+- watermark can be enabled/disabled per image or per article
+- default watermark is enabled for article images
+- watermark should be subtle, premium, readable, and non-intrusive
+- watermark should not ruin the image
+- watermark position should be consistent and professional
+- preferred position:
+  - bottom right by default
+  - with safe margin from edges
+- use opacity so it feels elegant, not harsh
+- watermark should scale appropriately depending on image size
+- watermark should remain readable on mobile and desktop
+- support PNG transparency if needed
+- if text watermark is used, use a clean modern font style already available in the project or a safe default
+- do not hardcode a fragile image path for watermark assets
+
+If possible, make the system flexible enough so the watermark text can later vary by section, for example:
+- Article / Finance: “Thắng SWC - Tài Chính”
+- Contact / Brand page: “Thắng SWC”
+But for now, prioritize article/finance watermark only.
+
+==================================================
+5) ADMIN UX FOR ARTICLE IMAGES
+==================================================
+
+Improve the admin experience for article image handling.
+
+Please add or improve:
+- upload button for article image
+- preview before save if possible
+- show current uploaded image
+- show whether watermark is enabled
+- allow admin to edit:
+  - alt text
+  - caption
+  - watermark on/off
+  - watermark text if needed
+- keep the workflow simple and clean for non-technical use
+
+Do NOT make the admin interface overly complicated.
+
+==================================================
+6) IMAGE CROPPING / DISPLAY RULES
+==================================================
+
+Make article images display more consistently across the website.
+
+Please implement or improve:
+- consistent featured image handling for article cards
+- clean article detail hero image rendering
+- prevent broken stretching or distortion
+- ensure thumbnails look visually clean
+- support a predictable aspect ratio for listing cards if needed
+- keep responsive behavior good on mobile
+
+If cropping is necessary for thumbnails/cards:
+- crop only generated display versions
+- preserve original image
+- use center-safe or intelligent crop logic
+- avoid cutting off the key subject area too aggressively
+
+==================================================
+7) STORAGE ABSTRACTION AND MIGRATION READINESS
+==================================================
+
+Refactor storage so uploads are not tightly locked to Replit filesystem.
+
+Please implement a storage abstraction layer that:
+- works with the current project now
+- can later switch provider without major rewrites
+- centralizes file URL generation
+- centralizes upload path generation
+- centralizes delete / replace behavior
+
+Document clearly:
+- where originals are stored
+- where processed files are stored
+- how image URLs are generated
+- what would need to change to move to external hosting later
+
+==================================================
+8) BACKWARD COMPATIBILITY
+==================================================
+
+Do not break existing images, articles, or admin records.
+
+If the current website already has uploaded images or article image references:
+- preserve them
+- migrate safely if needed
+- add fallbacks for older records
+- avoid forcing manual repair unless absolutely necessary
+
+==================================================
+9) VALIDATION, SAFETY, AND PERFORMANCE
+==================================================
+
+Please improve reliability and safety:
+- validate uploads properly
+- reject unsupported files
+- handle upload errors gracefully
+- avoid duplicate orphan records
+- cleanly manage failed image processing
+- avoid blocking the entire article creation flow if one optional image step fails
+- log meaningful errors
+- optimize website performance by using processed image sizes where appropriate
+
+==================================================
+10) DOCUMENTATION
+==================================================
+
+Create clear technical notes explaining:
+- current database type
+- schema changes made
+- media/image schema
+- upload flow
+- watermark flow
+- storage flow
+- how to migrate uploads later
+- how to switch storage provider later
+- how to disable or change watermark defaults later
+
+Please create or update these files:
+- README_DEPLOY.md
+- MIGRATION_NOTES.md
+
+Also include:
+- list of required environment variables
+- list of any new dependencies added
+- explanation of any assumptions
+
+==================================================
+11) OUTPUT I EXPECT FROM YOU
+==================================================
+
+After making the changes, provide:
+1. Summary of database improvements
+2. Current database type and migration readiness
+3. Summary of image upload improvements
+4. Summary of watermark system behavior
+5. List of required environment variables
+6. Notes on backward compatibility
+7. Notes on portability outside Replit
+8. Remaining limitations or recommended next steps
+
+IMPORTANT PRIORITY ORDER
+1. Keep current website working
+2. Make database cleaner and safer
+3. Make image upload reliable
+4. Add automatic watermarking properly
+5. Preserve original images
+6. Make the system portable later
+7. Document everything clearly
