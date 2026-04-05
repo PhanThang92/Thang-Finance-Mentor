@@ -182,6 +182,13 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
 
   const isFiltered = q || fStatus !== "all" || fCat !== "all" || fProd !== "all";
 
+  /* ── Safety guard: tracks whether tagIds was initialized from real server data.
+        Without this guard, opening a new-post form (tagIds=[]) and accidentally
+        saving an edit would wipe all junction rows.
+        Set to true only inside editPost() after tags are loaded from the API.
+        Set to false when starting a brand-new post (tagIds=[] intentionally). ── */
+  const tagsLoadedRef = React.useRef(false);
+
   /* ── Markdown editor ref ── */
   const contentRef = React.useRef<HTMLTextAreaElement>(null);
 
@@ -215,9 +222,15 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
   }, []);
 
   /* ── Actions ── */
-  const newPost = () => { setForm(EMPTY); setErr(""); setView("form"); };
+  const newPost = () => {
+    tagsLoadedRef.current = false; // new post: tagIds=[] is intentional
+    setForm(EMPTY); setErr(""); setView("form");
+  };
 
   const editPost = (p: NewsPost) => {
+    // p.tags is now reliably populated from the API (enrichAdminPosts fix).
+    // We mark tagsLoaded so save() knows the tagIds state is trustworthy.
+    tagsLoadedRef.current = true;
     setForm({
       ...p,
       excerpt: p.excerpt ?? "", content: p.content ?? "", featuredImage: p.featuredImage ?? "",
@@ -267,10 +280,28 @@ export function PostsPanel({ adminKey }: { adminKey: string }) {
     if (!form.slug.trim())  { setErr("Slug là bắt buộc."); return; }
     setSaving(true); setErr("");
     try {
-      const payload = { ...form, status, categoryId: form.categoryId || null, productId: form.productId || null };
-      if (form.id) {
+      const isEdit = form.id > 0;
+
+      // Safety guard: for existing posts, only send tagIds when the form was
+      // properly initialized with server data (tagsLoadedRef = true).
+      // If somehow tags failed to load, omit tagIds entirely so the backend
+      // leaves the existing junction rows untouched rather than wiping them.
+      const shouldSendTags = !isEdit || tagsLoadedRef.current;
+      if (isEdit && !tagsLoadedRef.current) {
+        console.warn("[PostsPanel] Skipping tagIds in save() — tags were not loaded from server. Existing tags preserved.");
+      }
+
+      const payload = {
+        ...form, status,
+        categoryId: form.categoryId || null,
+        productId: form.productId || null,
+        ...(shouldSendTags ? { tagIds: form.tagIds } : {}),
+      };
+
+      if (isEdit) {
         const updated = await adminApi.updatePost(adminKey, form.id, payload);
-        setPosts((prev) => prev.map((p) => p.id === updated.id ? { ...updated, tags: (tags.filter((t) => form.tagIds.includes(t.id))) } : p));
+        const resolvedTags = tags.filter((t) => form.tagIds.includes(t.id));
+        setPosts((prev) => prev.map((p) => p.id === updated.id ? { ...updated, tags: resolvedTags } : p));
       } else {
         const created = await adminApi.createPost(adminKey, payload);
         setPosts((prev) => [{ ...created, tags: tags.filter((t) => form.tagIds.includes(t.id)) }, ...prev]);

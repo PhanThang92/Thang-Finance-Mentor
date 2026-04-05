@@ -7,7 +7,7 @@ import sharp from "sharp";
 import { storage } from "../lib/storage.js";
 import { runImagePipeline } from "../services/imageService.js";
 import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, leadNotesTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable, contactWidgetSettingsTable, contactChannelsTable } from "@workspace/db";
-import { eq, sql, desc, ilike, or, and, isNotNull, gte, lte } from "drizzle-orm";
+import { eq, sql, desc, ilike, or, and, isNotNull, gte, lte, inArray } from "drizzle-orm";
 
 /* ── Upload dirs managed by storage abstraction (see src/lib/storage.ts) ── */
 
@@ -199,10 +199,38 @@ router.delete("/products/:id", async (req, res) => {
 });
 
 // ── Posts CRUD ─────────────────────────────────────────────────────────────────
+
+/* Attach tag objects to an array of posts via a single batch join query.
+   This is the root-cause fix for the tag data-loss bug:
+   the previous plain SELECT returned posts with tags=undefined, causing
+   editPost() to set tagIds=[] → backend destroyed all junction rows on save. */
+async function enrichAdminPosts(posts: (typeof newsPostsTable.$inferSelect)[]) {
+  if (posts.length === 0) return [];
+  const postIds = posts.map((p) => p.id);
+  const postTags = await db
+    .select({
+      postId: newsPostTagsTable.postId,
+      tagId:  newsPostTagsTable.tagId,
+      tagName: newsTagsTable.name,
+      tagSlug: newsTagsTable.slug,
+    })
+    .from(newsPostTagsTable)
+    .innerJoin(newsTagsTable, eq(newsPostTagsTable.tagId, newsTagsTable.id))
+    .where(inArray(newsPostTagsTable.postId, postIds));
+
+  const tagsByPost: Record<number, { id: number; name: string; slug: string }[]> = {};
+  for (const pt of postTags) {
+    if (!tagsByPost[pt.postId]) tagsByPost[pt.postId] = [];
+    tagsByPost[pt.postId].push({ id: pt.tagId, name: pt.tagName, slug: pt.tagSlug });
+  }
+  return posts.map((p) => ({ ...p, tags: tagsByPost[p.id] ?? [] }));
+}
+
 router.get("/posts", async (_req, res) => {
   try {
     const posts = await db.select().from(newsPostsTable).orderBy(desc(newsPostsTable.createdAt));
-    res.json({ posts });
+    const enriched = await enrichAdminPosts(posts);
+    res.json({ posts: enriched });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 

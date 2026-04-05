@@ -1,0 +1,159 @@
+Fix the article tag persistence bug in the News / Bài viết module.
+
+IMPORTANT:
+- This is a real data integrity bug, not just a UI issue.
+- Do not patch only the display.
+- Investigate the full flow: database -> API -> admin edit form -> save/update -> frontend display.
+- Keep the current admin and frontend UI style.
+- Focus on reliability and preventing accidental tag loss.
+
+PROBLEM:
+Tags on news articles are currently unstable:
+- sometimes tags do not load correctly in admin
+- sometimes the admin edit form shows missing tags even though the article had tags before
+- if I open an article, edit it, and save/update, the related tags may disappear
+- frontend then shows missing tags because the article-tag relation was overwritten incorrectly
+
+This suggests a broken sync between:
+- stored article-tag relations
+- admin edit form state
+- update payload
+- frontend display
+
+GOAL:
+Make article tags reliable, persistent, and safe during edit/update.
+
+==================================================
+1. INVESTIGATE THE FULL TAG FLOW
+==================================================
+
+Please inspect all of these layers:
+
+- database schema for articles and tags
+- article-tag relationship table or mapping structure
+- API response for article detail in admin edit mode
+- admin form initialization / hydration
+- admin tag selector state
+- save/update payload
+- backend update logic
+- frontend article card/tag rendering
+
+I need you to identify exactly why tags are sometimes missing in admin and then being lost after update.
+
+==================================================
+2. FIX ADMIN EDIT FORM HYDRATION
+==================================================
+
+When opening an existing article in admin:
+- all currently attached tags must load reliably
+- tag selector must show the true current tags from the database
+- no intermittent empty tag state
+- no race condition where article data loads before tags map is ready and then wipes selected tags
+
+If needed:
+- wait until both article data and available tags are loaded before initializing the tag field
+- normalize tag mapping by id/slug consistently
+- prevent tag selector from showing false empty state
+
+==================================================
+3. FIX UPDATE / SAVE LOGIC
+==================================================
+
+This is critical.
+
+When saving an article:
+- do not accidentally overwrite existing tags with an incomplete or empty client state
+- if tags are not fully loaded yet, do not allow submission
+- only update the article-tag relation from a trusted complete tag state
+- ensure update logic is deterministic and safe
+
+Implement protection such as:
+- block submit while tag data is still loading
+- validate that current tag selection state is initialized
+- avoid blind destructive replacement if the form state is incomplete
+
+If the backend currently replaces all article tags on every update, make sure the incoming payload is correct and complete before doing so.
+
+==================================================
+4. FIX DATA CONSISTENCY
+==================================================
+
+Ensure all parts of the system use the same tag identity consistently:
+- tag id
+- tag slug
+- tag name
+
+Do not mix inconsistent mapping logic across:
+- admin list page
+- article edit page
+- frontend card display
+- backend update handlers
+
+If necessary, standardize around tag IDs internally.
+
+==================================================
+5. ADD SAFETY GUARDS
+==================================================
+
+Please add safeguards so this bug cannot silently destroy data again.
+
+Required safeguards:
+- if tag options or current article tags are still loading, disable the Save/Update button
+- show a loading state for the tag field if needed
+- do not submit partial tag state
+- if update request contains suspicious empty tag state for an article that previously had tags, log it clearly for debugging
+- make destructive overwrites harder to happen silently
+
+==================================================
+6. VERIFY FRONTEND DISPLAY
+==================================================
+
+After fixing persistence:
+- frontend article cards must always show the correct tags
+- admin article list should show tags correctly if that view supports it
+- editing and resaving an article must not remove existing tags unless intentionally changed
+
+==================================================
+7. TEST CASES TO VERIFY
+==================================================
+
+Please test these cases:
+
+1. Create a new article with 2–3 tags
+- save
+- reopen edit page
+- tags must still be there
+
+2. Edit an existing tagged article without changing tags
+- save
+- tags must remain unchanged
+
+3. Edit an existing tagged article and add 1 more tag
+- save
+- old tags + new tag must all remain
+
+4. Edit an existing tagged article and remove 1 tag intentionally
+- save
+- only that removed tag should disappear
+
+5. Refresh admin repeatedly
+- tag field must still load reliably
+- no intermittent empty tag state
+
+==================================================
+8. DELIVERABLES
+==================================================
+
+Please:
+1. identify the root cause clearly
+2. fix the tag loading bug in admin
+3. fix the tag update logic so tags are not lost
+4. add loading/safety guards before submit
+5. verify frontend tag rendering
+6. summarize exactly what was broken and how it was fixed
+
+FINAL INSTRUCTION:
+This is a data loss bug.
+Treat it as high priority.
+Do not only fix the symptom.
+Fix the root cause so article tags load reliably and are never silently removed during update because of incomplete admin state.
