@@ -1,0 +1,63 @@
+Please refine the current floating contact widget UI based on the existing implementation.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- Do NOT rebuild the widget from scratch.
+- Do NOT change the database structure or admin logic.
+- Focus only on improving the current visual result so it feels more premium and less like a generic plugin.
+
+Please make these specific improvements:
+
+1. Reduce the overall size of the expanded contact buttons by about 10–15%
+- slightly reduce height
+- reduce horizontal padding
+- reduce spacing between icon and label
+- keep touch targets still comfortable
+
+2. Change the button surface from pure white to a softer premium off-white
+- use a refined off-white / warm light gray instead of bright white
+- soften borders
+- reduce harsh contrast against the dark teal background
+
+3. Unify the icon treatment across Phone, Zalo, and Telegram
+- keep each channel recognizable
+- but make icon containers the same size, spacing, and style
+- ensure the three icons feel like part of one visual system
+- reduce the “app badge / plugin icon” feeling
+
+4. Refine the close button so it feels more connected to the widget
+- make it slightly smaller
+- bring it visually closer to the expanded menu
+- use the same surface/shadow logic as the widget
+- if possible, make the main trigger button transform into the close state instead of feeling like a separate floating object
+
+5. Improve spacing from the bottom-right screen edges
+- give the widget a little more breathing room
+- avoid the feeling that it is stuck in the corner
+
+6. Soften shadows and reduce the “floating plugin” look
+- use lighter, more premium shadows
+- reduce visual heaviness
+- keep depth subtle and elegant
+
+7. Refine label typography
+- make text slightly less heavy
+- slightly reduce font size if needed
+- keep labels highly readable but calmer and more premium
+
+8. Preserve the current behavior and channel order
+- Gọi điện
+- Chat Zalo
+- Telegram
+
+FINAL GOAL:
+The widget should feel:
+- smaller
+- cleaner
+- calmer
+- more premium
+- more integrated with the website
+- less like a third-party floating plugin
+
+Please apply these visual refinements directly to the current widget implementation.

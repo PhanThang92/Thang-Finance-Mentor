@@ -33,8 +33,8 @@ interface WidgetData {
   channels: ContactChannel[];
 }
 
-/* ── Icons (inline SVG, no external dep) ─────────────────────────── */
-function PhoneIcon({ size = 16 }: { size?: number }) {
+/* ── Icons (inline SVG) ───────────────────────────────────────────── */
+function PhoneIcon({ size = 15 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" fill="currentColor"/>
@@ -42,40 +42,31 @@ function PhoneIcon({ size = 16 }: { size?: number }) {
   );
 }
 
-function ZaloIcon({ size = 16 }: { size?: number }) {
+function ZaloIcon({ size = 15 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect width="24" height="24" rx="5" fill="currentColor" fillOpacity="0.12"/>
-      <text x="12" y="16.5" textAnchor="middle" fontSize="9" fontWeight="800" fill="currentColor" fontFamily="sans-serif">Zalo</text>
+      <text x="12" y="16" textAnchor="middle" fontSize="10" fontWeight="700" fill="currentColor" fontFamily="'Be Vietnam Pro',sans-serif">Z</text>
     </svg>
   );
 }
 
-function TelegramIcon({ size = 16 }: { size?: number }) {
+function TelegramIcon({ size = 15 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 7.98c-.12.56-.46.7-.93.43l-2.57-1.9-1.24 1.19c-.14.13-.26.24-.52.24l.18-2.6 4.7-4.25c.2-.18-.04-.28-.32-.1L7.15 14.3l-2.52-.79c-.55-.17-.56-.55.11-.81l9.83-3.79c.46-.16.86.11.71.81l-.64-.02z" fill="currentColor"/>
+      <path d="M21.4 3.2L2.6 10.5c-1.3.5-1.3 1.3-.2 1.6l4.8 1.5 1.9 5.7c.3.8.4 1.1 1 1.1s.8-.3 1.2-.7l2.7-2.6 5.2 3.8c1 .5 1.6.3 1.9-.9l3.4-16c.4-1.5-.6-2.2-1.7-1.8zM18.3 7L8.6 15.8l-.4 3.9-2.5-7.5L18.3 7z" fill="currentColor"/>
     </svg>
   );
 }
 
-function MessageIcon({ size = 18 }: { size?: number }) {
+function MessageIcon({ size = 17 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" fill="currentColor"/>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   );
 }
 
-function CloseIcon({ size = 14 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
-function ChannelIcon({ type, size = 16 }: { type: string; size?: number }) {
+function ChannelIcon({ type, size = 15 }: { type: string; size?: number }) {
   if (type === "phone")    return <PhoneIcon size={size} />;
   if (type === "zalo")     return <ZaloIcon size={size} />;
   if (type === "telegram") return <TelegramIcon size={size} />;
@@ -108,23 +99,24 @@ function trackEvent(eventType: string, meta: Record<string, unknown> = {}) {
   } catch { /* silently ignore */ }
 }
 
-/* ── CSS keyframe style tag ───────────────────────────────────────── */
+/* ── Keyframe styles ──────────────────────────────────────────────── */
 const WIDGET_STYLE = `
-@keyframes fcw-pop-in {
-  from { opacity: 0; transform: scale(0.88) translateY(6px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0);   }
-}
 @keyframes fcw-item-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0);   }
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
 }
-.fcw-item { animation: fcw-item-in 0.22s cubic-bezier(0.16,1,0.3,1) both; }
+.fcw-item {
+  animation: fcw-item-in 0.20s cubic-bezier(0.16,1,0.3,1) both;
+}
+.fcw-item:hover {
+  transform: translateX(-3px) !important;
+}
 `;
 
 /* ── Component ────────────────────────────────────────────────────── */
 export function FloatingContactWidget() {
-  const [data,    setData]    = useState<WidgetData | null>(null);
-  const [isOpen,  setIsOpen]  = useState(false);
+  const [data,     setData]    = useState<WidgetData | null>(null);
+  const [isOpen,   setIsOpen]  = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -136,7 +128,7 @@ export function FloatingContactWidget() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  /* Fetch widget data from API */
+  /* Fetch widget data */
   useEffect(() => {
     fetch("/api/contact/widget")
       .then((r) => r.ok ? r.json() : null)
@@ -172,31 +164,35 @@ export function FloatingContactWidget() {
     });
   }, []);
 
-  /* Don't render if data isn't loaded, widget disabled, or no channels */
   if (!data || !data.enabled || !data.settings || data.channels.length === 0) return null;
 
   const { settings, channels } = data;
 
-  /* Device visibility */
   if (isMobile  && !settings.showOnMobile)  return null;
   if (!isMobile && !settings.showOnDesktop) return null;
 
-  /* Offset from edges */
-  const rOffset = isMobile ? settings.mobileOffsetX : settings.desktopOffsetX;
-  const bOffset = isMobile ? settings.mobileOffsetY : settings.desktopOffsetY;
+  /* Add a fixed extra breathing-room offset (8px) on top of the configured offset */
+  const EXTRA = 8;
+  const rOffset = (isMobile ? settings.mobileOffsetX : settings.desktopOffsetX) + EXTRA;
+  const bOffset = (isMobile ? settings.mobileOffsetY : settings.desktopOffsetY) + EXTRA;
 
-  /* Filter channels for current device */
   const visibleChannels = channels.filter((ch) =>
     isMobile ? ch.showOnMobile : ch.showOnDesktop
   );
   if (visibleChannels.length === 0) return null;
 
-  /* Channel accent colors */
+  /* Per-channel accent color */
   const CHANNEL_COLORS: Record<string, string> = {
     phone:    "#1a7868",
     zalo:     "#0068ff",
     telegram: "#229ED9",
   };
+
+  /* Shared off-white surface token */
+  const SURFACE   = "#f4f3f1";          // warm off-white, noticeably softer than pure white
+  const BORDER    = "rgba(0,0,0,0.055)"; // very soft edge
+  const SHADOW    = "0 2px 10px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04)";
+  const SHADOW_HV = "0 4px 16px rgba(0,0,0,0.11), 0 2px 5px rgba(0,0,0,0.06)";
 
   return (
     <>
@@ -204,32 +200,32 @@ export function FloatingContactWidget() {
       <div
         ref={containerRef}
         style={{
-          position:     "fixed",
-          right:        `${rOffset}px`,
-          bottom:       `${bOffset}px`,
-          zIndex:       9999,
-          display:      "flex",
+          position:      "fixed",
+          right:         `${rOffset}px`,
+          bottom:        `${bOffset}px`,
+          zIndex:        9999,
+          display:       "flex",
           flexDirection: "column",
-          alignItems:   "flex-end",
-          gap:          "10px",
+          alignItems:    "flex-end",
+          gap:           "8px",
           pointerEvents: "none",
         }}
       >
 
-        {/* ── Channel items (expanded) ─────────────────────────────── */}
+        {/* ── Expanded channel list ─────────────────────────────────── */}
         {isOpen && (
           <div
             style={{
               display:       "flex",
               flexDirection: "column",
               alignItems:    "flex-end",
-              gap:           "8px",
+              gap:           "7px",
               pointerEvents: "auto",
             }}
           >
             {visibleChannels.map((ch, i) => {
-              const color = CHANNEL_COLORS[ch.channelType] ?? "#1a7868";
-              const href  = buildHref(ch);
+              const color    = CHANNEL_COLORS[ch.channelType] ?? "#1a7868";
+              const href     = buildHref(ch);
               const isNewTab = ch.openMode === "new_tab";
 
               return (
@@ -242,35 +238,36 @@ export function FloatingContactWidget() {
                   title={settings.showTooltips && ch.tooltipText ? ch.tooltipText : undefined}
                   className="fcw-item"
                   style={{
-                    animationDelay:  `${i * 55}ms`,
+                    animationDelay:  `${i * 50}ms`,
                     display:         "flex",
                     alignItems:      "center",
-                    gap:             "10px",
-                    height:          "42px",
-                    padding:         settings.showLabels ? "0 14px 0 12px" : "0 13px",
+                    /* gap slightly tighter than before */
+                    gap:             "8px",
+                    /* ~13% shorter than original 42px */
+                    height:          "37px",
+                    padding:         settings.showLabels ? "0 12px 0 9px" : "0 10px",
                     borderRadius:    "999px",
-                    background:      "#fff",
-                    border:          "1px solid rgba(0,0,0,0.08)",
-                    boxShadow:       "0 2px 12px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06)",
+                    background:      SURFACE,
+                    border:          `1px solid ${BORDER}`,
+                    boxShadow:       SHADOW,
                     textDecoration:  "none",
-                    color:           color,
-                    fontSize:        "13px",
-                    fontWeight:      500,
-                    letterSpacing:   "0.010em",
+                    color:           "#1c2b28",
+                    /* calmer typography */
+                    fontSize:        "12.5px",
+                    fontWeight:      400,
+                    letterSpacing:   "0.005em",
                     whiteSpace:      "nowrap",
-                    transition:      "transform 0.16s ease, box-shadow 0.16s ease",
+                    transition:      "transform 0.18s ease, box-shadow 0.18s ease",
                     fontFamily:      "'Be Vietnam Pro', sans-serif",
                     cursor:          "pointer",
                   }}
                   onMouseEnter={(e) => {
                     const el = e.currentTarget as HTMLElement;
-                    el.style.transform  = "translateX(-3px)";
-                    el.style.boxShadow  = `0 4px 18px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.08)`;
+                    el.style.boxShadow = SHADOW_HV;
                   }}
                   onMouseLeave={(e) => {
                     const el = e.currentTarget as HTMLElement;
-                    el.style.transform  = "translateX(0)";
-                    el.style.boxShadow  = "0 2px 12px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06)";
+                    el.style.boxShadow = SHADOW;
                   }}
                   onClick={() => {
                     trackEvent("contact_channel_click", {
@@ -281,23 +278,26 @@ export function FloatingContactWidget() {
                     setIsOpen(false);
                   }}
                 >
-                  {/* Color dot */}
+                  {/*
+                    Unified icon container — identical size/shape for all 3 channels.
+                    24×24 circle, same border-radius, no channel-specific quirks.
+                  */}
                   <span style={{
-                    width:        "28px",
-                    height:       "28px",
-                    borderRadius: "50%",
-                    background:   color,
-                    display:      "flex",
-                    alignItems:   "center",
+                    width:          "24px",
+                    height:         "24px",
+                    borderRadius:   "50%",
+                    background:     color,
+                    display:        "flex",
+                    alignItems:     "center",
                     justifyContent: "center",
-                    flexShrink:   0,
-                    color:        "#fff",
+                    flexShrink:     0,
+                    color:          "#fff",
                   }}>
-                    <ChannelIcon type={ch.channelType} size={14} />
+                    <ChannelIcon type={ch.channelType} size={13} />
                   </span>
 
                   {settings.showLabels && (
-                    <span style={{ color: "#1c2b28" }}>{ch.label}</span>
+                    <span style={{ color: "#2a3d38" }}>{ch.label}</span>
                   )}
                 </a>
               );
@@ -305,46 +305,47 @@ export function FloatingContactWidget() {
           </div>
         )}
 
-        {/* ── Main bubble ─────────────────────────────────────────── */}
+        {/* ── Main trigger bubble ───────────────────────────────────── */}
+        {/*
+          The icon transforms in-place: MessageIcon → rotated × via CSS rotate.
+          The button stays the same surface, slightly smaller (48px → was 52px).
+          No separate "close" object — the same bubble changes state.
+        */}
         <button
           onClick={toggle}
           aria-label={isOpen ? "Đóng liên hệ nhanh" : "Mở liên hệ nhanh"}
           aria-expanded={isOpen}
           style={{
-            pointerEvents:  "auto",
-            width:           "52px",
-            height:          "52px",
+            pointerEvents:   "auto",
+            width:           "48px",
+            height:          "48px",
             borderRadius:    "50%",
             border:          "none",
             cursor:          "pointer",
             display:         "flex",
             alignItems:      "center",
             justifyContent:  "center",
-            background:      isOpen
-              ? "hsl(var(--primary) / 0.88)"
-              : "hsl(var(--primary))",
-            color:            "#fff",
-            boxShadow:        isOpen
-              ? "0 4px 16px rgba(10,40,35,0.24), 0 2px 6px rgba(10,40,35,0.16)"
-              : "0 4px 20px rgba(10,40,35,0.28), 0 2px 8px rgba(10,40,35,0.16)",
-            transition:       "transform 0.22s cubic-bezier(0.34,1.56,0.64,1), background 0.22s ease, box-shadow 0.22s ease",
-            transform:        isOpen ? "rotate(0deg) scale(0.94)" : "rotate(0deg) scale(1)",
-            outline:          "none",
-            flexShrink:       0,
+            background:      "hsl(var(--primary))",
+            color:           "#fff",
+            /* Softer shadow — less heavy than before */
+            boxShadow:       "0 3px 14px rgba(10,40,35,0.22), 0 1px 5px rgba(10,40,35,0.12)",
+            /* Icon rotates 135° when open — transforms into an implied × without switching component */
+            transition:      "transform 0.26s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease",
+            transform:       isOpen ? "rotate(135deg)" : "rotate(0deg)",
+            outline:         "none",
+            flexShrink:      0,
           }}
           onMouseEnter={(e) => {
             const el = e.currentTarget as HTMLElement;
-            el.style.transform = isOpen ? "scale(0.92)" : "scale(1.06)";
+            el.style.boxShadow = "0 5px 18px rgba(10,40,35,0.28), 0 2px 6px rgba(10,40,35,0.16)";
           }}
           onMouseLeave={(e) => {
             const el = e.currentTarget as HTMLElement;
-            el.style.transform = isOpen ? "scale(0.94)" : "scale(1)";
+            el.style.boxShadow = "0 3px 14px rgba(10,40,35,0.22), 0 1px 5px rgba(10,40,35,0.12)";
           }}
         >
-          {isOpen
-            ? <CloseIcon size={15} />
-            : <MessageIcon size={18} />
-          }
+          {/* Always show the message icon — rotation handles the open/close visual */}
+          <MessageIcon size={17} />
         </button>
 
       </div>
