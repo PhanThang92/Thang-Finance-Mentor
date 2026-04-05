@@ -190,9 +190,9 @@ export default function BaiVietArticle() {
 
             {/* ── Title ── */}
             <motion.h1 variants={fadeUp} style={{
-              fontSize: "clamp(1.75rem, 4.5vw, 2.65rem)", fontWeight: 800,
-              lineHeight: 1.16, letterSpacing: "-0.018em",
-              color: "hsl(var(--foreground))", margin: "0 0 1.125rem",
+              fontSize: "clamp(1.6rem, 4vw, 2.45rem)", fontWeight: 760,
+              lineHeight: 1.18, letterSpacing: "-0.018em",
+              color: "hsl(var(--foreground) / 0.96)", margin: "0 0 1.125rem",
             }}>
               {article.title}
             </motion.h1>
@@ -200,11 +200,11 @@ export default function BaiVietArticle() {
             {/* ── Excerpt ── */}
             {article.excerpt && (
               <motion.p variants={fadeUp} style={{
-                fontSize: "16.5px", lineHeight: 1.82, fontWeight: 300,
-                color: "hsl(var(--foreground) / 0.62)",
+                fontSize: "15.5px", lineHeight: 1.84, fontWeight: 350,
+                color: "hsl(var(--foreground) / 0.54)",
                 margin: "0 0 1.625rem",
                 fontStyle: "italic",
-                borderLeft: "2.5px solid hsl(var(--primary) / 0.30)",
+                borderLeft: "2px solid hsl(var(--primary) / 0.24)",
                 paddingLeft: "1rem",
               }}>
                 {article.excerpt}
@@ -274,7 +274,7 @@ export default function BaiVietArticle() {
       )}
 
       {/* ── Article body ── */}
-      <section style={{ padding: "3rem 0 5rem" }}>
+      <section style={{ padding: "2.75rem 0 4.5rem" }}>
         <div style={{ maxWidth: "740px", margin: "0 auto", padding: "0 1.5rem" }}>
 
           {article.content
