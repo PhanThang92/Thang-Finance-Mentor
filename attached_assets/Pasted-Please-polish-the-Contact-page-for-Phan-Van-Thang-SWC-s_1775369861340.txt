@@ -1,0 +1,206 @@
+Please polish the Contact page for “Phan Van Thang SWC” so it feels significantly more premium, calm, refined, and aligned with the rest of the website.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- Do NOT change the page structure drastically if the current layout is already good.
+- Focus only on visual polish, spacing, typography, section rhythm, card refinement, and overall page quality.
+- Do NOT make the page flashy or overly sales-driven.
+
+GOAL:
+Refine the Contact page so it feels:
+- premium
+- calm
+- trustworthy
+- editorial
+- personal-brand oriented
+- more intentional
+- less templated
+
+The page should feel like an official, high-trust contact experience, not a generic support or lead-gen form page.
+
+================================
+1. OVERALL VISUAL GOAL
+================================
+
+Please make the Contact page feel:
+- cleaner
+- more spacious
+- more refined
+- better balanced
+- more consistent with the About page, Homepage, and Articles pages
+
+Avoid:
+- generic support page styling
+- crowded cards and forms
+- overly strong conversion-page feeling
+- default template spacing
+
+================================
+2. HERO POLISH
+================================
+
+Refine the Contact page hero.
+
+Please improve:
+- heading hierarchy
+- text width
+- spacing between eyebrow, heading, subheading, and supporting text
+- top and bottom padding
+- overall composition
+
+Requirements:
+- hero should feel confident but not oversized
+- text should be easy to read
+- should feel editorial and calm
+- should set a trustworthy tone immediately
+
+================================
+3. CONTACT CHANNEL CARD POLISH
+================================
+
+Refine the main contact channel cards:
+- Gọi điện
+- Chat Zalo
+- Telegram
+
+Please improve:
+- card spacing
+- card padding
+- icon alignment
+- title/description hierarchy
+- button placement
+- surface treatment
+- border/shadow subtlety
+
+Requirements:
+- cards should feel premium and clean
+- not too flashy
+- not too dense
+- more like a curated contact experience than generic CTA cards
+
+================================
+4. FORM POLISH
+================================
+
+Refine the contact form visually.
+
+Please improve:
+- field spacing
+- label styling
+- input padding
+- textarea proportions
+- button hierarchy
+- form container spacing
+- overall readability
+
+Requirements:
+- form should feel serious, calm, and premium
+- avoid generic or clunky form styling
+- desktop and mobile should both feel polished
+- keep validation/error/success states clean
+
+================================
+5. SECTION RHYTHM
+================================
+
+Improve the flow between sections:
+- hero
+- contact channels
+- form
+- guidance section
+- trust note
+- final CTA
+
+Requirements:
+- each section should feel distinct but connected
+- avoid sections feeling stacked mechanically
+- use spacing and subtle surface changes to create rhythm
+- make the page feel authored, not assembled from blocks
+
+================================
+6. TYPOGRAPHY REFINEMENT
+================================
+
+Refine typography across the page.
+
+Please improve:
+- section heading sizing
+- paragraph readability
+- eyebrow styling
+- form label hierarchy
+- CTA text hierarchy
+- small helper text tone
+
+Requirements:
+- maintain strong readability in Vietnamese
+- improve editorial quality
+- reduce any “default UI” feeling
+
+================================
+7. CTA / FINAL BLOCK POLISH
+================================
+
+Refine the final CTA section.
+
+Please improve:
+- spacing
+- button alignment
+- contrast
+- heading/subtext balance
+- relationship to the footer
+
+Requirements:
+- final CTA should feel like a soft but confident next step
+- premium, not salesy
+- aligned with the rest of the website
+
+================================
+8. MOBILE POLISH
+================================
+
+Carefully polish the Contact page on mobile.
+
+Please review:
+- card stacking
+- form field spacing
+- button widths
+- heading wrap
+- section padding
+- visual breathing room
+
+Requirements:
+- mobile should feel premium too
+- avoid cramped fields and oversized text blocks
+- keep scanability strong
+
+================================
+9. REMOVE TEMPLATE FEEL
+================================
+
+Actively reduce anything that feels:
+- generic
+- repetitive
+- like a default contact page template
+- too conversion-heavy
+- too boxy
+
+Increase:
+- premium restraint
+- alignment precision
+- calm whitespace
+- visual confidence
+
+================================
+10. FINAL EXPECTED RESULT
+================================
+
+After polishing, the Contact page should:
+- feel more premium and mature
+- look more aligned with the rest of the website
+- feel more trustworthy
+- support contact conversion without looking salesy
+- read more clearly and elegantly
+- feel less templated and more curated
+
+Please implement this Contact page polish directly.
