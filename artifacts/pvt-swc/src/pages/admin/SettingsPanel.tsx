@@ -764,9 +764,18 @@ function LogoTab({
       {/* Brand display name + widths */}
       <div style={s.card}>
         <SectionHead>Thông tin thương hiệu</SectionHead>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "0.875rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.875rem", marginBottom: "0.875rem" }}>
           <div>
-            <Lbl>Tên hiển thị (fallback khi chưa có ảnh)</Lbl>
+            <Lbl>Tên đầy đủ (Desktop header, Footer)</Lbl>
+            <input
+              style={{ ...s.field, fontWeight: 600 }}
+              value={settings["logo_brand_name"] ?? ""}
+              placeholder="Phan Văn Thắng SWC"
+              onChange={(e) => setS("logo_brand_name", e.target.value)}
+            />
+          </div>
+          <div>
+            <Lbl>Tên ngắn (Mobile header, compact nav)</Lbl>
             <input
               style={{ ...s.field, fontWeight: 600 }}
               value={settings["logo_display_name"] ?? ""}
@@ -774,6 +783,8 @@ function LogoTab({
               onChange={(e) => setS("logo_display_name", e.target.value)}
             />
           </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.875rem" }}>
           <div>
             <Lbl>Chiều rộng logo — Desktop (px)</Lbl>
             <input
@@ -843,10 +854,19 @@ function LogoTab({
         />
 
         <LogoUrlField
-          label="Logo icon — favicon / header mobile"
+          label="Logo icon — nền sáng (màu tối)"
           settingKey="logo_icon"
           value={settings["logo_icon"] ?? ""}
-          hint="Ảnh vuông nhỏ, dùng cho favicon và vị trí compact. Khuyến nghị: 64×64 hoặc 128×128 px."
+          hint="Icon vuông dùng trên nền sáng: header khi scroll, favicon. Khuyến nghị: 64×64 hoặc 128×128 px nền trong."
+          adminKey={adminKey}
+          setS={setS}
+        />
+
+        <LogoUrlField
+          label="Logo icon — nền tối (màu trắng/sáng)"
+          settingKey="logo_icon_dark"
+          value={settings["logo_icon_dark"] ?? ""}
+          hint="Icon vuông màu trắng/sáng, dùng trên nền tối: hero, footer, mobile menu overlay."
           adminKey={adminKey}
           setS={setS}
         />
@@ -865,12 +885,12 @@ function LogoTab({
         <SectionHead>Quy tắc sử dụng logo</SectionHead>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
           {[
-            { place: "Header — đã scroll (nền sáng)", uses: "Logo chính (nền sáng)" },
-            { place: "Header — chưa scroll (nền tối)", uses: "Logo nền tối" },
-            { place: "Footer", uses: "Logo nền tối" },
-            { place: "Mobile menu overlay", uses: "Logo nền tối" },
+            { place: "Header desktop — đã scroll (nền sáng)", uses: "Icon sáng + Tên đầy đủ" },
+            { place: "Header mobile — đã scroll", uses: "Icon sáng + Tên ngắn" },
+            { place: "Header — chưa scroll (hero tối)", uses: "Icon tối + Tên đầy đủ/ngắn" },
+            { place: "Footer", uses: "Icon tối + Tên đầy đủ" },
             { place: "Favicon trình duyệt", uses: "Logo icon" },
-            { place: "Campaign / highlight", uses: "Logo accent (nếu đặt)" },
+            { place: "Logo corporate / ecosystem", uses: "Logo chính / nền tối (dự phòng)" },
           ].map(({ place, uses }) => (
             <div key={place} style={{
               display: "flex", justifyContent: "space-between", alignItems: "center",

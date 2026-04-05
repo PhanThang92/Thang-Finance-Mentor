@@ -269,39 +269,81 @@ export function Navbar() {
           <a
             href={`${homeBase}/`}
             style={{
-              fontSize:       "15.5px",
-              fontWeight:     700,
-              letterSpacing:  "-0.026em",
-              color:          effectiveScrolled
-                ? "hsl(var(--primary))"
-                : "rgba(255,255,255,0.94)",
               textDecoration: "none",
-              transition:     "color 0.32s ease",
               lineHeight:     1,
               userSelect:     "none",
               display:        "inline-flex",
               alignItems:     "center",
+              gap:            "0.5rem",
             }}
           >
             {(() => {
-              const src = effectiveScrolled ? logo.logoLightBg : logo.logoDarkBg;
-              if (src) {
+              const hasIcon = !!(logo.logoIcon || logo.logoIconDark);
+
+              if (hasIcon) {
+                /* Icon + text — primary personal brand pattern */
+                const iconSrc = effectiveScrolled
+                  ? (logo.logoIcon || logo.logoIconDark)
+                  : (logo.logoIconDark || logo.logoIcon);
+                return (
+                  <>
+                    <img
+                      src={iconSrc}
+                      alt=""
+                      aria-hidden="true"
+                      style={{
+                        width: "26px", height: "26px",
+                        objectFit: "contain", flexShrink: 0,
+                        transition: "opacity 0.32s ease",
+                      }}
+                    />
+                    <span style={{
+                      fontSize:      "14.5px",
+                      fontWeight:    700,
+                      letterSpacing: "-0.022em",
+                      color:         effectiveScrolled
+                        ? "hsl(var(--primary))"
+                        : "rgba(255,255,255,0.94)",
+                      transition:    "color 0.32s ease",
+                      lineHeight:    1.15,
+                    }}>
+                      <span className="hidden md:inline">
+                        {logo.brandName || "Phan Văn Thắng SWC"}
+                      </span>
+                      <span className="md:hidden">
+                        {logo.displayName || "Thắng SWC"}
+                      </span>
+                    </span>
+                  </>
+                );
+              }
+
+              /* Full logo image — legacy fallback */
+              const imgSrc = effectiveScrolled ? logo.logoLightBg : logo.logoDarkBg;
+              if (imgSrc) {
                 return (
                   <img
-                    src={src}
+                    src={imgSrc}
                     alt={logo.displayName}
                     style={{
-                      height:    "auto",
-                      width:     `${logo.desktopWidth}px`,
-                      maxWidth:  "140px",
-                      display:   "block",
-                      objectFit: "contain",
-                      transition: "opacity 0.32s ease",
+                      height: "auto", width: `${logo.desktopWidth}px`,
+                      maxWidth: "140px", display: "block",
+                      objectFit: "contain", transition: "opacity 0.32s ease",
                     }}
                   />
                 );
               }
-              return logo.displayName || "Thắng SWC";
+
+              /* Text only */
+              return (
+                <span style={{
+                  fontSize: "15.5px", fontWeight: 700, letterSpacing: "-0.026em",
+                  color: effectiveScrolled ? "hsl(var(--primary))" : "rgba(255,255,255,0.94)",
+                  transition: "color 0.32s ease",
+                }}>
+                  {logo.displayName || "Thắng SWC"}
+                </span>
+              );
             })()}
           </a>
 

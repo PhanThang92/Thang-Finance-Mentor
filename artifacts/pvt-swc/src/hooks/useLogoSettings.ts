@@ -5,8 +5,10 @@ export interface LogoSettings {
   logoDarkBg:    string;
   logoAccent:    string;
   logoIcon:      string;
+  logoIconDark:  string;
   logoWatermark: string;
   displayName:   string;
+  brandName:     string;
   desktopWidth:  number;
   mobileWidth:   number;
 }
@@ -16,8 +18,10 @@ const DEFAULT: LogoSettings = {
   logoDarkBg:    "",
   logoAccent:    "",
   logoIcon:      "",
+  logoIconDark:  "",
   logoWatermark: "",
   displayName:   "Thắng SWC",
+  brandName:     "Phan Văn Thắng SWC",
   desktopWidth:  120,
   mobileWidth:   90,
 };
@@ -36,8 +40,10 @@ function fetchOnce(): Promise<LogoSettings> {
         logoDarkBg:    s["logo_dark_bg"]     ?? "",
         logoAccent:    s["logo_accent"]      ?? "",
         logoIcon:      s["logo_icon"]        ?? "",
+        logoIconDark:  s["logo_icon_dark"]   ?? "",
         logoWatermark: s["logo_watermark"]   ?? "",
         displayName:   s["logo_display_name"] || "Thắng SWC",
+        brandName:     s["logo_brand_name"]   || "Phan Văn Thắng SWC",
         desktopWidth:  parseInt(s["logo_desktop_width"] ?? "120", 10) || 120,
         mobileWidth:   parseInt(s["logo_mobile_width"]  ?? "90",  10) || 90,
       };
@@ -63,7 +69,7 @@ export function useLogoSettings(): LogoSettings {
   }, []);
 
   useEffect(() => {
-    const iconUrl = logo.logoIcon;
+    const iconUrl = logo.logoIcon || logo.logoIconDark;
     if (!iconUrl) return;
     let link = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
     if (!link) {
@@ -72,7 +78,7 @@ export function useLogoSettings(): LogoSettings {
       document.head.appendChild(link);
     }
     link.href = iconUrl;
-  }, [logo.logoIcon]);
+  }, [logo.logoIcon, logo.logoIconDark]);
 
   return logo;
 }

@@ -215,9 +215,52 @@ export function Footer() {
             {/* Wordmark */}
             <a
               href={`${homeBase}/`}
-              style={{ textDecoration: "none", display: "inline-block", marginBottom: "1rem" }}
+              style={{
+                textDecoration: "none",
+                display:        "inline-flex",
+                alignItems:     "center",
+                gap:            "0.75rem",
+                marginBottom:   "1rem",
+              }}
             >
-              {logo.logoDarkBg ? (
+              {(logo.logoIconDark || logo.logoIcon) ? (
+                /* Icon + text — personal brand primary pattern */
+                <>
+                  <img
+                    src={logo.logoIconDark || logo.logoIcon}
+                    alt=""
+                    aria-hidden="true"
+                    style={{
+                      width:      "32px",
+                      height:     "32px",
+                      objectFit:  "contain",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <div>
+                    <div style={{
+                      fontSize:      "15px",
+                      fontWeight:    700,
+                      letterSpacing: "-0.022em",
+                      color:         "rgba(255,255,255,0.92)",
+                      lineHeight:    1.2,
+                      marginBottom:  "0.25rem",
+                    }}>
+                      {logo.brandName || "Phan Văn Thắng SWC"}
+                    </div>
+                    <div style={{
+                      fontSize:      "10px",
+                      fontWeight:    400,
+                      letterSpacing: "0.02em",
+                      color:         "rgba(255,255,255,0.26)",
+                      lineHeight:    1,
+                    }}>
+                      Thuộc hệ sinh thái Sky World Community
+                    </div>
+                  </div>
+                </>
+              ) : logo.logoDarkBg ? (
+                /* Full logo image — legacy fallback */
                 <img
                   src={logo.logoDarkBg}
                   alt={logo.displayName}
@@ -227,36 +270,32 @@ export function Footer() {
                     maxWidth:  "160px",
                     height:    "auto",
                     objectFit: "contain",
-                    marginBottom: "0.3rem",
                   }}
                 />
               ) : (
-                <>
-                  <div
-                    style={{
-                      fontSize:      "17.5px",
-                      fontWeight:    700,
-                      letterSpacing: "-0.032em",
-                      color:         "rgba(255,255,255,0.94)",
-                      lineHeight:    1.1,
-                      marginBottom:  "0.3rem",
-                    }}
-                  >
-                    {logo.displayName || "Thắng SWC"}
+                /* Text only */
+                <div>
+                  <div style={{
+                    fontSize:      "17.5px",
+                    fontWeight:    700,
+                    letterSpacing: "-0.032em",
+                    color:         "rgba(255,255,255,0.94)",
+                    lineHeight:    1.1,
+                    marginBottom:  "0.3rem",
+                  }}>
+                    {logo.brandName || logo.displayName || "Thắng SWC"}
                   </div>
-                  <div
-                    style={{
-                      fontSize:      "10.5px",
-                      fontWeight:    500,
-                      letterSpacing: "0.12em",
-                      textTransform: "uppercase",
-                      color:         "hsl(var(--primary) / 0.52)",
-                      lineHeight:    1,
-                    }}
-                  >
+                  <div style={{
+                    fontSize:      "10.5px",
+                    fontWeight:    500,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    color:         "hsl(var(--primary) / 0.52)",
+                    lineHeight:    1,
+                  }}>
                     Phan Văn Thắng
                   </div>
-                </>
+                </div>
               )}
             </a>
 

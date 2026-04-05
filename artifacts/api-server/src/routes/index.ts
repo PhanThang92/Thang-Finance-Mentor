@@ -16,8 +16,8 @@ const router: IRouter = Router();
 
 const LOGO_KEYS = [
   "logo_light_bg", "logo_dark_bg", "logo_accent",
-  "logo_icon", "logo_watermark",
-  "logo_display_name", "logo_desktop_width", "logo_mobile_width",
+  "logo_icon", "logo_icon_dark", "logo_watermark",
+  "logo_display_name", "logo_brand_name", "logo_desktop_width", "logo_mobile_width",
 ];
 
 router.get("/logo-settings", async (_req, res) => {
