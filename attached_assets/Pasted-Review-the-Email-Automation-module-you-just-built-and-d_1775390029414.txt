@@ -1,0 +1,57 @@
+Review the Email Automation module you just built and do a full polish + bug-fix pass.
+
+Goals:
+- fix all broken flows, UI issues, validation issues, and data inconsistencies
+- verify that sequences, campaigns, subscribers, tags, triggers, and analytics all work end-to-end
+- improve reliability without redesigning the current admin UI
+- keep the existing admin style fully consistent
+
+Please check and fix these areas carefully:
+
+1. Sequence builder
+- step ordering
+- saving and reloading steps correctly
+- trigger and exclusion rule persistence
+- draft / active / paused state transitions
+- duplicate / archive / delete actions
+
+2. Automation logic
+- correct enrollment into sequences
+- no duplicate enrollments unless intentionally allowed
+- wait steps processed correctly
+- completed / exited / paused states handled correctly
+- prevent sending to unsubscribed, bounced, or suppressed subscribers
+
+3. Email sending
+- sender settings load correctly
+- test email works
+- CTA links are valid
+- link clicks can update tags or trigger follow-up logic
+- merge fields like {{first_name}} render safely
+
+4. Subscriber data
+- source, interest_primary, stage, and tags save correctly
+- form submissions update existing subscribers cleanly
+- no duplicate subscribers caused by casing or repeated form submissions
+
+5. Campaigns
+- still separate from sequences
+- audience filters work correctly
+- recipient counts are accurate
+- scheduled and immediate sends both work
+
+6. Analytics
+- sent / opened / clicked / unsubscribed / bounced tracking works
+- sequence stats display correctly
+- no broken percentages, null values, or empty cards when data exists
+
+7. UX polish
+- fix spacing, alignment, overflow, empty states, and button states
+- improve labels and error messages in Vietnamese
+- add confirmations for destructive actions
+- keep everything native to the existing CMS design
+
+Then:
+- summarize all bugs fixed
+- list any remaining limitations
+- mention any required env vars, cron jobs, queue workers, or background tasks needed for production
