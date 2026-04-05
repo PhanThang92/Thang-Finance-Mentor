@@ -1,0 +1,362 @@
+Please refine and polish the global website footer for “Phan Van Thang SWC” so it feels significantly more premium, calm, editorial, and cohesive with the rest of the site.
+
+IMPORTANT:
+- Write implementation instructions in English.
+- Keep all visible UI text in Vietnamese.
+- Apply this polish consistently across the full public website.
+- Do NOT redesign the whole website.
+- Focus specifically on the footer system, including layout, spacing, typography, link hierarchy, trust signals, and final CTA relationship.
+- Preserve the existing brand direction: premium, calm, trustworthy, editorial, personal-brand finance mentor.
+
+GOAL:
+Upgrade the footer so it no longer feels like a generic end-of-page block.
+It should feel:
+- premium
+- intentional
+- calm
+- trustworthy
+- editorial
+- well-structured
+- visually lighter but still grounded
+- consistent with the rest of the site
+
+The footer should help the whole website end with a stronger sense of quality, clarity, and maturity.
+
+================================
+1. FOOTER ROLE
+================================
+
+The footer should clearly do these jobs:
+- reinforce the brand
+- provide final navigation clarity
+- offer trust and legitimacy
+- support light conversion / next step
+- create a strong and elegant ending to the site
+
+The footer should not feel:
+- overloaded
+- corporate and dry
+- like a default template block
+- too dense with links
+- like a generic SaaS footer
+
+================================
+2. OVERALL STRUCTURE
+================================
+
+Refine the footer structure into a clean, premium multi-column layout.
+
+Suggested visible Vietnamese content structure:
+- Brand block
+- Liên kết nhanh
+- Kiến thức
+- Kết nối / Liên hệ
+- Optional final trust/disclaimer row
+
+Suggested visible sections:
+A. Brand / description
+B. Quick navigation
+C. Knowledge/content links
+D. Contact / social
+E. Bottom legal/disclaimer row
+
+Requirements:
+- make the layout feel balanced, not mechanically equal
+- allow the brand block to have slightly more visual weight
+- ensure all columns feel aligned and well-spaced
+- preserve strong readability on desktop and mobile
+
+================================
+3. BRAND BLOCK POLISH
+================================
+
+Refine the left-side brand block.
+
+Visible Vietnamese examples:
+Brand:
+- Phan Van Thang SWC
+or
+- Thắng SWC
+
+Description:
+Nền tảng chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn.
+
+Please improve:
+- typography hierarchy
+- spacing between brand and description
+- max width of the brand description
+- brand confidence / visual anchoring
+
+Requirements:
+- the brand block should feel premium and grounded
+- not too large, not too weak
+- should establish trust and identity clearly
+
+Optional:
+- add a subtle brand line or positioning line if it improves the footer tone
+
+================================
+4. LINK HIERARCHY
+================================
+
+Refine the footer navigation hierarchy.
+
+Suggested visible Vietnamese groupings:
+
+Liên kết nhanh:
+- Trang chủ
+- Giới thiệu
+- Kiến thức
+- Tin tức
+- Cộng đồng
+- Sản phẩm
+- Liên hệ
+
+Kiến thức:
+- Bài viết
+- Video
+- Chủ đề
+- Series nổi bật
+- Tài liệu
+
+Requirements:
+- group links more meaningfully
+- avoid one long undifferentiated list
+- keep the link groups easy to scan
+- do not overfill the footer with too many links
+
+Typography for group headings and links should feel clearly distinct.
+
+================================
+5. CONTACT / CONNECTION BLOCK
+================================
+
+Refine the contact / connection block.
+
+Visible Vietnamese examples:
+Heading:
+Kết nối
+
+Possible content:
+- Email: ...
+- YouTube: ...
+- Facebook: ...
+- Zalo: ...
+- Hà Nội, Việt Nam
+
+Requirements:
+- keep the connection block practical and trustworthy
+- if icons are used, make them subtle and refined
+- avoid cheap-looking icon styling
+- spacing between contact items should feel premium
+- links should feel intentional and easy to use
+
+If contact data already exists in config, render from that cleanly.
+
+================================
+6. SOCIAL LINK POLISH
+================================
+
+If the footer includes social links, refine them.
+
+Possible links:
+- YouTube
+- Facebook
+- Zalo
+- Email
+
+Requirements:
+- social links should feel calm and premium
+- avoid oversized icon buttons
+- can use text links or understated icon+text
+- hover states should be subtle and polished
+- do not make the footer feel noisy
+
+If only 2–4 social channels are used, that is fine.
+Prioritize quality over quantity.
+
+================================
+7. TYPOGRAPHY POLISH
+================================
+
+Refine footer typography carefully.
+
+Please improve:
+- footer section heading style
+- link size and line-height
+- brand description readability
+- disclaimer text size and contrast
+- legal row text tone
+
+Requirements:
+- typography should feel editorial and clean
+- not too small and gray to the point of weakness
+- not too large and heavy
+- clear hierarchy between headings, links, and supporting copy
+
+The footer should read effortlessly.
+
+================================
+8. SPACING / WHITESPACE
+================================
+
+Review and improve all footer spacing.
+
+Please refine:
+- top padding and bottom padding
+- spacing between columns
+- spacing between heading and link list
+- spacing between links
+- spacing between main footer and bottom row
+- spacing above the footer relative to the previous section
+
+Requirements:
+- footer should breathe more
+- not feel cramped
+- not feel like all content is packed into one dark box
+- maintain a premium calm rhythm
+
+================================
+9. BACKGROUND / SURFACE TREATMENT
+================================
+
+Refine the footer background and surface treatment.
+
+Requirements:
+- use a premium dark surface or refined tonal variation consistent with the site
+- ensure strong readability
+- avoid flat, lifeless dark slabs
+- avoid noisy textures
+- use subtle depth if helpful
+
+Possible treatments:
+- dark teal / charcoal surface
+- subtle gradient
+- faint divider above footer
+- restrained editorial background tone
+
+The footer should feel like a composed ending, not a leftover block.
+
+================================
+10. DIVIDERS / STRUCTURAL DETAILS
+================================
+
+Use subtle structural details to improve quality.
+
+Possible refinements:
+- top divider line between page content and footer
+- soft separators between main footer area and bottom row
+- gentle column rhythm through spacing rather than harsh borders
+- subtle horizontal line above legal/disclaimer area
+
+Requirements:
+- keep all dividers understated
+- avoid hard corporate lines everywhere
+- use them only where they improve clarity
+
+================================
+11. DISCLAIMER / TRUST ROW
+================================
+
+Refine the bottom row of the footer.
+
+Suggested visible Vietnamese content:
+- © [year] Phan Van Thang SWC. All rights reserved.
+- Nội dung trên website mang tính chia sẻ và tham khảo, không phải cam kết lợi nhuận hay lời khuyên tài chính cá nhân hóa.
+
+Requirements:
+- bottom row should feel clean and quiet
+- disclaimer should be readable but secondary
+- avoid tiny unreadable text
+- keep the legal/trust row visually separated from the main footer content
+- make the copy look intentional, not stuffed in
+
+================================
+12. OPTIONAL FOOTER CTA
+================================
+
+If the website benefits from it, add a very light pre-footer or footer CTA relationship.
+
+Examples:
+- Khám phá bài viết mới
+- Theo dõi YouTube
+- Liên hệ kết nối
+
+Requirements:
+- this should be subtle, not salesy
+- only include if it improves the final page rhythm
+- do not overcrowd the footer itself
+- if a CTA already exists above the footer, make sure the footer complements it rather than repeating it
+
+================================
+13. RESPONSIVENESS
+================================
+
+Carefully refine the footer for mobile and tablet.
+
+Please review:
+- column stacking order
+- spacing between sections
+- readability of grouped links
+- contact block spacing
+- legal/disclaimer wrapping
+- padding on smaller screens
+
+Requirements:
+- mobile footer should still feel premium
+- avoid giant blocks of stacked text
+- avoid awkward cramped link groups
+- keep scanability strong
+
+================================
+14. REMOVE TEMPLATE FEEL
+================================
+
+Actively reduce anything that makes the footer feel like:
+- a default website footer
+- a generic SaaS footer
+- an overloaded corporate link list
+- a visually heavy block with weak hierarchy
+
+Increase:
+- editorial spacing
+- premium restraint
+- alignment precision
+- hierarchy clarity
+- calm finishing tone
+
+================================
+15. CROSS-SITE CONSISTENCY
+================================
+
+Make sure the footer feels consistent across:
+- Trang chủ
+- Giới thiệu
+- Kiến thức
+- Bài viết
+- Video
+- Tin tức
+- Cộng đồng
+- Sản phẩm
+- Liên hệ
+
+Requirements:
+- consistent spacing logic
+- consistent typography logic
+- consistent surface treatment
+- consistent link behavior
+- same trust tone everywhere
+
+================================
+16. FINAL EXPECTED RESULT
+================================
+
+After refinement, the footer should:
+- feel more premium and mature
+- end each page more elegantly
+- provide clearer navigation and trust signals
+- look less templated
+- feel cohesive with the full website design system
+- support the personal brand more effectively
+
+Please implement this footer polish directly across the public website.
