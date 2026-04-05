@@ -43,7 +43,6 @@ export const FOOTER_NAV_LINKS: FooterLinkItem[] = [
   { name: "Kiến thức",  href: "/kien-thuc"  },
   { name: "Tin tức",    href: "/tin-tuc"    },
   { name: "Cộng đồng",  href: "/cong-dong"  },
-  { name: "Sản phẩm",   href: "/san-pham/duong-toi-1-trieu-do" },
   { name: "Liên hệ",    href: "/lien-he"   },
 ];
 
@@ -55,7 +54,19 @@ export const FOOTER_KIEN_THUC_LINKS: FooterLinkItem[] = [
   { name: "Series nổi bật", href: "/series"    },
 ];
 
-/** Footer — Product links column. */
+/**
+ * Footer — Hệ sinh thái column.
+ * Routes marked (* placeholder) do not yet have dedicated pages
+ * and will redirect or use stub pages until fully built.
+ */
+export const FOOTER_HE_SINH_THAI_LINKS: FooterLinkItem[] = [
+  { name: "SWC Pass",              href: "/san-pham/swc-pass"             },
+  { name: "SWC Field",             href: "/he-sinh-thai/swc-field"        }, // placeholder
+  { name: "Con đường 1 triệu đô",  href: "/san-pham/duong-toi-1-trieu-do" },
+  { name: "Cộng đồng SWC",         href: "/cong-dong"                     },
+];
+
+/** Footer — Product links column (legacy, kept for reference). */
 export const FOOTER_PRODUCT_LINKS: FooterLinkItem[] = [
   { name: "Road to $1M · SWC PASS", href: "/san-pham/duong-toi-1-trieu-do" },
   { name: "ATLAS",                   href: "/san-pham/atlas"                },

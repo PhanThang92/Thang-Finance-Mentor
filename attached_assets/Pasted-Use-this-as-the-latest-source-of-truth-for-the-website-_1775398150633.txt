@@ -1,0 +1,214 @@
+Use this as the latest source of truth for the website footer. Refactor the existing footer accordingly instead of layering conflicting changes.
+
+Update the entire website footer information architecture so it better matches the Phan Van Thang SWC brand and the long-term SWC ecosystem direction.
+
+IMPORTANT:
+- Keep the current premium visual style, colors, typography, spacing, and overall footer aesthetic.
+- Do NOT redesign the whole website.
+- Do NOT make the footer flashy or overly dense.
+- This is an information architecture and content structure improvement first, with light layout polish only where needed.
+- Keep everything native to the current Thang SWC website.
+- Use Vietnamese labels in the UI.
+- The footer should feel strategic, clean, calm, and ecosystem-based.
+
+GOAL:
+The current footer has become too simplified around a single “Sản phẩm” item.
+I want the footer to better reflect a broader ecosystem structure, not just a single product listing.
+
+The footer should communicate that Phan Van Thang SWC is building:
+- knowledge content
+- community
+- products
+- ecosystem access layers
+- deeper long-term pathways
+
+Please reorganize the footer into a clearer and stronger structure.
+
+==================================================
+1. NEW FOOTER STRUCTURE
+==================================================
+
+Use 4 columns on desktop if that best fits the current layout:
+
+1. Thương hiệu / giới thiệu ngắn
+2. Liên kết nhanh
+3. Kiến thức
+4. Hệ sinh thái
+5. Kết nối
+
+If 5 columns feels too crowded in the current layout, use a well-balanced 4-column version where:
+- brand intro stays in the first large column
+- Liên kết nhanh and Kiến thức remain separate
+- Hệ sinh thái is added as its own dedicated column
+- Kết nối remains on the right
+
+The key point:
+“Hệ sinh thái” must become visible again in the footer and should not be collapsed into just one generic “Sản phẩm” link.
+
+==================================================
+2. REQUIRED FOOTER CONTENT
+==================================================
+
+A. BRAND COLUMN
+Keep the current brand block but polish it slightly if needed.
+
+Suggested structure:
+- Logo
+- Brand name: Phan Văn Thắng SWC
+- Short descriptor
+- Brand sentence about disciplined finance, long-term asset building, and practical investment thinking
+- Social/contact shortcuts if already present
+
+Keep this calm and premium.
+
+B. LIÊN KẾT NHANH
+Suggested links:
+- Trang chủ
+- Giới thiệu
+- Kiến thức
+- Tin tức
+- Cộng đồng
+- Liên hệ
+
+C. KIẾN THỨC
+Suggested links:
+- Bài viết
+- Video
+- Chủ đề
+- Series nổi bật
+
+D. HỆ SINH THÁI
+This is the most important change.
+
+Create a dedicated footer column called:
+- Hệ sinh thái
+
+Suggested links:
+- SWC Pass
+- SWC Field
+- Con đường 1 triệu đô
+- Cộng đồng
+
+Optional:
+- Tổng quan hệ sinh thái
+Only include this if such a route exists or can be safely stubbed.
+
+Important:
+Do not label this column as only “Sản phẩm”.
+It should reflect a broader system architecture.
+
+E. KẾT NỐI
+Keep:
+- Kênh YouTube
+- Trang Facebook
+- email
+- Hà Nội, Việt Nam
+- Tham gia cộng đồng
+
+Polish labels and spacing if needed.
+
+==================================================
+3. CONTENT / BRAND POSITIONING RULES
+==================================================
+
+The footer should reflect this brand direction:
+- not just a personal blog
+- not just a single product sales site
+- a broader SWC knowledge + product + ecosystem platform
+
+Tone:
+- clear
+- premium
+- calm
+- strategic
+- trustworthy
+
+Avoid:
+- generic “sales page” feeling
+- clutter
+- too many duplicated links
+- vague labels
+
+Use wording that supports long-term brand architecture.
+
+==================================================
+4. LAYOUT / UX RULES
+==================================================
+
+Please improve layout balance while preserving the current style.
+
+Requirements:
+- keep the footer visually elegant and breathable
+- maintain strong spacing and alignment
+- avoid awkward empty space
+- avoid too many items stacked in one column
+- ensure column hierarchy is clear
+- keep mobile layout clean and readable
+- footer should still feel premium on desktop and mobile
+
+If needed:
+- slightly rebalance column widths
+- reduce redundant text
+- improve line length in the brand intro area
+- improve spacing between headings and links
+- improve footer bottom bar alignment
+
+==================================================
+5. ROUTING / LINK HANDLING
+==================================================
+
+For links that already exist, connect them properly.
+For ecosystem pages that do not yet exist, do one of these cleanly:
+- use placeholder routes that fit the current route naming pattern
+- or keep them configurable in one footer link config file
+- or mark them clearly in code for easy replacement later
+
+Suggested ecosystem routes if needed:
+- /san-pham/swc-pass
+- /he-sinh-thai/swc-field
+- /san-pham/con-duong-1-trieu-do
+- /cong-dong
+
+Use the project’s existing route conventions if different.
+
+==================================================
+6. FOOTER BOTTOM BAR
+==================================================
+
+Keep the copyright and disclaimer area,
+but polish it so it reads more intentionally.
+
+Make sure the bottom area includes:
+- copyright
+- short disclaimer about educational/reference nature of the content
+- clean alignment and spacing
+
+Keep disclaimer tone calm and legally sensible.
+Do not make it too long.
+
+==================================================
+7. IMPLEMENTATION APPROACH
+==================================================
+
+Please:
+1. Inspect the current footer component and existing route structure
+2. Refactor the footer architecture, not just patch one label
+3. Reuse existing components/styles where possible
+4. Keep content easy to edit later
+5. Make sure the new footer feels native to the current website
+
+==================================================
+8. SUCCESS CRITERIA
+==================================================
+
+This is successful only if:
+- the footer no longer feels centered around only one generic “Sản phẩm” item
+- “Hệ sinh thái” becomes clearly visible again as a distinct brand architecture layer
+- the footer feels more aligned with the SWC ecosystem direction
+- the visual style still matches the current Thang SWC site
+- the result is cleaner and stronger, not more cluttered
+
+Then:
+- summarize exactly what changed
+- explain which footer structure you chose
+- list any placeholder routes that still need final confirmation
