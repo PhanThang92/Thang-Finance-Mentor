@@ -1,0 +1,317 @@
+Implement a real Email Automation module inside my existing admin CMS for the Phan Van Thang SWC website.
+
+IMPORTANT:
+- First inspect the existing project structure, database, admin routes, and current email-related pages.
+- Reuse the current design system, layout, sidebar, spacing, typography, cards, and teal primary buttons.
+- Do NOT redesign unrelated pages.
+- Do NOT build a fake prototype. Build a working MVP with real database, backend logic, and admin UI.
+- Keep the admin UI in Vietnamese where appropriate.
+
+GOAL:
+Turn the current empty “Chuỗi email” section into a real automation system for:
+1. Welcome sequence
+2. Soft-sell sequence for “Con đường 1 triệu đô”
+3. Re-engagement sequence
+4. One-time campaigns
+5. Subscriber tagging and segmentation
+
+WHAT TO BUILD
+
+1) Subscribers foundation
+Extend the subscriber system so each subscriber can store:
+- first_name
+- email
+- status: active / unsubscribed / bounced / suppressed
+- source
+- interest_primary
+- stage
+- tags
+- created_at / updated_at
+- last_opened_at / last_clicked_at / last_email_sent_at
+
+Seed or support these values:
+
+source:
+- website_homepage
+- website_article
+- website_contact
+- landing_leadmagnet
+- youtube
+- facebook
+- webinar
+- manual_import
+
+interest_primary:
+- ky_luat_tai_chinh
+- dau_tu_dai_han
+- swc
+- con_duong_1_trieu_do
+- chung_chua_ro
+
+stage:
+- new_lead
+- nurturing
+- engaged
+- hot_lead
+- customer
+- inactive
+
+Seed these tags:
+- newsletter
+- lead_magnet
+- interest_swc
+- interest_1trieudo
+- clicked_content
+- clicked_product
+- customer
+- inactive_60d
+- stage_new
+- stage_nurture
+- stage_engaged
+- stage_hot
+
+2) Email Sequences list page
+Build the “Chuỗi email” page so it supports:
+- empty state when there are no sequences
+- a real list of sequences when data exists
+- create button
+- search
+- filter by status
+- filter by trigger type
+- actions: view, edit, duplicate, activate, pause, archive, delete
+
+Each row/card should show:
+- sequence name
+- short description
+- trigger summary
+- status
+- number of steps
+- enrolled count
+- completed count
+- open rate
+- click rate
+- last updated
+
+3) Create/Edit Sequence builder
+Build a working sequence editor with these sections:
+
+A. Basic info
+- name
+- slug
+- description
+- status
+- goal
+
+B. Trigger
+Support these trigger types:
+- form submitted
+- tag added
+- link clicked
+- manually added
+- segment entered
+
+C. Exclusion rules
+Support:
+- already customer
+- already in this sequence
+- already completed this sequence
+- unsubscribed
+- bounced / invalid email
+- has certain tag
+
+D. Steps
+Support these step types:
+- Send Email
+- Wait
+- Add Tag
+- Remove Tag
+- Update Field
+- Condition / If-Else
+- Move to another sequence
+- End sequence
+
+E. Email editor
+For “Send Email” steps support:
+- internal email name
+- subject
+- preview text
+- sender name
+- sender email
+- rich text body
+- CTA button text
+- CTA button link
+- optional secondary CTA
+- merge fields like {{first_name}}
+- preview
+- send test email
+- save draft
+
+4) Sequence execution logic
+Implement real backend processing so sequences actually run.
+
+Requirements:
+- store sequence definitions in database
+- track subscriber enrollment in sequences
+- process wait steps correctly
+- send emails on schedule
+- prevent sending to unsubscribed or bounced users
+- prevent duplicate enrollment unless explicitly allowed
+- support click tracking and tag updates from CTA links
+- support completion / exit state
+
+Use clean backend architecture and whatever scheduled job / cron / queue approach best fits the current stack.
+
+5) Default sequence templates
+Seed 3 default sequence templates:
+
+A. Welcome - 7 sai lầm tài sản
+Trigger:
+- newsletter form submit
+- lead magnet form submit
+- or tag newsletter / lead_magnet added
+
+Default steps:
+1. Welcome + lead magnet delivery
+2. Wait 1 day
+3. Why people work for years but build no assets
+4. Wait 2 days
+5. 3 financial stages: An toàn – Tự chủ – Tự do
+6. Wait 2 days
+7. Income is not the same as assets
+8. Wait 2 days
+9. Next step + content library + Con đường 1 triệu đô
+
+B. Con đường 1 triệu đô - Soft Sell
+Trigger:
+- tag interest_1trieudo added
+- product/program link clicked
+- program form submitted
+
+Default steps:
+1. Problem
+2. Wait 1 day
+3. Wrong belief: you do not lack opportunity, you lack a system
+4. Wait 2 days
+5. Discipline
+6. Wait 2 days
+7. Program introduction
+8. Wait 2 days
+9. Who is fit / not fit
+10. Wait 2 days
+11. Gentle invitation
+
+C. Re-engagement - 60 ngày không tương tác
+Trigger:
+- no opens and no clicks for 60 days
+
+Steps:
+1. Are you still interested?
+2. Wait 5 days
+3. I will pause emails if this is no longer relevant
+4. If still inactive, add tag inactive_60d and suppress from regular campaigns
+
+6) Campaigns page
+Keep “Chiến dịch” as one-time broadcasts, separate from automation.
+
+Ensure campaigns support:
+- create campaign
+- choose audience by tags / stage / source / segment
+- preview recipient count
+- send now
+- schedule send
+- duplicate campaign
+- basic analytics
+
+7) Form integration
+Connect frontend forms to subscribers + automations.
+
+When a form is submitted:
+- create subscriber if new
+- update subscriber if existing
+- normalize email
+- attach source
+- attach default tags
+- set interest_primary if available
+- enroll into default sequence if configured
+
+Examples:
+- Lead magnet form adds tag lead_magnet, source landing_leadmagnet, stage new_lead, and enrolls into Welcome
+- Program interest form adds tag interest_1trieudo and enrolls into Soft Sell
+
+8) Analytics
+Track:
+- sent
+- delivered
+- opened
+- clicked
+- unsubscribed
+- bounced
+
+Show sequence analytics in admin:
+- enrolled
+- active
+- completed
+- exited
+- open rate
+- click rate per email step
+
+Also show subscriber email activity history if possible.
+
+9) Email settings
+If not already present, add a simple email settings section under “Cài đặt”:
+- sender name
+- sender email
+- reply-to email
+- provider type
+- SMTP or API settings
+- send test email
+
+Do not hardcode to one provider.
+
+10) UX requirements
+- Match current admin style exactly
+- Use Vietnamese labels like:
+  - Chuỗi email tự động
+  - Tạo chuỗi
+  - Điều kiện bắt đầu
+  - Điều kiện loại trừ
+  - Gửi email
+  - Chờ
+  - Gắn tag
+  - Gỡ tag
+  - Cập nhật trường
+  - Kết thúc chuỗi
+  - Gửi thử
+  - Lưu nháp
+  - Xuất bản
+- Clean white cards, subtle borders, gray page background, teal actions
+- Strong empty states
+- Clear toast messages
+- Confirmation for destructive actions
+
+DELIVERABLES
+- database changes / migrations
+- backend logic
+- admin UI
+- default sequence templates seeded
+- working automation processing
+- short README explaining how the automation processor works
+
+WORKFLOW
+Please proceed in this order:
+1. Inspect current codebase and summarize what already exists
+2. Propose the exact implementation plan
+3. Implement the MVP
+4. Show me what was changed
+5. Point out any missing environment variables or setup needed
+
+SUCCESS CRITERIA
+This is done only if:
+- a subscriber can be created from a form
+- tags and fields are saved correctly
+- subscriber is automatically enrolled into a sequence
+- emails are sent according to wait steps
+- clicks can update tags
+- sequence analytics appear in admin
+- campaigns remain separate from sequences
+- the UI feels native to the current CMS
