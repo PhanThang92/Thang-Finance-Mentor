@@ -1,19 +1,14 @@
 import path from "path";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { generateOgImage } from "../og/ogImageGenerator";
 import { randomBytes } from "crypto";
 import { Router, type Request, type Response, type NextFunction } from "express";
 import multer from "multer";
 import sharp from "sharp";
+import { storage } from "../lib/storage.js";
 import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, leadNotesTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable, contactWidgetSettingsTable, contactChannelsTable } from "@workspace/db";
 import { eq, sql, desc, ilike, or, and, isNotNull, gte, lte } from "drizzle-orm";
 
-/* ── Upload dirs ─────────────────────────────────────────────────────── */
-const UPLOADS_DIR = path.join(process.cwd(), "uploads");
-const ORIG_DIR    = path.join(UPLOADS_DIR, "orig");
-const DISP_DIR    = path.join(UPLOADS_DIR, "disp");
-const THUMB_DIR   = path.join(UPLOADS_DIR, "thumb");
-[ORIG_DIR, DISP_DIR, THUMB_DIR].forEach((d) => { if (!existsSync(d)) mkdirSync(d, { recursive: true }); });
+/* ── Upload dirs managed by storage abstraction (see src/lib/storage.ts) ── */
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -234,14 +229,15 @@ router.post("/upload-image", upload.single("image"), async (req: Request, res: R
     const origName = `${id}.${ext}`;
     const dispName = `${id}.webp`;
 
-    writeFileSync(path.join(ORIG_DIR, origName), req.file.buffer);
-
     const dispBuffer  = await processImage(req.file.buffer, context);
     const thumbBuffer = await generateThumbnail(dispBuffer);
     const thumbName   = `${id}_thumb.webp`;
 
-    writeFileSync(path.join(DISP_DIR,  dispName),  dispBuffer);
-    writeFileSync(path.join(THUMB_DIR, thumbName),  thumbBuffer);
+    const [origUrl, dispUrl, thumbUrl] = await Promise.all([
+      storage.save(req.file.buffer, `orig/${origName}`, req.file.mimetype),
+      storage.save(dispBuffer,      `disp/${dispName}`,  "image/webp"),
+      storage.save(thumbBuffer,     `thumb/${thumbName}`, "image/webp"),
+    ]);
 
     const dispMeta       = await sharp(dispBuffer).metadata();
     const contentTypeVal = (req.body.contentType as string | undefined) ?? "shared";
@@ -260,8 +256,8 @@ router.post("/upload-image", upload.single("image"), async (req: Request, res: R
       storagePathOriginal:  `orig/${origName}`,
       storagePathProcessed: `disp/${dispName}`,
       storagePathThumbnail: `thumb/${thumbName}`,
-      publicUrl:            `/api/uploads/disp/${dispName}`,
-      thumbnailUrl:         `/api/uploads/thumb/${thumbName}`,
+      publicUrl:            dispUrl,
+      thumbnailUrl:         thumbUrl,
       altText:              altTextVal,
       watermarkEnabled:     true,
       watermarkText:        watermarkText(context),
@@ -270,9 +266,9 @@ router.post("/upload-image", upload.single("image"), async (req: Request, res: R
     }).returning();
 
     res.json({
-      original:  `/api/uploads/orig/${origName}`,
-      display:   `/api/uploads/disp/${dispName}`,
-      thumbnail: `/api/uploads/thumb/${thumbName}`,
+      original:  origUrl,
+      display:   dispUrl,
+      thumbnail: thumbUrl,
       assetId:   mediaAsset?.id ?? null,
     });
   } catch (e) { res.status(500).json({ error: String(e) }); }

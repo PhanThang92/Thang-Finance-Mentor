@@ -12,10 +12,9 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 import { Router, type Request, type Response, type NextFunction } from "express";
-import path from "path";
-import { existsSync, mkdirSync, writeFileSync, unlinkSync } from "fs";
 import { randomUUID } from "crypto";
 import multer from "multer";
+import { storage } from "../lib/storage.js";
 import { db, leadMagnetsTable, resourceAccessEventsTable } from "@workspace/db";
 import { eq, desc, count, sql } from "drizzle-orm";
 
@@ -33,11 +32,7 @@ function requireAdmin(req: Request, res: Response, next: NextFunction) {
 }
 router.use(requireAdmin);
 
-/* ── File storage setup ──────────────────────────────────────────── */
-const UPLOADS_DIR  = path.join(process.cwd(), "uploads");
-const RESOURCE_DIR = path.join(UPLOADS_DIR, "resources");
-if (!existsSync(RESOURCE_DIR)) mkdirSync(RESOURCE_DIR, { recursive: true });
-
+/* ── File storage managed by storage abstraction (see src/lib/storage.ts) ── */
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 25 * 1024 * 1024 }, // 25 MB
@@ -63,14 +58,13 @@ router.post("/upload-file", upload.single("file"), async (req: Request, res: Res
   if (!req.file) { res.status(400).json({ error: "Không có tệp được tải lên" }); return; }
 
   try {
-    const originalExt  = path.extname(req.file.originalname).toLowerCase();
+    const originalExt  = req.file.originalname.includes(".") ? `.${req.file.originalname.split(".").pop()!.toLowerCase()}` : "";
     const safeName     = `${randomUUID()}${originalExt}`;
-    const destPath     = path.join(RESOURCE_DIR, safeName);
-    writeFileSync(destPath, req.file.buffer);
+    const publicUrl    = await storage.save(req.file.buffer, `resources/${safeName}`, req.file.mimetype);
 
     res.json({
       ok:           true,
-      url:          `/api/uploads/resources/${safeName}`,
+      url:          publicUrl,
       fileName:     req.file.originalname,
       fileSize:     req.file.size,
       fileMimeType: req.file.mimetype,
@@ -212,11 +206,10 @@ router.delete("/:id", async (req, res) => {
 
     await db.delete(leadMagnetsTable).where(eq(leadMagnetsTable.id, id));
 
-    // Try to clean up stored file
-    if (resource?.fileUrl?.startsWith("/api/uploads/resources/")) {
-      const filename = path.basename(resource.fileUrl);
-      const filePath = path.join(RESOURCE_DIR, filename);
-      if (existsSync(filePath)) try { unlinkSync(filePath); } catch {}
+    // Try to clean up stored file via storage abstraction
+    if (resource?.fileUrl) {
+      const match = resource.fileUrl.match(/\/api\/uploads\/(resources\/.+)$/);
+      if (match?.[1]) await storage.delete(match[1]).catch(() => {});
     }
 
     res.json({ ok: true });
