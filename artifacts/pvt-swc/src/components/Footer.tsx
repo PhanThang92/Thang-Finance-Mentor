@@ -57,23 +57,24 @@ function ContactLink({
   href?: string; external?: boolean; Icon: React.ElementType; label: string; isStatic?: boolean;
 }) {
   const inner = () => (
-    <div style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem", color: isStatic ? "rgba(255,255,255,0.26)" : LINK_RESTING, transition: isStatic ? "none" : "color 0.20s ease" }}>
-      <Icon size={12} style={{ marginTop: "2px", flexShrink: 0, opacity: isStatic ? 0.55 : 0.72 }} />
-      <span style={{ fontSize: "13px", fontWeight: 400, letterSpacing: "0.006em", lineHeight: 1.55, wordBreak: "break-all" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: 0, overflow: "hidden", color: isStatic ? "rgba(255,255,255,0.26)" : LINK_RESTING, transition: isStatic ? "none" : "color 0.20s ease" }}>
+      <Icon size={12} style={{ flexShrink: 0, opacity: isStatic ? 0.55 : 0.72 }} />
+      <span style={{ fontSize: "13px", fontWeight: 400, letterSpacing: "0.006em", lineHeight: 1.55, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
         {label}
       </span>
-      {!isStatic && <ArrowUpRight size={10} style={{ marginTop: "3px", flexShrink: 0, opacity: 0.38 }} />}
+      {!isStatic && <ArrowUpRight size={10} style={{ flexShrink: 0, opacity: 0.38 }} />}
     </div>
   );
 
-  if (isStatic || !href) return <div>{inner()}</div>;
+  if (isStatic || !href) return <div title={label}>{inner()}</div>;
 
   return (
     <a
       href={href}
+      title={label}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      style={{ textDecoration: "none", display: "block" }}
+      style={{ textDecoration: "none", display: "block", minWidth: 0, overflow: "hidden" }}
       onMouseEnter={(e) => { const d = e.currentTarget.firstChild as HTMLElement; if (d) d.style.color = LINK_HOVER; }}
       onMouseLeave={(e) => { const d = e.currentTarget.firstChild as HTMLElement; if (d) d.style.color = LINK_RESTING; }}
     >
