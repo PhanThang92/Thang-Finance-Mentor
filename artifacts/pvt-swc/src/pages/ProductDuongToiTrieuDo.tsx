@@ -1,3 +1,4 @@
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 import React from "react";
 import { motion } from "framer-motion";
 
@@ -771,6 +772,12 @@ function FinalCTA() {
    PAGE EXPORT
 ══════════════════════════════════════════════════════════ */
 export default function ProductDuongToiTrieuDo() {
+  useSeoMeta({
+    title:       "Con đường 1 triệu đô — Lộ trình tích sản bền vững từ Phan Văn Thắng",
+    description: "Hành trình thực chiến từ 0 đến tích sản 7 chữ số: kiểm soát dòng tiền, đầu tư có kỷ luật, xây dựng tài sản bền vững theo hệ thống SWC.",
+    ogImage:     "/opengraph.jpg",
+    ogType:      "website",
+  });
   return (
     <>
       <Hero />

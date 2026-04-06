@@ -1,3 +1,4 @@
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -1115,6 +1116,12 @@ function FinalCTASection() {
    PAGE EXPORT
 ══════════════════════════════════════════════════════════ */
 export default function ProductAtlas() {
+  useSeoMeta({
+    title:       "SWC Atlas — Bản đồ tri thức tài chính cá nhân của Phan Văn Thắng",
+    description: "SWC Atlas là hệ thống tri thức tài chính cá nhân được tổ chức có cấu trúc — từ tư duy nền tảng đến chiến lược tích sản thực chiến theo từng giai đoạn.",
+    ogImage:     "/opengraph.jpg",
+    ogType:      "website",
+  });
   return (
     <>
       <Hero />

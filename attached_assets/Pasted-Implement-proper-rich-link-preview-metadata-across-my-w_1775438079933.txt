@@ -1,0 +1,241 @@
+Implement proper rich link preview metadata across my website so that when I share any page or article URL in messaging apps, social apps, or chat tools, the preview looks rich and professional instead of plain and generic.
+
+IMPORTANT:
+- Keep the current website design unchanged.
+- This task is about metadata, preview cards, image handling, and server-rendered share information.
+- Do not treat this as only a frontend visual task.
+- The preview must work when sharing links outside the website.
+- Use the existing Thang SWC brand style and content structure.
+
+GOAL:
+When sharing links from my website, I want them to display rich previews like:
+- featured image
+- title
+- short description / excerpt
+- website / brand name
+instead of only showing a raw URL and plain site name.
+
+This should work especially well for:
+- homepage
+- news articles
+- product pages
+- ecosystem pages
+- important landing pages
+
+==================================================
+1. IMPLEMENT PROPER OPEN GRAPH + SHARE METADATA
+==================================================
+
+Add correct metadata support for all public pages.
+
+At minimum, support:
+- title
+- meta description
+- canonical URL
+- og:type
+- og:title
+- og:description
+- og:image
+- og:image:width
+- og:image:height
+- og:url
+- og:site_name
+- og:locale
+- twitter:card
+- twitter:title
+- twitter:description
+- twitter:image
+
+Use strong defaults for pages that do not have custom values.
+
+==================================================
+2. GLOBAL DEFAULT SHARE PREVIEW
+==================================================
+
+Create a default share preview for the website as a whole.
+
+For general pages like homepage or pages without custom cover images, use:
+- brand title: Phan Văn Thắng SWC
+- site-level description aligned with the brand:
+  practical financial thinking, long-term asset building, disciplined investing, and structured ecosystem guidance
+- a clean default share image using the brand style
+
+This default preview should look premium and consistent with the Thang SWC brand.
+
+==================================================
+3. DYNAMIC PREVIEW FOR NEWS ARTICLES
+==================================================
+
+For each news article, generate dynamic share metadata based on the article itself.
+
+Use:
+- article title
+- article excerpt / summary
+- article featured image
+- article URL
+- article publish date if useful in structured data
+- site name: Phan Văn Thắng SWC
+
+If the article has a featured image, use it as og:image.
+If not, fall back to a default branded article image.
+
+Important:
+The preview for a news article should look like a real content card:
+- image
+- title
+- summary
+- website name
+
+Not just raw URL text.
+
+==================================================
+4. DYNAMIC PREVIEW FOR PRODUCT PAGES
+==================================================
+
+For product pages such as:
+- SWC Pass
+- Con đường 1 triệu đô
+- other ecosystem pages
+
+Generate dynamic share metadata using:
+- product title
+- short value proposition
+- product cover image or branded fallback image
+- proper canonical URL
+
+These should also have premium previews when shared.
+
+==================================================
+5. IMAGE REQUIREMENTS FOR PREVIEW
+==================================================
+
+Ensure preview images are reliable.
+
+Requirements:
+- use absolute image URLs, not relative paths
+- make sure the image is publicly accessible
+- use a clean preview-friendly image size, ideally around 1200x630
+- ensure images are not broken, blocked, or behind auth
+- ensure the image loads correctly for crawlers
+
+If needed, generate a default OG image for:
+- homepage
+- general pages
+- articles with no featured image
+- products with no dedicated cover image
+
+==================================================
+6. SERVER-RENDERED / CRAWLER-FRIENDLY METADATA
+==================================================
+
+This is critical.
+
+Make sure the metadata is available in the raw HTML response that crawlers see.
+
+Do NOT rely on client-side only meta tag injection if that would break link previews.
+
+The metadata must be crawler-friendly for platforms that read the initial HTML when generating previews.
+
+If the project currently uses client-side routing only, make sure these meta tags still render correctly for shared URLs.
+
+==================================================
+7. STRUCTURED DATA / SEO SUPPORT
+==================================================
+
+Also improve structured metadata where appropriate.
+
+For articles, add structured data if reasonable, such as:
+- Article / NewsArticle schema
+- headline
+- description
+- image
+- datePublished
+- dateModified
+- author
+- mainEntityOfPage
+
+For general pages, basic structured data is enough.
+
+==================================================
+8. CONTENT STRATEGY FOR PREVIEWS
+==================================================
+
+Use these content rules:
+
+Homepage preview:
+- brand-first
+- short professional description
+- premium branded image
+
+Article preview:
+- article-first
+- featured image
+- strong readable title
+- short excerpt
+- site name
+
+Product preview:
+- product title
+- concise value proposition
+- premium ecosystem/product image
+- site name
+
+Keep tone aligned with Thang SWC:
+- calm
+- premium
+- strategic
+- trustworthy
+- not hype-driven
+
+==================================================
+9. FALLBACK LOGIC
+==================================================
+
+Please implement safe fallback logic:
+
+If a page lacks custom preview data:
+- use site default title
+- use site default description
+- use site default share image
+
+If an article lacks image:
+- use branded article fallback
+
+If a product lacks image:
+- use branded product fallback
+
+==================================================
+10. TESTING REQUIREMENTS
+==================================================
+
+Please verify this works for:
+- homepage
+- 1 news article with featured image
+- 1 news article without featured image
+- 1 product page
+- direct link sharing after reload
+
+Check that the raw page HTML contains the correct metadata.
+
+==================================================
+11. CACHE / REFRESH AWARENESS
+==================================================
+
+After implementation, mention clearly that some platforms cache previews and may need refresh / re-scrape before showing the updated card.
+
+==================================================
+12. DELIVERABLES
+==================================================
+
+Please:
+1. inspect the current routing and metadata setup
+2. implement full OG / Twitter / canonical metadata support
+3. make article previews dynamic
+4. make product previews dynamic
+5. add fallback share images where needed
+6. ensure crawler-friendly HTML output
+7. summarize exactly what was implemented
+
+FINAL INSTRUCTION:
+I want my website links to generate rich, professional previews when shared, especially for news articles and product pages.
+The result should feel premium and trustworthy, with image + title + description + site name, not plain raw URL previews.

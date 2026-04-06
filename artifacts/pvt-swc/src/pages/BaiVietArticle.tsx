@@ -7,6 +7,7 @@ import { trackArticleView } from "@/lib/analytics";
 import { CompactLeadForm } from "@/components/CompactLeadForm";
 import { Prose } from "@/components/Prose";
 import { ArticleHtml, isHtmlContent } from "@/components/ArticleHtml";
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 
 const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.07 } } };
@@ -87,22 +88,39 @@ export default function BaiVietArticle() {
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [slug]);
 
-  /* ── SEO ── */
-  useEffect(() => {
-    const article = data?.article;
-    if (!article) return;
-    const title = article.seoTitle ?? article.title ?? "Bài viết";
-    document.title = `${title} — Thắng SWC`;
-    const desc = article.seoDescription ?? article.excerpt ?? "";
-    let metaDesc = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.name = "description";
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = desc;
-    return () => { document.title = "Thắng SWC"; };
-  }, [data]);
+  /* ── SEO / OG meta — called unconditionally before early returns ── */
+  const article_ = data?.article;
+  const origin   = typeof window !== "undefined" ? window.location.origin : "";
+  useSeoMeta({
+    title:       article_?.seoTitle ?? article_?.title,
+    description: article_?.seoDescription ?? article_?.excerpt ?? undefined,
+    keywords:    article_?.seoKeywords ?? undefined,
+    ogTitle:     article_?.ogTitle ?? undefined,
+    ogDescription: article_?.ogDescription ?? undefined,
+    ogImage:     article_?.ogImageUrl ?? article_?.coverImageUrl ?? undefined,
+    ogType:      "article",
+    publishedAt: article_?.publishDate ?? undefined,
+    modifiedAt:  article_?.updatedAt ?? undefined,
+    author:      "Phan Văn Thắng",
+    noindex:     article_?.noindex ?? false,
+    canonicalUrl: article_?.canonicalUrl ?? (article_?.slug ? `${origin}/bai-viet/${article_.slug}` : undefined),
+    structuredData: article_ ? {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": article_.seoTitle ?? article_.title,
+      "description": article_.seoDescription ?? article_.excerpt ?? "",
+      "image": article_.ogImageUrl ?? article_.coverImageUrl
+        ? (((article_.ogImageUrl ?? article_.coverImageUrl) as string).startsWith("http")
+            ? (article_.ogImageUrl ?? article_.coverImageUrl)
+            : `${origin}${article_.ogImageUrl ?? article_.coverImageUrl}`)
+        : `${origin}/opengraph.jpg`,
+      "datePublished": article_.publishDate ?? article_.createdAt,
+      "dateModified":  article_.updatedAt ?? article_.publishDate ?? article_.createdAt,
+      "author": { "@type": "Person", "name": "Phan Văn Thắng", "url": origin },
+      "publisher": { "@type": "Organization", "name": "Phan Văn Thắng SWC", "url": origin },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${origin}/bai-viet/${article_.slug}` },
+    } : undefined,
+  });
 
   /* ── Loading ── */
   if (isLoading) {

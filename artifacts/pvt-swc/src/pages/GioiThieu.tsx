@@ -1,3 +1,4 @@
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
@@ -855,6 +856,12 @@ function GioiThieuCTASection() {
    PAGE ASSEMBLY
 ───────────────────────────────────────────────────────────────────── */
 export default function GioiThieu() {
+  useSeoMeta({
+    title:       "Giới thiệu — Phan Văn Thắng SWC",
+    description: "Phan Văn Thắng — người đồng hành thực chiến trên hành trình tài chính cá nhân. Tư duy tích sản dài hạn, đầu tư có kỷ luật, định hướng sống có chủ đích.",
+    ogImage:     "/opengraph.jpg",
+    ogType:      "website",
+  });
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);

@@ -7,6 +7,7 @@ import { getPostImage, getPostFallbackImage, isFallbackImage, getWatermarkText }
 import { trackArticleView } from "@/lib/analytics";
 import { CompactLeadForm } from "@/components/CompactLeadForm";
 import { Prose } from "@/components/Prose";
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 
 /* ── motion ────────────────────────────────────────────────────────── */
 const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } } };
@@ -87,6 +88,34 @@ export default function TinTucArticle() {
 
   // Track whether the hero image failed to load — must be declared before early returns
   const [imgFailed, setImgFailed] = useState(false);
+
+  /* ── SEO / OG meta — called unconditionally before early returns ── */
+  const post_ = data?.post;
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  useSeoMeta({
+    title:       post_?.seoTitle ?? post_?.title,
+    description: post_?.seoDescription ?? post_?.excerpt ?? undefined,
+    ogType:      "article",
+    ogImage:     post_?.featuredImageDisplay ?? post_?.featuredImage ?? undefined,
+    publishedAt: post_?.publishedAt ?? undefined,
+    modifiedAt:  post_?.updatedAt ?? undefined,
+    author:      post_?.authorName ?? "Phan Văn Thắng",
+    canonicalUrl: post_?.slug ? `${origin}/tin-tuc/${post_?.category?.slug ?? "bai-viet"}/${post_.slug}` : undefined,
+    structuredData: post_ ? {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": post_.seoTitle ?? post_.title,
+      "description": post_.seoDescription ?? post_.excerpt ?? "",
+      "image": post_.featuredImageDisplay
+        ? (post_.featuredImageDisplay.startsWith("http") ? post_.featuredImageDisplay : `${origin}${post_.featuredImageDisplay}`)
+        : `${origin}/opengraph.jpg`,
+      "datePublished": post_.publishedAt ?? post_.createdAt,
+      "dateModified":  post_.updatedAt ?? post_.publishedAt ?? post_.createdAt,
+      "author": { "@type": "Person", "name": post_.authorName ?? "Phan Văn Thắng", "url": origin },
+      "publisher": { "@type": "Organization", "name": "Phan Văn Thắng SWC", "url": origin },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${origin}/tin-tuc/${post_.category?.slug ?? "bai-viet"}/${post_.slug}` },
+    } : undefined,
+  });
 
   /* ── Loading ── */
   if (isLoading) {

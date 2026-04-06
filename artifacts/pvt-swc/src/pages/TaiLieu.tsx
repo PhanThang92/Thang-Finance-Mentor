@@ -1,3 +1,4 @@
+import { useSeoMeta } from "@/hooks/useSeoMeta";
 import React, { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { resourcesApi, type LeadMagnet } from "@/lib/newsApi";
@@ -129,6 +130,12 @@ function ResourceCard({ r }: { r: LeadMagnet }) {
 }
 
 export default function TaiLieu() {
+  useSeoMeta({
+    title:       "Tài liệu & Lead Magnet — Phan Văn Thắng SWC",
+    description: "Tải tài liệu miễn phí về tài chính cá nhân, lập kế hoạch tích sản, và đầu tư có kỷ luật từ Phan Văn Thắng SWC.",
+    ogImage:     "/opengraph.jpg",
+    ogType:      "website",
+  });
   const [resources, setResources] = useState<LeadMagnet[]>([]);
   const [loading,   setLoading]   = useState(true);
   const [typeFilter, setTypeFilter] = useState("");
