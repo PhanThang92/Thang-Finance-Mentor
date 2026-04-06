@@ -271,6 +271,12 @@ export default function TinTucArticle() {
         }}>
           <img
             src={imgSrc} alt={post.title}
+            onError={(e) => {
+              const img = e.currentTarget;
+              img.onerror = null;
+              img.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAI=";
+              img.style.opacity = "0";
+            }}
             style={{
               width: "100%", height: "100%", display: "block",
               objectFit: "cover",

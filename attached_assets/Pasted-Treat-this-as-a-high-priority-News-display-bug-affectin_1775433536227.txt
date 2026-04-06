@@ -1,0 +1,165 @@
+Treat this as a high-priority News display bug affecting image rendering, article cards, article detail pages, and responsive homepage behavior.
+
+IMPORTANT:
+- Do not patch only the visual symptoms.
+- Investigate the full pipeline: admin content -> database -> API -> frontend cards -> article detail -> responsive behavior -> reload/hydration.
+- Keep the current Thang SWC website style and layout.
+- Focus on reliability, correct data flow, and responsive consistency.
+
+CURRENT ISSUES TO FIX
+
+1. On mobile, news images on the homepage are not fully displayed correctly.
+2. In the News listing page, there are currently 4 articles, but only the first 2 show images. The remaining articles show broken / missing image placeholders.
+3. When opening article detail pages, if the article image is missing in the card/listing, it is also missing inside the detail page.
+4. On medium-width / wider responsive layouts, the homepage news section sometimes disappears after reload, even though the section heading remains visible.
+
+GOAL
+Make news articles render reliably across:
+- homepage latest news section
+- news listing page
+- article detail page
+- mobile, tablet, medium-width, and desktop layouts
+- normal navigation and hard reload
+
+==================================================
+1. INVESTIGATE THE FULL NEWS IMAGE PIPELINE
+==================================================
+
+Please inspect all of these layers carefully:
+
+- how article featured images are uploaded in admin
+- how image URLs or file references are stored in the database
+- whether some articles have missing / malformed image paths
+- whether the API returns image data consistently for all articles
+- whether frontend cards are reading the correct image field
+- whether article detail pages are reading the same image field or a different one
+- whether there is any mismatch between:
+  - image
+  - featuredImage
+  - thumbnail
+  - coverImage
+  - media object
+  - nested asset references
+- whether some images are failing because of relative vs absolute URLs
+- whether static/media serving is inconsistent between environments
+
+I need a root-cause fix, not just placeholder masking.
+
+==================================================
+2. FIX NEWS CARD IMAGE RENDERING
+==================================================
+
+On homepage and news listing cards:
+- all articles that have valid images must render them correctly
+- image containers must keep proper aspect ratio
+- mobile cards must not crop incorrectly or hide too much of the image
+- broken image icons must never appear for valid articles
+- add a proper fallback only if an article truly has no image
+
+Please verify:
+- the first article / featured card
+- secondary cards
+- compact cards
+- stacked mobile cards
+
+The image display should be visually consistent and premium.
+
+==================================================
+3. FIX ARTICLE DETAIL IMAGE RENDERING
+==================================================
+
+If an article has a featured image, it must display correctly in the detail page.
+
+Please verify:
+- the detail page uses the correct image field from the article record
+- it does not depend on a separate broken field
+- it works after direct page refresh
+- it works on mobile and desktop
+- it does not fail when navigating directly from URL
+
+If the image is missing in detail because the card/list API and detail API use different field mapping, fix that.
+
+==================================================
+4. FIX HOMEPAGE NEWS SECTION RELOAD BUG
+==================================================
+
+There is a bug on medium-width / wider layouts where the homepage news section heading appears, but the actual article list disappears after reload.
+
+Please investigate:
+- responsive conditional rendering
+- hydration mismatch
+- client-only fetch that fails after reload
+- stale state initialization
+- race condition in fetching homepage news
+- breakpoint-specific render logic
+- filtering logic returning empty array on reload
+- SSR vs CSR mismatch if applicable
+
+Fix so that:
+- homepage latest news always renders correctly after reload
+- it works consistently on desktop and medium-width layouts
+- no viewport-specific disappearing list bug remains
+
+==================================================
+5. RESPONSIVE / MOBILE POLISH
+==================================================
+
+Please polish the news cards for mobile without redesigning the whole site.
+
+Requirements:
+- featured article card image should display fully and cleanly
+- secondary article cards should have correct image crop and proportions
+- text/image balance should remain elegant
+- no broken placeholder icon boxes for valid images
+- spacing and card structure should remain premium and readable
+
+==================================================
+6. DATA SAFETY / FALLBACKS
+==================================================
+
+Add safe handling, but do not use fallback logic to hide real bugs.
+
+Requirements:
+- if image field is truly empty, show a proper elegant fallback state
+- if image URL is malformed, log it clearly for debugging
+- normalize image URLs before rendering if needed
+- ensure all frontend views use one consistent normalized featured image source
+
+==================================================
+7. VERIFY WITH REAL TEST CASES
+==================================================
+
+Please test these exact cases:
+
+1. Homepage latest news on mobile
+- all articles with images render correctly
+- no broken image placeholders
+
+2. News listing page
+- all 4 current articles render correctly
+- every article that has an image shows it
+
+3. Article detail page
+- opening an article with a featured image shows that image correctly
+- direct reload on detail page still keeps the image
+
+4. Homepage medium-width / desktop reload
+- news section still renders article cards after page refresh
+- no disappearing list issue
+
+==================================================
+8. FINAL IMPLEMENTATION REQUIREMENTS
+==================================================
+
+Please:
+1. identify the actual root cause(s)
+2. fix image data mapping end-to-end
+3. fix responsive rendering issues
+4. fix homepage reload/hydration issue
+5. keep the current visual language of the site
+6. summarize exactly what was broken and how it was fixed
+
+FINAL INSTRUCTION:
+This is a combined data-flow + rendering + responsive bug.
+Fix it at the root level so the News system behaves reliably across homepage, listing page, detail page, mobile, and reload states.
+Do not only hide the missing images with placeholders.
