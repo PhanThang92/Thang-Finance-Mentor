@@ -72,9 +72,14 @@ function esc(str) {
   return (str ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+/* ── OG image catalogue ───────────────────────────────────────────── */
+const OG_DEFAULT  = "/og-default.jpg";   // homepage + general
+const OG_ARTICLE  = "/og-article.jpg";   // articles without a featured image
+const OG_PRODUCT  = "/og-product.jpg";   // product pages
+
 /* ── Build absolute image URL ─────────────────────────────────────── */
-function absImg(img, origin) {
-  if (!img) return `${origin}/opengraph.jpg`;
+function absImg(img, origin, fallback = OG_DEFAULT) {
+  if (!img) return `${origin}${fallback}`;
   if (img.startsWith("http://") || img.startsWith("https://")) return img;
   return `${origin}${img.startsWith("/") ? "" : "/"}${img}`;
 }
@@ -83,8 +88,8 @@ function absImg(img, origin) {
 function injectMeta(template, meta, origin) {
   const {
     title       = "Phan Văn Thắng SWC — Tư duy tài chính thực chiến",
-    description = "Tư duy tài chính thực chiến, tích sản dài hạn, đầu tư có kỷ luật. Hệ sinh thái tri thức từ Phan Văn Thắng.",
-    image       = "/opengraph.jpg",
+    description = "Hành trình từ kiểm soát dòng tiền đến xây dựng tài sản bền vững. Tư duy tài chính thực chiến, đầu tư có kỷ luật, tích sản dài hạn.",
+    image       = OG_DEFAULT,
     url         = origin,
     type        = "website",
     publishedAt = null,
@@ -93,7 +98,7 @@ function injectMeta(template, meta, origin) {
   } = meta;
 
   const siteName   = "Phan Văn Thắng SWC";
-  const absImage   = absImg(image, origin);
+  const absImage   = absImg(image, origin, OG_DEFAULT);
   const pageTitle  = title.includes(siteName) ? title : `${title} | ${siteName}`;
 
   const ogTags = `
@@ -106,8 +111,8 @@ function injectMeta(template, meta, origin) {
     <meta property="og:title"        content="${esc(title)}" />
     <meta property="og:description"  content="${esc(description)}" />
     <meta property="og:image"        content="${esc(absImage)}" />
-    <meta property="og:image:width"  content="1280" />
-    <meta property="og:image:height" content="720" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:url"          content="${esc(url)}" />
     ${publishedAt ? `<meta property="article:published_time" content="${esc(publishedAt)}" />` : ""}
     ${author      ? `<meta property="article:author"         content="${esc(author)}" />` : ""}
@@ -136,9 +141,9 @@ function injectMeta(template, meta, origin) {
 /* ── Fetch page meta for a given URL path ─────────────────────────── */
 async function fetchMeta(urlPath, origin) {
   const SITE_DEFAULTS = {
-    title:       "Tư duy tài chính thực chiến",
-    description: "Hành trình từ kiểm soát dòng tiền đến xây dựng tài sản bền vững. Tài chính cá nhân, đầu tư có kỷ luật, hệ sinh thái tri thức thực chiến.",
-    image:       "/opengraph.jpg",
+    title:       "Phan Văn Thắng SWC",
+    description: "Hành trình từ kiểm soát dòng tiền đến xây dựng tài sản bền vững. Tư duy tài chính thực chiến, đầu tư có kỷ luật, tích sản dài hạn.",
+    image:       OG_DEFAULT,
     url:         origin,
     type:        "website",
   };
@@ -148,13 +153,18 @@ async function fetchMeta(urlPath, origin) {
   if (newsMatch) {
     const slug = newsMatch[1];
     try {
-      const r    = await fetch(`${API_BASE}/api/news/posts/${slug}`, { signal: AbortSignal.timeout(4000) });
+      const r = await fetch(`${API_BASE}/api/news/posts/${slug}`, { signal: AbortSignal.timeout(4000) });
       if (r.ok) {
         const { post } = await r.json();
         if (post) {
-          const title = post.seoTitle ?? post.title;
-          const desc  = post.seoDescription ?? post.excerpt ?? SITE_DEFAULTS.description;
-          const image = post.featuredImageDisplay ?? post.featuredImage;
+          const title    = post.seoTitle ?? post.title;
+          const rawDesc  = post.seoDescription ?? post.excerpt ?? "";
+          // Polish: keep description crisp — max 155 chars
+          const desc     = rawDesc.length > 155 ? rawDesc.slice(0, 152) + "…" : (rawDesc || SITE_DEFAULTS.description);
+          // Use featured image if present, otherwise branded article fallback
+          const rawImage = post.featuredImageDisplay ?? post.featuredImage ?? null;
+          const image    = rawImage || OG_ARTICLE;
+          const absImage = absImg(image, origin, OG_ARTICLE);
           return {
             title,
             description: desc,
@@ -168,7 +178,7 @@ async function fetchMeta(urlPath, origin) {
               "@type": "NewsArticle",
               "headline": title,
               "description": desc,
-              "image": absImg(image, origin),
+              "image": absImage,
               "datePublished": post.publishedAt ?? post.createdAt,
               "dateModified":  post.updatedAt ?? post.publishedAt ?? post.createdAt,
               "author": { "@type": "Person", "name": post.authorName ?? "Phan Văn Thắng", "url": origin },
@@ -179,6 +189,8 @@ async function fetchMeta(urlPath, origin) {
         }
       }
     } catch { /* fallthrough to defaults */ }
+    // Slug found but API unavailable — still use article fallback image
+    return { ...SITE_DEFAULTS, image: OG_ARTICLE, type: "article", url: `${origin}${urlPath}` };
   }
 
   /* KB article: /bai-viet/<slug> */
@@ -190,9 +202,10 @@ async function fetchMeta(urlPath, origin) {
       if (r.ok) {
         const { article } = await r.json();
         if (article) {
-          const title = article.seoTitle ?? article.title;
-          const desc  = article.seoDescription ?? article.excerpt ?? SITE_DEFAULTS.description;
-          const image = article.ogImageUrl ?? article.coverImageUrl;
+          const title   = article.seoTitle ?? article.title;
+          const rawDesc = article.seoDescription ?? article.excerpt ?? "";
+          const desc    = rawDesc.length > 155 ? rawDesc.slice(0, 152) + "…" : (rawDesc || SITE_DEFAULTS.description);
+          const image   = article.ogImageUrl ?? article.coverImageUrl ?? OG_ARTICLE;
           return {
             title,
             description: desc,
@@ -205,61 +218,70 @@ async function fetchMeta(urlPath, origin) {
         }
       }
     } catch { /* fallthrough */ }
+    return { ...SITE_DEFAULTS, image: OG_ARTICLE, type: "article", url: `${origin}${urlPath}` };
   }
 
-  /* Product pages */
+  /* Product pages — branded product OG image */
   const PRODUCT_META = {
     "/san-pham/swc-pass": {
       title:       "SWC Pass — Quyền truy cập có cấu trúc vào hệ sinh thái SWC",
-      description: "SWC Pass là lớp truy cập nền tảng vào hệ sinh thái SWC — tài liệu có hệ thống và các lớp giá trị mở rộng.",
+      description: "SWC Pass là lớp truy cập nền tảng vào hệ sinh thái SWC — tài liệu có hệ thống, cộng đồng thực chiến và các lớp giá trị mở rộng.",
     },
     "/san-pham/con-duong-1-trieu-do": {
       title:       "Con đường 1 triệu đô — Lộ trình tích sản bền vững",
-      description: "Hành trình thực chiến từ 0 đến tích sản 7 chữ số: kiểm soát dòng tiền, đầu tư có kỷ luật, xây dựng tài sản bền vững.",
+      description: "Hành trình thực chiến từ 0 đến tích sản 7 chữ số: kiểm soát dòng tiền, đầu tư có kỷ luật, xây dựng tài sản bền vững từng bước.",
     },
     "/san-pham/atlas": {
       title:       "SWC Atlas — Bản đồ tri thức tài chính cá nhân",
-      description: "Hệ thống tri thức tài chính cá nhân được tổ chức có cấu trúc — từ tư duy nền tảng đến chiến lược tích sản thực chiến.",
+      description: "Hệ thống tri thức tài chính cá nhân được tổ chức có cấu trúc — từ tư duy nền tảng đến chiến lược tích sản thực chiến của Phan Văn Thắng.",
     },
   };
 
   for (const [prefix, pm] of Object.entries(PRODUCT_META)) {
     if (urlPath.startsWith(prefix)) {
-      return { ...pm, image: "/opengraph.jpg", url: `${origin}${urlPath}`, type: "website" };
+      return { ...pm, image: OG_PRODUCT, url: `${origin}${urlPath}`, type: "website" };
     }
   }
 
-  /* Page-specific defaults */
+  /* Page-specific defaults — all use OG_DEFAULT image */
   const PAGE_META = {
+    "/": {
+      title:       "Phan Văn Thắng SWC — Tư duy tài chính thực chiến",
+      description: "Hành trình từ kiểm soát dòng tiền đến xây dựng tài sản bền vững. Tư duy tài chính thực chiến, đầu tư có kỷ luật, tích sản dài hạn.",
+    },
     "/gioi-thieu": {
       title:       "Giới thiệu — Phan Văn Thắng SWC",
-      description: "Phan Văn Thắng — người đồng hành thực chiến trên hành trình tài chính cá nhân, đầu tư có kỷ luật, sống có chủ đích.",
+      description: "Phan Văn Thắng — người đồng hành thực chiến trên hành trình tài chính cá nhân, đầu tư có kỷ luật và sống có chủ đích.",
     },
     "/lien-he": {
       title:       "Liên hệ — Phan Văn Thắng SWC",
-      description: "Kết nối với Phan Văn Thắng SWC. Đặt câu hỏi, nhận tư vấn hoặc tìm hiểu thêm về hệ sinh thái SWC.",
+      description: "Kết nối với Phan Văn Thắng SWC. Đặt câu hỏi, nhận tư vấn hoặc tìm hiểu thêm về hành trình đồng hành tài chính.",
     },
     "/cong-dong": {
       title:       "Cộng đồng SWC — Kết nối thực chiến",
-      description: "Tham gia cộng đồng SWC — nơi kết nối những người đang xây dựng tài sản bền vững với tư duy thực chiến.",
+      description: "Tham gia cộng đồng SWC — nơi kết nối những người đang xây dựng tài sản bền vững với tư duy thực chiến và kỷ luật dài hạn.",
     },
     "/kien-thuc": {
       title:       "Kho kiến thức — Phan Văn Thắng SWC",
       description: "Thư viện tri thức tài chính cá nhân, đầu tư và tích sản từ Phan Văn Thắng. Nội dung có hệ thống, thực chiến và dài hạn.",
     },
     "/tin-tuc": {
-      title:       "Tin tức & Bài viết — Phan Văn Thắng SWC",
-      description: "Chia sẻ tư duy đầu tư, tài chính cá nhân và hành trình tích sản dài hạn từ Phan Văn Thắng.",
+      title:       "Bài viết — Phan Văn Thắng SWC",
+      description: "Chia sẻ tư duy đầu tư, tài chính cá nhân và hành trình tích sản dài hạn. Phân tích thực chiến từ Phan Văn Thắng.",
     },
     "/video": {
       title:       "Video — Phan Văn Thắng SWC",
       description: "Thư viện video về tài chính cá nhân, đầu tư và tích sản từ Phan Văn Thắng. Nội dung thực chiến, có hệ thống.",
     },
+    "/san-pham": {
+      title:       "Sản phẩm — Phan Văn Thắng SWC",
+      description: "Hệ sinh thái sản phẩm SWC: từ tài liệu nền tảng đến chương trình đồng hành tích sản thực chiến.",
+    },
   };
 
   for (const [prefix, pm] of Object.entries(PAGE_META)) {
-    if (urlPath.startsWith(prefix)) {
-      return { ...pm, image: "/opengraph.jpg", url: `${origin}${urlPath}`, type: "website" };
+    if (urlPath === prefix || urlPath.startsWith(prefix === "/" ? "/#" : prefix)) {
+      return { ...pm, image: OG_DEFAULT, url: `${origin}${urlPath}`, type: "website" };
     }
   }
 

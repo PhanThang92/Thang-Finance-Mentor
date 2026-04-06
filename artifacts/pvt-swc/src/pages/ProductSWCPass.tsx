@@ -1,4 +1,4 @@
-import { useSeoMeta } from "@/hooks/useSeoMeta";
+import { useSeoMeta, PRODUCT_OG_IMAGE_PATH } from "@/hooks/useSeoMeta";
 import React, { useEffect, useRef, useState } from "react";
 import { leadsApi } from "@/lib/newsApi";
 import { motion, AnimatePresence } from "framer-motion";
@@ -1064,7 +1064,7 @@ export default function ProductSWCPass() {
   useSeoMeta({
     title:       "SWC Pass — Quyền truy cập có cấu trúc vào hệ sinh thái SWC",
     description: "SWC Pass là lớp truy cập nền tảng vào hệ sinh thái SWC — bao gồm SWC Field, tài liệu có hệ thống và các lớp giá trị mở rộng. Dành cho người muốn tiếp cận tài chính cá nhân một cách có cấu trúc.",
-    ogImage:     "/opengraph.jpg",
+    ogImage:     PRODUCT_OG_IMAGE_PATH,
     ogType:      "website",
   });
   const [showModal, setShowModal] = useState(false);

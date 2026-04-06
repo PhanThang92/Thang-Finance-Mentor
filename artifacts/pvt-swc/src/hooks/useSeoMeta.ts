@@ -26,10 +26,12 @@ interface SeoMeta {
 }
 
 export const SITE_NAME      = "Phan Văn Thắng SWC";
-export const DEFAULT_DESCRIPTION = "Tư duy tài chính thực chiến, tích sản dài hạn, đầu tư có kỷ luật. Hệ sinh thái tri thức từ Phan Văn Thắng.";
-export const DEFAULT_OG_IMAGE_PATH = "/opengraph.jpg";
-export const OG_IMAGE_WIDTH  = 1280;
-export const OG_IMAGE_HEIGHT = 720;
+export const DEFAULT_DESCRIPTION = "Hành trình từ kiểm soát dòng tiền đến xây dựng tài sản bền vững. Tư duy tài chính thực chiến, đầu tư có kỷ luật, tích sản dài hạn.";
+export const DEFAULT_OG_IMAGE_PATH  = "/og-default.jpg";   // homepage + general pages
+export const ARTICLE_OG_IMAGE_PATH  = "/og-article.jpg";   // articles without featured image
+export const PRODUCT_OG_IMAGE_PATH  = "/og-product.jpg";   // product pages without custom cover
+export const OG_IMAGE_WIDTH  = 1200;
+export const OG_IMAGE_HEIGHT = 630;
 
 function absoluteUrl(path: string): string {
   if (path.startsWith("http://") || path.startsWith("https://")) return path;

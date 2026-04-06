@@ -7,7 +7,7 @@ import { getPostImage, getPostFallbackImage, isFallbackImage, getWatermarkText }
 import { trackArticleView } from "@/lib/analytics";
 import { CompactLeadForm } from "@/components/CompactLeadForm";
 import { Prose } from "@/components/Prose";
-import { useSeoMeta } from "@/hooks/useSeoMeta";
+import { useSeoMeta, ARTICLE_OG_IMAGE_PATH } from "@/hooks/useSeoMeta";
 
 /* ── motion ────────────────────────────────────────────────────────── */
 const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } } };
