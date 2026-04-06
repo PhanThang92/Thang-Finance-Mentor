@@ -68,6 +68,24 @@ export function getPostImage(
   return pickFromPool(POOLS.default, post.id, post.slug);
 }
 
+/**
+ * Always returns a pool SVG for the post — ignores any uploaded image.
+ * Used by onError handlers to gracefully recover when an uploaded image 404s.
+ */
+export function getPostFallbackImage(
+  post: Pick<NewsPost, "id" | "slug" | "product" | "category">,
+): string {
+  const productSlug = post.product?.slug ?? "";
+  if (productSlug === "atlas")
+    return pickFromPool(POOLS.atlas, post.id, post.slug);
+  if (productSlug === "road-to-1m")
+    return pickFromPool(POOLS["road-to-1m"], post.id, post.slug);
+  const catSlug = post.category?.slug ?? "";
+  if (catSlug === "tu-duy-dau-tu")
+    return pickFromPool(POOLS["tu-duy-dau-tu"], post.id, post.slug);
+  return pickFromPool(POOLS.default, post.id, post.slug);
+}
+
 /** Returns true if the image is a generated fallback (not a real uploaded photo) */
 export function isFallbackImage(
   post: Pick<NewsPost, "featuredImage" | "featuredImageDisplay">,

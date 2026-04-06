@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "wouter";
 import { motion } from "framer-motion";
 import { newsApi, type NewsPost } from "@/lib/newsApi";
-import { getPostImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
+import { getPostImage, getPostFallbackImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
 import { trackArticleView } from "@/lib/analytics";
 import { CompactLeadForm } from "@/components/CompactLeadForm";
 import { Prose } from "@/components/Prose";
@@ -85,6 +85,9 @@ export default function TinTucArticle() {
 
   useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [slug]);
 
+  // Track whether the hero image failed to load — must be declared before early returns
+  const [imgFailed, setImgFailed] = useState(false);
+
   /* ── Loading ── */
   if (isLoading) {
     return (
@@ -109,8 +112,8 @@ export default function TinTucArticle() {
   }
 
   const { post, related } = data;
-  const imgSrc     = getPostImage(post);
-  const isFallback = isFallbackImage(post);
+  const isFallback = imgFailed || isFallbackImage(post);
+  const imgSrc     = isFallback ? getPostFallbackImage(post) : getPostImage(post);
   const mins       = post.content ? readingTime(post.content) : 0;
 
   return (
@@ -271,12 +274,7 @@ export default function TinTucArticle() {
         }}>
           <img
             src={imgSrc} alt={post.title}
-            onError={(e) => {
-              const img = e.currentTarget;
-              img.onerror = null;
-              img.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAI=";
-              img.style.opacity = "0";
-            }}
+            onError={() => setImgFailed(true)}
             style={{
               width: "100%", height: "100%", display: "block",
               objectFit: "cover",

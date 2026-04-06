@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { newsApi, type NewsPost, type NewsCategory, type NewsProduct, type NewsTag } from "@/lib/newsApi";
-import { getPostImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
+import { getPostImage, getPostFallbackImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
 import { useSeoMeta } from "@/hooks/useSeoMeta";
 
 /* ── motion ──────────────────────────────────────────────────────────── */
@@ -33,13 +33,11 @@ const hasActiveFilter = (f: Filters) =>
   f.category !== null || f.product !== null || f.tag !== null || f.search !== "";
 const filterKey = (f: Filters) => `${f.category}|${f.product}|${f.tag}|${f.search}`;
 
-/* ── fallback src — tiny transparent pixel avoids broken-image icons ─── */
-const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAI=";
-
 /* ── Article card ────────────────────────────────────────────────────── */
 function ArticleCard({ post }: { post: NewsPost }) {
-  const imgSrc     = getPostImage(post);
-  const isFallback = isFallbackImage(post);
+  const [imgFailed, setImgFailed] = useState(false);
+  const isFallback = imgFailed || isFallbackImage(post);
+  const imgSrc     = isFallback ? getPostFallbackImage(post) : getPostImage(post);
   const wmText     = isFallback ? getWatermarkText(post) : null;
 
   return (
@@ -59,12 +57,7 @@ function ArticleCard({ post }: { post: NewsPost }) {
             flexShrink: 0, position: "relative",
           }}>
             <img src={imgSrc} alt={post.title}
-              onError={(e) => {
-                const img = e.currentTarget;
-                img.onerror = null;
-                img.src = BLANK;
-                img.style.opacity = "0";
-              }}
+              onError={() => setImgFailed(true)}
               style={{
                 width: "100%", height: "100%", objectFit: "cover",
                 display: "block",

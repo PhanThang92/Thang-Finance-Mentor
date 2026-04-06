@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import { newsApi, type NewsPost } from "@/lib/newsApi";
-import { getPostImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
+import { getPostImage, getPostFallbackImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
 
-const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAI=";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -91,8 +90,9 @@ function SmallSkeleton() {
    Content padding clamps from mobile-comfortable to desktop-generous
 ── */
 function FeaturedCard({ post }: { post: NewsPost }) {
-  const src = getPostImage(post);
-  const fallback = isFallbackImage(post);
+  const [imgFailed, setImgFailed] = useState(false);
+  const fallback = imgFailed || isFallbackImage(post);
+  const src = fallback ? getPostFallbackImage(post) : getPostImage(post);
 
   return (
     <a
@@ -129,7 +129,7 @@ function FeaturedCard({ post }: { post: NewsPost }) {
           src={src}
           alt={post.title}
           loading="lazy"
-          onError={(e) => { const img = e.currentTarget; img.onerror = null; img.src = BLANK; img.style.opacity = "0"; }}
+          onError={() => setImgFailed(true)}
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
         {fallback && <WatermarkBadge post={post} />}
@@ -229,8 +229,9 @@ function FeaturedCard({ post }: { post: NewsPost }) {
    no gap below image when title wraps to 2+ lines.
 ── */
 function SmallCard({ post }: { post: NewsPost }) {
-  const src = getPostImage(post);
-  const fallback = isFallbackImage(post);
+  const [imgFailed, setImgFailed] = useState(false);
+  const fallback = imgFailed || isFallbackImage(post);
+  const src = fallback ? getPostFallbackImage(post) : getPostImage(post);
 
   return (
     <a
@@ -269,7 +270,7 @@ function SmallCard({ post }: { post: NewsPost }) {
           src={src}
           alt={post.title}
           loading="lazy"
-          onError={(e) => { const img = e.currentTarget; img.onerror = null; img.src = BLANK; img.style.opacity = "0"; }}
+          onError={() => setImgFailed(true)}
           style={{
             position: "absolute", inset: 0,
             width: "100%", height: "100%",

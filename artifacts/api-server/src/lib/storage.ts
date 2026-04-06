@@ -1,16 +1,14 @@
 /**
  * Storage abstraction layer
  *
- * Current provider: LOCAL (files written to disk at uploads/)
- * To switch to S3, set STORAGE_PROVIDER=s3 and provide:
- *   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_S3_BUCKET, CDN_BASE_URL (optional)
+ * Current provider: REPLIT_OBJECT_STORAGE (files written to GCS via @replit/object-storage)
+ * Objects are stored at `uploads/<relativePath>` and served via the /api/uploads proxy in app.ts.
  *
  * The relative path convention (e.g. "disp/abc.webp") is preserved across providers
- * so the database storagePathOriginal / storagePathProcessed columns never need to change.
+ * so the database featured_image / featured_image_display columns never need to change.
  */
 
-import path from "path";
-import { existsSync, mkdirSync, writeFileSync, unlinkSync } from "fs";
+import { Client } from "@replit/object-storage";
 
 /* ── Types ─────────────────────────────────────────────────────────── */
 export interface StorageProvider {
@@ -22,98 +20,46 @@ export interface StorageProvider {
   publicUrl(relativePath: string): string;
 }
 
-/* ── Local disk provider (default) ─────────────────────────────────── */
-const UPLOADS_DIR = path.join(process.cwd(), "uploads");
-const LOCAL_PUBLIC_PREFIX = "/api/uploads";
+/* ── MIME type helper ───────────────────────────────────────────────── */
+export function mimeTypeForPath(filePath: string): string {
+  const ext = filePath.split(".").pop()?.toLowerCase() ?? "";
+  if (ext === "webp") return "image/webp";
+  if (ext === "jpg" || ext === "jpeg") return "image/jpeg";
+  if (ext === "png") return "image/png";
+  if (ext === "svg") return "image/svg+xml";
+  if (ext === "gif") return "image/gif";
+  return "application/octet-stream";
+}
 
-class LocalStorageProvider implements StorageProvider {
-  private uploadsDir: string;
+/* ── Replit Object Storage provider ────────────────────────────────── */
+const objClient = new Client({ bucketId: process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID });
 
-  constructor(uploadsDir: string) {
-    this.uploadsDir = uploadsDir;
-  }
+const OBJECT_PREFIX = "uploads";
+const PUBLIC_PREFIX = "/api/uploads";
 
-  async save(buffer: Buffer, relativePath: string): Promise<string> {
-    const absPath = path.join(this.uploadsDir, relativePath);
-    const dir = path.dirname(absPath);
-    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    writeFileSync(absPath, buffer);
+class ReplitObjectStorageProvider implements StorageProvider {
+  async save(buffer: Buffer, relativePath: string, mimeType?: string): Promise<string> {
+    const objectName = `${OBJECT_PREFIX}/${relativePath.replace(/^\//, "")}`;
+    const result = await objClient.uploadFromBytes(objectName, buffer, {
+      contentType: mimeType ?? mimeTypeForPath(relativePath),
+    });
+    if (!result.ok) {
+      throw new Error(`Object storage save failed: ${result.error?.message ?? "unknown"}`);
+    }
     return this.publicUrl(relativePath);
   }
 
   async delete(relativePath: string): Promise<void> {
-    const absPath = path.join(this.uploadsDir, relativePath);
-    try {
-      if (existsSync(absPath)) unlinkSync(absPath);
-    } catch {
-      /* ignore missing file */
-    }
+    const objectName = `${OBJECT_PREFIX}/${relativePath.replace(/^\//, "")}`;
+    await objClient.delete(objectName, { ignoreNotFound: true });
   }
 
   publicUrl(relativePath: string): string {
-    return `${LOCAL_PUBLIC_PREFIX}/${relativePath.replace(/^\//, "")}`;
+    return `${PUBLIC_PREFIX}/${relativePath.replace(/^\//, "")}`;
   }
 }
 
-/* ── S3 provider stub ───────────────────────────────────────────────
- *
- * To activate, set STORAGE_PROVIDER=s3 and install @aws-sdk/client-s3:
- *   pnpm --filter @workspace/api-server add @aws-sdk/client-s3
- *
- * Required env vars:
- *   AWS_ACCESS_KEY_ID
- *   AWS_SECRET_ACCESS_KEY
- *   AWS_REGION           (e.g. ap-southeast-1)
- *   AWS_S3_BUCKET        (your bucket name)
- *   CDN_BASE_URL         (optional — use CloudFront/CDN prefix instead of S3 URL)
- *
- * Uncomment and adapt the implementation below when ready.
- * ─────────────────────────────────────────────────────────────────── */
-// import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-//
-// class S3StorageProvider implements StorageProvider {
-//   private client: S3Client;
-//   private bucket: string;
-//   private cdnBase: string;
-//
-//   constructor() {
-//     this.client = new S3Client({ region: process.env.AWS_REGION! });
-//     this.bucket = process.env.AWS_S3_BUCKET!;
-//     this.cdnBase = process.env.CDN_BASE_URL ?? `https://${this.bucket}.s3.amazonaws.com`;
-//   }
-//
-//   async save(buffer: Buffer, relativePath: string, mimeType = "application/octet-stream"): Promise<string> {
-//     const key = relativePath.replace(/^\//, "");
-//     await this.client.send(new PutObjectCommand({
-//       Bucket: this.bucket, Key: key, Body: buffer,
-//       ContentType: mimeType, CacheControl: "public, max-age=31536000",
-//     }));
-//     return this.publicUrl(relativePath);
-//   }
-//
-//   async delete(relativePath: string): Promise<void> {
-//     const key = relativePath.replace(/^\//, "");
-//     await this.client.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: key }));
-//   }
-//
-//   publicUrl(relativePath: string): string {
-//     return `${this.cdnBase}/${relativePath.replace(/^\//, "")}`;
-//   }
-// }
+export const storage: StorageProvider = new ReplitObjectStorageProvider();
 
-/* ── Factory ────────────────────────────────────────────────────────── */
-function createStorage(): StorageProvider {
-  const provider = (process.env.STORAGE_PROVIDER ?? "local").toLowerCase();
-
-  if (provider === "s3") {
-    // Swap to S3StorageProvider() when the stub above is uncommented
-    throw new Error(
-      "S3 storage provider is not yet activated. " +
-      "Uncomment the S3StorageProvider class in src/lib/storage.ts and install @aws-sdk/client-s3."
-    );
-  }
-
-  return new LocalStorageProvider(UPLOADS_DIR);
-}
-
-export const storage = createStorage();
+/* Export the raw client so app.ts can use it for the proxy middleware */
+export { objClient, OBJECT_PREFIX };

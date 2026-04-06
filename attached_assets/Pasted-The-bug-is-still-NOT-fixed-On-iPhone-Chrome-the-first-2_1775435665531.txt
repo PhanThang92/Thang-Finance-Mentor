@@ -1,0 +1,97 @@
+The bug is still NOT fixed.
+
+On iPhone Chrome, the first 2 news articles show images correctly, but the lower 2 articles still show blank gray image areas.
+
+This means:
+- the general card layout is working
+- the image rendering component is partially working
+- the remaining bug is likely article-specific image data, asset path, API mapping, or file existence for certain records
+
+Use this as the latest source of truth.
+
+HIGH PRIORITY:
+Debug the exact failing articles, not just the generic News UI.
+
+CURRENT OBSERVED RESULT
+Working articles:
+- first 2 cards show images correctly
+
+Failing articles:
+- “Tiền nằm im và tiền làm việc: khác nhau ở đâu?”
+- “Vì sao thu nhập tăng nhưng tài sản không tăng?”
+
+These 2 still show blank/gray image areas on mobile, and previously also failed in detail pages.
+
+GOAL
+Find the exact root cause for these specific articles and make image rendering reliable for all articles.
+
+DO THIS EXACTLY:
+
+1. INSPECT THE EXACT FAILING ARTICLE RECORDS
+Compare the 2 failing articles against the working ones.
+Check all relevant fields in database / CMS / API, such as:
+- featured image
+- thumbnail
+- cover image
+- media id
+- asset path
+- file URL
+- image metadata
+- relative vs absolute URL
+- null / empty / malformed values
+
+2. VERIFY FILE EXISTENCE
+For the 2 failing articles:
+- verify that the actual image files exist on disk / storage / upload location
+- verify that the stored path points to a real file
+- verify there is no broken reference, stale upload path, or deleted asset
+
+3. VERIFY API OUTPUT
+Inspect the API response used by:
+- homepage news cards
+- news listing cards
+- article detail page
+
+Confirm whether these 2 failing articles are returning:
+- null image
+- wrong image field
+- malformed URL
+- missing nested media object
+- inconsistent field names versus working articles
+
+4. NORMALIZE IMAGE MAPPING
+Make sure every article card and article detail page uses one single normalized featured image source.
+Do not let some pages use image, others use featuredImage, and others use media.thumbnail.
+Standardize it.
+
+5. FIX BROKEN RECORDS IF NEEDED
+If these 2 article records are missing or corrupted:
+- repair the records
+- migrate them to the correct image field
+- backfill the normalized featured image value
+- make sure future edits do not break them again
+
+6. ADD SAFE FALLBACKS
+If an article truly has no image:
+- show an intentional elegant fallback
+But do NOT use fallback logic to hide broken data that should actually be fixed.
+
+7. VERIFY THESE EXACT TESTS
+After fixing, confirm all of these:
+- homepage mobile: all 4 current news cards show correctly
+- news listing page: all 4 current articles show correctly
+- detail page for the 2 previously failing articles shows the featured image correctly
+- direct reload still keeps the image
+- iPhone/mobile view works consistently
+
+8. SHOW ME THE ROOT CAUSE
+Before finishing, explain clearly:
+- why the first 2 worked
+- why the lower 2 failed
+- what exact field / path / mapping / data inconsistency caused it
+- what you changed to fix it permanently
+
+IMPORTANT:
+Do not stop at “UI looks okay”.
+This is still a real content/image data bug affecting specific article records.
+Please debug the exact failing articles and fix the root cause.
