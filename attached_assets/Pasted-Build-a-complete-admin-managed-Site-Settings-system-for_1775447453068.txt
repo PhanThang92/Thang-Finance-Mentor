@@ -1,0 +1,302 @@
+Build a complete admin-managed Site Settings system for the Phan Van Thang SWC website.
+
+IMPORTANT:
+- Use this as the latest source of truth for website-wide editable settings.
+- Do NOT redesign unrelated pages.
+- Keep the existing admin visual style, spacing, cards, typography, and layout.
+- Keep the current frontend website design unchanged unless small adjustments are needed to consume dynamic settings.
+- The goal is to move hardcoded global website info into a clean admin-managed settings system.
+
+GOAL:
+Create a robust “Site Settings” module so I can manage global website information from admin instead of editing code.
+
+This should cover not only emails, but the broader global website identity and shared contact/brand settings.
+
+==================================================
+1. ADMIN MODULE TO CREATE
+==================================================
+
+Create a new admin section such as:
+
+- Cài đặt website
+or
+- Cài đặt → Thông tin website
+or
+- Cài đặt → Thông tin liên hệ & thương hiệu
+
+Choose the most elegant structure that fits the current admin.
+
+This settings area should be clearly organized into grouped sections.
+
+==================================================
+2. SETTINGS GROUPS TO INCLUDE
+==================================================
+
+Build these setting groups:
+
+A. THƯƠNG HIỆU / BRAND
+Fields:
+- Tên website
+- Tên thương hiệu hiển thị
+- Tagline / mô tả ngắn thương hiệu
+- Mô tả thương hiệu dài hơn (optional)
+- Logo chính
+- Logo dùng cho header if separate
+- Favicon
+- Ảnh chia sẻ mặc định / OG image mặc định
+
+B. THÔNG TIN LIÊN HỆ
+Fields:
+- Email liên hệ chính
+- Email hợp tác / kết nối
+- Email newsletter
+- Email hệ thống / no-reply
+- Số điện thoại chính
+- Số điện thoại phụ (optional)
+- Địa chỉ hiển thị
+- Thành phố / khu vực
+- Google Maps link (optional)
+
+C. MẠNG XÃ HỘI / KẾT NỐI
+Fields:
+- YouTube URL
+- Facebook URL
+- Zalo URL (optional)
+- Telegram URL (optional)
+- TikTok URL (optional)
+- LinkedIn URL (optional)
+- Link tham gia cộng đồng
+- Link nhóm / cộng đồng riêng nếu có
+
+D. SEO / SHARE DEFAULTS
+Fields:
+- Site title mặc định
+- Meta description mặc định
+- Default OG title
+- Default OG description
+- Default OG image
+- Canonical site URL
+- Site name for Open Graph
+- optional Twitter/X handle if useful
+
+E. FOOTER SETTINGS
+Fields:
+- Footer brand intro text
+- Footer disclaimer text
+- Copyright line
+- Footer quick links config if practical
+- Footer ecosystem links config if practical
+
+F. EMAIL / FORM BEHAVIOR DEFAULTS
+Fields:
+- Public contact email used in mailto links
+- Reply-to email default
+- Newsletter sender display name
+- Optional form success message defaults
+- Optional contact page helper text
+
+G. LEGAL / TRUST TEXT
+Fields:
+- Disclaimer ngắn
+- Disclaimer dài hơn (optional)
+- Privacy page link (optional)
+- Terms page link (optional)
+
+==================================================
+3. FRONTEND INTEGRATION REQUIREMENTS
+==================================================
+
+The public website must read these settings dynamically.
+
+At minimum, connect Site Settings to:
+- header logo / brand name if applicable
+- footer
+- contact page
+- newsletter/contact sections
+- mailto links
+- social links
+- default SEO metadata
+- default OG/share metadata
+- favicon / OG fallback image
+- footer disclaimer / copyright
+- other shared contact blocks across the website
+
+Important:
+Do not leave these values hardcoded in scattered components once Site Settings exists.
+
+==================================================
+4. DATA MODEL / STORAGE
+==================================================
+
+Implement this in a clean, maintainable way.
+
+Preferred approach:
+- a dedicated site_settings table / collection / singleton document
+- or a structured CMS settings model
+- or equivalent singleton config entity
+
+Requirements:
+- singleton-style settings object
+- typed fields where reasonable
+- safe defaults during migration
+- easy future extension
+
+Please do NOT create a messy collection of unrelated hardcoded constants if this can be properly modeled.
+
+==================================================
+5. ADMIN UX / EDITING EXPERIENCE
+==================================================
+
+The Site Settings admin page should feel polished and easy to maintain.
+
+Requirements:
+- group settings into clear sections/cards
+- clean labels in Vietnamese
+- image upload support where relevant (logo, favicon, OG image)
+- save button
+- validation for required fields
+- preview/help text where useful
+- safe defaults populated from current site values
+- success/error toasts
+- loading states
+- optional "reset to current defaults" if easy
+
+The page should be practical for non-technical editing.
+
+==================================================
+6. MIGRATION / BACKWARD COMPATIBILITY
+==================================================
+
+Please inspect the existing codebase and migrate current values safely.
+
+Requirements:
+- preserve current public website values as initial defaults
+- do not break current pages during migration
+- if old values are hardcoded across many components, replace them carefully
+- centralize frontend consumption through the new Site Settings source
+
+==================================================
+7. EMAIL STRUCTURE TO PRELOAD
+==================================================
+
+Use these default email values during migration:
+
+- Email liên hệ chính: lienhe@phanvanthang.net
+- Email hợp tác / kết nối: hello@phanvanthang.net
+- Email newsletter: newsletter@phanvanthang.net
+- Email hệ thống / no-reply: no-reply@phanvanthang.net
+
+Public website rule:
+- Main visible contact email should usually be lienhe@phanvanthang.net
+- hello@phanvanthang.net can appear in softer contact contexts
+- newsletter@phanvanthang.net for newsletter/marketing contexts
+- no-reply@phanvanthang.net for system contexts only
+
+==================================================
+8. BRAND DEFAULTS TO PRELOAD
+==================================================
+
+Use existing site values where already present, but preserve or preload sensible defaults for:
+- Phan Văn Thắng SWC
+- Thuộc hệ sinh thái Sky World Community
+- practical financial thinking / long-term asset building / disciplined investing direction
+- existing footer disclaimer tone
+- existing YouTube / Facebook links if already configured
+
+==================================================
+9. SEO / SHARE SYSTEM REQUIREMENTS
+==================================================
+
+Make default metadata read from Site Settings when page-specific metadata is not set.
+
+This includes:
+- site title
+- meta description
+- default OG image
+- site name
+- canonical base URL
+
+Page-specific article/product metadata can still override defaults.
+
+==================================================
+10. FOOTER / CONTACT ARCHITECTURE
+==================================================
+
+Make footer and contact sections consume Site Settings dynamically.
+
+This means:
+- footer email
+- footer social links
+- footer brand description
+- footer disclaimer
+- contact page email and social links
+- “Tham gia cộng đồng” link
+should all come from admin-managed settings where applicable.
+
+==================================================
+11. VALIDATION / SAFETY
+==================================================
+
+Please include validation for:
+- valid email format
+- valid URLs for social links
+- valid image uploads
+- required core fields not empty
+
+Also:
+- avoid partial broken state if settings fail to load
+- provide fallbacks on frontend if a non-critical field is empty
+- do not break the public site if optional settings are missing
+
+==================================================
+12. OPTIONAL NICE-TO-HAVE
+==================================================
+
+If easy, also support:
+- toggle whether some social links are shown publicly
+- toggle whether secondary email is shown
+- toggle whether address is shown in footer
+- toggle whether footer community button is shown
+
+Only add these if they fit naturally and do not overcomplicate the MVP.
+
+==================================================
+13. WORKFLOW
+==================================================
+
+Please proceed in this order:
+1. Inspect the current codebase for all global hardcoded website/contact/brand settings
+2. Design the Site Settings model
+3. Build the admin settings page
+4. Migrate current values into defaults
+5. Refactor frontend to read from Site Settings
+6. Verify footer/contact/header/metadata all work correctly
+7. Summarize exactly what was implemented
+
+==================================================
+14. SUCCESS CRITERIA
+==================================================
+
+This is successful only if:
+- I can manage core website identity and contact info from admin
+- footer and contact-related sections update from admin settings
+- social links update from admin settings
+- default SEO/share metadata can be managed centrally
+- current UI remains clean and premium
+- no important public email/contact info stays unnecessarily hardcoded in scattered components
+
+==================================================
+15. DELIVERABLES
+==================================================
+
+Please deliver:
+- data model / migration for Site Settings
+- admin UI for Site Settings
+- frontend integration
+- safe default values from current site
+- summary of which frontend areas now read from Site Settings
+- note any remaining hardcoded values that should be migrated later
+
+FINAL INSTRUCTION:
+Build a real singleton-style Site Settings system for the website, not a loose collection of constants.
+It should allow non-technical management of brand, contact, social, footer, and default SEO/share settings from admin while keeping the existing Thang SWC site design intact.

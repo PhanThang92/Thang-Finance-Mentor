@@ -22,6 +22,19 @@ An Express 5 application that uses `@workspace/api-zod` for validation and `@wor
 
 Utilizes Drizzle ORM with PostgreSQL. It exports a Drizzle client and schema models defined using `drizzle-zod`.
 
+## Site Settings System
+
+A singleton-style key-value settings store (`siteSettingsTable`) in PostgreSQL, managed from the admin panel (`SettingsPanel.tsx`) and consumed by the public frontend via `useSiteSettings.ts` hook.
+
+- **Public API**: `GET /api/site-settings` — returns all non-sensitive settings (no auth required)
+- **Admin API**: `GET/PUT /api/admin/settings` — admin Bearer-auth protected
+- **Frontend hook**: `useSiteSettings()` in `src/hooks/useSiteSettings.ts` — fetches once, caches in memory, returns typed `SiteSettings` object with safe defaults
+- **Admin UI**: `SettingsPanel.tsx` with 8 tabs: Menu, Footer, Mạng xã hội, Liên hệ, Form, SEO, Logo thương hiệu, Hệ thống
+- **Saving invalidates** both the logo cache and site settings cache automatically
+- **Keys**: `brand_tagline`, `brand_description`, `brand_sub_title`, `contact_email`, `contact_email_collab`, `contact_email_newsletter`, `contact_email_noreply`, `contact_city`, `social_youtube`, `social_facebook`, `social_zalo`, `social_telegram`, `social_tiktok`, `social_community`, `footer_disclaimer`, `footer_copyright`, `footer_company_name`, `footer_show_community_cta`, `footer_show_address`, `site_seo_title`, `site_seo_description`, `site_seo_og_image`, `site_og_site_name`, `site_canonical_url`, `logo_*` keys
+
+**NOTE**: `siteConfig.ts` still exists as a fallback constants file but the frontend components (Footer, useSeoMeta) now read from `useSiteSettings` first.
+
 ## Frontend Application (Personal Brand Landing Page)
 
 A React + Vite application with a dark-teal design system, targeting a Vietnamese audience.

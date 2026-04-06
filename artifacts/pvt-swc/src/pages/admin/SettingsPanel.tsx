@@ -3,6 +3,7 @@ import { adminApi, type SystemStatus } from "@/lib/newsApi";
 import { A, s } from "./shared";
 import { MediaPickerModal } from "./MediaPickerModal";
 import { invalidateLogoCache } from "@/hooks/useLogoSettings";
+import { invalidateSiteSettingsCache } from "@/hooks/useSiteSettings";
 import type { MediaAsset } from "@/lib/newsApi";
 
 /* ── Types ────────────────────────────────────────────────────────── */
@@ -258,10 +259,39 @@ function FooterTab({
               onChange={(e) => setS("footer_tagline", e.target.value)} />
           </div>
           <div style={{ gridColumn: "1 / -1" }}>
+            <Lbl>Mô tả thương hiệu (đoạn văn brand block)</Lbl>
+            <textarea style={{ ...s.textarea, height: "72px" }} value={settings["brand_description"] ?? ""}
+              placeholder="Chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn."
+              onChange={(e) => setS("brand_description", e.target.value)} />
+            <Hint text="Đoạn văn ngắn hiển thị trong cột brand của footer." />
+          </div>
+          <div style={{ gridColumn: "1 / -1" }}>
             <Lbl>Disclaimer / ghi chú cuối footer</Lbl>
             <textarea style={{ ...s.textarea, height: "72px" }} value={settings["footer_disclaimer"] ?? ""}
               placeholder="Nội dung trên website chỉ mang tính chất tham khảo..."
               onChange={(e) => setS("footer_disclaimer", e.target.value)} />
+          </div>
+        </div>
+
+        {/* Toggles */}
+        <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: `1px solid ${A.border}`, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+          <div>
+            <Lbl>Hiện nút "Tham gia cộng đồng"</Lbl>
+            <select style={{ ...s.field, cursor: "pointer" }}
+              value={settings["footer_show_community_cta"] ?? "true"}
+              onChange={(e) => setS("footer_show_community_cta", e.target.value)}>
+              <option value="true">Hiển thị</option>
+              <option value="false">Ẩn</option>
+            </select>
+          </div>
+          <div>
+            <Lbl>Hiện địa chỉ / thành phố</Lbl>
+            <select style={{ ...s.field, cursor: "pointer" }}
+              value={settings["footer_show_address"] ?? "true"}
+              onChange={(e) => setS("footer_show_address", e.target.value)}>
+              <option value="true">Hiển thị</option>
+              <option value="false">Ẩn</option>
+            </select>
           </div>
         </div>
       </div>
@@ -351,13 +381,37 @@ function ContactTab({ settings, setS }: { settings: Record<string, string>; setS
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.125rem" }}>
       <div style={s.card}>
-        <SectionHead>Thông tin liên hệ chính</SectionHead>
+        <SectionHead>Email</SectionHead>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
           <div>
-            <Lbl>Email chính</Lbl>
-            <input style={s.field} value={settings["contact_email"] ?? ""}
-              placeholder="contact@swc.vn" onChange={(e) => setS("contact_email", e.target.value)} />
+            <Lbl>Email liên hệ chính</Lbl>
+            <input style={s.field} type="email" value={settings["contact_email"] ?? ""}
+              placeholder="lienhe@phanvanthang.net" onChange={(e) => setS("contact_email", e.target.value)} />
+            <Hint text="Hiển thị trong footer và trang liên hệ." />
           </div>
+          <div>
+            <Lbl>Email hợp tác / kết nối</Lbl>
+            <input style={s.field} type="email" value={settings["contact_email_collab"] ?? ""}
+              placeholder="hello@phanvanthang.net" onChange={(e) => setS("contact_email_collab", e.target.value)} />
+            <Hint text="Dùng cho các CTA hợp tác, partner." />
+          </div>
+          <div>
+            <Lbl>Email newsletter</Lbl>
+            <input style={s.field} type="email" value={settings["contact_email_newsletter"] ?? ""}
+              placeholder="newsletter@phanvanthang.net" onChange={(e) => setS("contact_email_newsletter", e.target.value)} />
+            <Hint text="Dùng trong các block đăng ký email marketing." />
+          </div>
+          <div>
+            <Lbl>Email hệ thống / no-reply</Lbl>
+            <input style={s.field} type="email" value={settings["contact_email_noreply"] ?? ""}
+              placeholder="no-reply@phanvanthang.net" onChange={(e) => setS("contact_email_noreply", e.target.value)} />
+            <Hint text="Dùng cho email thông báo tự động, không reply được." />
+          </div>
+        </div>
+      </div>
+      <div style={s.card}>
+        <SectionHead>Điện thoại & địa chỉ</SectionHead>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
           <div>
             <Lbl>Số điện thoại</Lbl>
             <input style={s.field} value={settings["contact_phone"] ?? ""}
@@ -369,9 +423,15 @@ function ContactTab({ settings, setS }: { settings: Record<string, string>; setS
               placeholder="0xxx..." onChange={(e) => setS("contact_zalo", e.target.value)} />
           </div>
           <div>
-            <Lbl>Địa chỉ (nếu có)</Lbl>
+            <Lbl>Thành phố / khu vực</Lbl>
+            <input style={s.field} value={settings["contact_city"] ?? ""}
+              placeholder="Hà Nội, Việt Nam" onChange={(e) => setS("contact_city", e.target.value)} />
+            <Hint text="Hiển thị trong footer bên cạnh icon vị trí." />
+          </div>
+          <div>
+            <Lbl>Địa chỉ chi tiết (nếu có)</Lbl>
             <input style={s.field} value={settings["contact_address"] ?? ""}
-              placeholder="TP. Hồ Chí Minh, Việt Nam" onChange={(e) => setS("contact_address", e.target.value)} />
+              placeholder="Số X, đường Y, quận Z" onChange={(e) => setS("contact_address", e.target.value)} />
           </div>
         </div>
       </div>
@@ -510,6 +570,23 @@ function SeoTab({ settings, setS }: { settings: Record<string, string>; setS: (k
                 style={{ marginTop: "8px", width: "100%", maxWidth: "360px", aspectRatio: "1200/630", objectFit: "cover", borderRadius: "6px", border: `1px solid ${A.border}` }} />
             )}
             <Hint text="Khuyến nghị: 1200×630 px" />
+          </div>
+        </div>
+      </div>
+      <div style={s.card}>
+        <SectionHead>Open Graph & Canonical</SectionHead>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+          <div>
+            <Lbl>Tên website (og:site_name)</Lbl>
+            <input style={{ ...s.field, fontWeight: 600 }} value={settings["site_og_site_name"] ?? ""}
+              placeholder="Phan Văn Thắng SWC" onChange={(e) => setS("site_og_site_name", e.target.value)} />
+            <Hint text="Tên hiển thị khi chia sẻ lên mạng xã hội." />
+          </div>
+          <div>
+            <Lbl>URL gốc website (canonical base)</Lbl>
+            <input style={{ ...s.field, fontFamily: "monospace" }} value={settings["site_canonical_url"] ?? ""}
+              placeholder="https://phanvanthang.net" onChange={(e) => setS("site_canonical_url", e.target.value)} />
+            <Hint text="Dùng cho canonical tag và structured data." />
           </div>
         </div>
       </div>
@@ -808,6 +885,34 @@ function LogoTab({
             />
           </div>
         </div>
+
+        {/* Brand copy */}
+        <div style={{ marginTop: "1.25rem", paddingTop: "1.25rem", borderTop: `1px solid ${A.border}` }}>
+          <SectionHead>Nội dung thương hiệu</SectionHead>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+            <div>
+              <Lbl>Sub-title dưới tên (ví dụ: hệ sinh thái)</Lbl>
+              <input style={s.field} value={settings["brand_sub_title"] ?? ""}
+                placeholder="Thuộc hệ sinh thái Sky World Community"
+                onChange={(e) => setS("brand_sub_title", e.target.value)} />
+              <Hint text="Hiển thị dưới tên thương hiệu trong header và footer." />
+            </div>
+            <div>
+              <Lbl>Tagline thương hiệu</Lbl>
+              <input style={{ ...s.field, fontWeight: 500 }} value={settings["brand_tagline"] ?? ""}
+                placeholder="Tư duy tài chính đúng. Tích sản dài hạn. Đầu tư với góc nhìn thực chiến."
+                onChange={(e) => setS("brand_tagline", e.target.value)} />
+              <Hint text="Dòng tagline ngắn — hiển thị in nghiêng trong footer, hero và About." />
+            </div>
+            <div>
+              <Lbl>Mô tả thương hiệu (đoạn văn trong footer)</Lbl>
+              <textarea style={{ ...s.textarea, height: "80px" }} value={settings["brand_description"] ?? ""}
+                placeholder="Chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn."
+                onChange={(e) => setS("brand_description", e.target.value)} />
+              <Hint text="Đoạn văn ngắn hiển thị trong cột brand của footer." />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Logo assets */}
@@ -954,6 +1059,7 @@ export function SettingsPanel({ adminKey }: { adminKey: string }) {
       };
       await adminApi.updateSettings(adminKey, payload);
       invalidateLogoCache();
+      invalidateSiteSettingsCache();
       setMsg("Đã lưu cài đặt.");
     } catch (e) { setMsg(String(e)); }
     finally { setSaving(false); }

@@ -1,13 +1,13 @@
 import React from "react";
-import { Mail, MapPin, ArrowUpRight } from "lucide-react";
-import { SiYoutube, SiFacebook } from "react-icons/si";
+import { Mail, MapPin, ArrowUpRight, Link2 } from "lucide-react";
+import { SiYoutube, SiFacebook, SiZalo, SiTelegram, SiTiktok } from "react-icons/si";
 import {
   FOOTER_NAV_LINKS,
   FOOTER_KIEN_THUC_LINKS,
   FOOTER_HE_SINH_THAI_LINKS,
 } from "@/config/navigationConfig";
-import { siteConfig } from "@/config/siteConfig";
 import { useLogoSettings } from "@/hooks/useLogoSettings";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 /* ══════════════════════════════════════════════════════════════════
    SHARED STYLE HELPERS
@@ -91,6 +91,7 @@ export function Footer() {
   const homeBase = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
   const year     = new Date().getFullYear();
   const logo     = useLogoSettings();
+  const site     = useSiteSettings();
 
   return (
     <footer className="relative text-white overflow-hidden" style={{ background: "linear-gradient(180deg, #0d2320 0%, #091a18 42%, #060f0e 100%)" }}>
@@ -135,7 +136,7 @@ export function Footer() {
                       {logo.brandName || "Phan Văn Thắng SWC"}
                     </div>
                     <div style={{ fontSize: "10px", fontWeight: 400, letterSpacing: "0.02em", color: "rgba(255,255,255,0.26)", lineHeight: 1 }}>
-                      Thuộc hệ sinh thái Sky World Community
+                      {site.brandSubTitle}
                     </div>
                   </div>
                 </>
@@ -159,7 +160,7 @@ export function Footer() {
 
             {/* Positioning tagline */}
             <p style={{ fontSize: "12px", fontWeight: 400, fontStyle: "italic", letterSpacing: "0.004em", color: "rgba(255,255,255,0.28)", lineHeight: 1.82, marginBottom: "0.875rem" }}>
-              {siteConfig.brandTagline}
+              {site.footerTagline}
             </p>
 
             {/* Divider */}
@@ -167,7 +168,7 @@ export function Footer() {
 
             {/* Brand description */}
             <p style={{ fontSize: "13px", fontWeight: 300, letterSpacing: "0.004em", lineHeight: 1.92, color: "rgba(255,255,255,0.40)" }}>
-              {siteConfig.footerDescription}
+              {site.footerDescription}
             </p>
           </div>
 
@@ -206,23 +207,33 @@ export function Footer() {
             <ColHead>Kết nối</ColHead>
             <div style={{ display: "flex", flexDirection: "column", gap: "1.125rem" }}>
 
-              <ContactLink href={siteConfig.youtubeUrl} external Icon={SiYoutube} label="Kênh YouTube" />
-              <ContactLink href={siteConfig.facebookUrl} external Icon={SiFacebook} label="Trang Facebook" />
-              <ContactLink href={`mailto:${siteConfig.contactEmail}`} Icon={Mail} label={siteConfig.contactEmail} />
-              <ContactLink Icon={MapPin} label="Hà Nội, Việt Nam" isStatic />
+              {site.youtubeUrl  && <ContactLink href={site.youtubeUrl}  external Icon={SiYoutube}  label="Kênh YouTube"   />}
+              {site.facebookUrl && <ContactLink href={site.facebookUrl} external Icon={SiFacebook} label="Trang Facebook" />}
+              {site.zaloUrl     && <ContactLink href={site.zaloUrl}     external Icon={SiZalo}     label="Zalo"           />}
+              {site.telegramUrl && <ContactLink href={site.telegramUrl} external Icon={SiTelegram} label="Telegram"       />}
+              {site.tiktokUrl   && <ContactLink href={site.tiktokUrl}   external Icon={SiTiktok}   label="TikTok"         />}
+              {site.linkedinUrl && <ContactLink href={site.linkedinUrl} external Icon={Link2}      label="LinkedIn"       />}
+              {site.contactEmail && (
+                <ContactLink href={`mailto:${site.contactEmail}`} Icon={Mail} label={site.contactEmail} />
+              )}
+              {site.footerShowAddress && site.contactCity && (
+                <ContactLink Icon={MapPin} label={site.contactCity} isStatic />
+              )}
 
               {/* Tham gia CTA */}
-              <div style={{ marginTop: "0.5rem", paddingTop: "1.25rem", borderTop: "1px solid rgba(255,255,255,0.055)" }}>
-                <a
-                  href={`${homeBase}/cong-dong#dang-ky`}
-                  style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", fontSize: "12.5px", fontWeight: 500, letterSpacing: "0.010em", color: "hsl(var(--primary) / 0.60)", textDecoration: "none", transition: "color 0.20s ease" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary) / 0.90)"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary) / 0.60)"; }}
-                >
-                  <span>Tham gia cộng đồng</span>
-                  <ArrowUpRight size={11} style={{ opacity: 0.70 }} />
-                </a>
-              </div>
+              {site.footerShowCommunityCta && (
+                <div style={{ marginTop: "0.5rem", paddingTop: "1.25rem", borderTop: "1px solid rgba(255,255,255,0.055)" }}>
+                  <a
+                    href={site.communityUrl || `${homeBase}/cong-dong#dang-ky`}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", fontSize: "12.5px", fontWeight: 500, letterSpacing: "0.010em", color: "hsl(var(--primary) / 0.60)", textDecoration: "none", transition: "color 0.20s ease" }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary) / 0.90)"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary) / 0.60)"; }}
+                  >
+                    <span>Tham gia cộng đồng</span>
+                    <ArrowUpRight size={11} style={{ opacity: 0.70 }} />
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 
@@ -234,7 +245,7 @@ export function Footer() {
           style={{ paddingTop: "1.75rem", paddingBottom: "1.75rem" }}
         >
           <p style={{ fontSize: "12px", fontWeight: 400, letterSpacing: "0.006em", color: "rgba(255,255,255,0.30)", flexShrink: 0, margin: 0 }}>
-            © {year} Phan Văn Thắng SWC. Bảo lưu mọi quyền.
+            {site.footerCopyright || `© ${year} ${site.footerCompanyName}. Bảo lưu mọi quyền.`}
           </p>
 
           {/* Separator dot — desktop only */}
@@ -244,7 +255,7 @@ export function Footer() {
             style={{ fontSize: "11.5px", fontWeight: 300, lineHeight: 1.80, color: "rgba(255,255,255,0.22)", maxWidth: "32rem", margin: 0 }}
             className="md:text-right"
           >
-            {siteConfig.disclaimer}
+            {site.footerDisclaimer}
           </p>
         </div>
 

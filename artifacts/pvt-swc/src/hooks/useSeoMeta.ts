@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useSiteSettings, SITE_SETTINGS_DEFAULT } from "@/hooks/useSiteSettings";
 
 interface StructuredData {
   "@context": string;
@@ -25,8 +26,8 @@ interface SeoMeta {
   structuredData?: StructuredData;
 }
 
-export const SITE_NAME      = "Phan Văn Thắng SWC";
-export const DEFAULT_DESCRIPTION = "Hành trình từ kiểm soát dòng tiền đến xây dựng tài sản bền vững. Tư duy tài chính thực chiến, đầu tư có kỷ luật, tích sản dài hạn.";
+export const SITE_NAME            = SITE_SETTINGS_DEFAULT.ogSiteName;
+export const DEFAULT_DESCRIPTION  = SITE_SETTINGS_DEFAULT.seoDescription;
 export const DEFAULT_OG_IMAGE_PATH  = "/og-default.jpg";   // homepage + general pages
 export const ARTICLE_OG_IMAGE_PATH  = "/og-article.jpg";   // articles without featured image
 export const PRODUCT_OG_IMAGE_PATH  = "/og-product.jpg";   // product pages without custom cover
@@ -88,13 +89,17 @@ function removeStructuredData() {
 }
 
 export function useSeoMeta(meta: SeoMeta) {
+  const dynSettings = useSiteSettings();
+
   useEffect(() => {
-    const siteName    = meta.siteName ?? SITE_NAME;
-    const pageTitle   = meta.title ? `${meta.title} | ${siteName}` : siteName;
-    const description = meta.description || DEFAULT_DESCRIPTION;
+    const siteName    = meta.siteName ?? dynSettings.ogSiteName;
+    const defaultTitle = dynSettings.seoTitle || siteName;
+    const pageTitle   = meta.title ? `${meta.title} | ${siteName}` : defaultTitle;
+    const description = meta.description || dynSettings.seoDescription || DEFAULT_DESCRIPTION;
     const ogTitle     = meta.ogTitle || meta.title || siteName;
     const ogDesc      = meta.ogDescription || description;
-    const ogImageAbs  = absoluteUrl(meta.ogImage || DEFAULT_OG_IMAGE_PATH);
+    const defaultOgImage = dynSettings.ogImage || DEFAULT_OG_IMAGE_PATH;
+    const ogImageAbs  = absoluteUrl(meta.ogImage || defaultOgImage);
     const ogType      = meta.ogType ?? "website";
     const pageUrl     = meta.canonicalUrl || (typeof window !== "undefined" ? window.location.href : "");
 
@@ -151,5 +156,6 @@ export function useSeoMeta(meta: SeoMeta) {
     meta.ogDescription, meta.ogImage, meta.canonicalUrl, meta.noindex,
     meta.ogType, meta.publishedAt, meta.modifiedAt, meta.author,
     meta.siteName, meta.structuredData,
+    dynSettings.ogSiteName, dynSettings.seoTitle, dynSettings.seoDescription, dynSettings.ogImage,
   ]);
 }

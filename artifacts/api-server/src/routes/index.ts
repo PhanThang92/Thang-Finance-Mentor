@@ -20,12 +20,27 @@ const LOGO_KEYS = [
   "logo_display_name", "logo_brand_name", "logo_desktop_width", "logo_mobile_width",
 ];
 
+/* Keys that must never be exposed publicly */
+const PRIVATE_KEYS = new Set(["form_recipient_email"]);
+
 router.get("/logo-settings", async (_req, res) => {
   try {
     const rows = await db.select().from(siteSettingsTable);
     const settings: Record<string, string | null> = {};
     rows.forEach((r) => {
       if (LOGO_KEYS.includes(r.key)) settings[r.key] = r.value;
+    });
+    res.json({ settings });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+/* Public site-settings — returns all non-sensitive settings */
+router.get("/site-settings", async (_req, res) => {
+  try {
+    const rows = await db.select().from(siteSettingsTable);
+    const settings: Record<string, string | null> = {};
+    rows.forEach((r) => {
+      if (!PRIVATE_KEYS.has(r.key)) settings[r.key] = r.value;
     });
     res.json({ settings });
   } catch (e) { res.status(500).json({ error: String(e) }); }
