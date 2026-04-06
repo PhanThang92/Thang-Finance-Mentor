@@ -5,7 +5,6 @@ import { ArrowRight } from "lucide-react";
 import { newsApi, type NewsPost } from "@/lib/newsApi";
 import { getPostImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
 
-/* ── fallback src — tiny transparent pixel, avoids broken-image icons ─ */
 const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAI=";
 
 const fadeUp = {
@@ -27,6 +26,23 @@ function articleHref(post: NewsPost) {
   return `/tin-tuc/${cat}/${post.slug}`;
 }
 
+/* ── Watermark badge — shared between both card types ── */
+function WatermarkBadge({ post }: { post: NewsPost }) {
+  return (
+    <div style={{
+      position: "absolute", bottom: 0, right: 0,
+      padding: "0.275rem 0.6rem",
+      background: "rgba(5,22,19,0.75)",
+      borderTop: "1px solid rgba(52,160,140,0.16)",
+      borderLeft: "1px solid rgba(52,160,140,0.16)",
+      fontSize: "8px", fontWeight: 600, letterSpacing: "0.13em",
+      color: "rgba(52,160,140,0.78)", textTransform: "uppercase", pointerEvents: "none",
+    }}>
+      {getWatermarkText(post)}
+    </div>
+  );
+}
+
 /* ── Skeleton card ── */
 function SkeletonCard({ large }: { large?: boolean }) {
   return (
@@ -35,64 +51,49 @@ function SkeletonCard({ large }: { large?: boolean }) {
       style={{
         border: "1px solid hsl(var(--border) / 0.60)",
         background: "hsl(var(--card))",
-        height: large ? "460px" : "300px",
       }}
     >
-      <div style={{ height: large ? "260px" : "160px", background: "hsl(var(--muted) / 0.60)" }} />
-      <div style={{ padding: "1.25rem 1.5rem" }}>
-        <div style={{ height: "10px", borderRadius: "4px", background: "hsl(var(--muted) / 0.55)", width: "40%", marginBottom: "12px" }} />
-        <div style={{ height: "16px", borderRadius: "4px", background: "hsl(var(--muted) / 0.40)", width: "85%", marginBottom: "8px" }} />
-        <div style={{ height: "16px", borderRadius: "4px", background: "hsl(var(--muted) / 0.30)", width: "65%", marginBottom: "16px" }} />
-        <div style={{ height: "12px", borderRadius: "4px", background: "hsl(var(--muted) / 0.25)", width: "30%" }} />
+      <div style={{
+        aspectRatio: large ? "16/7" : "16/9",
+        background: "hsl(var(--muted) / 0.60)",
+      }} />
+      <div style={{ padding: "1.125rem 1.375rem 1.375rem" }}>
+        <div style={{ height: "9px", borderRadius: "4px", background: "hsl(var(--muted) / 0.55)", width: "38%", marginBottom: "10px" }} />
+        <div style={{ height: "15px", borderRadius: "4px", background: "hsl(var(--muted) / 0.40)", width: "88%", marginBottom: "7px" }} />
+        <div style={{ height: "15px", borderRadius: "4px", background: "hsl(var(--muted) / 0.28)", width: "60%", marginBottom: "14px" }} />
+        <div style={{ height: "11px", borderRadius: "4px", background: "hsl(var(--muted) / 0.22)", width: "28%" }} />
       </div>
     </div>
   );
 }
 
-/* ── Thumbnail with watermark + onError guard ── */
-function PostThumb({ post, height }: { post: NewsPost; height: number }) {
-  const src = getPostImage(post);
-  const fallback = isFallbackImage(post);
+/* ── Small skeleton (horizontal) ── */
+function SmallSkeleton() {
   return (
-    <div
-      style={{
-        position: "relative",
-        height,
-        overflow: "hidden",
-        background: fallback ? "#091e1b" : "hsl(var(--muted))",
-      }}
-    >
-      <img
-        src={src}
-        alt={post.title}
-        loading="lazy"
-        onError={(e) => {
-          const img = e.currentTarget;
-          img.onerror = null;
-          img.src = BLANK;
-          img.style.opacity = "0";
-        }}
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-      />
-      {fallback && (
-        <div style={{
-          position: "absolute", bottom: 0, right: 0,
-          padding: "0.3rem 0.65rem",
-          background: "rgba(5,22,19,0.72)",
-          borderTop: "1px solid rgba(52,160,140,0.18)",
-          borderLeft: "1px solid rgba(52,160,140,0.18)",
-          fontSize: "9px", fontWeight: 600, letterSpacing: "0.12em",
-          color: "rgba(52,160,140,0.80)", textTransform: "uppercase", pointerEvents: "none",
-        }}>
-          {getWatermarkText(post)}
-        </div>
-      )}
+    <div className="rounded-xl overflow-hidden flex" style={{
+      border: "1px solid hsl(var(--border) / 0.60)",
+      background: "hsl(var(--card))",
+      minHeight: "96px",
+    }}>
+      <div style={{ width: "108px", flexShrink: 0, background: "hsl(var(--muted) / 0.60)" }} />
+      <div style={{ flex: 1, padding: "0.875rem 1rem", display: "flex", flexDirection: "column", justifyContent: "center", gap: "0.5rem" }}>
+        <div style={{ height: "8px", borderRadius: "3px", background: "hsl(var(--muted) / 0.45)", width: "35%" }} />
+        <div style={{ height: "13px", borderRadius: "3px", background: "hsl(var(--muted) / 0.35)", width: "90%" }} />
+        <div style={{ height: "13px", borderRadius: "3px", background: "hsl(var(--muted) / 0.25)", width: "65%" }} />
+        <div style={{ height: "10px", borderRadius: "3px", background: "hsl(var(--muted) / 0.20)", width: "30%", marginTop: "2px" }} />
+      </div>
     </div>
   );
 }
 
-/* ── Featured card (large) ── */
+/* ── Featured card ─────────────────────────────────────────────────────
+   Image is responsive 16:9 aspect-ratio (scales with card width on mobile)
+   Content padding clamps from mobile-comfortable to desktop-generous
+── */
 function FeaturedCard({ post }: { post: NewsPost }) {
+  const src = getPostImage(post);
+  const fallback = isFallbackImage(post);
+
   return (
     <a
       href={articleHref(post)}
@@ -117,9 +118,32 @@ function FeaturedCard({ post }: { post: NewsPost }) {
         el.style.transform = "translateY(0)";
       }}
     >
-      <PostThumb post={post} height={300} />
-      <div style={{ padding: "2rem 2.25rem 2.25rem" }}>
-        <div className="flex flex-wrap items-center gap-2 mb-3.5">
+      {/* Image — responsive 16:9, never fixed pixels */}
+      <div style={{
+        position: "relative",
+        aspectRatio: "16/9",
+        overflow: "hidden",
+        background: fallback ? "#091e1b" : "hsl(var(--muted))",
+      }}>
+        <img
+          src={src}
+          alt={post.title}
+          loading="lazy"
+          onError={(e) => { const img = e.currentTarget; img.onerror = null; img.src = BLANK; img.style.opacity = "0"; }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        />
+        {fallback && <WatermarkBadge post={post} />}
+      </div>
+
+      {/* Content — padding scales with viewport width */}
+      <div style={{
+        paddingTop:    "clamp(1.25rem, 4vw, 2rem)",
+        paddingRight:  "clamp(1.25rem, 4.5vw, 2.25rem)",
+        paddingBottom: "clamp(1.375rem, 4.5vw, 2.25rem)",
+        paddingLeft:   "clamp(1.25rem, 4.5vw, 2.25rem)",
+      }}>
+        {/* Badges */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.45rem", marginBottom: "0.875rem" }}>
           {post.category && (
             <span style={{
               fontSize: "10px", fontWeight: 600, letterSpacing: "0.11em", textTransform: "uppercase",
@@ -144,28 +168,34 @@ function FeaturedCard({ post }: { post: NewsPost }) {
           )}
         </div>
 
+        {/* Title — clamped to 3 lines to prevent very long titles from dominating */}
         <h3
           style={{
-            fontSize: "clamp(1.15rem, 2.2vw, 1.4rem)",
+            fontSize: "clamp(1.1rem, 2.6vw, 1.4rem)",
             fontWeight: 700,
-            lineHeight: 1.28,
-            letterSpacing: "-0.015em",
+            lineHeight: 1.3,
+            letterSpacing: "-0.014em",
             color: "hsl(var(--foreground))",
-            marginBottom: "0.75rem",
+            marginBottom: "0.625rem",
             transition: "color 0.2s ease",
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
           className="group-hover:text-primary"
         >
           {post.title}
         </h3>
 
+        {/* Excerpt — 3 lines max */}
         {post.excerpt && (
           <p style={{
-            fontSize: "14px",
-            lineHeight: 1.82,
+            fontSize: "clamp(13px, 1.8vw, 14px)",
+            lineHeight: 1.80,
             fontWeight: 400,
             color: "hsl(var(--muted-foreground))",
-            marginBottom: "1.25rem",
+            marginBottom: "clamp(1rem, 3vw, 1.25rem)",
             display: "-webkit-box",
             WebkitLineClamp: 3,
             WebkitBoxOrient: "vertical",
@@ -175,12 +205,15 @@ function FeaturedCard({ post }: { post: NewsPost }) {
           </p>
         )}
 
-        <div className="flex items-center justify-between">
+        {/* Footer */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{ fontSize: "11.5px", color: "hsl(var(--foreground) / 0.38)", fontWeight: 400 }}>
             {fmtDate(post.publishedAt)}
           </span>
-          <span className="inline-flex items-center gap-1.5 group/link"
-            style={{ fontSize: "12.5px", fontWeight: 500, color: "hsl(var(--primary))", letterSpacing: "0.005em" }}>
+          <span
+            className="inline-flex items-center gap-1.5 group/link"
+            style={{ fontSize: "12.5px", fontWeight: 500, color: "hsl(var(--primary))", letterSpacing: "0.005em" }}
+          >
             Đọc tiếp
             <ArrowRight size={12} strokeWidth={2} className="group-hover/link:translate-x-0.5 transition-transform" />
           </span>
@@ -190,17 +223,25 @@ function FeaturedCard({ post }: { post: NewsPost }) {
   );
 }
 
-/* ── Small article card ── */
+/* ── Small card ────────────────────────────────────────────────────────
+   Horizontal layout on both mobile and desktop sidebar.
+   Thumbnail uses absolute fill so image always matches card height,
+   no gap below image when title wraps to 2+ lines.
+── */
 function SmallCard({ post }: { post: NewsPost }) {
+  const src = getPostImage(post);
+  const fallback = isFallbackImage(post);
+
   return (
     <a
       href={articleHref(post)}
-      className="group flex gap-0 rounded-xl overflow-hidden"
+      className="group flex rounded-xl overflow-hidden"
       style={{
         border: "1px solid hsl(var(--border) / 0.70)",
         background: "hsl(var(--card))",
         boxShadow: "0 1px 4px rgba(10,40,35,0.05)",
         textDecoration: "none",
+        minHeight: "96px",
         transition: "border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease",
       }}
       onMouseEnter={(e) => {
@@ -216,25 +257,49 @@ function SmallCard({ post }: { post: NewsPost }) {
         el.style.transform = "translateY(0)";
       }}
     >
-      {/* Thumbnail */}
-      <div style={{ width: "108px", minHeight: "108px", flexShrink: 0, overflow: "hidden", position: "relative" }}>
-        <PostThumb post={post} height={108} />
+      {/* Thumbnail — absolute fill, always matches card height */}
+      <div style={{
+        width: "112px", flexShrink: 0,
+        position: "relative", alignSelf: "stretch",
+        overflow: "hidden",
+        background: fallback ? "#091e1b" : "hsl(var(--muted))",
+        borderRight: "1px solid hsl(var(--border) / 0.35)",
+      }}>
+        <img
+          src={src}
+          alt={post.title}
+          loading="lazy"
+          onError={(e) => { const img = e.currentTarget; img.onerror = null; img.src = BLANK; img.style.opacity = "0"; }}
+          style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover", display: "block",
+          }}
+        />
+        {fallback && <WatermarkBadge post={post} />}
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, padding: "0.875rem 1rem 0.875rem 0.875rem", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: "0.3rem" }}>
+      <div style={{
+        flex: 1, minWidth: 0,
+        padding: "0.875rem 1rem 0.875rem 0.875rem",
+        display: "flex", flexDirection: "column",
+        justifyContent: "center", gap: "0.375rem",
+      }}>
         {post.category && (
           <span style={{
-            display: "inline-block",
-            fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase",
+            display: "block",
+            fontSize: "9px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
             color: "hsl(var(--primary))",
+            lineHeight: 1,
           }}>
             {post.category.name}
           </span>
         )}
         <h4
           style={{
-            fontSize: "13.5px", fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.008em",
+            fontSize: "13.5px", fontWeight: 600,
+            lineHeight: 1.38, letterSpacing: "-0.008em",
             color: "hsl(var(--foreground))",
             display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
             transition: "color 0.2s ease",
@@ -244,7 +309,7 @@ function SmallCard({ post }: { post: NewsPost }) {
         >
           {post.title}
         </h4>
-        <span style={{ fontSize: "11px", color: "hsl(var(--foreground) / 0.38)", fontWeight: 400 }}>
+        <span style={{ fontSize: "10.5px", color: "hsl(var(--foreground) / 0.36)", fontWeight: 400, lineHeight: 1 }}>
           {fmtDate(post.publishedAt)}
         </span>
       </div>
@@ -268,7 +333,7 @@ export function LatestPostsSection() {
     <section id="bai-viet" className="py-28 md:py-36 bg-background">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 space-y-12">
 
-        {/* ── Header — own whileInView, always renders immediately ── */}
+        {/* ── Header ── */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -326,9 +391,9 @@ export function LatestPostsSection() {
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5">
             <SkeletonCard large />
             <div className="flex flex-col gap-4">
-              <SkeletonCard />
-              <SkeletonCard />
-              <SkeletonCard />
+              <SmallSkeleton />
+              <SmallSkeleton />
+              <SmallSkeleton />
             </div>
           </div>
         )}
@@ -351,8 +416,7 @@ export function LatestPostsSection() {
           </motion.div>
         )}
 
-        {/* ── Content grid — independent animate (not whileInView) so it
-            always plays when data arrives, regardless of scroll position ── */}
+        {/* ── Content grid ── */}
         {!isLoading && featured && (
           <motion.div
             key={`cards-${featured.id}`}
@@ -361,10 +425,8 @@ export function LatestPostsSection() {
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
           >
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5">
-              {/* Featured */}
               <FeaturedCard post={featured} />
 
-              {/* Side cards */}
               <div className="flex flex-col gap-4">
                 {rest.map((p) => (
                   <SmallCard key={p.id} post={p} />
@@ -373,9 +435,8 @@ export function LatestPostsSection() {
                   <div
                     className="rounded-xl flex items-center justify-center"
                     style={{
-                      flex: 1,
+                      flex: 1, minHeight: "120px",
                       border: "1px dashed hsl(var(--border))",
-                      minHeight: "120px",
                     }}
                   >
                     <p style={{ fontSize: "13px", color: "hsl(var(--muted-foreground))" }}>
@@ -398,7 +459,7 @@ export function LatestPostsSection() {
           >
             <a
               href="/tin-tuc"
-              className="inline-flex items-center gap-2 rounded-full transition-all"
+              className="inline-flex items-center gap-2 rounded-full"
               style={{
                 height: "2.625rem",
                 padding: "0 1.75rem",

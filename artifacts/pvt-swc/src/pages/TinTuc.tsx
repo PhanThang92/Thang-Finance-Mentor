@@ -84,8 +84,14 @@ function ArticleCard({ post }: { post: NewsPost }) {
               </div>
             )}
           </div>
-          <div style={{ padding: "1.5rem 1.625rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+          <div style={{
+            paddingTop: "clamp(1.125rem, 4vw, 1.5rem)",
+            paddingRight: "clamp(1.125rem, 4vw, 1.625rem)",
+            paddingBottom: "clamp(1.125rem, 4vw, 1.5rem)",
+            paddingLeft: "clamp(1.125rem, 4vw, 1.625rem)",
+            flex: 1, display: "flex", flexDirection: "column", gap: "0.625rem",
+          }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
               {post.category && (
                 <span style={{
                   fontSize: "9px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase",
@@ -101,17 +107,27 @@ function ArticleCard({ post }: { post: NewsPost }) {
                 }}>{post.product.name}</span>
               )}
             </div>
-            <h3 style={{ fontSize: "16px", fontWeight: 700, lineHeight: 1.32, color: "hsl(var(--foreground))", margin: 0 }}>
+            {/* Title — clamped to 3 lines for consistent card heights across the grid */}
+            <h3 style={{
+              fontSize: "clamp(15px, 2.2vw, 16px)", fontWeight: 700, lineHeight: 1.34,
+              color: "hsl(var(--foreground))", margin: 0,
+              display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden",
+            }}>
               {post.title}
             </h3>
+            {/* Excerpt — clamped to 3 lines to keep card height balanced */}
             {post.excerpt && (
-              <p style={{ fontSize: "13px", lineHeight: 1.78, fontWeight: 300, color: "hsl(var(--foreground) / 0.50)", margin: 0, flex: 1 }}>
+              <p style={{
+                fontSize: "13px", lineHeight: 1.75, fontWeight: 400,
+                color: "hsl(var(--foreground) / 0.48)", margin: 0, flex: 1,
+                display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden",
+              }}>
                 {post.excerpt}
               </p>
             )}
             <div style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
-              marginTop: "auto", paddingTop: "0.625rem", borderTop: "1px solid hsl(var(--border) / 0.45)",
+              marginTop: "auto", paddingTop: "0.5rem", borderTop: "1px solid hsl(var(--border) / 0.45)",
             }}>
               <span style={{ fontSize: "11px", color: "hsl(var(--foreground) / 0.34)" }}>{fmtDate(post.publishedAt)}</span>
               <div style={{ display: "flex", gap: "0.375rem" }}>
