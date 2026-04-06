@@ -214,7 +214,7 @@ export function Footer() {
               {/* Tham gia CTA */}
               <div style={{ marginTop: "0.5rem", paddingTop: "1.25rem", borderTop: "1px solid rgba(255,255,255,0.055)" }}>
                 <a
-                  href={`${homeBase}/cong-dong`}
+                  href={`${homeBase}/cong-dong#dang-ky`}
                   style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", fontSize: "12.5px", fontWeight: 500, letterSpacing: "0.010em", color: "hsl(var(--primary) / 0.60)", textDecoration: "none", transition: "color 0.20s ease" }}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary) / 0.90)"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "hsl(var(--primary) / 0.60)"; }}

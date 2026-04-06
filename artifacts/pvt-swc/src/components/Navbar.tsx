@@ -530,6 +530,12 @@ export function Navbar() {
             <a
               ref={ctaRef}
               href={`${homeBase}/cong-dong#dang-ky`}
+              onClick={(e) => {
+                if (isCommunityPage) {
+                  e.preventDefault();
+                  document.getElementById("dang-ky")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+              }}
               style={{
                 display:        "inline-flex",
                 alignItems:     "center",
@@ -764,6 +770,13 @@ export function Navbar() {
               {/* Mobile CTA */}
               <a
                 href={`${homeBase}/cong-dong#dang-ky`}
+                onClick={(e) => {
+                  setIsMobileMenuOpen(false);
+                  if (isCommunityPage) {
+                    e.preventDefault();
+                    document.getElementById("dang-ky")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }}
                 style={{
                   marginTop:      "1rem",
                   display:        "flex",
@@ -780,7 +793,6 @@ export function Navbar() {
                   boxShadow:      "0 1px 10px rgba(10,40,35,0.14)",
                   transition:     "background 0.22s ease, box-shadow 0.22s ease",
                 }}
-                onClick={() => setIsMobileMenuOpen(false)}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
                   el.style.background = SCROLLED.ctaHoverBg;

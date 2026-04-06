@@ -441,7 +441,7 @@ function JoinSection() {
           {/* ── Left: editorial copy ── */}
           <div>
             <motion.div variants={fadeUp} style={{ marginBottom: "1.25rem" }}>
-              <SectionLabel>Đăng ký tham gia</SectionLabel>
+              <SectionLabel>Đăng ký tham gia cộng đồng</SectionLabel>
             </motion.div>
             <motion.div variants={fadeUp} style={{ marginBottom: "1.25rem" }}>
               <SectionHeading>Bắt đầu từ nơi phù hợp với giai đoạn của mình</SectionHeading>
@@ -634,10 +634,15 @@ function FinalCTASection() {
             </motion.p>
 
             <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", justifyContent: "center", marginBottom: "2.5rem" }}>
-              <a href="#" style={btnPrimary}
+              <a href="#dang-ky"
+                style={btnPrimary}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("dang-ky")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(26,120,104,0.38)"; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(26,120,104,0.30)"; }}>
-                Vào cộng đồng mở
+                Đăng ký tham gia
               </a>
               <button style={btnGhost} onClick={() => setShowForm(true)}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(52,160,140,0.60)"; (e.currentTarget as HTMLElement).style.color = "rgba(52,160,140,1)"; }}
