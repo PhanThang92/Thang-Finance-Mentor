@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0b2321"/>
+      <stop offset="58%" stop-color="#081918"/>
+      <stop offset="100%" stop-color="#040d0c"/>
+    </linearGradient>
+    <radialGradient id="glow-center" cx="50%" cy="50%" r="44%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.14"/>
+      <stop offset="65%" stop-color="#22917f" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-north" cx="50%" cy="16%" r="22%">
+      <stop offset="0%" stop-color="#2ab39e" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#2ab39e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#glow-center)"/>
+  <rect width="1600" height="900" fill="url(#glow-north)"/>
+
+  <!-- Fine structural grid (very faint) -->
+  <g stroke="rgba(52,160,140,0.030)" stroke-width="1">
+    <line x1="0" y1="225" x2="1600" y2="225"/>
+    <line x1="0" y1="450" x2="1600" y2="450"/>
+    <line x1="0" y1="675" x2="1600" y2="675"/>
+    <line x1="400"  y1="0" x2="400"  y2="900"/>
+    <line x1="800"  y1="0" x2="800"  y2="900"/>
+    <line x1="1200" y1="0" x2="1200" y2="900"/>
+  </g>
+
+  <!-- Concentric time-horizon rings — centered -->
+  <g fill="none">
+    <circle cx="800" cy="450" r="340" stroke="rgba(52,160,140,0.04)" stroke-width="1"/>
+    <circle cx="800" cy="450" r="268" stroke="rgba(52,160,140,0.06)" stroke-width="1"/>
+    <circle cx="800" cy="450" r="196" stroke="rgba(52,160,140,0.08)" stroke-width="1.2"/>
+    <circle cx="800" cy="450" r="128" stroke="rgba(52,160,140,0.11)" stroke-width="1.2"/>
+    <circle cx="800" cy="450" r="68"  stroke="rgba(52,160,140,0.15)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Cardinal axis lines (dashed) -->
+  <line x1="800" y1="100" x2="800" y2="800" stroke="rgba(52,160,140,0.08)" stroke-width="1" stroke-dasharray="5 9"/>
+  <line x1="452" y1="450" x2="1148" y2="450" stroke="rgba(52,160,140,0.08)" stroke-width="1" stroke-dasharray="5 9"/>
+
+  <!-- Diagonal spokes (lighter) -->
+  <line x1="554" y1="204" x2="1046" y2="696" stroke="rgba(52,160,140,0.04)" stroke-width="1" stroke-dasharray="3 12"/>
+  <line x1="1046" y1="204" x2="554" y2="696" stroke="rgba(52,160,140,0.04)" stroke-width="1" stroke-dasharray="3 12"/>
+
+  <!-- Degree tick marks on outermost ring (every 30°) -->
+  <g stroke="rgba(52,160,140,0.22)" stroke-width="1.5" stroke-linecap="round">
+    <!-- 0°  --> <line x1="800" y1="108" x2="800" y2="124"/>
+    <!-- 30° --> <line x1="970" y1="156" x2="963" y2="170"/>
+    <!-- 60° --> <line x1="1094" y1="280" x2="1083" y2="290"/>
+    <!-- 90° --> <line x1="1140" y1="450" x2="1124" y2="450"/>
+    <!-- 120°--> <line x1="1094" y1="620" x2="1083" y2="610"/>
+    <!-- 150°--> <line x1="970" y1="744" x2="963" y2="730"/>
+    <!-- 180°--> <line x1="800" y1="792" x2="800" y2="776"/>
+    <!-- 210°--> <line x1="630" y1="744" x2="637" y2="730"/>
+    <!-- 240°--> <line x1="506" y1="620" x2="517" y2="610"/>
+    <!-- 270°--> <line x1="460" y1="450" x2="476" y2="450"/>
+    <!-- 300°--> <line x1="506" y1="280" x2="517" y2="290"/>
+    <!-- 330°--> <line x1="630" y1="156" x2="637" y2="170"/>
+  </g>
+
+  <!-- Precision pointer / needle — pointing north (long-term direction) -->
+  <polygon points="800,165 789,450 800,428 811,450" fill="rgba(52,160,140,0.78)"/>
+  <!-- Counter-needle (south, dimmed) -->
+  <polygon points="800,735 789,450 800,472 811,450" fill="rgba(52,160,140,0.18)"/>
+
+  <!-- Center pivot -->
+  <circle cx="800" cy="450" r="30" fill="rgba(52,160,140,0.06)" stroke="rgba(52,160,140,0.18)" stroke-width="1"/>
+  <circle cx="800" cy="450" r="12" fill="rgba(52,160,140,0.55)"/>
+  <circle cx="800" cy="450" r="5"  fill="rgba(255,255,255,0.55)"/>
+
+  <!-- Outer atmosphere rings -->
+  <circle cx="800" cy="450" r="380" stroke="rgba(52,160,140,0.03)" stroke-width="1" fill="none"/>
+  <circle cx="800" cy="450" r="420" stroke="rgba(52,160,140,0.02)" stroke-width="1" fill="none"/>
+
+  <!-- Left structural bars (long-term discipline concept) -->
+  <g stroke="rgba(52,160,140,0.20)" stroke-width="1" stroke-linecap="round">
+    <line x1="80"  y1="310" x2="320" y2="310"/>
+    <line x1="80"  y1="346" x2="260" y2="346"/>
+    <line x1="80"  y1="382" x2="200" y2="382"/>
+    <line x1="80"  y1="418" x2="150" y2="418"/>
+  </g>
+  <circle cx="80" cy="310" r="4.5" fill="rgba(52,160,140,0.55)"/>
+  <circle cx="80" cy="346" r="3.5" fill="rgba(52,160,140,0.40)"/>
+  <circle cx="80" cy="382" r="3"   fill="rgba(52,160,140,0.32)"/>
+  <circle cx="80" cy="418" r="2.5" fill="rgba(52,160,140,0.25)"/>
+
+  <!-- Right structural bars (mirror) -->
+  <g stroke="rgba(52,160,140,0.14)" stroke-width="1" stroke-linecap="round">
+    <line x1="1520" y1="470" x2="1350" y2="470"/>
+    <line x1="1520" y1="506" x2="1390" y2="506"/>
+    <line x1="1520" y1="542" x2="1430" y2="542"/>
+  </g>
+
+  <!-- Dot grid — top left -->
+  <g fill="rgba(52,160,140,0.22)">
+    <circle cx="80"  cy="72"  r="2.5"/><circle cx="120" cy="72"  r="2.5"/><circle cx="160" cy="72"  r="2.5"/>
+    <circle cx="80"  cy="108" r="2.5"/><circle cx="120" cy="108" r="2.5"/><circle cx="160" cy="108" r="2"/>
+    <circle cx="80"  cy="144" r="2"/><circle cx="120" cy="144" r="2"/>
+  </g>
+
+  <!-- Dot grid — bottom right -->
+  <g fill="rgba(52,160,140,0.16)">
+    <circle cx="1440" cy="830" r="2"/><circle cx="1480" cy="830" r="2"/><circle cx="1520" cy="830" r="2"/>
+    <circle cx="1440" cy="860" r="2"/><circle cx="1480" cy="860" r="2"/>
+  </g>
+
+  <!-- Corner brackets -->
+  <path d="M 44,44 L 44,88 L 80,88" stroke="rgba(52,160,140,0.28)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 1556,44 L 1556,88 L 1520,88" stroke="rgba(52,160,140,0.22)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 44,856 L 44,812 L 80,812" stroke="rgba(52,160,140,0.18)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+
+  <!-- Base rule -->
+  <line x1="0" y1="878" x2="1600" y2="878" stroke="rgba(52,160,140,0.12)" stroke-width="1"/>
+</svg>

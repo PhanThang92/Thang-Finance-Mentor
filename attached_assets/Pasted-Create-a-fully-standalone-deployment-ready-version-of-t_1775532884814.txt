@@ -1,0 +1,78 @@
+Create a fully standalone, deployment-ready version of the target website from this Replit project so it can be pushed to GitHub and deployed on another hosting platform without missing files or missing dependencies.
+
+Important context:
+This project may currently be part of a pnpm monorepo/workspace, and my hosting provider reported that many packages/files are missing when deploying from GitHub because the target site still depends on root/shared workspace structure.
+
+Goal:
+Prepare ONE complete standalone website app with everything needed for GitHub deployment on another hosting platform.
+
+Your tasks:
+
+1. Identify the target website app I want to deploy.
+2. Extract that website into a standalone folder, for example:
+- /deploy-ready
+or
+- /standalone-site
+
+3. Make sure this standalone folder contains everything required for deployment:
+- all source code for this website
+- all components used by this website
+- all pages/routes used by this website
+- all public/static assets used by this website
+- all styles, configs, utils, hooks, libs, and shared files required by this website
+- all build-related config files required by this website
+
+4. Remove dependency on pnpm monorepo/workspace root behavior:
+- no hidden dependency on root workspace packages
+- no missing shared package resolution
+- no dependency on unrelated apps in the monorepo
+
+5. Ensure all required npm dependencies are declared directly in this standalone app’s own package.json.
+
+6. Convert this standalone app to work with npm only:
+- generate package-lock.json
+- remove pnpm-only dependency assumptions
+- make sure scripts work with npm
+
+7. Verify that from the standalone folder these commands work:
+- npm install
+- npm run build
+- npm run start
+or clearly report if a different start command is required
+
+8. Include all necessary deployment files/configs if relevant:
+- package.json
+- package-lock.json
+- next.config / vite.config / tsconfig / postcss / tailwind config / etc. if used
+- public assets
+- server files if needed
+- .gitignore
+- .env.example (do NOT expose secrets, only example keys)
+
+9. Do NOT include unnecessary or harmful files in GitHub:
+- do not include node_modules
+- do not include private secrets
+- do not include unrelated apps from the monorepo
+- do not include temporary Replit-only files unless truly required
+
+10. Create a DEPLOY_NOTES.md file inside the standalone folder that explains:
+- what folder should be pushed to GitHub
+- Node.js version recommended
+- install command
+- build command
+- start command
+- required environment variables
+- whether this app requires Node server hosting or can be deployed as static output
+- any remaining limitations
+
+11. At the end, report clearly:
+- which folder is the final standalone deployment folder
+- which files/configs were added or copied
+- which dependencies were added to package.json
+- what was previously missing
+- whether the app is now safe to push to GitHub for external deployment
+
+Important:
+Do not just copy everything blindly.
+Create a clean, correct, standalone deployable project for the target website.
+Preserve current website functionality as much as possible.

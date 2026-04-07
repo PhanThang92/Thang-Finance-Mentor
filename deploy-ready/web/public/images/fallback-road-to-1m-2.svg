@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0b2320"/>
+      <stop offset="52%" stop-color="#081a17"/>
+      <stop offset="100%" stop-color="#050e0c"/>
+    </linearGradient>
+    <radialGradient id="glow-peak" cx="75%" cy="22%" r="30%">
+      <stop offset="0%" stop-color="#2ab39e" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#2ab39e" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-bottom" cx="14%" cy="88%" r="22%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="step-fill" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#22917f" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0.28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#glow-peak)"/>
+  <rect width="1600" height="900" fill="url(#glow-bottom)"/>
+
+  <!-- Structural background grid -->
+  <g stroke="rgba(52,160,140,0.032)" stroke-width="1">
+    <line x1="0" y1="180" x2="1600" y2="180"/>
+    <line x1="0" y1="360" x2="1600" y2="360"/>
+    <line x1="0" y1="540" x2="1600" y2="540"/>
+    <line x1="0" y1="720" x2="1600" y2="720"/>
+  </g>
+  <g stroke="rgba(52,160,140,0.024)" stroke-width="1">
+    <line x1="266"  y1="0" x2="266"  y2="900"/>
+    <line x1="532"  y1="0" x2="532"  y2="900"/>
+    <line x1="798"  y1="0" x2="798"  y2="900"/>
+    <line x1="1064" y1="0" x2="1064" y2="900"/>
+    <line x1="1330" y1="0" x2="1330" y2="900"/>
+  </g>
+
+  <!-- Floor line -->
+  <line x1="110" y1="760" x2="1490" y2="760" stroke="rgba(52,160,140,0.16)" stroke-width="1.5"/>
+  <!-- Left axis -->
+  <line x1="110" y1="150" x2="110" y2="760" stroke="rgba(52,160,140,0.10)" stroke-width="1"/>
+
+  <!-- Horizontal level marks on axis -->
+  <g stroke="rgba(52,160,140,0.18)" stroke-width="1" stroke-linecap="round">
+    <line x1="104" y1="640" x2="116" y2="640"/>
+    <line x1="104" y1="520" x2="116" y2="520"/>
+    <line x1="104" y1="400" x2="116" y2="400"/>
+    <line x1="104" y1="280" x2="116" y2="280"/>
+    <line x1="104" y1="185" x2="116" y2="185"/>
+  </g>
+
+  <!-- Milestone staircase — 6 steps ascending left to right -->
+  <!-- Step 1 (lowest) -->
+  <rect x="150" y="640" width="196" height="120" rx="2" fill="rgba(52,160,140,0.12)"/>
+  <line x1="150" y1="640" x2="346" y2="640" stroke="rgba(52,160,140,0.42)" stroke-width="2"/>
+  <!-- Step 2 -->
+  <rect x="346" y="520" width="196" height="240" rx="2" fill="rgba(52,160,140,0.17)"/>
+  <line x1="346" y1="520" x2="542" y2="520" stroke="rgba(52,160,140,0.52)" stroke-width="2"/>
+  <!-- Step 3 -->
+  <rect x="542" y="400" width="196" height="360" rx="2" fill="rgba(52,160,140,0.22)"/>
+  <line x1="542" y1="400" x2="738" y2="400" stroke="rgba(52,160,140,0.62)" stroke-width="2"/>
+  <!-- Step 4 -->
+  <rect x="738" y="280" width="196" height="480" rx="2" fill="rgba(52,160,140,0.29)"/>
+  <line x1="738" y1="280" x2="934" y2="280" stroke="rgba(52,160,140,0.72)" stroke-width="2.5"/>
+  <!-- Step 5 -->
+  <rect x="934" y="185" width="196" height="575" rx="2" fill="rgba(52,160,140,0.36)"/>
+  <line x1="934" y1="185" x2="1130" y2="185" stroke="rgba(52,160,140,0.82)" stroke-width="2.5"/>
+  <!-- Step 6 — peak -->
+  <rect x="1130" y="110" width="360" height="650" rx="2" fill="rgba(52,160,140,0.44)"/>
+  <line x1="1130" y1="110" x2="1490" y2="110" stroke="rgba(52,160,140,0.95)" stroke-width="3"/>
+
+  <!-- Vertical risers between steps (structural) -->
+  <line x1="346"  y1="520" x2="346"  y2="640" stroke="rgba(52,160,140,0.14)" stroke-width="1"/>
+  <line x1="542"  y1="400" x2="542"  y2="520" stroke="rgba(52,160,140,0.14)" stroke-width="1"/>
+  <line x1="738"  y1="280" x2="738"  y2="400" stroke="rgba(52,160,140,0.14)" stroke-width="1"/>
+  <line x1="934"  y1="185" x2="934"  y2="280" stroke="rgba(52,160,140,0.14)" stroke-width="1"/>
+  <line x1="1130" y1="110" x2="1130" y2="185" stroke="rgba(52,160,140,0.14)" stroke-width="1"/>
+
+  <!-- Diagonal trend line connecting step centers -->
+  <polyline points="248,700 444,580 640,460 836,340 1032,232 1270,160"
+    stroke="rgba(52,160,140,0.28)" stroke-width="2" stroke-dasharray="8 5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Milestone circles on trend line -->
+  <circle cx="248"  cy="700" r="6"  fill="rgba(52,160,140,0.45)"/>
+  <circle cx="248"  cy="700" r="14" fill="rgba(52,160,140,0.09)"/>
+
+  <circle cx="640"  cy="460" r="8"  fill="rgba(52,160,140,0.55)"/>
+  <circle cx="640"  cy="460" r="18" fill="rgba(52,160,140,0.11)"/>
+  <circle cx="640"  cy="460" r="30" fill="rgba(52,160,140,0.04)"/>
+
+  <circle cx="1032" cy="232" r="10" fill="rgba(52,160,140,0.65)"/>
+  <circle cx="1032" cy="232" r="22" fill="rgba(52,160,140,0.13)"/>
+  <circle cx="1032" cy="232" r="38" fill="rgba(52,160,140,0.05)"/>
+
+  <!-- Peak summit accent -->
+  <circle cx="1310" cy="95"  r="36" fill="rgba(52,160,140,0.07)"/>
+  <circle cx="1310" cy="95"  r="18" fill="rgba(52,160,140,0.14)"/>
+  <circle cx="1310" cy="95"  r="8"  fill="rgba(52,160,140,0.70)"/>
+  <circle cx="1310" cy="95"  r="3"  fill="rgba(255,255,255,0.50)"/>
+
+  <!-- Dot grid — top left -->
+  <g fill="rgba(52,160,140,0.22)">
+    <circle cx="80"  cy="72"  r="2.5"/><circle cx="120" cy="72"  r="2.5"/><circle cx="160" cy="72"  r="2.5"/>
+    <circle cx="80"  cy="108" r="2.5"/><circle cx="120" cy="108" r="2.5"/>
+    <circle cx="80"  cy="144" r="2"/>
+  </g>
+
+  <!-- Corner brackets -->
+  <path d="M 44,44 L 44,88 L 80,88" stroke="rgba(52,160,140,0.28)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 1556,44 L 1556,88 L 1520,88" stroke="rgba(52,160,140,0.22)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+
+  <!-- Base rule -->
+  <line x1="0" y1="878" x2="1600" y2="878" stroke="rgba(52,160,140,0.12)" stroke-width="1"/>
+</svg>
