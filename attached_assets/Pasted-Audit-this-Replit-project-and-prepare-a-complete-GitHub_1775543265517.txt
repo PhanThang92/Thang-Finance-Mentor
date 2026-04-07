@@ -1,0 +1,102 @@
+Audit this Replit project and prepare a complete GitHub deployment version for the target website, with full file integrity and no missing required files.
+
+Important context:
+My new hosting already supports pnpm.
+The current problem is NOT package manager support anymore.
+The hosting provider says the deployed project is missing many required files, configs, or shared packages when pushed from GitHub.
+
+Goal:
+Make sure the target website can be pushed to GitHub with ALL required files, configs, shared code, assets, and pnpm workspace files needed for deployment, so the hosting does not report missing files again.
+
+Your tasks:
+
+1. Audit the current project structure
+- detect whether this project is a pnpm monorepo / workspace
+- identify all apps/sites/packages inside the repo
+- identify which app/site is the target website I want to deploy
+- identify which files, packages, configs, assets, and shared modules this target site depends on
+
+2. Check for missing deployment-critical files
+Please verify whether the target site depends on any of these from outside its own folder:
+- shared components
+- shared packages
+- shared utils/libs/hooks
+- root configs
+- workspace configs
+- public/static assets
+- images/fonts/icons
+- environment config references
+- build config files
+- tsconfig / tailwind / postcss / vite / next / eslint / etc.
+- server files if required
+
+3. Prepare a complete deployable GitHub version
+Create a deployment-ready version of the target website that includes EVERYTHING required for successful deployment.
+
+If the target site depends on pnpm workspace structure, do NOT force it into a broken single-folder app.
+Instead, preserve the minimum correct pnpm workspace structure required for deployment.
+
+This deploy-ready version must include:
+- the target app/site
+- all shared packages actually required by that site
+- root package.json if needed
+- pnpm-lock.yaml
+- pnpm-workspace.yaml if needed
+- all required configs
+- all required assets/public files
+- all required source files
+- all required build/runtime files
+
+4. Exclude unnecessary files
+Do NOT include:
+- node_modules
+- temporary cache files
+- unrelated apps/sites not needed for this deployment
+- private secrets
+- local-only Replit junk
+- unused files if clearly unrelated
+
+5. Create a clean deployment folder or branch-ready structure
+For example:
+- /github-deploy-ready
+or another clearly named folder
+
+This folder should contain the exact file structure that is safe to push to GitHub for the target website deployment.
+
+6. Validate deployment completeness
+Check carefully:
+- no required imports point to missing files
+- no required shared packages are omitted
+- no required assets are missing
+- no required config files are missing
+- the pnpm workspace structure is valid if workspace is still needed
+- package.json scripts are correct
+- build/start commands are clear
+
+7. Create deployment documentation
+Create a DEPLOY_NOTES.md file inside the deployment-ready folder that explains:
+- which folder should be pushed to GitHub
+- whether the app is standalone or still requires pnpm workspace structure
+- which files were missing before
+- which shared packages/configs/assets were added
+- install command
+- build command
+- start command
+- Node.js version recommendation
+- required environment variables in .env.example form
+- anything that still needs manual attention
+
+8. Final report
+After finishing, report clearly:
+- whether this project is standalone or pnpm workspace-based
+- which target site was selected
+- which files/configs/shared packages were added to make deployment complete
+- which folder is the final GitHub deployment folder
+- whether this version is now safe to push to GitHub without missing-file issues
+
+Important:
+Do NOT just copy everything blindly.
+Do NOT break the current project.
+Do NOT convert to npm.
+Keep pnpm if that is the correct structure.
+The priority is to create a complete, correct, deployment-ready GitHub version with no missing required files.

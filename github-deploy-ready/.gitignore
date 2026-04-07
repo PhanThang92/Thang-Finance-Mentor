@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+*.tsbuildinfo
+uploads/
+database_export.sql
+*.log
+.cache/
+.config/

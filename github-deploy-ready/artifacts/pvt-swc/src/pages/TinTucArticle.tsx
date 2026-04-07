@@ -1,0 +1,492 @@
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Link, useParams } from "wouter";
+import { motion } from "framer-motion";
+import { newsApi, type NewsPost } from "@/lib/newsApi";
+import { getPostImage, getPostFallbackImage, isFallbackImage, getWatermarkText } from "@/lib/postImage";
+import { trackArticleView } from "@/lib/analytics";
+import { CompactLeadForm } from "@/components/CompactLeadForm";
+import { Prose } from "@/components/Prose";
+import { useSeoMeta, ARTICLE_OG_IMAGE_PATH } from "@/hooks/useSeoMeta";
+
+/* ── motion ────────────────────────────────────────────────────────── */
+const fadeUp = { hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0, transition: { duration: 0.50, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.07 } } };
+
+function fmtDate(iso: string | null) {
+  if (!iso) return "";
+  return new Date(iso).toLocaleDateString("vi-VN", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function readingTime(content: string) {
+  return Math.max(1, Math.ceil(content.split(/\s+/).length / 200));
+}
+
+/* ── Related card ───────────────────────────────────────────────────── */
+function RelatedCard({ post }: { post: NewsPost }) {
+  return (
+    <Link href={`/tin-tuc/${post.category?.slug ?? "bai-viet"}/${post.slug}`} style={{ textDecoration: "none" }}>
+      <div
+        style={{
+          display: "flex", gap: "1rem", alignItems: "flex-start",
+          padding: "1.125rem 1.25rem", borderRadius: "10px",
+          border: "1px solid hsl(var(--border) / 0.70)",
+          background: "hsl(var(--background))", cursor: "pointer",
+          transition: "border-color 0.20s ease, box-shadow 0.20s ease, background 0.20s ease",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = "hsl(var(--primary) / 0.38)";
+          e.currentTarget.style.boxShadow   = "0 4px 20px rgba(10,40,35,0.08)";
+          e.currentTarget.style.background  = "hsl(var(--primary) / 0.02)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = "hsl(var(--border) / 0.70)";
+          e.currentTarget.style.boxShadow   = "none";
+          e.currentTarget.style.background  = "hsl(var(--background))";
+        }}
+      >
+        <div style={{ width: "3px", flexShrink: 0, alignSelf: "stretch", borderRadius: "999px", background: "hsl(var(--primary) / 0.30)", minHeight: "2.5rem" }} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {post.category && (
+            <span style={{
+              fontSize: "9px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase",
+              color: "hsl(var(--primary))", display: "block", marginBottom: "0.35rem",
+            }}>
+              {post.category.name}
+            </span>
+          )}
+          <p style={{
+            fontSize: "14px", fontWeight: 600, lineHeight: 1.38,
+            color: "hsl(var(--foreground))", margin: "0 0 0.375rem",
+            overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+          }}>
+            {post.title}
+          </p>
+          <p style={{ fontSize: "11.5px", color: "hsl(var(--foreground) / 0.36)", margin: 0 }}>
+            {fmtDate(post.publishedAt)}
+          </p>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+/* ── Page ───────────────────────────────────────────────────────────── */
+export default function TinTucArticle() {
+  const { slug } = useParams<{ slug: string }>();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["post", slug],
+    queryFn:  () => newsApi.getPost(slug!),
+    enabled:  !!slug,
+  });
+
+  useEffect(() => {
+    if (slug) trackArticleView(slug);
+  }, [slug]);
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [slug]);
+
+  // Track whether the hero image failed to load — must be declared before early returns
+  const [imgFailed, setImgFailed] = useState(false);
+
+  /* ── SEO / OG meta — called unconditionally before early returns ── */
+  const post_ = data?.post;
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  useSeoMeta({
+    title:       post_?.seoTitle ?? post_?.title,
+    description: post_?.seoDescription ?? post_?.excerpt ?? undefined,
+    ogType:      "article",
+    ogImage:     post_?.featuredImageDisplay ?? post_?.featuredImage ?? undefined,
+    publishedAt: post_?.publishedAt ?? undefined,
+    modifiedAt:  post_?.updatedAt ?? undefined,
+    author:      post_?.authorName ?? "Phan Văn Thắng",
+    canonicalUrl: post_?.slug ? `${origin}/tin-tuc/${post_?.category?.slug ?? "bai-viet"}/${post_.slug}` : undefined,
+    structuredData: post_ ? {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": post_.seoTitle ?? post_.title,
+      "description": post_.seoDescription ?? post_.excerpt ?? "",
+      "image": post_.featuredImageDisplay
+        ? (post_.featuredImageDisplay.startsWith("http") ? post_.featuredImageDisplay : `${origin}${post_.featuredImageDisplay}`)
+        : `${origin}/opengraph.jpg`,
+      "datePublished": post_.publishedAt ?? post_.createdAt,
+      "dateModified":  post_.updatedAt ?? post_.publishedAt ?? post_.createdAt,
+      "author": { "@type": "Person", "name": post_.authorName ?? "Phan Văn Thắng", "url": origin },
+      "publisher": { "@type": "Organization", "name": "Phan Văn Thắng SWC", "url": origin },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": `${origin}/tin-tuc/${post_.category?.slug ?? "bai-viet"}/${post_.slug}` },
+    } : undefined,
+  });
+
+  /* ── Loading ── */
+  if (isLoading) {
+    return (
+      <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: "2px solid hsl(var(--primary) / 0.20)", borderTopColor: "hsl(var(--primary))", animation: "spin 0.8s linear infinite", margin: "0 auto 1rem" }} />
+          <p style={{ fontSize: "13px", color: "hsl(var(--foreground) / 0.35)" }}>Đang tải bài viết...</p>
+        </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  /* ── Error ── */
+  if (isError || !data?.post) {
+    return (
+      <div style={{ minHeight: "60vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1.25rem" }}>
+        <p style={{ fontSize: "15px", color: "hsl(var(--foreground) / 0.42)" }}>Không tìm thấy bài viết.</p>
+        <Link href="/tin-tuc" style={{ fontSize: "13px", color: "hsl(var(--primary))", textDecoration: "none", fontWeight: 500 }}>← Quay lại Tin tức</Link>
+      </div>
+    );
+  }
+
+  const { post, related } = data;
+  const isFallback = imgFailed || isFallbackImage(post);
+  const imgSrc     = isFallback ? getPostFallbackImage(post) : getPostImage(post);
+  const mins       = post.content ? readingTime(post.content) : 0;
+
+  return (
+    <div style={{ minHeight: "100vh", background: "hsl(var(--background))" }}>
+
+      {/* ══════════════════════════════════════════════════════════════
+          ARTICLE HEADER
+      ══════════════════════════════════════════════════════════════ */}
+      <section style={{
+        paddingTop:    "clamp(4.5rem, 9vw, 6rem)",
+        paddingBottom: "2.75rem",
+        background: "linear-gradient(160deg, hsl(var(--primary) / 0.042) 0%, hsl(var(--background)) 55%)",
+        borderBottom: "1px solid hsl(var(--border) / 0.35)",
+      }}>
+        <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
+          <motion.div initial="hidden" animate="visible" variants={stagger}>
+
+            {/* Breadcrumb */}
+            <motion.nav variants={fadeUp} aria-label="Breadcrumb" style={{
+              display: "flex", gap: "0.4rem", alignItems: "center",
+              marginBottom: "1.75rem", fontSize: "12px",
+            }}>
+              <Link href="/tin-tuc" style={{
+                color: "hsl(var(--primary))", textDecoration: "none", fontWeight: 500,
+                transition: "opacity 0.16s ease",
+              }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.72")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+              >
+                Tin tức
+              </Link>
+              <span style={{ color: "hsl(var(--foreground) / 0.22)", fontSize: "10px" }}>›</span>
+              {post.category && (
+                <>
+                  <Link href={`/tin-tuc/${post.category.slug}`} style={{
+                    color: "hsl(var(--foreground) / 0.50)", textDecoration: "none",
+                    transition: "color 0.16s ease",
+                  }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "hsl(var(--foreground) / 0.75)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "hsl(var(--foreground) / 0.50)")}
+                  >
+                    {post.category.name}
+                  </Link>
+                  <span style={{ color: "hsl(var(--foreground) / 0.22)", fontSize: "10px" }}>›</span>
+                </>
+              )}
+              <span style={{
+                color: "hsl(var(--foreground) / 0.38)", fontWeight: 400,
+                maxWidth: "220px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+              }}>
+                {post.title.length > 42 ? post.title.slice(0, 42) + "…" : post.title}
+              </span>
+            </motion.nav>
+
+            {/* Category + product badges */}
+            <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1.25rem" }}>
+              {post.category && (
+                <span style={{
+                  fontSize: "9px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase",
+                  color: "hsl(var(--primary))", background: "hsl(var(--primary) / 0.10)",
+                  padding: "4px 11px", borderRadius: "999px",
+                  border: "1px solid hsl(var(--primary) / 0.22)",
+                }}>
+                  {post.category.name}
+                </span>
+              )}
+              {post.product && (
+                <span style={{
+                  fontSize: "9px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase",
+                  color: "hsl(var(--foreground) / 0.46)", background: "hsl(var(--muted))",
+                  padding: "4px 11px", borderRadius: "999px",
+                  border: "1px solid hsl(var(--border) / 0.60)",
+                }}>
+                  {post.product.name}
+                </span>
+              )}
+            </motion.div>
+
+            {/* Title */}
+            <motion.h1 variants={fadeUp} style={{
+              fontSize: "clamp(1.75rem, 4.5vw, 2.7rem)", fontWeight: 800,
+              lineHeight: 1.14, letterSpacing: "-0.020em",
+              color: "hsl(var(--foreground))", margin: "0 0 1.25rem",
+            }}>
+              {post.title}
+            </motion.h1>
+
+            {/* Excerpt */}
+            {post.excerpt && (
+              <motion.p variants={fadeUp} style={{
+                fontSize: "clamp(15px, 2.2vw, 17px)", lineHeight: 1.80, fontWeight: 300,
+                color: "hsl(var(--foreground) / 0.58)",
+                margin: "0 0 1.75rem",
+                paddingLeft: "1rem",
+                borderLeft: "2.5px solid hsl(var(--primary) / 0.28)",
+              }}>
+                {post.excerpt}
+              </motion.p>
+            )}
+
+            {/* Author row */}
+            <motion.div variants={fadeUp} style={{
+              display: "flex", alignItems: "center", gap: "0.875rem",
+              paddingTop: "1.25rem",
+              borderTop: "1px solid hsl(var(--border) / 0.42)",
+            }}>
+              <div style={{
+                width: "38px", height: "38px", borderRadius: "50%", flexShrink: 0,
+                background: "hsl(var(--primary) / 0.12)",
+                border: "1.5px solid hsl(var(--primary) / 0.22)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <span style={{ fontSize: "14px", fontWeight: 700, color: "hsl(var(--primary))" }}>
+                  {(post.authorName ?? "T")[0]}
+                </span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
+                <span style={{ fontSize: "13px", fontWeight: 600, color: "hsl(var(--foreground) / 0.88)", lineHeight: 1.3 }}>
+                  {post.authorName}
+                </span>
+                <span style={{ fontSize: "11.5px", color: "hsl(var(--foreground) / 0.38)", lineHeight: 1.3 }}>
+                  {fmtDate(post.publishedAt)}
+                </span>
+              </div>
+              {mins > 0 && (
+                <span style={{
+                  marginLeft: "auto", fontSize: "11.5px", color: "hsl(var(--foreground) / 0.28)",
+                  display: "flex", alignItems: "center", gap: "4px",
+                }}>
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" strokeWidth="1.2"/>
+                    <path d="M5.5 3.5V5.5l1.5 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+                  </svg>
+                  {mins} phút đọc
+                </span>
+              )}
+            </motion.div>
+
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════
+          FEATURED IMAGE
+      ══════════════════════════════════════════════════════════════ */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.18 }}
+        style={{ maxWidth: isFallback ? "920px" : "700px", margin: "2.75rem auto 0", padding: "0 1.5rem" }}
+      >
+        <div style={{
+          borderRadius: "12px", overflow: "hidden",
+          background: isFallback ? "#091e1b" : "hsl(var(--muted) / 0.40)",
+          boxShadow: isFallback
+            ? "0 2px 28px rgba(0,0,0,0.22)"
+            : "0 2px 18px rgba(10,40,35,0.08), 0 0 0 1px hsl(var(--border) / 0.35)",
+          aspectRatio: "16/9", position: "relative",
+        }}>
+          <img
+            src={imgSrc} alt={post.title}
+            onError={() => setImgFailed(true)}
+            style={{
+              width: "100%", height: "100%", display: "block",
+              objectFit: "cover",
+              filter: isFallback ? "none" : "brightness(0.98) contrast(1.01) saturate(0.98)",
+            }}
+          />
+          {isFallback && (
+            <div style={{
+              position: "absolute", bottom: 0, right: 0,
+              padding: "0.45rem 0.875rem",
+              background: "rgba(5,22,19,0.75)",
+              borderTop: "1px solid rgba(52,160,140,0.18)",
+              borderLeft: "1px solid rgba(52,160,140,0.18)",
+              fontSize: "10px", fontWeight: 600, letterSpacing: "0.12em",
+              color: "rgba(52,160,140,0.80)", textTransform: "uppercase", pointerEvents: "none",
+            }}>
+              {getWatermarkText(post)}
+            </div>
+          )}
+        </div>
+      </motion.div>
+
+      {/* ══════════════════════════════════════════════════════════════
+          ARTICLE BODY
+      ══════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "3rem 0 5rem" }}>
+        <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
+
+          {post.content
+            ? <Prose content={post.content} />
+            : <p style={{ color: "hsl(var(--foreground) / 0.32)", fontStyle: "italic", fontSize: "15px" }}>Nội dung đang được cập nhật.</p>
+          }
+
+          {/* ── Tags ── */}
+          {(post.tags ?? []).length > 0 && (
+            <div style={{ marginTop: "3.5rem", paddingTop: "1.75rem", borderTop: "1px solid hsl(var(--border) / 0.42)" }}>
+              <p style={{
+                fontSize: "10px", fontWeight: 700, letterSpacing: "0.15em",
+                textTransform: "uppercase", color: "hsl(var(--foreground) / 0.30)",
+                marginBottom: "0.75rem",
+              }}>
+                Chủ đề
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                {(post.tags ?? []).map((t) => (
+                  <Link key={t.slug} href={`/tin-tuc/tag/${t.slug}`}
+                    style={{
+                      fontSize: "12px", fontWeight: 500,
+                      color: "hsl(var(--primary) / 0.88)",
+                      background: "hsl(var(--primary) / 0.07)",
+                      padding: "5px 13px", borderRadius: "999px",
+                      border: "1px solid hsl(var(--primary) / 0.18)",
+                      textDecoration: "none",
+                      transition: "background 0.16s ease, border-color 0.16s ease, color 0.16s ease",
+                      display: "inline-block",
+                    }}
+                    onMouseEnter={(e) => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.background  = "hsl(var(--primary) / 0.13)";
+                      el.style.borderColor = "hsl(var(--primary) / 0.35)";
+                      el.style.color       = "hsl(var(--primary))";
+                    }}
+                    onMouseLeave={(e) => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.background  = "hsl(var(--primary) / 0.07)";
+                      el.style.borderColor = "hsl(var(--primary) / 0.18)";
+                      el.style.color       = "hsl(var(--primary) / 0.88)";
+                    }}
+                  >
+                    #{t.slug}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Author card ── */}
+          <div style={{
+            marginTop: "3rem",
+            padding: "1.375rem 1.5rem",
+            borderRadius: "10px",
+            border: "1px solid hsl(var(--border) / 0.45)",
+            background: "hsl(var(--primary) / 0.025)",
+            display: "flex", gap: "1.125rem", alignItems: "flex-start",
+          }}>
+            <div style={{
+              width: "44px", height: "44px", borderRadius: "50%", flexShrink: 0,
+              background: "hsl(var(--primary) / 0.14)",
+              border: "1.5px solid hsl(var(--primary) / 0.24)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <span style={{ fontSize: "16px", fontWeight: 700, color: "hsl(var(--primary))" }}>
+                {(post.authorName ?? "T")[0]}
+              </span>
+            </div>
+            <div>
+              <p style={{ fontSize: "13px", fontWeight: 600, color: "hsl(var(--foreground) / 0.88)", margin: "0 0 0.25rem", lineHeight: 1.3 }}>
+                {post.authorName ?? "Phan Văn Thắng"}
+              </p>
+              <p style={{ fontSize: "12px", lineHeight: 1.68, color: "hsl(var(--foreground) / 0.44)", margin: 0, fontStyle: "italic" }}>
+                Mentor tài chính dài hạn. Chia sẻ kiến thức về tư duy tích sản, đầu tư và phát triển bản thân.
+              </p>
+            </div>
+          </div>
+
+          {/* ── Back link ── */}
+          <div style={{ marginTop: "2.5rem" }}>
+            <Link href="/tin-tuc"
+              style={{
+                fontSize: "13px", fontWeight: 500,
+                color: "hsl(var(--foreground) / 0.48)",
+                textDecoration: "none",
+                display: "inline-flex", alignItems: "center", gap: "0.5rem",
+                padding: "7px 16px 7px 12px",
+                border: "1px solid hsl(var(--border) / 0.52)",
+                borderRadius: "999px",
+                transition: "color 0.18s ease, border-color 0.18s ease, background 0.18s ease",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.color       = "hsl(var(--foreground) / 0.78)";
+                el.style.borderColor = "hsl(var(--border))";
+                el.style.background  = "hsl(var(--muted) / 0.50)";
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.color       = "hsl(var(--foreground) / 0.48)";
+                el.style.borderColor = "hsl(var(--border) / 0.52)";
+                el.style.background  = "transparent";
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Quay lại Tin tức
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════
+          RELATED ARTICLES
+      ══════════════════════════════════════════════════════════════ */}
+      {related.length > 0 && (
+        <section style={{
+          padding: "3rem 0 5rem",
+          borderTop: "1px solid hsl(var(--border) / 0.38)",
+          background: "hsl(var(--muted) / 0.26)",
+        }}>
+          <div style={{ maxWidth: "700px", margin: "0 auto", padding: "0 1.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1.5rem" }}>
+              <div style={{ width: "1.5rem", height: "1.5px", background: "hsl(var(--primary) / 0.48)", borderRadius: "999px" }} />
+              <p style={{
+                fontSize: "10px", fontWeight: 700, letterSpacing: "0.16em",
+                textTransform: "uppercase", color: "hsl(var(--foreground) / 0.34)", margin: 0,
+              }}>
+                Có thể anh/chị quan tâm
+              </p>
+            </div>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: related.length > 1 ? "repeat(auto-fit, minmax(260px, 1fr))" : "1fr",
+              gap: "0.75rem",
+            }}>
+              {related.map((p) => <RelatedCard key={p.slug} post={p} />)}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════
+          LEAD CAPTURE
+      ══════════════════════════════════════════════════════════════ */}
+      <CompactLeadForm
+        title="Nhận thêm nội dung phù hợp"
+        description="Để lại thông tin để nhận những bài viết và chia sẻ mới phù hợp với mối quan tâm của anh/chị."
+        sourceType="tin-tuc"
+        sourcePage={`/tin-tuc/${slug ?? ""}`}
+        formType="email-capture"
+        articleSlug={slug}
+        articleTitle={post?.title}
+        buttonLabel="Đăng ký nhận nội dung"
+      />
+    </div>
+  );
+}

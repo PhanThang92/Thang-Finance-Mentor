@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0b2320"/>
+      <stop offset="55%" stop-color="#081a17"/>
+      <stop offset="100%" stop-color="#050e0c"/>
+    </linearGradient>
+    <radialGradient id="glow-summit" cx="76%" cy="20%" r="28%">
+      <stop offset="0%" stop-color="#2ab39e" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#2ab39e" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-base" cx="12%" cy="88%" r="26%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.09"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="path-fill" x1="0" y1="0" x2="0" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.09"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#glow-summit)"/>
+  <rect width="1600" height="900" fill="url(#glow-base)"/>
+
+  <!-- Fine structural grid -->
+  <g stroke="rgba(52,160,140,0.035)" stroke-width="1">
+    <line x1="0" y1="200" x2="1600" y2="200"/>
+    <line x1="0" y1="400" x2="1600" y2="400"/>
+    <line x1="0" y1="600" x2="1600" y2="600"/>
+    <line x1="0" y1="760" x2="1600" y2="760"/>
+  </g>
+  <g stroke="rgba(52,160,140,0.026)" stroke-width="1">
+    <line x1="320"  y1="0" x2="320"  y2="900"/>
+    <line x1="640"  y1="0" x2="640"  y2="900"/>
+    <line x1="960"  y1="0" x2="960"  y2="900"/>
+    <line x1="1280" y1="0" x2="1280" y2="900"/>
+  </g>
+
+  <!-- Horizon / baseline -->
+  <line x1="80" y1="760" x2="1540" y2="760" stroke="rgba(52,160,140,0.18)" stroke-width="1.5"/>
+
+  <!-- Mountain silhouettes — layered depth (back to front) -->
+  <!-- Far background ridge (faintest) -->
+  <polygon points="0,760 300,560 500,640 700,420 900,540 1100,350 1300,480 1600,360 1600,760"
+    fill="rgba(52,160,140,0.04)"/>
+
+  <!-- Mid ridge -->
+  <polygon points="0,760 200,620 450,680 650,480 850,580 1050,400 1250,520 1500,380 1600,440 1600,760"
+    fill="rgba(52,160,140,0.065)"/>
+
+  <!-- Primary mountain — main ascending journey shape -->
+  <polygon points="80,760 260,700 480,720 660,600 800,640 940,480 1080,530 1200,400 1320,460 1420,300 1520,340 1540,760"
+    fill="rgba(52,160,140,0.09)"/>
+
+  <!-- Summit peak (tallest, with glow) -->
+  <!-- Abstract peak triangle -->
+  <polygon points="1170,760 1310,195 1450,760" fill="rgba(52,160,140,0.12)"/>
+  <polygon points="1235,760 1310,270 1385,760" fill="rgba(52,160,140,0.10)"/>
+  <!-- Peak edge highlights -->
+  <line x1="1310" y1="195" x2="1170" y2="760" stroke="rgba(52,160,140,0.22)" stroke-width="1.5"/>
+  <line x1="1310" y1="195" x2="1450" y2="760" stroke="rgba(52,160,140,0.22)" stroke-width="1.5"/>
+  <!-- Summit circle glow -->
+  <circle cx="1310" cy="188" r="50" fill="rgba(52,160,140,0.06)"/>
+  <circle cx="1310" cy="188" r="28" fill="rgba(52,160,140,0.10)"/>
+  <circle cx="1310" cy="188" r="12" fill="rgba(52,160,140,0.65)"/>
+  <circle cx="1310" cy="188" r="5"  fill="rgba(255,255,255,0.45)"/>
+
+  <!-- Ascending journey path (dashed) -->
+  <path d="M 140,748 C 280,730 380,720 500,700 C 620,678 700,660 820,630 C 940,598 1020,572 1120,530 C 1200,496 1260,455 1310,410"
+    stroke="rgba(52,160,140,0.30)" stroke-width="2" stroke-dasharray="8 6" stroke-linecap="round"/>
+
+  <!-- Milestone markers on path -->
+  <circle cx="320"  cy="736" r="6"  fill="rgba(52,160,140,0.45)"/>
+  <circle cx="320"  cy="736" r="14" fill="rgba(52,160,140,0.10)"/>
+
+  <circle cx="600"  cy="690" r="8"  fill="rgba(52,160,140,0.52)"/>
+  <circle cx="600"  cy="690" r="18" fill="rgba(52,160,140,0.11)"/>
+  <circle cx="600"  cy="690" r="30" fill="rgba(52,160,140,0.04)"/>
+
+  <circle cx="900"  cy="618" r="10" fill="rgba(52,160,140,0.60)"/>
+  <circle cx="900"  cy="618" r="22" fill="rgba(52,160,140,0.12)"/>
+  <circle cx="900"  cy="618" r="38" fill="rgba(52,160,140,0.04)"/>
+
+  <circle cx="1140" cy="540" r="9"  fill="rgba(52,160,140,0.58)"/>
+  <circle cx="1140" cy="540" r="20" fill="rgba(52,160,140,0.12)"/>
+
+  <!-- Atmosphere lines (horizontal, faint — depth/altitude) -->
+  <g stroke="rgba(52,160,140,0.06)" stroke-width="1">
+    <line x1="900" y1="320" x2="1540" y2="320"/>
+    <line x1="800" y1="380" x2="1540" y2="380"/>
+    <line x1="700" y1="440" x2="1540" y2="440"/>
+  </g>
+
+  <!-- Left structural anchor -->
+  <g stroke="rgba(52,160,140,0.18)" stroke-width="1" stroke-linecap="round">
+    <line x1="80"  y1="330" x2="280" y2="330"/>
+    <line x1="80"  y1="365" x2="220" y2="365"/>
+    <line x1="80"  y1="400" x2="165" y2="400"/>
+  </g>
+  <circle cx="80" cy="330" r="4" fill="rgba(52,160,140,0.55)"/>
+
+  <!-- Dot grid — top left -->
+  <g fill="rgba(52,160,140,0.22)">
+    <circle cx="80"  cy="72"  r="2.5"/><circle cx="120" cy="72"  r="2.5"/><circle cx="160" cy="72"  r="2.5"/>
+    <circle cx="80"  cy="108" r="2.5"/><circle cx="120" cy="108" r="2.5"/><circle cx="160" cy="108" r="2"/>
+    <circle cx="80"  cy="144" r="2"/><circle cx="120" cy="144" r="2"/>
+  </g>
+
+  <!-- Dot grid — bottom right -->
+  <g fill="rgba(52,160,140,0.14)">
+    <circle cx="1440" cy="820" r="2"/><circle cx="1480" cy="820" r="2"/><circle cx="1520" cy="820" r="2"/>
+    <circle cx="1440" cy="850" r="2"/><circle cx="1480" cy="850" r="2"/>
+  </g>
+
+  <!-- Corner brackets -->
+  <path d="M 44,44 L 44,88 L 80,88" stroke="rgba(52,160,140,0.28)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 1556,44 L 1556,88 L 1520,88" stroke="rgba(52,160,140,0.22)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 44,856 L 44,812 L 80,812" stroke="rgba(52,160,140,0.18)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+
+  <!-- Base rule -->
+  <line x1="0" y1="878" x2="1600" y2="878" stroke="rgba(52,160,140,0.12)" stroke-width="1"/>
+</svg>
