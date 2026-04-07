@@ -40,9 +40,7 @@ const PUBLIC_PREFIX = "/api/uploads";
 class ReplitObjectStorageProvider implements StorageProvider {
   async save(buffer: Buffer, relativePath: string, mimeType?: string): Promise<string> {
     const objectName = `${OBJECT_PREFIX}/${relativePath.replace(/^\//, "")}`;
-    const result = await objClient.uploadFromBytes(objectName, buffer, {
-      contentType: mimeType ?? mimeTypeForPath(relativePath),
-    });
+    const result = await objClient.uploadFromBytes(objectName, buffer);
     if (!result.ok) {
       throw new Error(`Object storage save failed: ${result.error?.message ?? "unknown"}`);
     }

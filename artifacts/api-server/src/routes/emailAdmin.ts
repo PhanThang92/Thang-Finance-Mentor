@@ -158,7 +158,7 @@ router.patch("/subscribers/:id", async (req, res) => {
     if (interestPrimary !== undefined) update["interestPrimary"] = interestPrimary || null;
     if (sourceType     !== undefined) update["sourceType"]     = sourceType || null;
     const [updated] = await db.update(emailSubscribersTable)
-      .set(update as Parameters<typeof db.update>[0])
+      .set(update as any)
       .where(eq(emailSubscribersTable.id, id)).returning();
     res.json({ subscriber: updated });
   } catch (e) { res.status(500).json({ error: String(e) }); }

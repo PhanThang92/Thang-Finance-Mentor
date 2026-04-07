@@ -325,7 +325,7 @@ router.post("/posts", async (req, res) => {
     const fields = pickPostFields(body);
     const now = new Date();
     const publishedAt = fields.status === "published" ? now : (body.publishedAt ? new Date(body.publishedAt as string) : null);
-    const [post] = await db.insert(newsPostsTable).values({ ...fields, publishedAt, createdAt: now, updatedAt: now }).returning();
+    const [post] = await db.insert(newsPostsTable).values({ ...fields, publishedAt, createdAt: now, updatedAt: now } as any).returning();
     if (Array.isArray(tagIds) && tagIds.length) {
       await db.insert(newsPostTagsTable).values(tagIds.map((tid: number) => ({ postId: post.id, tagId: tid }))).onConflictDoNothing();
     }
@@ -524,7 +524,7 @@ router.post("/articles", async (req, res) => {
       ...pickArticleFields(body),
       publishDate,
       createdAt: now, updatedAt: now,
-    }).returning();
+    } as any).returning();
     res.json({ article });
   } catch (e) {
     if (isSlugConflict(e)) { res.status(409).json({ error: `Đường dẫn tĩnh "${String((req.body as Record<string, unknown>).slug)}" đã tồn tại. Vui lòng chọn đường dẫn khác.` }); return; }
@@ -665,7 +665,7 @@ router.post("/videos", async (req, res) => {
       youtubeVideoId,
       publishDate,
       createdAt: now, updatedAt: now,
-    }).returning();
+    } as any).returning();
     res.json({ video });
   } catch (e) {
     if (isSlugConflict(e)) { res.status(409).json({ error: `Đường dẫn tĩnh "${String((req.body as Record<string, unknown>).slug)}" đã tồn tại. Vui lòng chọn đường dẫn khác.` }); return; }
@@ -769,7 +769,7 @@ router.post("/topics", async (req, res) => {
     const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
     const now = new Date();
     const [topic] = await db.insert(topicsTable).values({
-      ...pickTopicFields(body) as never,
+      ...(pickTopicFields(body) as any),
       createdAt: now, updatedAt: now,
     }).returning();
     res.json({ topic });
@@ -782,7 +782,7 @@ router.put("/topics/:id", async (req, res) => {
     const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
     const now = new Date();
     const [topic] = await db.update(topicsTable).set({
-      ...pickTopicFields(body) as never,
+      ...(pickTopicFields(body) as any),
       updatedAt: now,
     }).where(eq(topicsTable.id, id)).returning();
     if (!topic) { res.status(404).json({ error: "Not found" }); return; }
@@ -836,7 +836,7 @@ router.post("/series", async (req, res) => {
     const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
     const now = new Date();
     const [series] = await db.insert(seriesTable).values({
-      ...pickSeriesFields(body) as never,
+      ...(pickSeriesFields(body) as any),
       createdAt: now, updatedAt: now,
     }).returning();
     res.json({ series });
@@ -849,7 +849,7 @@ router.put("/series/:id", async (req, res) => {
     const { id: _id, createdAt: _c, updatedAt: _u, ...body } = req.body;
     const now = new Date();
     const [series] = await db.update(seriesTable).set({
-      ...pickSeriesFields(body) as never,
+      ...(pickSeriesFields(body) as any),
       updatedAt: now,
     }).where(eq(seriesTable.id, id)).returning();
     if (!series) { res.status(404).json({ error: "Not found" }); return; }

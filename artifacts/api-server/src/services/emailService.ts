@@ -153,7 +153,7 @@ export async function sendTestEmail(opts: {
     subject:        `[TEST] ${opts.subject}`,
     previewText:    "Đây là email thử nghiệm từ admin.",
     contentBody:    opts.contentBody,
-    unsubscribeUrl: null,
+    unsubscribeUrl: "",
   });
 
   return sendEmail({ to: opts.to, subject: `[TEST] ${opts.subject}`, html });

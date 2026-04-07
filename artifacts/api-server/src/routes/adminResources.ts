@@ -183,7 +183,7 @@ router.put("/:id", async (req, res) => {
     // Slugify if slug is being updated
     if (patch.slug) patch.slug = String(patch.slug).trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
-    await db.update(leadMagnetsTable).set(patch as Parameters<typeof db.update>[0]["set"]).where(eq(leadMagnetsTable.id, id));
+    await db.update(leadMagnetsTable).set(patch as any).where(eq(leadMagnetsTable.id, id));
 
     const [updated] = await db.select().from(leadMagnetsTable).where(eq(leadMagnetsTable.id, id)).limit(1);
     res.json({ resource: updated });
@@ -239,9 +239,10 @@ router.get("/:id/analytics", async (req, res) => {
     for (const row of eventRows) counts[row.accessType] = Number(row.c);
 
     // Unique emails
-    const [uniqueEmails] = await db.execute<{ c: string }>(
+    const uniqueEmailsResult = await db.execute<{ c: string }>(
       sql`SELECT COUNT(DISTINCT email) AS c FROM resource_access_events WHERE resource_id = ${id} AND email IS NOT NULL`
     );
+    const uniqueEmails = uniqueEmailsResult.rows[0];
 
     // Recent 10 events
     const recent = await db

@@ -177,7 +177,7 @@ async function processEnrollment(
     const allowedFields = ["stage", "interestPrimary", "sourceType"];
     if (allowedFields.includes(currentStepObj.updateField)) {
       await db.update(emailSubscribersTable)
-        .set({ [currentStepObj.updateField]: currentStepObj.updateValue || null, updatedAt: now } as Parameters<typeof db.update>[0])
+        .set({ [currentStepObj.updateField]: currentStepObj.updateValue || null, updatedAt: now } as any)
         .where(eq(emailSubscribersTable.id, subscriber.id));
     }
     await advanceToNextStep(enrollmentId, steps, currentStepObj.stepOrder, now);
