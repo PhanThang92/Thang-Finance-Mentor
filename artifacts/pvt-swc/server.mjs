@@ -8,6 +8,7 @@
  * (Facebook, Zalo, LinkedIn, etc.) receive pre-populated Open Graph metadata.
  */
 
+import { config as dotenvConfig } from "dotenv";
 import http from "http";
 import fs   from "fs";
 import path from "path";
@@ -15,8 +16,13 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const PORT     = process.env.PORT ?? 3000;
-const API_PORT = process.env.API_PORT ?? 8080;
+// Load root .env (2 levels up from artifacts/pvt-swc/)
+dotenvConfig({ path: path.resolve(__dirname, "../../.env") });
+// Fallback: .env in current working directory
+dotenvConfig({ path: path.resolve(process.cwd(), ".env") });
+
+const PORT     = Number(process.env.WEB_PORT ?? process.env.PORT ?? 3000);
+const API_PORT = Number(process.env.API_PORT ?? 8080);
 const API_BASE = `http://localhost:${API_PORT}`;
 const DIST_DIR = path.join(__dirname, "dist/public");
 

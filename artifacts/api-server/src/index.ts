@@ -2,19 +2,8 @@ import app from "./app";
 import { logger } from "./lib/logger";
 import { startSequenceWorker } from "./services/sequenceWorker.js";
 
-const rawPort = process.env["PORT"];
-
-if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided.",
-  );
-}
-
-const port = Number(rawPort);
-
-if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
-}
+// PORT: Passenger sets this automatically; API_PORT is the fallback from .env
+const port = Number(process.env["API_PORT"] ?? process.env["PORT"] ?? 8080);
 
 app.listen(port, (err) => {
   if (err) {
@@ -22,6 +11,6 @@ app.listen(port, (err) => {
     process.exit(1);
   }
 
-  logger.info({ port }, "Server listening");
+  logger.info({ port }, "API server listening");
   startSequenceWorker();
 });

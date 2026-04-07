@@ -47,3 +47,7 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Environment variables — KHÔNG commit file này
+.env
+database_export.sql
