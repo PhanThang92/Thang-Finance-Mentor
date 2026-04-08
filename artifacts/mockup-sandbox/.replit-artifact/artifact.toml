@@ -14,4 +14,4 @@ PORT = "8081"
 BASE_PATH = "/__mockup"
 
 [services.development]
-run = "npm run dev:mockup"
+run = "echo 'Mockup sandbox: dùng npm run dev:mockup nếu cần'"

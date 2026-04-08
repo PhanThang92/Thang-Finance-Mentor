@@ -10,7 +10,7 @@ name = "API Server"
 paths = ["/api"]
 
 [services.development]
-run = "npm run dev:api"
+run = "echo 'API chạy chung trong workflow pvt-swc'"
 
 [services.production]
 
