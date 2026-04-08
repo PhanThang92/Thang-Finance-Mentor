@@ -18,9 +18,15 @@ The project uses a single npm package at the root with TypeScript. All source co
 
 **Install**: `npm install` | **Lockfile**: `package-lock.json`
 **Dev commands**:
-- `npm run dev` — Vite frontend (port 20076)
-- `npm run dev:api` — Express API server (port 8080)
+- `npm run dev` — Khởi động cả Vite (port 20076) + Express API (port 8080) qua concurrently
+- `npm run dev:api` — Chỉ chạy API (API_PORT=8080, không conflict với Vite)
 - `npm run dev:mockup` — Mockup sandbox (port 8081)
+
+**Workflow consolidation (April 2026)**:
+- Chỉ **1 workflow active**: `artifacts/pvt-swc: web` (chạy `npm --prefix ../.. run dev`)
+- `api-server` workflow: no-op echo, exit ngay (port 8080 do pvt-swc quản lý)
+- `mockup-sandbox` workflow: no-op echo, exit ngay
+- API_PORT=8080 được set explicit trong `start:api` script để tránh conflict với PORT=20076 của Vite
 
 ## API Server
 

@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently --kill-others -n vite,api -c cyan,green \"vite --host 0.0.0.0\" \"npm run start:api\"",
-    "start:api": "NODE_ENV=development node build.mjs && node loader.mjs",
-    "dev:api": "NODE_ENV=development node build.mjs && node loader.mjs",
+    "start:api": "API_PORT=8080 NODE_ENV=development node build.mjs && API_PORT=8080 node loader.mjs",
+    "dev:api": "API_PORT=8080 NODE_ENV=development node build.mjs && API_PORT=8080 node loader.mjs",
     "dev:mockup": "vite --config artifacts/mockup-sandbox/vite.config.ts",
     "build": "node build.mjs && vite build",
     "build:api": "node build.mjs",
