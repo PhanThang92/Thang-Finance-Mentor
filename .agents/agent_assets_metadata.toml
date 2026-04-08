@@ -18,3 +18,9 @@ id = "hSFqB9A74Tqp62HJAUwd3"
 uri = "file://README_DEPLOY.md"
 type = "text"
 title = "README_DEPLOY.md — Hướng dẫn triển khai"
+
+[[outputs]]
+id = "Rr6riK1C9QZywTkzkvAzT"
+uri = "file://REPLIT_SETUP_GUIDE.md"
+type = "text"
+title = "Bộ quy tắc thiết lập website trên Replit"
