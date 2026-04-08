@@ -4,8 +4,9 @@ import { randomBytes } from "crypto";
 import { Router, type Request, type Response, type NextFunction } from "express";
 import multer from "multer";
 import sharp from "sharp";
-import { storage } from "../lib/storage.js";
+import { storage, listUploadFiles, uploadDiskStats, UPLOAD_DIR } from "../lib/storage.js";
 import { runImagePipeline } from "../services/imageService.js";
+import fs from "fs";
 import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, leadNotesTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable, contactWidgetSettingsTable, contactChannelsTable } from "../db";
 import { eq, sql, desc, ilike, or, and, isNotNull, gte, lte, inArray } from "drizzle-orm";
 
@@ -897,6 +898,53 @@ router.get("/media", async (req, res) => {
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 
+// ── Disk-level file management (must be BEFORE /media/:id to avoid param capture) ──
+
+/** GET /admin/media/disk — list all files physically on disk */
+router.get("/media/disk", (_req, res) => {
+  try {
+    const files = listUploadFiles();
+    const stats = uploadDiskStats();
+    res.json({ files, stats, uploadDir: UPLOAD_DIR });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+/** GET /admin/media/disk/stats — disk usage summary */
+router.get("/media/disk/stats", (_req, res) => {
+  try {
+    res.json({ ...uploadDiskStats(), uploadDir: UPLOAD_DIR });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+/** DELETE /admin/media/disk — delete a file by relativePath from disk only (no DB) */
+router.delete("/media/disk", async (req, res) => {
+  try {
+    const { relativePath } = req.body as { relativePath?: string };
+    if (!relativePath) { res.status(400).json({ error: "relativePath required" }); return; }
+    const resolved = path.resolve(UPLOAD_DIR, relativePath.replace(/^\//, ""));
+    if (!resolved.startsWith(UPLOAD_DIR)) {
+      res.status(400).json({ error: "Invalid path" }); return;
+    }
+    try { fs.unlinkSync(resolved); } catch { /* already gone */ }
+    res.json({ ok: true, deleted: relativePath });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+/** POST /admin/media/disk/upload — raw file upload directly to disk (bypass image pipeline) */
+router.post("/media/disk/upload", upload.single("file"), async (req: Request, res: Response) => {
+  try {
+    if (!req.file) { res.status(400).json({ error: "No file provided" }); return; }
+    const subDir   = (req.body.dir as string | undefined) ?? "misc";
+    const safeSub  = subDir.replace(/[^a-z0-9_-]/gi, "");
+    const id       = randomBytes(12).toString("hex");
+    const ext      = req.file.originalname.split(".").pop()?.toLowerCase() ?? "bin";
+    const filename = `${id}.${ext}`;
+    const relPath  = `${safeSub}/${filename}`;
+    const url = await storage.save(req.file.buffer, relPath, req.file.mimetype);
+    res.json({ ok: true, relativePath: relPath, url, filename });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
 router.get("/media/:id", async (req, res) => {
   try {
     const rows = await db.select().from(mediaAssetsTable)
@@ -962,8 +1010,18 @@ router.delete("/media/:id", async (req, res) => {
       }
     }
 
+    // Delete physical files from disk (all variants)
+    const pathsToDelete = [
+      asset.storagePathOriginal,
+      asset.storagePathProcessed,
+      asset.storagePathMedium,
+      asset.storagePathThumbnail,
+    ].filter(Boolean) as string[];
+
+    await Promise.allSettled(pathsToDelete.map((p) => storage.delete(p)));
+
     await db.delete(mediaAssetsTable).where(eq(mediaAssetsTable.id, id));
-    res.json({ ok: true });
+    res.json({ ok: true, deleted: pathsToDelete.length });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 

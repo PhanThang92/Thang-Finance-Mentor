@@ -51,3 +51,7 @@ Thumbs.db
 # Environment variables — KHÔNG commit file này
 .env
 database_export.sql
+
+# Media uploads — nội dung không commit, chỉ giữ cấu trúc thư mục qua .gitkeep
+uploads/**
+!uploads/**/.gitkeep
