@@ -20,9 +20,7 @@
     "db:studio": "drizzle-kit studio --config ./drizzle.config.ts"
   },
   "dependencies": {
-    "@google-cloud/storage": "^7.19.0",
     "@notionhq/client": "^5.16.0",
-    "@replit/object-storage": "^1.0.0",
     "@tiptap/extension-link": "^3.22.2",
     "@tiptap/extension-placeholder": "^3.22.2",
     "@tiptap/extension-underline": "^3.22.2",
