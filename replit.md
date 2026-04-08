@@ -1,8 +1,10 @@
 # Overview
 
-This project is a pnpm workspace monorepo for a personal brand landing page and an associated API server. Its purpose is to create a comprehensive platform for dynamic content delivery, user engagement, and administrative management, built with a modern web stack for scalability and a robust user experience.
+This project is an npm single-package project for a personal brand landing page and an associated API server. Its purpose is to create a comprehensive platform for dynamic content delivery, user engagement, and administrative management, built with a modern web stack for scalability and a robust user experience.
 
-The system features an Express API server providing data to a Next.js frontend. Key capabilities include dynamic content management for articles and videos, a dedicated administrative CMS, and a customizable frontend. The architecture supports a hybrid content system combining static configurations with database-backed dynamic content.
+The system features an Express API server providing data to a React + Vite frontend. Key capabilities include dynamic content management for articles and videos, a dedicated administrative CMS, and a customizable frontend. The architecture supports a hybrid content system combining static configurations with database-backed dynamic content.
+
+**Package manager**: npm (not pnpm). Single `package.json` at root. Lockfile: `package-lock.json`.
 
 # User Preferences
 
@@ -10,9 +12,15 @@ I prefer concise and clear communication. When making changes, prioritize iterat
 
 # System Architecture
 
-## Monorepo Structure
+## Package Structure
 
-The project uses a pnpm workspace monorepo with TypeScript. It's structured into `artifacts/` for deployable applications, `lib/` for shared libraries, and `scripts/` for utilities. TypeScript is configured with composite projects extending a shared `tsconfig.base.json`.
+The project uses a single npm package at the root with TypeScript. All source code lives in `src/` (frontend) and `server/` (backend). The `artifacts/` directories contain service configurations only; all dependencies are in the root `node_modules/`.
+
+**Install**: `npm install` | **Lockfile**: `package-lock.json`
+**Dev commands**:
+- `npm run dev` — Vite frontend (port 20076)
+- `npm run dev:api` — Express API server (port 8080)
+- `npm run dev:mockup` — Mockup sandbox (port 8081)
 
 ## API Server
 

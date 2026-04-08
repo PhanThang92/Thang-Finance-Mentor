@@ -15,10 +15,10 @@ paths = [ "/" ]
 localPort = 20076
 
 [services.development]
-run = "pnpm -w run dev"
+run = "npm run dev"
 
 [services.production]
-build = [ "pnpm", "-w", "run", "build:web" ]
+build = [ "npm", "run", "build:web" ]
 publicDir = "dist/public"
 serve = "static"
 
