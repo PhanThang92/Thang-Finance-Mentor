@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "server",
+    "types": ["node"],
+    "moduleResolution": "bundler"
+  },
+  "include": ["server/**/*"],
+  "exclude": ["node_modules", "dist", "src"]
+}

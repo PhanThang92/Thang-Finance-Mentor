@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a2220"/>
+      <stop offset="60%" stop-color="#071a17"/>
+      <stop offset="100%" stop-color="#040e0c"/>
+    </linearGradient>
+    <radialGradient id="glow-goal" cx="88%" cy="16%" r="30%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-base" cx="10%" cy="90%" r="28%">
+      <stop offset="0%" stop-color="#1e7a6a" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#1e7a6a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="curve-area" x1="0" y1="0" x2="0" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#glow-goal)"/>
+  <rect width="1600" height="900" fill="url(#glow-base)"/>
+
+  <!-- Subtle background grid -->
+  <g stroke="rgba(52,160,140,0.038)" stroke-width="1">
+    <line x1="0" y1="225" x2="1600" y2="225"/>
+    <line x1="0" y1="450" x2="1600" y2="450"/>
+    <line x1="0" y1="675" x2="1600" y2="675"/>
+  </g>
+  <g stroke="rgba(52,160,140,0.028)" stroke-width="1">
+    <line x1="320"  y1="0" x2="320"  y2="900"/>
+    <line x1="640"  y1="0" x2="640"  y2="900"/>
+    <line x1="960"  y1="0" x2="960"  y2="900"/>
+    <line x1="1280" y1="0" x2="1280" y2="900"/>
+  </g>
+
+  <!-- Time axis (X-axis) -->
+  <line x1="100" y1="740" x2="1520" y2="740" stroke="rgba(52,160,140,0.20)" stroke-width="1.5"/>
+
+  <!-- Time tick marks on axis -->
+  <g stroke="rgba(52,160,140,0.28)" stroke-width="1" stroke-linecap="round">
+    <line x1="280"  y1="735" x2="280"  y2="752"/>
+    <line x1="520"  y1="735" x2="520"  y2="752"/>
+    <line x1="760"  y1="735" x2="760"  y2="752"/>
+    <line x1="1000" y1="735" x2="1000" y2="752"/>
+    <line x1="1240" y1="735" x2="1240" y2="752"/>
+    <line x1="1480" y1="735" x2="1480" y2="752"/>
+  </g>
+
+  <!-- Exponential growth curve — starts flat, then rises sharply -->
+  <path d="M 100,735 C 280,730 420,720 560,700 C 700,678 800,640 900,580 C 1000,515 1060,445 1140,360 C 1220,272 1300,190 1400,118 C 1460,74 1500,52 1530,38"
+    stroke="rgba(52,160,140,0.35)" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Area beneath curve -->
+  <path d="M 100,735 C 280,730 420,720 560,700 C 700,678 800,640 900,580 C 1000,515 1060,445 1140,360 C 1220,272 1300,190 1400,118 C 1460,74 1500,52 1530,38 L 1530,740 L 100,740 Z"
+    fill="url(#curve-area)"/>
+
+  <!-- Secondary shadow curve (depth) -->
+  <path d="M 100,750 C 320,748 500,740 680,726 C 860,710 980,685 1100,646 C 1220,605 1340,548 1460,475 C 1510,443 1540,425 1560,410"
+    stroke="rgba(52,160,140,0.08)" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- Milestone circles — growing radii represent compounding effect -->
+  <!-- Milestone 1 — early (small, low on curve) -->
+  <circle cx="280"  cy="730" r="5"  fill="rgba(52,160,140,0.50)"/>
+  <circle cx="280"  cy="730" r="12" fill="rgba(52,160,140,0.10)"/>
+  <line x1="280" y1="730" x2="280" y2="752" stroke="rgba(52,160,140,0.18)" stroke-width="1"/>
+
+  <!-- Milestone 2 -->
+  <circle cx="560"  cy="700" r="7"  fill="rgba(52,160,140,0.55)"/>
+  <circle cx="560"  cy="700" r="16" fill="rgba(52,160,140,0.11)"/>
+  <circle cx="560"  cy="700" r="28" fill="rgba(52,160,140,0.04)"/>
+  <line x1="560" y1="700" x2="560" y2="752" stroke="rgba(52,160,140,0.14)" stroke-width="1" stroke-dasharray="3 4"/>
+
+  <!-- Milestone 3 — inflection (medium) -->
+  <circle cx="900"  cy="580" r="10" fill="rgba(52,160,140,0.62)"/>
+  <circle cx="900"  cy="580" r="22" fill="rgba(52,160,140,0.13)"/>
+  <circle cx="900"  cy="580" r="38" fill="rgba(52,160,140,0.05)"/>
+  <line x1="900" y1="580" x2="900" y2="752" stroke="rgba(52,160,140,0.12)" stroke-width="1" stroke-dasharray="3 5"/>
+
+  <!-- Milestone 4 — accelerating (large) -->
+  <circle cx="1140" cy="360" r="14" fill="rgba(52,160,140,0.68)"/>
+  <circle cx="1140" cy="360" r="30" fill="rgba(52,160,140,0.14)"/>
+  <circle cx="1140" cy="360" r="50" fill="rgba(52,160,140,0.05)"/>
+  <line x1="1140" y1="360" x2="1140" y2="752" stroke="rgba(52,160,140,0.10)" stroke-width="1" stroke-dasharray="4 6"/>
+
+  <!-- Milestone 5 — goal (large glow) -->
+  <circle cx="1400" cy="118" r="18" fill="rgba(52,160,140,0.72)"/>
+  <circle cx="1400" cy="118" r="38" fill="rgba(52,160,140,0.15)"/>
+  <circle cx="1400" cy="118" r="62" fill="rgba(52,160,140,0.06)"/>
+  <circle cx="1400" cy="118" r="90" fill="rgba(52,160,140,0.03)"/>
+  <line x1="1400" y1="118" x2="1400" y2="752" stroke="rgba(52,160,140,0.09)" stroke-width="1" stroke-dasharray="4 7"/>
+
+  <!-- Concentric rings — left accent anchor (patience / discipline) -->
+  <g stroke="rgba(52,160,140,0.07)" stroke-width="1" fill="none">
+    <circle cx="200" cy="580" r="60"/>
+    <circle cx="200" cy="580" r="95"/>
+    <circle cx="200" cy="580" r="134"/>
+  </g>
+  <circle cx="200" cy="580" r="8" fill="rgba(52,160,140,0.40)"/>
+  <circle cx="200" cy="580" r="4" fill="rgba(52,160,140,0.70)"/>
+
+  <!-- Staggered accent bars — right data detail -->
+  <g stroke="rgba(52,160,140,0.18)" stroke-width="1" stroke-linecap="round">
+    <line x1="1480" y1="480" x2="1560" y2="480"/>
+    <line x1="1490" y1="512" x2="1560" y2="512"/>
+    <line x1="1505" y1="544" x2="1560" y2="544"/>
+  </g>
+
+  <!-- Dot grid — top left -->
+  <g fill="rgba(52,160,140,0.22)">
+    <circle cx="80"  cy="72"  r="2.5"/><circle cx="120" cy="72"  r="2.5"/><circle cx="160" cy="72"  r="2.5"/>
+    <circle cx="80"  cy="108" r="2.5"/><circle cx="120" cy="108" r="2.5"/><circle cx="160" cy="108" r="2"/>
+    <circle cx="80"  cy="144" r="2"/><circle cx="120" cy="144" r="2"/>
+  </g>
+
+  <!-- Dot grid — bottom right -->
+  <g fill="rgba(52,160,140,0.16)">
+    <circle cx="1440" cy="830" r="2"/><circle cx="1480" cy="830" r="2"/><circle cx="1520" cy="830" r="2"/>
+    <circle cx="1440" cy="860" r="2"/><circle cx="1480" cy="860" r="2"/>
+  </g>
+
+  <!-- Corner brackets -->
+  <path d="M 44,44 L 44,88 L 80,88" stroke="rgba(52,160,140,0.28)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 1556,44 L 1556,88 L 1520,88" stroke="rgba(52,160,140,0.22)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+
+  <!-- Base rule -->
+  <line x1="0" y1="878" x2="1600" y2="878" stroke="rgba(52,160,140,0.12)" stroke-width="1"/>
+</svg>

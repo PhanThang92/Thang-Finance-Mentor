@@ -15,11 +15,11 @@ paths = [ "/" ]
 localPort = 20076
 
 [services.development]
-run = "pnpm --filter @workspace/pvt-swc run dev"
+run = "pnpm -w run dev"
 
 [services.production]
-build = [ "pnpm", "--filter", "@workspace/pvt-swc", "run", "build" ]
-publicDir = "artifacts/pvt-swc/dist/public"
+build = [ "pnpm", "-w", "run", "build:web" ]
+publicDir = "dist/public"
 serve = "static"
 
 [[services.production.rewrites]]

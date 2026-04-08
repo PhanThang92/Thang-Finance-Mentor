@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f2a27"/>
+      <stop offset="60%" stop-color="#091d1a"/>
+      <stop offset="100%" stop-color="#050f0d"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="45%" cy="52%" r="48%">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.11"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="78%" cy="28%" r="32%">
+      <stop offset="0%" stop-color="#2ab39e" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#2ab39e" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="area" x1="0" y1="0" x2="0" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22917f" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#22917f" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#glow1)"/>
+  <rect width="1600" height="900" fill="url(#glow2)"/>
+
+  <!-- Precision grid — horizontal -->
+  <g stroke="rgba(52,160,140,0.042)" stroke-width="1">
+    <line x1="0" y1="180" x2="1600" y2="180"/>
+    <line x1="0" y1="360" x2="1600" y2="360"/>
+    <line x1="0" y1="540" x2="1600" y2="540"/>
+    <line x1="0" y1="720" x2="1600" y2="720"/>
+  </g>
+
+  <!-- Precision grid — vertical -->
+  <g stroke="rgba(52,160,140,0.032)" stroke-width="1">
+    <line x1="200"  y1="0" x2="200"  y2="900"/>
+    <line x1="400"  y1="0" x2="400"  y2="900"/>
+    <line x1="600"  y1="0" x2="600"  y2="900"/>
+    <line x1="800"  y1="0" x2="800"  y2="900"/>
+    <line x1="1000" y1="0" x2="1000" y2="900"/>
+    <line x1="1200" y1="0" x2="1200" y2="900"/>
+    <line x1="1400" y1="0" x2="1400" y2="900"/>
+  </g>
+
+  <!-- Subtle diagonal structure lines -->
+  <line x1="0"    y1="0"   x2="1600" y2="900" stroke="rgba(52,160,140,0.022)" stroke-width="1"/>
+  <line x1="0"    y1="900" x2="1600" y2="0"   stroke="rgba(52,160,140,0.016)" stroke-width="1"/>
+
+  <!-- Primary data arc (smooth S-curve) -->
+  <path d="M 60,820 C 180,750 300,640 460,560 C 620,478 700,450 880,375 C 1060,300 1140,255 1320,195 C 1440,155 1520,130 1560,115"
+    stroke="rgba(52,160,140,0.26)" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Area beneath arc -->
+  <path d="M 60,820 C 180,750 300,640 460,560 C 620,478 700,450 880,375 C 1060,300 1140,255 1320,195 C 1440,155 1520,130 1560,115 L 1560,900 L 60,900 Z"
+    fill="url(#area)"/>
+
+  <!-- Secondary faint arc (depth) -->
+  <path d="M 60,880 C 200,820 380,720 580,640 C 780,560 900,530 1100,460 C 1300,390 1440,350 1560,320"
+    stroke="rgba(52,160,140,0.09)" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- Key data nodes with pulse rings -->
+  <circle cx="460"  cy="560" r="28" fill="rgba(52,160,140,0.04)"/>
+  <circle cx="460"  cy="560" r="16" fill="rgba(52,160,140,0.09)"/>
+  <circle cx="460"  cy="560" r="7"  fill="rgba(52,160,140,0.60)"/>
+
+  <circle cx="880"  cy="375" r="36" fill="rgba(52,160,140,0.04)"/>
+  <circle cx="880"  cy="375" r="20" fill="rgba(52,160,140,0.11)"/>
+  <circle cx="880"  cy="375" r="9"  fill="rgba(52,160,140,0.72)"/>
+
+  <circle cx="1320" cy="195" r="28" fill="rgba(52,160,140,0.04)"/>
+  <circle cx="1320" cy="195" r="16" fill="rgba(52,160,140,0.09)"/>
+  <circle cx="1320" cy="195" r="7"  fill="rgba(52,160,140,0.55)"/>
+
+  <!-- Vertical drop lines from nodes to baseline -->
+  <line x1="460"  y1="560" x2="460"  y2="720" stroke="rgba(52,160,140,0.12)" stroke-width="1" stroke-dasharray="3 4"/>
+  <line x1="880"  y1="375" x2="880"  y2="720" stroke="rgba(52,160,140,0.12)" stroke-width="1" stroke-dasharray="3 4"/>
+  <line x1="1320" y1="195" x2="1320" y2="360" stroke="rgba(52,160,140,0.10)" stroke-width="1" stroke-dasharray="3 4"/>
+
+  <!-- Concentric rings — structural anchor left -->
+  <g stroke="rgba(52,160,140,0.07)" stroke-width="1" fill="none">
+    <circle cx="220" cy="720" r="70"/>
+    <circle cx="220" cy="720" r="110"/>
+    <circle cx="220" cy="720" r="155"/>
+  </g>
+  <!-- Radial spokes from anchor -->
+  <g stroke="rgba(52,160,140,0.06)" stroke-width="1">
+    <line x1="220" y1="565" x2="220" y2="875"/>
+    <line x1="65"  y1="720" x2="375" y2="720"/>
+    <line x1="110" y1="610" x2="330" y2="830"/>
+    <line x1="110" y1="830" x2="330" y2="610"/>
+  </g>
+
+  <!-- Horizontal accent marks (right, staggered) -->
+  <g stroke="rgba(52,160,140,0.18)" stroke-width="1" stroke-linecap="round">
+    <line x1="1100" y1="500" x2="1260" y2="500"/>
+    <line x1="1120" y1="528" x2="1260" y2="528"/>
+    <line x1="1145" y1="556" x2="1260" y2="556"/>
+  </g>
+
+  <!-- Dot grid — top left -->
+  <g fill="rgba(52,160,140,0.24)">
+    <circle cx="80"  cy="72"  r="2.5"/><circle cx="120" cy="72"  r="2.5"/><circle cx="160" cy="72"  r="2.5"/><circle cx="200" cy="72" r="2"/>
+    <circle cx="80"  cy="112" r="2.5"/><circle cx="120" cy="112" r="2.5"/><circle cx="160" cy="112" r="2.5"/><circle cx="200" cy="112" r="2"/>
+    <circle cx="80"  cy="152" r="2"/><circle cx="120" cy="152" r="2"/><circle cx="160" cy="152" r="2"/>
+  </g>
+
+  <!-- Dot grid — bottom right -->
+  <g fill="rgba(52,160,140,0.15)">
+    <circle cx="1420" cy="830" r="2"/><circle cx="1460" cy="830" r="2"/><circle cx="1500" cy="830" r="2"/><circle cx="1540" cy="830" r="2"/>
+    <circle cx="1420" cy="860" r="2"/><circle cx="1460" cy="860" r="2"/><circle cx="1500" cy="860" r="2"/>
+  </g>
+
+  <!-- Corner bracket marks -->
+  <path d="M 44,44 L 44,88 L 80,88" stroke="rgba(52,160,140,0.28)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 1556,44 L 1556,88 L 1520,88" stroke="rgba(52,160,140,0.22)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+  <path d="M 44,856 L 44,812 L 80,812" stroke="rgba(52,160,140,0.18)" stroke-width="1.5" stroke-linecap="square" fill="none"/>
+
+  <!-- Base rule line -->
+  <line x1="0" y1="878" x2="1600" y2="878" stroke="rgba(52,160,140,0.12)" stroke-width="1"/>
+</svg>
