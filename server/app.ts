@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import express, { type Express, type Request, type Response } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
@@ -60,7 +61,11 @@ app.use("/api", router);
 // Hoạt động khi chạy qua Passenger (Plesk/CloudLinux) — toàn bộ traffic đi
 // qua một Express process duy nhất, không cần server.mjs riêng.
 
-const DIST_PUBLIC = path.join(process.cwd(), "dist", "public");
+// fileURLToPath(import.meta.url) = đường dẫn tuyệt đối của dist/index.mjs
+// → DIST_DIR = dist/ → DIST_PUBLIC = dist/public/
+// Đáng tin cậy hơn process.cwd() khi Passenger thay đổi working directory
+const _DIST_DIR   = path.dirname(fileURLToPath(import.meta.url));
+const DIST_PUBLIC = process.env.DIST_PUBLIC_DIR ?? path.join(_DIST_DIR, "public");
 
 // Serve static assets (JS, CSS, images…) với cache dài hạn
 app.use(
