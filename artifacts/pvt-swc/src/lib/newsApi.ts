@@ -28,6 +28,7 @@ export interface Lead {
   syncedToNotion: boolean; notionPageId: string | null; notionSyncedAt: string | null;
   syncedToSheets: boolean; sheetsSyncedAt: string | null;
   syncError: string | null;
+  notifyStatus: string | null; notifyError: string | null;
   createdAt: string; updatedAt: string;
 }
 

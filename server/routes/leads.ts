@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db, leadsTable } from "../db";
 import { eq } from "drizzle-orm";
 import { triggerLeadSync } from "../services/leadSyncService.js";
+import { sendLeadNotification } from "../services/notificationService.js";
 
 const router = Router();
 
@@ -114,6 +115,16 @@ router.post("/", async (req, res) => {
     }).returning();
 
     triggerLeadSync(lead);
+
+    // Fire-and-forget notification email — never block the user response
+    void (async () => {
+      const notif = await sendLeadNotification(lead);
+      await db.update(leadsTable).set({
+        notifyStatus: notif.ok ? "sent" : "failed",
+        notifyError:  notif.ok ? null : (notif.error ?? "unknown"),
+      }).where(eq(leadsTable.id, lead.id));
+    })().catch((e) => console.error("[leads] notify update failed:", e));
+
     res.json({ ok: true, id: lead.id });
   } catch (e) {
     res.status(500).json({ error: String(e) });

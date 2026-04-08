@@ -11,6 +11,20 @@ type Settings = {
   apiKeyConfigured: boolean;
 };
 
+type NotifySettings = {
+  notify_email_general: string;
+  notify_email_contact: string;
+  notify_email_lead: string;
+  notify_email_product: string;
+};
+
+const DEFAULT_NOTIFY: NotifySettings = {
+  notify_email_general: "",
+  notify_email_contact: "",
+  notify_email_lead: "",
+  notify_email_product: "",
+};
+
 export function EmailSettingsPanel({ adminKey }: { adminKey: string }) {
   const [settings,      setSettings]      = useState<Settings | null>(null);
   const [loading,       setLoading]       = useState(true);
@@ -20,21 +34,54 @@ export function EmailSettingsPanel({ adminKey }: { adminKey: string }) {
   const [testSending,   setTestSending]   = useState(false);
   const [testMsg,       setTestMsg]       = useState("");
 
+  // Notification recipients
+  const [notify,        setNotify]        = useState<NotifySettings>(DEFAULT_NOTIFY);
+  const [notifyLoading, setNotifyLoading] = useState(true);
+  const [notifySaving,  setNotifySaving]  = useState(false);
+  const [notifyMsg,     setNotifyMsg]     = useState("");
+
   useEffect(() => {
     setLoading(true);
     adminApi.getEmailSettings(adminKey)
       .then(setSettings)
       .catch((e) => setMsg(String(e)))
       .finally(() => setLoading(false));
+
+    setNotifyLoading(true);
+    adminApi.getSettings(adminKey)
+      .then((allSettings) => {
+        setNotify({
+          notify_email_general: allSettings["notify_email_general"] ?? "",
+          notify_email_contact: allSettings["notify_email_contact"] ?? "",
+          notify_email_lead:    allSettings["notify_email_lead"]    ?? "",
+          notify_email_product: allSettings["notify_email_product"] ?? "",
+        });
+      })
+      .catch(() => {})
+      .finally(() => setNotifyLoading(false));
   }, [adminKey]);
 
   const save = async () => {
     if (!settings) return;
     setSaving(true); setMsg("");
     try {
-      // Settings are read-only from env vars — just display, no save needed
       setMsg("Cài đặt email được cấu hình qua biến môi trường (RESEND_API_KEY, SENDER_NAME, SENDER_EMAIL...).");
     } finally { setSaving(false); }
+  };
+
+  const saveNotify = async () => {
+    setNotifySaving(true); setNotifyMsg("");
+    try {
+      await adminApi.updateSettings(adminKey, {
+        notify_email_general: notify.notify_email_general.trim(),
+        notify_email_contact: notify.notify_email_contact.trim(),
+        notify_email_lead:    notify.notify_email_lead.trim(),
+        notify_email_product: notify.notify_email_product.trim(),
+      });
+      setNotifyMsg("Đã lưu địa chỉ email thông báo.");
+    } catch (e) {
+      setNotifyMsg("Lỗi: " + String(e));
+    } finally { setNotifySaving(false); }
   };
 
   const sendTest = async () => {
@@ -60,6 +107,24 @@ export function EmailSettingsPanel({ adminKey }: { adminKey: string }) {
           : (value || <span style={{ color: A.textLight }}>—</span>)
         }
       </span>
+    </div>
+  );
+
+  const notifyField = (
+    key: keyof NotifySettings,
+    label: string,
+    description: string,
+  ) => (
+    <div style={{ marginBottom: "1rem" }}>
+      <label style={s.label}>{label}</label>
+      <p style={{ fontSize: "11.5px", color: A.textLight, margin: "0 0 5px" }}>{description}</p>
+      <input
+        type="email"
+        value={notify[key]}
+        onChange={(e) => setNotify((prev) => ({ ...prev, [key]: e.target.value }))}
+        placeholder="email@domain.com"
+        style={{ ...s.field, fontFamily: "monospace", fontSize: "13px" }}
+      />
     </div>
   );
 
@@ -100,6 +165,62 @@ export function EmailSettingsPanel({ adminKey }: { adminKey: string }) {
             <li><code style={{ fontFamily: "monospace", background: "rgba(0,0,0,0.05)", padding: "1px 5px", borderRadius: "3px" }}>SITE_URL</code> — URL public của trang web</li>
           </ul>
         </div>
+      </div>
+
+      {/* Notification recipients */}
+      <div style={{ background: "#fff", border: `1px solid ${A.border}`, borderRadius: "10px", padding: "1.25rem 1.5rem", marginBottom: "1.25rem" }}>
+        <p style={{ ...s.label, marginBottom: "0.25rem" }}>Email thông báo admin</p>
+        <p style={{ fontSize: "12.5px", color: A.textMuted, margin: "0 0 1.125rem", lineHeight: 1.65 }}>
+          Mỗi khi có form mới được gửi từ website, hệ thống sẽ tự động gửi email thông báo đến địa chỉ tương ứng.
+          Để trống nếu muốn dùng email chung.
+        </p>
+
+        {notifyLoading ? (
+          <p style={{ fontSize: "13px", color: A.textMuted }}>Đang tải...</p>
+        ) : (
+          <>
+            {notifyField(
+              "notify_email_general",
+              "Email chung (mặc định)",
+              "Nhận tất cả thông báo nếu loại form không khớp danh mục nào bên dưới.",
+            )}
+            {notifyField(
+              "notify_email_contact",
+              "Email form Liên hệ",
+              "Nhận thông báo khi có form loại 'Liên hệ / lien-he'.",
+            )}
+            {notifyField(
+              "notify_email_lead",
+              "Email form Đăng ký / Newsletter",
+              "Nhận thông báo khi có form loại 'Đăng ký email', 'Newsletter', 'Cộng đồng'.",
+            )}
+            {notifyField(
+              "notify_email_product",
+              "Email form Sản phẩm / Tư vấn",
+              "Nhận thông báo khi có form loại 'Sản phẩm', 'Tư vấn'.",
+            )}
+
+            {notifyMsg && (
+              <div style={{
+                marginTop: "0.75rem", padding: "9px 13px", borderRadius: "7px",
+                background: notifyMsg.includes("Đã lưu") ? "rgba(26,120,104,0.07)" : "rgba(193,51,51,0.07)",
+                border: notifyMsg.includes("Đã lưu") ? "1px solid rgba(26,120,104,0.22)" : "1px solid rgba(193,51,51,0.22)",
+                fontSize: "13px",
+                color: notifyMsg.includes("Đã lưu") ? A.primary : A.danger,
+              }}>
+                {notifyMsg}
+              </div>
+            )}
+
+            <button
+              onClick={saveNotify}
+              disabled={notifySaving}
+              style={{ ...s.btnPrimary, marginTop: "1rem", fontSize: "12.5px" }}
+            >
+              {notifySaving ? "Đang lưu..." : "Lưu email thông báo"}
+            </button>
+          </>
+        )}
       </div>
 
       {/* Test send */}

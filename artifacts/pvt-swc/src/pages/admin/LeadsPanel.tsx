@@ -531,6 +531,31 @@ function LeadDetail({
           </DetailSection>
         )}
 
+        {/* Notification email status */}
+        {lead.notifyStatus && (
+          <DetailSection label="Thông báo email">
+            {lead.notifyStatus === "sent" && (
+              <div style={{ display: "flex", gap: "7px", alignItems: "center" }}>
+                <span style={{ fontSize: "10px", fontWeight: 700, background: "rgba(26,120,104,0.10)", color: A.primary, padding: "1px 7px", borderRadius: "4px" }}>✓ Đã gửi</span>
+                <span style={{ fontSize: "11px", color: A.textLight }}>Admin đã nhận thông báo</span>
+              </div>
+            )}
+            {lead.notifyStatus === "failed" && (
+              <div style={{ background: "rgba(193,51,51,0.06)", border: "1px solid rgba(193,51,51,0.20)", borderRadius: "6px", padding: "8px 10px" }}>
+                <p style={{ fontSize: "11px", fontWeight: 600, color: A.danger, margin: "0 0 3px" }}>Gửi thông báo thất bại</p>
+                {lead.notifyError && (
+                  <p style={{ fontSize: "11px", color: A.danger, margin: 0, fontFamily: "monospace", wordBreak: "break-all", lineHeight: 1.5 }}>
+                    {lead.notifyError}
+                  </p>
+                )}
+              </div>
+            )}
+            {lead.notifyStatus === "skipped" && (
+              <span style={{ fontSize: "11px", color: A.textLight }}>Bỏ qua (không có email cấu hình)</span>
+            )}
+          </DetailSection>
+        )}
+
         {/* Article context */}
         {lead.articleSlug && (
           <DetailSection label="Nguồn bài viết">

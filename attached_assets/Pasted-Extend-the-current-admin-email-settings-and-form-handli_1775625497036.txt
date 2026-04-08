@@ -1,0 +1,208 @@
+Extend the current admin email settings and form handling system so that whenever a visitor submits a form on the website, a notification email is automatically sent to the notification email configured in admin.
+
+IMPORTANT:
+- Keep the current admin UI style and website UI unchanged.
+- Do not redesign the existing email settings page.
+- This is a functional workflow improvement.
+- Treat this as a real lead/contact notification system, not just a generic email test feature.
+
+GOAL:
+When a customer fills out a website form and clicks submit, the system should:
+1. save the form submission / lead in the database/admin
+2. send a notification email to the configured admin notification email
+3. never lose the lead even if email sending fails
+
+==================================================
+1. ADD NOTIFICATION EMAIL SETTINGS IN ADMIN
+==================================================
+
+Extend the current admin email settings (or Site Settings if more appropriate) with fields for notification recipients.
+
+Add these configurable fields:
+
+- Email nhận thông báo chung
+- Email nhận thông báo form liên hệ
+- Email nhận thông báo lead / newsletter
+- Email nhận thông báo đăng ký sản phẩm
+
+If a simpler MVP is better, at minimum add:
+- Email nhận thông báo chung
+
+Use these default values if no other values are set:
+- Email nhận thông báo chung: lienhe@phanvanthang.net
+- Email nhận thông báo form liên hệ: lienhe@phanvanthang.net
+- Email nhận thông báo lead / newsletter: lienhe@phanvanthang.net
+- Email nhận thông báo đăng ký sản phẩm: lienhe@phanvanthang.net
+
+These recipient emails are separate from:
+- SENDER_EMAIL
+- REPLY_TO_EMAIL
+
+Important:
+Do not confuse sender email with notification recipient email.
+
+==================================================
+2. FORM SUBMISSION WORKFLOW
+==================================================
+
+For all public website forms, implement this flow:
+
+1. validate form input
+2. save the submission to database/admin first
+3. determine the correct notification email recipient based on form type
+4. send notification email through the configured email provider
+5. if email sending fails, keep the submission saved and log the failure
+6. show a normal success message to the user if the form submission itself succeeded
+
+Never make email delivery a requirement for saving the lead.
+
+==================================================
+3. FORM TYPES TO SUPPORT
+==================================================
+
+At minimum, detect and support these categories if they exist in the project:
+
+- Contact form
+- Newsletter / lead magnet form
+- Product inquiry / consultation form
+- General lead form
+
+Routing logic:
+- contact form -> Email nhận thông báo form liên hệ
+- newsletter / lead magnet -> Email nhận thông báo lead / newsletter
+- product inquiry -> Email nhận thông báo đăng ký sản phẩm
+- fallback -> Email nhận thông báo chung
+
+If the project currently has fewer form types, implement the logic in a way that can be extended later.
+
+==================================================
+4. NOTIFICATION EMAIL CONTENT
+==================================================
+
+The notification email should be clean, practical, and easy to scan.
+
+Include:
+- form type
+- full name
+- email
+- phone if available
+- message/content if available
+- source page / page URL
+- submission time
+- optional admin link to view lead details if easy
+
+Use subject lines like:
+- [Liên hệ mới] {name}
+- [Lead mới] {name}
+- [Quan tâm sản phẩm] {name}
+- [Đăng ký mới] {name}
+
+Sender behavior:
+- send using the configured sender email from admin / env
+- use reply-to if configured
+- send notification to the configured admin notification recipient
+
+==================================================
+5. EMAIL PROVIDER INTEGRATION
+==================================================
+
+Use the current real email provider flow already being built (Resend).
+
+Requirements:
+- notification emails must use the same configured sending system
+- if provider is not configured, form submissions should still save successfully
+- missing provider config should not break the form pipeline
+- log clearly when notification sending is skipped or fails
+
+==================================================
+6. ADMIN / DATABASE STORAGE
+==================================================
+
+Make sure every form submission is stored in admin/database reliably.
+
+If a lead/submission model already exists, reuse it.
+If not, create a simple structured storage model.
+
+Each submission should store:
+- id
+- form type
+- full name
+- email
+- phone (optional)
+- message / notes (optional)
+- source page / source URL
+- created_at
+- email_notification_status (optional but preferred)
+- email_notification_error (optional but preferred)
+
+==================================================
+7. SAFETY + VALIDATION
+==================================================
+
+Please add these safeguards:
+- invalid recipient notification email should show warning in admin settings
+- invalid visitor email should not break internal notification sending
+- sending failure should never delete or rollback the saved lead
+- log useful backend errors for debugging
+
+==================================================
+8. ADMIN VISIBILITY
+==================================================
+
+If possible, in the lead/submission admin area, show:
+- whether notification email was sent successfully
+- whether it failed
+- failure reason if available
+
+This is optional but preferred.
+
+==================================================
+9. TEST CASES
+==================================================
+
+Please verify these cases:
+
+1. Contact form submit
+- lead saved
+- notification email sent to configured contact notification email
+
+2. Newsletter form submit
+- lead saved
+- notification email sent to configured lead notification email
+
+3. Product inquiry form submit
+- lead saved
+- notification email sent to configured product notification email
+
+4. Email provider missing or broken
+- lead still saves
+- notification status logs failure
+- user-facing submit still behaves safely
+
+==================================================
+10. DEFAULT EMAIL MAPPING
+==================================================
+
+Use this default email architecture:
+
+Sender / outgoing:
+- SENDER_NAME = Phan Văn Thắng SWC
+- SENDER_EMAIL = newsletter@phanvanthang.net
+- REPLY_TO_EMAIL = lienhe@phanvanthang.net
+
+Notification recipients:
+- General notification = lienhe@phanvanthang.net
+- Contact form notification = lienhe@phanvanthang.net
+- Lead/newsletter notification = lienhe@phanvanthang.net
+- Product inquiry notification = lienhe@phanvanthang.net
+
+==================================================
+11. BEFORE FINISHING
+==================================================
+
+Please summarize:
+1. which settings were added in admin
+2. which forms now trigger notification emails
+3. where submissions are saved
+4. how failures are handled safely
+5. which files were changed

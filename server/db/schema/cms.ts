@@ -38,6 +38,9 @@ export const leadsTable = pgTable("leads", {
   syncedToSheets: boolean("synced_to_sheets").notNull().default(false),
   sheetsSyncedAt: timestamp("sheets_synced_at", { withTimezone: true }),
   syncError: text("sync_error"),
+  // Email notification status
+  notifyStatus: text("notify_status"),  // "sent" | "failed" | "skipped" | null
+  notifyError:  text("notify_error"),   // error message if failed
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
