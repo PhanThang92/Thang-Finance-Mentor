@@ -3,6 +3,7 @@ import { db, leadsTable } from "../db";
 import { eq } from "drizzle-orm";
 import { triggerLeadSync } from "../services/leadSyncService.js";
 import { sendLeadNotification } from "../services/notificationService.js";
+import { sendCustomerConfirmation } from "../services/customerConfirmationService.js";
 
 const router = Router();
 
@@ -116,7 +117,7 @@ router.post("/", async (req, res) => {
 
     triggerLeadSync(lead);
 
-    // Fire-and-forget notification email — never block the user response
+    // Fire-and-forget: admin notification + customer confirmation — both non-blocking
     void (async () => {
       const notif = await sendLeadNotification(lead);
       await db.update(leadsTable).set({
@@ -124,6 +125,9 @@ router.post("/", async (req, res) => {
         notifyError:  notif.ok ? null : (notif.error ?? "unknown"),
       }).where(eq(leadsTable.id, lead.id));
     })().catch((e) => console.error("[leads] notify update failed:", e));
+
+    void sendCustomerConfirmation(lead)
+      .catch((e) => console.error("[leads] customer confirmation failed:", e));
 
     res.json({ ok: true, id: lead.id });
   } catch (e) {
