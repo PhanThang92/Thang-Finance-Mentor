@@ -255,7 +255,12 @@ async function fetchOgMeta(urlPath: string, origin: string): Promise<OgMeta> {
 }
 
 // ── SPA catch-all ──────────────────────────────────────────────────────────
-app.get(/.*/, async (req: Request, res: Response) => {
+// Dùng app.use() thay vì app.get(/.*/) để tránh vấn đề regex trong Express 5
+app.use(async (req: Request, res: Response) => {
+  if (req.method !== "GET") {
+    res.status(405).send("Method Not Allowed");
+    return;
+  }
   const indexPath = path.join(DIST_PUBLIC, "index.html");
 
   let template: string;
