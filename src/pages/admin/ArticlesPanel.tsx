@@ -2,9 +2,44 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { adminApi, type Article, type Topic, type Series } from "@/lib/newsApi";
 import { A, s, fmtDate, slugify } from "./shared";
 import { ImageUploadField } from "./ImageUploadField";
-import { RichEditor } from "@/components/admin/RichEditor";
 import { ArticleHtml, isHtmlContent } from "@/components/ArticleHtml";
 import { Prose } from "@/components/Prose";
+
+/* ── Article format template (markdown) ──────────────────────────────── */
+const ARTICLE_TEMPLATE = `## Mở đầu — Vấn đề hoặc câu hỏi chính
+
+Viết 1–2 đoạn ngắn để đặt vấn đề. Tại sao bài viết này quan trọng với người đọc? Điều gì khiến họ muốn đọc tiếp?
+
+## Phần 1 — Tên tiêu đề rõ ràng, cụ thể
+
+Nội dung phần này. Mỗi đoạn văn chỉ nên có 3–5 câu. Xuống dòng thường xuyên để dễ đọc trên điện thoại.
+
+> Insight hoặc câu trích dẫn quan trọng nhất của phần này — điều người đọc sẽ nhớ mãi.
+
+## Phần 2 — Tên tiêu đề rõ ràng, cụ thể
+
+Nội dung phần này...
+
+### Tiểu mục (khi cần đi sâu hơn vào một ý)
+
+Chi tiết của tiểu mục...
+
+- Điểm quan trọng 1
+- Điểm quan trọng 2
+- Điểm quan trọng 3
+
+## Kết luận — Điều bạn nên làm ngay bây giờ
+
+Tóm tắt bài viết trong 2–3 câu. Đưa ra hành động cụ thể cho người đọc. Kết thúc bằng câu gợi mở hoặc lời mời tiếp tục hành trình.`;
+
+const FORMAT_RULES: { symbol: string; label: string; desc: string; color: string }[] = [
+  { symbol: "H2", label: "Tiêu đề phần chính",  color: "#1a7868", desc: "Dùng cho mỗi phần lớn. Thường 3–5 phần. Viết ngắn, cụ thể, dùng động từ hoặc câu hỏi." },
+  { symbol: "H3", label: "Tiêu đề tiểu mục",    color: "#2563eb", desc: "Khi một phần cần chia nhỏ. Không bắt buộc — chỉ dùng khi thực sự cần." },
+  { symbol: "¶",  label: "Đoạn văn",            color: "#374151", desc: "3–5 câu mỗi đoạn. Xuống dòng sau mỗi ý. Tránh đoạn văn dài hơn 6 câu." },
+  { symbol: "❝",  label: "Trích dẫn / Insight", color: "#7c3aed", desc: "Dùng 1 lần mỗi phần để làm nổi bật câu quan trọng — điều người đọc sẽ nhớ." },
+  { symbol: "•",  label: "Danh sách gạch đầu",  color: "#ea580c", desc: "Liệt kê 3+ điểm ngang hàng. Mỗi mục 1 dòng, bắt đầu bằng động từ." },
+  { symbol: "B",  label: "In đậm",              color: "#1a1a1a", desc: "Chỉ dùng cho từ/cụm quan trọng nhất. Không in đậm nguyên đoạn văn." },
+];
 
 /* ── Category options ────────────────────────────────────────────────── */
 const CATEGORY_OPTIONS = [
