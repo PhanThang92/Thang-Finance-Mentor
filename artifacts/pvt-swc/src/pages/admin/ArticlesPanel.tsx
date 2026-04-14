@@ -6,6 +6,20 @@ import { RichEditor } from "@/components/admin/RichEditor";
 import { ArticleHtml, isHtmlContent } from "@/components/ArticleHtml";
 import { Prose } from "@/components/Prose";
 
+/* ── Article format template ─────────────────────────────────────────── */
+const ARTICLE_TEMPLATE = `<h2>Mở đầu — Vấn đề hoặc câu hỏi chính</h2><p>Viết 1–2 đoạn ngắn để đặt vấn đề. Tại sao bài viết này quan trọng với người đọc? Điều gì khiến họ muốn đọc tiếp?</p><h2>Phần 1 — Tên tiêu đề rõ ràng, cụ thể</h2><p>Nội dung phần này. Mỗi đoạn văn chỉ nên có 3–5 câu. Xuống dòng thường xuyên để dễ đọc trên điện thoại.</p><blockquote><p>Insight hoặc câu trích dẫn quan trọng nhất của phần này — điều người đọc sẽ nhớ mãi.</p></blockquote><h2>Phần 2 — Tên tiêu đề rõ ràng, cụ thể</h2><p>Nội dung phần này...</p><h3>Tiểu mục (khi cần đi sâu hơn vào một ý)</h3><p>Chi tiết của tiểu mục...</p><ul><li>Điểm quan trọng 1</li><li>Điểm quan trọng 2</li><li>Điểm quan trọng 3</li></ul><h2>Kết luận — Điều bạn nên làm ngay bây giờ</h2><p>Tóm tắt bài viết trong 2–3 câu. Đưa ra hành động cụ thể cho người đọc. Kết thúc bằng câu gợi mở hoặc lời mời tiếp tục hành trình.</p>`;
+
+const FORMAT_RULES: { symbol: string; label: string; desc: string; color: string }[] = [
+  { symbol: "H2", label: "Tiêu đề phần chính",   color: "#1a7868", desc: "Dùng cho mỗi phần lớn trong bài. Thường có 3–5 phần. Viết ngắn, cụ thể, dùng động từ hoặc câu hỏi." },
+  { symbol: "H3", label: "Tiêu đề tiểu mục",     color: "#2563eb", desc: "Dùng khi một phần cần chia nhỏ. Không bắt buộc — chỉ dùng khi thực sự cần làm rõ cấu trúc." },
+  { symbol: "¶",  label: "Đoạn văn",             color: "#374151", desc: "3–5 câu mỗi đoạn. Xuống dòng sau mỗi ý. Tránh đoạn văn dài hơn 6 câu." },
+  { symbol: "❝",  label: "Trích dẫn / Insight",  color: "#7c3aed", desc: "Dùng 1 lần mỗi phần để làm nổi bật câu quan trọng nhất — điều người đọc sẽ nhớ." },
+  { symbol: "• ",  label: "Danh sách gạch đầu",  color: "#ea580c", desc: "Dùng khi liệt kê 3+ điểm ngang hàng. Mỗi mục 1 dòng, bắt đầu bằng động từ hoặc danh từ." },
+  { symbol: "1.",  label: "Danh sách đánh số",    color: "#d97706", desc: "Dùng khi thứ tự quan trọng (các bước, quy trình). Ưu tiên hơn gạch đầu dòng khi có trình tự." },
+  { symbol: "B",  label: "In đậm",               color: "#1a1a1a", desc: "Chỉ dùng cho từ/cụm từ quan trọng nhất trong câu. Không in đậm nguyên đoạn văn." },
+  { symbol: "—",  label: "Ngắt đoạn (HR)",       color: "#9ca3af", desc: "Dùng khi chuyển sang một chủ đề hoàn toàn khác, hoặc sau phần dẫn nhập trước H2 đầu tiên." },
+];
+
 /* ── Category options ────────────────────────────────────────────────── */
 const CATEGORY_OPTIONS = [
   { label: "Tư duy đầu tư", slug: "tu-duy-dau-tu" },
@@ -109,6 +123,7 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
   const [showSeo, setShowSeo]   = useState(false);
   const [ogGenerating, setOgGenerating] = useState(false);
   const [contentTab, setContentTab] = useState<"write" | "preview">("write");
+  const [showGuide, setShowGuide]   = useState(false);
 
   const [q, setQ]               = useState("");
   const [fStatus, setFStatus]   = useState("all");
@@ -444,11 +459,99 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
           </div>
 
           {contentTab === "write" && (
-            <RichEditor
-              value={form.content ?? ""}
-              onChange={(html) => setField("content", html)}
-              placeholder="Bắt đầu viết nội dung bài viết tại đây..."
-            />
+            <>
+              {/* ── Format guide alert ────────────────────────────── */}
+              <div style={{ marginBottom: "0.75rem" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowGuide((v) => !v)}
+                  style={{
+                    display: "flex", alignItems: "center", gap: "7px",
+                    width: "100%", padding: "9px 13px",
+                    background: showGuide ? "rgba(26,120,104,0.07)" : "#f8faf9",
+                    border: `1px solid ${showGuide ? "rgba(26,120,104,0.28)" : "rgba(0,0,0,0.09)"}`,
+                    borderRadius: showGuide ? "8px 8px 0 0" : "8px",
+                    cursor: "pointer", textAlign: "left",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  <span style={{ fontSize: "13px", fontWeight: 600, color: "#1a7868" }}>
+                    {showGuide ? "▾" : "▸"} Quy tắc định dạng bài viết chuẩn
+                  </span>
+                  <span style={{ marginLeft: "auto", fontSize: "11.5px", color: "rgba(0,0,0,0.42)" }}>
+                    {showGuide ? "Ẩn hướng dẫn" : "Xem hướng dẫn + điền mẫu"}
+                  </span>
+                </button>
+
+                {showGuide && (
+                  <div style={{
+                    border: "1px solid rgba(26,120,104,0.28)", borderTop: "none",
+                    borderRadius: "0 0 8px 8px", background: "#fff",
+                    padding: "16px 16px 14px",
+                  }}>
+                    {/* Nút điền mẫu */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px", padding: "10px 12px", background: "rgba(26,120,104,0.05)", borderRadius: "7px", border: "1px dashed rgba(26,120,104,0.35)" }}>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ margin: "0 0 2px", fontSize: "12.5px", fontWeight: 600, color: "#1a7868" }}>Điền cấu trúc mẫu vào editor</p>
+                        <p style={{ margin: 0, fontSize: "11.5px", color: "rgba(0,0,0,0.45)", lineHeight: 1.55 }}>
+                          Nhấn nút để tự động tạo khung bài viết đúng format — xóa nội dung hiện tại và điền mẫu mới.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (form.content?.trim() && !confirm("Editor đang có nội dung. Thay thế bằng mẫu mới?")) return;
+                          setField("content", ARTICLE_TEMPLATE);
+                        }}
+                        style={{
+                          flexShrink: 0, padding: "7px 16px", borderRadius: "7px",
+                          border: "none", cursor: "pointer",
+                          background: "#1a7868", color: "#fff",
+                          fontSize: "12.5px", fontWeight: 600,
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Điền mẫu
+                      </button>
+                    </div>
+
+                    {/* Bảng quy tắc */}
+                    <p style={{ margin: "0 0 10px", fontSize: "11px", fontWeight: 700, color: "rgba(0,0,0,0.35)", letterSpacing: "0.09em", textTransform: "uppercase" }}>
+                      Các thành phần định dạng
+                    </p>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "7px", marginBottom: "14px" }}>
+                      {FORMAT_RULES.map((r) => (
+                        <div key={r.label} style={{ display: "flex", gap: "9px", alignItems: "flex-start", padding: "8px 10px", background: "#f8faf9", borderRadius: "6px", border: "1px solid rgba(0,0,0,0.06)" }}>
+                          <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: "11.5px", color: r.color, minWidth: "22px", flexShrink: 0, marginTop: "1px" }}>{r.symbol}</span>
+                          <div>
+                            <p style={{ margin: "0 0 2px", fontSize: "11.5px", fontWeight: 600, color: "#1a1a1a" }}>{r.label}</p>
+                            <p style={{ margin: 0, fontSize: "11px", color: "rgba(0,0,0,0.45)", lineHeight: 1.55 }}>{r.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Quy tắc vàng */}
+                    <div style={{ background: "rgba(26,120,104,0.05)", borderRadius: "6px", padding: "10px 12px", borderLeft: "3px solid #1a7868" }}>
+                      <p style={{ margin: "0 0 6px", fontSize: "11px", fontWeight: 700, color: "#1a7868", textTransform: "uppercase", letterSpacing: "0.08em" }}>5 quy tắc vàng</p>
+                      <ol style={{ margin: 0, paddingLeft: "16px", fontSize: "12px", color: "#374151", lineHeight: 1.8 }}>
+                        <li>Mỗi bài viết có <strong>1 luận điểm chính</strong> duy nhất — mọi phần đều phục vụ luận điểm đó.</li>
+                        <li>Đoạn văn tối đa <strong>5 câu</strong>. Câu tối đa <strong>25 từ</strong>.</li>
+                        <li>Mỗi H2 là <strong>một lý do</strong> để đọc tiếp — viết như tiêu đề báo, không viết như mục lục sách.</li>
+                        <li>Một blockquote mỗi phần — câu đó phải là điều <strong>người đọc muốn screenshot</strong>.</li>
+                        <li>Kết luận phải có <strong>hành động cụ thể</strong> — không kết bằng câu "Hy vọng bài viết hữu ích".</li>
+                      </ol>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <RichEditor
+                value={form.content ?? ""}
+                onChange={(html) => setField("content", html)}
+                placeholder="Bắt đầu viết nội dung bài viết tại đây..."
+              />
+            </>
           )}
 
           {contentTab === "preview" && (
