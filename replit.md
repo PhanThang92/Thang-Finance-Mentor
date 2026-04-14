@@ -114,13 +114,13 @@ Schema fields: `id` (serial PK), `event_type`, `entity_type`, `entity_slug`, `ev
 - `topic_click` / `series_click` / `hub_click` — available via helper, not yet wired to all pages
 
 **Tracking files**:
-- `artifacts/pvt-swc/src/lib/analytics.ts` — client-side helper with `trackEvent()`, `trackArticleView()`, `trackArticleClick()`, `trackVideoClick()`, `trackCtaClick()`, `trackTopicClick()`, `trackSeriesClick()`, `trackHubClick()`
+- `src/lib/analytics.ts` — client-side helper with `trackEvent()`, `trackArticleView()`, `trackArticleClick()`, `trackVideoClick()`, `trackCtaClick()`, `trackTopicClick()`, `trackSeriesClick()`, `trackHubClick()`
 - `artifacts/api-server/src/routes/track.ts` — public `POST /api/track` endpoint (no auth required), fire-and-forget
 - Analytics admin routes: `GET /api/admin/analytics?days=7` — returns summary + top articles/videos/CTAs/topics + trend data
 
 **Visitor/session logic**: Anonymous UUIDs stored in `localStorage` (visitor_id, persists across sessions) and `sessionStorage` (session_id, per tab session). No PII collected. `trackArticleView` is deduped per slug per in-memory session.
 
-**Admin analytics panel**: `artifacts/pvt-swc/src/pages/admin/AnalyticsPanel.tsx`
+**Admin analytics panel**: `src/pages/admin/AnalyticsPanel.tsx`
 - Accessible via admin sidebar "Phân tích nội dung" under "Phân tích" group
 - Date range selector: 7 ngày / 30 ngày / 90 ngày
 - Summary cards: Lượt xem bài viết, Lượt click video, Lượt click CTA, Lượt truy cập
@@ -154,7 +154,7 @@ A full CRM system for tracking potential clients and interactions.
 - `CompactLeadForm.tsx` — compact form used in TinTucArticle.tsx, BaiVietArticle.tsx (after related articles) and Video.tsx (at bottom)
 - Various product/community forms
 
-**Admin panel**: `artifacts/pvt-swc/src/pages/admin/LeadsPanel.tsx`
+**Admin panel**: `src/pages/admin/LeadsPanel.tsx`
 - Notes timeline with type badges (internal, call, email, meeting)
 - Follow-up date picker with orange badge in header
 - Quick status change inline + status pills in detail panel

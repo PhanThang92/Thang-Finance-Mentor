@@ -144,6 +144,38 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
   const [showSeo, setShowSeo]   = useState(false);
   const [ogGenerating, setOgGenerating] = useState(false);
   const [contentTab, setContentTab] = useState<"write" | "preview">("write");
+  const [showGuide, setShowGuide]   = useState(false);
+
+  const contentRef = React.useRef<HTMLTextAreaElement>(null);
+
+  const insertAtCursor = useCallback((before: string, after = "") => {
+    const ta = contentRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const end   = ta.selectionEnd;
+    const val   = ta.value;
+    const selected = val.slice(start, end);
+    const next = val.slice(0, start) + before + selected + after + val.slice(end);
+    setField("content", next);
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.setSelectionRange(start + before.length, start + before.length + selected.length);
+    });
+  }, []);
+
+  const insertLinePrefix = useCallback((prefix: string) => {
+    const ta = contentRef.current;
+    if (!ta) return;
+    const val  = ta.value;
+    const start = ta.selectionStart;
+    const lineStart = val.lastIndexOf("\n", start - 1) + 1;
+    const next = val.slice(0, lineStart) + prefix + val.slice(lineStart);
+    setField("content", next);
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.setSelectionRange(start + prefix.length, start + prefix.length);
+    });
+  }, []);
 
   const [q, setQ]               = useState("");
   const [fStatus, setFStatus]   = useState("all");
@@ -479,11 +511,147 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
           </div>
 
           {contentTab === "write" && (
-            <RichEditor
-              value={form.content ?? ""}
-              onChange={(html) => setField("content", html)}
-              placeholder="Bắt đầu viết nội dung bài viết tại đây..."
-            />
+            <>
+              {/* ── Format guide alert ────────────────────────────── */}
+              <div style={{ marginBottom: "0.75rem" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowGuide((v) => !v)}
+                  style={{
+                    display: "flex", alignItems: "center", gap: "7px",
+                    width: "100%", padding: "9px 13px",
+                    background: showGuide ? "rgba(26,120,104,0.07)" : "#f8faf9",
+                    border: `1px solid ${showGuide ? "rgba(26,120,104,0.28)" : "rgba(0,0,0,0.09)"}`,
+                    borderRadius: showGuide ? "8px 8px 0 0" : "8px",
+                    cursor: "pointer", textAlign: "left",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  <span style={{ fontSize: "13px", fontWeight: 600, color: "#1a7868" }}>
+                    {showGuide ? "▾" : "▸"} Quy tắc định dạng bài viết chuẩn
+                  </span>
+                  <span style={{ marginLeft: "auto", fontSize: "11.5px", color: "rgba(0,0,0,0.42)" }}>
+                    {showGuide ? "Ẩn hướng dẫn" : "Xem hướng dẫn + điền mẫu"}
+                  </span>
+                </button>
+
+                {showGuide && (
+                  <div style={{
+                    border: "1px solid rgba(26,120,104,0.28)", borderTop: "none",
+                    borderRadius: "0 0 8px 8px", background: "#fff",
+                    padding: "16px 16px 14px",
+                  }}>
+                    {/* Nút điền mẫu */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px", padding: "10px 12px", background: "rgba(26,120,104,0.05)", borderRadius: "7px", border: "1px dashed rgba(26,120,104,0.35)" }}>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ margin: "0 0 2px", fontSize: "12.5px", fontWeight: 600, color: "#1a7868" }}>Điền cấu trúc mẫu vào editor</p>
+                        <p style={{ margin: 0, fontSize: "11.5px", color: "rgba(0,0,0,0.45)", lineHeight: 1.55 }}>
+                          Nhấn nút để tự động tạo khung bài viết đúng format — xóa nội dung hiện tại và điền mẫu mới.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (form.content?.trim() && !confirm("Editor đang có nội dung. Thay thế bằng mẫu mới?")) return;
+                          setField("content", ARTICLE_TEMPLATE);
+                        }}
+                        style={{
+                          flexShrink: 0, padding: "7px 16px", borderRadius: "7px",
+                          border: "none", cursor: "pointer",
+                          background: "#1a7868", color: "#fff",
+                          fontSize: "12.5px", fontWeight: 600,
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Điền mẫu
+                      </button>
+                    </div>
+
+                    {/* Bảng quy tắc */}
+                    <p style={{ margin: "0 0 10px", fontSize: "11px", fontWeight: 700, color: "rgba(0,0,0,0.35)", letterSpacing: "0.09em", textTransform: "uppercase" }}>
+                      Các thành phần định dạng
+                    </p>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "7px", marginBottom: "14px" }}>
+                      {FORMAT_RULES.map((r) => (
+                        <div key={r.label} style={{ display: "flex", gap: "9px", alignItems: "flex-start", padding: "8px 10px", background: "#f8faf9", borderRadius: "6px", border: "1px solid rgba(0,0,0,0.06)" }}>
+                          <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: "11.5px", color: r.color, minWidth: "22px", flexShrink: 0, marginTop: "1px" }}>{r.symbol}</span>
+                          <div>
+                            <p style={{ margin: "0 0 2px", fontSize: "11.5px", fontWeight: 600, color: "#1a1a1a" }}>{r.label}</p>
+                            <p style={{ margin: 0, fontSize: "11px", color: "rgba(0,0,0,0.45)", lineHeight: 1.55 }}>{r.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Quy tắc vàng */}
+                    <div style={{ background: "rgba(26,120,104,0.05)", borderRadius: "6px", padding: "10px 12px", borderLeft: "3px solid #1a7868" }}>
+                      <p style={{ margin: "0 0 6px", fontSize: "11px", fontWeight: 700, color: "#1a7868", textTransform: "uppercase", letterSpacing: "0.08em" }}>5 quy tắc vàng</p>
+                      <ol style={{ margin: 0, paddingLeft: "16px", fontSize: "12px", color: "#374151", lineHeight: 1.8 }}>
+                        <li>Mỗi bài viết có <strong>1 luận điểm chính</strong> duy nhất — mọi phần đều phục vụ luận điểm đó.</li>
+                        <li>Đoạn văn tối đa <strong>5 câu</strong>. Câu tối đa <strong>25 từ</strong>.</li>
+                        <li>Mỗi H2 là <strong>một lý do</strong> để đọc tiếp — viết như tiêu đề báo, không như mục lục sách.</li>
+                        <li>Một blockquote mỗi phần — câu đó phải là điều <strong>người đọc muốn screenshot</strong>.</li>
+                        <li>Kết luận phải có <strong>hành động cụ thể</strong> — không kết bằng "Hy vọng bài viết hữu ích".</li>
+                      </ol>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ── Markdown toolbar ──────────────────────────────── */}
+              <div style={{
+                display: "flex", flexWrap: "wrap", gap: "3px",
+                padding: "6px 8px", background: "rgba(0,0,0,0.025)",
+                border: `1px solid ${A.border}`, borderBottom: "none",
+                borderRadius: "6px 6px 0 0",
+              }}>
+                {[
+                  { label: "H2",   title: "Tiêu đề H2",    action: () => insertLinePrefix("## ") },
+                  { label: "H3",   title: "Tiêu đề H3",    action: () => insertLinePrefix("### ") },
+                  { label: "B",    title: "In đậm",         action: () => insertAtCursor("**", "**"), bold: true },
+                  { label: "I",    title: "In nghiêng",     action: () => insertAtCursor("_", "_"),   italic: true },
+                  { label: "—",    title: "Divider",        action: () => insertAtCursor("\n---\n") },
+                  { label: "List", title: "Danh sách",      action: () => insertLinePrefix("- ") },
+                  { label: ">",    title: "Trích dẫn",      action: () => insertLinePrefix("> ") },
+                  { label: "Link", title: "Chèn liên kết",  action: () => insertAtCursor("[", "](https://...)") },
+                ].map((btn) => (
+                  <button
+                    key={btn.label}
+                    type="button"
+                    title={btn.title}
+                    onClick={btn.action}
+                    style={{
+                      padding: "4px 10px", border: `1px solid ${A.border}`, borderRadius: "4px", cursor: "pointer",
+                      fontSize: "11.5px", background: "#fff", color: A.text,
+                      fontWeight: btn.bold ? 700 : 500,
+                      fontStyle: (btn as { italic?: boolean }).italic ? "italic" : "normal",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {btn.label}
+                  </button>
+                ))}
+              </div>
+
+              <textarea
+                ref={contentRef}
+                style={{
+                  ...s.textarea,
+                  height: "440px",
+                  fontFamily: "monospace", fontSize: "13px", lineHeight: 1.65,
+                  borderRadius: "0 0 6px 6px",
+                }}
+                value={form.content ?? ""}
+                placeholder={"## Tiêu đề phần đầu\n\nNội dung đoạn đầu...\n\n## Phần 2\n\nNội dung..."}
+                onChange={(e) => setField("content", e.target.value)}
+              />
+              <p style={{ fontSize: "11px", color: A.textLight, margin: "4px 0 0" }}>
+                {(form.content ?? "").length} ký tự
+                {(form.content ?? "").trim().length > 0 && (
+                  <> · ~{Math.max(1, Math.round((form.content ?? "").split(/\s+/).filter(Boolean).length / 200))} phút đọc</>
+                )}
+              </p>
+            </>
           )}
 
           {contentTab === "preview" && (
