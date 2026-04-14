@@ -2,12 +2,35 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { adminApi, type Article, type Topic, type Series } from "@/lib/newsApi";
 import { A, s, fmtDate, slugify } from "./shared";
 import { ImageUploadField } from "./ImageUploadField";
-import { RichEditor } from "@/components/admin/RichEditor";
 import { ArticleHtml, isHtmlContent } from "@/components/ArticleHtml";
 import { Prose } from "@/components/Prose";
 
 /* ── Article format template ─────────────────────────────────────────── */
-const ARTICLE_TEMPLATE = `<h2>Mở đầu — Vấn đề hoặc câu hỏi chính</h2><p>Viết 1–2 đoạn ngắn để đặt vấn đề. Tại sao bài viết này quan trọng với người đọc? Điều gì khiến họ muốn đọc tiếp?</p><h2>Phần 1 — Tên tiêu đề rõ ràng, cụ thể</h2><p>Nội dung phần này. Mỗi đoạn văn chỉ nên có 3–5 câu. Xuống dòng thường xuyên để dễ đọc trên điện thoại.</p><blockquote><p>Insight hoặc câu trích dẫn quan trọng nhất của phần này — điều người đọc sẽ nhớ mãi.</p></blockquote><h2>Phần 2 — Tên tiêu đề rõ ràng, cụ thể</h2><p>Nội dung phần này...</p><h3>Tiểu mục (khi cần đi sâu hơn vào một ý)</h3><p>Chi tiết của tiểu mục...</p><ul><li>Điểm quan trọng 1</li><li>Điểm quan trọng 2</li><li>Điểm quan trọng 3</li></ul><h2>Kết luận — Điều bạn nên làm ngay bây giờ</h2><p>Tóm tắt bài viết trong 2–3 câu. Đưa ra hành động cụ thể cho người đọc. Kết thúc bằng câu gợi mở hoặc lời mời tiếp tục hành trình.</p>`;
+const ARTICLE_TEMPLATE = `## Mở đầu — Vấn đề hoặc câu hỏi chính
+
+Viết 1–2 đoạn ngắn để đặt vấn đề. Tại sao bài viết này quan trọng với người đọc? Điều gì khiến họ muốn đọc tiếp?
+
+## Phần 1 — Tên tiêu đề rõ ràng, cụ thể
+
+Nội dung phần này. Mỗi đoạn văn chỉ nên có 3–5 câu. Xuống dòng thường xuyên để dễ đọc trên điện thoại.
+
+> Insight hoặc câu trích dẫn quan trọng nhất của phần này — điều người đọc sẽ nhớ mãi.
+
+## Phần 2 — Tên tiêu đề rõ ràng, cụ thể
+
+Nội dung phần này...
+
+### Tiểu mục (khi cần đi sâu hơn vào một ý)
+
+Chi tiết của tiểu mục...
+
+- Điểm quan trọng 1
+- Điểm quan trọng 2
+- Điểm quan trọng 3
+
+## Kết luận — Điều bạn nên làm ngay bây giờ
+
+Tóm tắt bài viết trong 2–3 câu. Đưa ra hành động cụ thể cho người đọc. Kết thúc bằng câu gợi mở hoặc lời mời tiếp tục hành trình.`;
 
 const FORMAT_RULES: { symbol: string; label: string; desc: string; color: string }[] = [
   { symbol: "H2", label: "Tiêu đề phần chính",   color: "#1a7868", desc: "Dùng cho mỗi phần lớn trong bài. Thường có 3–5 phần. Viết ngắn, cụ thể, dùng động từ hoặc câu hỏi." },
@@ -124,6 +147,37 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
   const [ogGenerating, setOgGenerating] = useState(false);
   const [contentTab, setContentTab] = useState<"write" | "preview">("write");
   const [showGuide, setShowGuide]   = useState(false);
+
+  const contentRef = React.useRef<HTMLTextAreaElement>(null);
+
+  const insertAtCursor = useCallback((before: string, after = "") => {
+    const ta = contentRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const end   = ta.selectionEnd;
+    const val   = ta.value;
+    const selected = val.slice(start, end);
+    const next = val.slice(0, start) + before + selected + after + val.slice(end);
+    setField("content", next);
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.setSelectionRange(start + before.length, start + before.length + selected.length);
+    });
+  }, []);
+
+  const insertLinePrefix = useCallback((prefix: string) => {
+    const ta = contentRef.current;
+    if (!ta) return;
+    const val  = ta.value;
+    const start = ta.selectionStart;
+    const lineStart = val.lastIndexOf("\n", start - 1) + 1;
+    const next = val.slice(0, lineStart) + prefix + val.slice(lineStart);
+    setField("content", next);
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.setSelectionRange(start + prefix.length, start + prefix.length);
+    });
+  }, []);
 
   const [q, setQ]               = useState("");
   const [fStatus, setFStatus]   = useState("all");
@@ -546,11 +600,59 @@ export function ArticlesPanel({ adminKey }: { adminKey: string }) {
                 )}
               </div>
 
-              <RichEditor
+              {/* ── Markdown toolbar ──────────────────────────── */}
+              <div style={{
+                display: "flex", flexWrap: "wrap", gap: "3px",
+                padding: "6px 8px", background: "rgba(0,0,0,0.025)",
+                border: `1px solid ${A.border}`, borderBottom: "none",
+                borderRadius: "6px 6px 0 0",
+              }}>
+                {[
+                  { label: "H2",   title: "Tiêu đề H2",    action: () => insertLinePrefix("## ") },
+                  { label: "H3",   title: "Tiêu đề H3",    action: () => insertLinePrefix("### ") },
+                  { label: "B",    title: "In đậm",         action: () => insertAtCursor("**", "**"), bold: true },
+                  { label: "I",    title: "In nghiêng",     action: () => insertAtCursor("_", "_"),   italic: true },
+                  { label: "—",    title: "Divider",        action: () => insertAtCursor("\n---\n") },
+                  { label: "List", title: "Danh sách",      action: () => insertLinePrefix("- ") },
+                  { label: ">",    title: "Trích dẫn",     action: () => insertLinePrefix("> ") },
+                  { label: "Link", title: "Chèn liên kết",  action: () => insertAtCursor("[", "](https://...)") },
+                ].map((btn) => (
+                  <button
+                    key={btn.label}
+                    type="button"
+                    title={btn.title}
+                    onClick={btn.action}
+                    style={{
+                      padding: "4px 10px", border: `1px solid ${A.border}`, borderRadius: "4px", cursor: "pointer",
+                      fontSize: "11.5px", background: "#fff", color: A.text,
+                      fontWeight: btn.bold ? 700 : 500,
+                      fontStyle: (btn as { italic?: boolean }).italic ? "italic" : "normal",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {btn.label}
+                  </button>
+                ))}
+              </div>
+
+              <textarea
+                ref={contentRef}
+                style={{
+                  ...s.textarea,
+                  height: "440px",
+                  fontFamily: "monospace", fontSize: "13px", lineHeight: 1.65,
+                  borderRadius: "0 0 6px 6px",
+                }}
                 value={form.content ?? ""}
-                onChange={(html) => setField("content", html)}
-                placeholder="Bắt đầu viết nội dung bài viết tại đây..."
+                placeholder={"## Tiêu đề phần đầu\n\nNội dung đoạn đầu...\n\n## Phần 2\n\nNội dung..."}
+                onChange={(e) => setField("content", e.target.value)}
               />
+              <p style={{ fontSize: "11px", color: A.textLight, margin: "4px 0 0" }}>
+                {(form.content ?? "").length} ký tự
+                {(form.content ?? "").trim().length > 0 && (
+                  <> · ~{Math.max(1, Math.round((form.content ?? "").split(/\s+/).filter(Boolean).length / 200))} phút đọc</>
+                )}
+              </p>
             </>
           )}
 
