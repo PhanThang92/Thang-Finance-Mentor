@@ -52,6 +52,14 @@ Thumbs.db
 .env
 database_export.sql
 
-# Media uploads — nội dung không commit, chỉ giữ cấu trúc thư mục qua .gitkeep
+# Media uploads — ignore toàn bộ nội dung, chỉ giữ cấu trúc thư mục qua .gitkeep
+# Phải un-ignore từng subdir tường minh (git không recurse vào dir đã bị ignore)
 uploads/**
-!uploads/**/.gitkeep
+!uploads/
+!uploads/.gitkeep
+!uploads/orig/
+!uploads/orig/.gitkeep
+!uploads/disp/
+!uploads/disp/.gitkeep
+!uploads/thumb/
+!uploads/thumb/.gitkeep
