@@ -54,6 +54,24 @@ app.get("/api/uploads", (_req, res) => {
   res.redirect("/api/admin/media/disk");
 });
 
+// ── Temporary path diagnostic endpoint (xóa sau khi debug xong) ──────────
+app.get("/api/debug-upload-dir", (_req, res) => {
+  const gd = (globalThis as Record<string, unknown>)["__dirname"];
+  const argv1 = process.argv[1] ?? "";
+  res.json({
+    UPLOAD_DIR,
+    "globalThis.__dirname": gd ?? null,
+    "import.meta.url":      new URL(import.meta.url).pathname,
+    "process.argv[1]":      argv1,
+    "process.cwd()":        process.cwd(),
+    "uploads_exists_at": {
+      from_meta:  (() => { try { const d = path.dirname(fileURLToPath(import.meta.url)); const up = path.resolve(d, "..", "uploads"); return { path: up, exists: fs.existsSync(up) }; } catch { return null; } })(),
+      from_cwd:   (() => { const up = path.join(process.cwd(), "uploads"); return { path: up, exists: fs.existsSync(up) }; })(),
+      from_gdir:  (() => { if (typeof gd !== "string") return null; const up = path.join(path.resolve(gd, ".."), "uploads"); return { path: up, exists: fs.existsSync(up) }; })(),
+    },
+  });
+});
+
 app.use("/api", router);
 
 // ── Production SPA serving ─────────────────────────────────────────────────
