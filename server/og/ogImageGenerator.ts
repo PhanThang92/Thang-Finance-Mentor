@@ -8,8 +8,9 @@ import sharp from "sharp";
    Uses sharp + SVG compositing — no browser required.
 ══════════════════════════════════════════════ */
 
-const UPLOADS_DIR = path.join(process.cwd(), "uploads");
-const OG_DIR      = path.join(UPLOADS_DIR, "og-images");
+import { UPLOAD_DIR } from "../lib/storage.js";
+
+const OG_DIR = path.join(UPLOAD_DIR, "og-images");
 
 const W = 1200;
 const H = 630;

@@ -42,21 +42,29 @@ export interface StorageProvider {
 //
 // Env var UPLOAD_DIR (tuyệt đối) luôn được ưu tiên nếu set thủ công.
 
-function _defaultUploadDir(): string {
-  try {
-    const bundleDir = path.dirname(fileURLToPath(import.meta.url));
-    // bundleDir = .../dist/ — đi lên 1 cấp để ra project root
-    const projectRoot = /[/\\]dist[/\\]?$/.test(bundleDir)
-      ? path.resolve(bundleDir, "..")
-      : bundleDir;
-    return path.join(projectRoot, "uploads");
-  } catch {
-    return path.join(process.cwd(), "uploads");
+function _findProjectRoot(): string {
+  // Đi lên từ vị trí bundle (hoặc cwd) cho đến khi tìm thấy package.json
+  // package.json luôn nằm ở project root — đáng tin hơn mọi strategy khác
+  const starts: string[] = [];
+  try { starts.push(path.dirname(fileURLToPath(import.meta.url))); } catch {}
+  starts.push(process.cwd());
+
+  for (const start of starts) {
+    let dir = start;
+    for (let i = 0; i < 10; i++) {
+      try {
+        if (fs.existsSync(path.join(dir, "package.json"))) return dir;
+      } catch {}
+      const parent = path.dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
   }
+  return process.cwd();
 }
 
 export const UPLOAD_DIR: string =
-  process.env["UPLOAD_DIR"] ?? _defaultUploadDir();
+  process.env["UPLOAD_DIR"] ?? path.join(_findProjectRoot(), "uploads");
 
 /* ── MIME type helper ───────────────────────────────────────────────── */
 export function mimeTypeForPath(filePath: string): string {
