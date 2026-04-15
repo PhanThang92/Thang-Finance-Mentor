@@ -32,13 +32,49 @@ export interface StorageProvider {
 }
 
 /* ── Upload directory ───────────────────────────────────────────────── */
-// Resolve from the compiled server file's location, not process.cwd().
-// In production:  dist/index.mjs → _serverDir = dist/ → uploads = <root>/uploads/
-// In development: same — build.mjs compiles server to dist/ before starting.
-const _serverDir = path.dirname(fileURLToPath(import.meta.url));
+// Resolves <project_root>/uploads/ regardless of how Passenger/Node starts the app.
+//
+// Three strategies tried in order:
+//   1. import.meta.url  — URL of the running bundle (dist/index.mjs)
+//   2. process.argv[1]  — path of the startup script (loader.mjs or dist/index.mjs)
+//   3. process.cwd()    — last resort
+//
+// For strategies 1 & 2: if the resolved dir ends in /dist (i.e. we're inside
+// the build output), go up one level to reach the project root where uploads/ lives.
+//
+// Always override by setting env var UPLOAD_DIR to an absolute path.
+
+function _stripDist(dir: string): string {
+  const norm = dir.replace(/\\/g, "/");
+  // Remove trailing /dist segment if present — we want the parent (project root)
+  return /\/dist\/?$/.test(norm) ? path.resolve(dir, "..") : dir;
+}
+
+function _resolveProjectRoot(): string {
+  // Strategy 1: import.meta.url (most reliable in esbuild ESM bundles)
+  try {
+    const metaDir = path.dirname(fileURLToPath(import.meta.url));
+    return _stripDist(metaDir);
+  } catch { /* ignore */ }
+
+  // Strategy 2: process.argv[1] (startup script path — reliable in Passenger)
+  const argv1 = process.argv[1];
+  if (argv1) {
+    const argvDir = path.dirname(path.resolve(argv1));
+    return _stripDist(argvDir);
+  }
+
+  // Strategy 3: cwd fallback
+  return _stripDist(process.cwd());
+}
+
+const _projectRoot = _resolveProjectRoot();
 
 export const UPLOAD_DIR: string =
-  process.env["UPLOAD_DIR"] ?? path.resolve(_serverDir, "..", "uploads");
+  process.env["UPLOAD_DIR"] ?? path.join(_projectRoot, "uploads");
+
+// Log on startup so Plesk application logs show the resolved path clearly.
+console.log(`[storage] UPLOAD_DIR = ${UPLOAD_DIR}  (project root = ${_projectRoot})`);
 
 /* ── MIME type helper ───────────────────────────────────────────────── */
 export function mimeTypeForPath(filePath: string): string {
