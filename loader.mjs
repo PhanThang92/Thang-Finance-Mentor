@@ -20,4 +20,10 @@ config({ path: path.resolve(__dirname, ".env"), override: true });
 // Fallback: .env từ thư mục hiện tại
 config({ path: path.resolve(process.cwd(), ".env"), override: true });
 
+// Đặt UPLOAD_DIR trước khi load bundle — loader.mjs luôn ở project root
+// nên __dirname là nguồn đáng tin nhất, không phụ thuộc import.meta.url trong bundle
+if (!process.env["UPLOAD_DIR"]) {
+  process.env["UPLOAD_DIR"] = path.join(__dirname, "uploads");
+}
+
 await import("./dist/index.mjs");

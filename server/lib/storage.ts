@@ -32,79 +32,31 @@ export interface StorageProvider {
 }
 
 /* ── Upload directory ───────────────────────────────────────────────── */
-// Resolves <project_root>/uploads/ regardless of how Passenger/Node starts the app.
+// UPLOAD_DIR được set bởi loader.mjs TRƯỚC KHI bundle được load:
+//   process.env.UPLOAD_DIR = path.join(__dirname_of_loader, "uploads")
+// loader.mjs nằm ở project root nên luôn đúng, không phụ thuộc vào
+// cách Passenger/Plesk resolve import.meta.url trong bundle.
 //
-// Three strategies tried in order:
-//   1. import.meta.url  — URL of the running bundle (dist/index.mjs)
-//   2. process.argv[1]  — path of the startup script (loader.mjs or dist/index.mjs)
-//   3. process.cwd()    — last resort
+// Nếu không qua loader.mjs (dev trực tiếp hoặc test), fallback về
+// import.meta.url của bundle — cũng trỏ đến dist/index.mjs, đi lên 1 cấp.
 //
-// For strategies 1 & 2: if the resolved dir ends in /dist (i.e. we're inside
-// the build output), go up one level to reach the project root where uploads/ lives.
-//
-// Always override by setting env var UPLOAD_DIR to an absolute path.
+// Env var UPLOAD_DIR (tuyệt đối) luôn được ưu tiên nếu set thủ công.
 
-// strip trailing /dist or /dist/ to get the project root
-function _stripDist(dir: string): string {
-  return /[/\\]dist[/\\]?$/.test(dir) ? path.resolve(dir, "..") : dir;
-}
-
-function _resolveProjectRoot(): string {
-  const candidates: { label: string; dir: string }[] = [];
-
-  // Strategy 1: globalThis.__dirname — set by esbuild banner at bundle load time
-  // banner: globalThis.__dirname = path.dirname(fileURLToPath(import.meta.url))
-  // This is the most reliable source because it's set once, explicitly, at the
-  // top of dist/index.mjs before any module code executes.
-  const gd = (globalThis as Record<string, unknown>)["__dirname"];
-  if (typeof gd === "string" && gd) {
-    candidates.push({ label: "globalThis.__dirname", dir: gd });
-  }
-
-  // Strategy 2: import.meta.url
+function _defaultUploadDir(): string {
   try {
-    candidates.push({ label: "import.meta.url", dir: path.dirname(fileURLToPath(import.meta.url)) });
-  } catch { /* ignore */ }
-
-  // Strategy 3: process.argv[1] (startup script — loader.mjs or dist/index.mjs)
-  if (process.argv[1]) {
-    candidates.push({ label: "process.argv[1]", dir: path.dirname(path.resolve(process.argv[1])) });
+    const bundleDir = path.dirname(fileURLToPath(import.meta.url));
+    // bundleDir = .../dist/ — đi lên 1 cấp để ra project root
+    const projectRoot = /[/\\]dist[/\\]?$/.test(bundleDir)
+      ? path.resolve(bundleDir, "..")
+      : bundleDir;
+    return path.join(projectRoot, "uploads");
+  } catch {
+    return path.join(process.cwd(), "uploads");
   }
-
-  // Strategy 4: process.cwd() — last resort
-  candidates.push({ label: "process.cwd()", dir: process.cwd() });
-
-  // Log all candidates for Plesk diagnostic
-  for (const c of candidates) {
-    console.log(`[storage:diag] ${c.label} → ${c.dir} → root: ${_stripDist(c.dir)}`);
-  }
-
-  // Use first strategy that resolves to a dir containing uploads/ or can create it
-  // (prefer one not ending in /dist to avoid writing inside build output)
-  for (const c of candidates) {
-    const root = _stripDist(c.dir);
-    const candidate = path.join(root, "uploads");
-    // If uploads/ already exists there, definitely use it
-    try {
-      if (fs.existsSync(candidate) && fs.statSync(candidate).isDirectory()) {
-        console.log(`[storage:diag] selected by fs.existsSync: ${c.label}`);
-        return root;
-      }
-    } catch { /* ignore */ }
-  }
-
-  // No uploads/ found — fall back to first candidate that stripped /dist
-  const first = candidates[0];
-  if (first) return _stripDist(first.dir);
-  return process.cwd();
 }
-
-const _projectRoot = _resolveProjectRoot();
 
 export const UPLOAD_DIR: string =
-  process.env["UPLOAD_DIR"] ?? path.join(_projectRoot, "uploads");
-
-console.log(`[storage] UPLOAD_DIR = ${UPLOAD_DIR}`);
+  process.env["UPLOAD_DIR"] ?? _defaultUploadDir();
 
 /* ── MIME type helper ───────────────────────────────────────────────── */
 export function mimeTypeForPath(filePath: string): string {
