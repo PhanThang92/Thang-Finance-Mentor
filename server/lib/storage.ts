@@ -4,15 +4,25 @@
  * Files are written to  <UPLOAD_DIR>/<relativePath>
  * and served publicly at  /api/uploads/<relativePath>
  *
- * UPLOAD_DIR defaults to  <cwd>/uploads
- * Override with env var  UPLOAD_DIR=/custom/path
+ * UPLOAD_DIR defaults to  <project_root>/uploads/
  *
- * Relative path convention (e.g. "disp/abc.webp") is kept unchanged
- * so database publicUrl columns never need to change.
+ * Path is resolved relative to the compiled server file (dist/index.mjs),
+ * NOT process.cwd(). This keeps uploads OUTSIDE of dist/ at all times,
+ * so `npm run build` (which wipes dist/public/) never destroys uploaded files.
+ *
+ * Directory layout:
+ *   <project_root>/
+ *     dist/          ← wiped on build — NEVER store user data here
+ *       index.mjs    ← compiled server (import.meta.url points here)
+ *       public/      ← compiled frontend (emptyOutDir: true)
+ *     uploads/       ← user-uploaded files, safe from build wipes
+ *
+ * Override with env var:  UPLOAD_DIR=/absolute/custom/path
  */
 
 import fs   from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
 /* ── Types ─────────────────────────────────────────────────────────── */
 export interface StorageProvider {
@@ -22,8 +32,13 @@ export interface StorageProvider {
 }
 
 /* ── Upload directory ───────────────────────────────────────────────── */
+// Resolve from the compiled server file's location, not process.cwd().
+// In production:  dist/index.mjs → _serverDir = dist/ → uploads = <root>/uploads/
+// In development: same — build.mjs compiles server to dist/ before starting.
+const _serverDir = path.dirname(fileURLToPath(import.meta.url));
+
 export const UPLOAD_DIR: string =
-  process.env["UPLOAD_DIR"] ?? path.resolve(process.cwd(), "uploads");
+  process.env["UPLOAD_DIR"] ?? path.resolve(_serverDir, "..", "uploads");
 
 /* ── MIME type helper ───────────────────────────────────────────────── */
 export function mimeTypeForPath(filePath: string): string {

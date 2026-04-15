@@ -345,6 +345,7 @@ NODE_ENV=production
 
 # Optional
 DIST_PUBLIC_DIR=/path/to/dist/public  # Override nếu Passenger set wrong cwd
+UPLOAD_DIR=/var/www/vhosts/domain.com/uploads  # Tùy chọn: đường dẫn tuyệt đối cho uploads
 ALLOWED_ORIGINS=https://domain.com,https://www.domain.com
 ```
 
