@@ -44,28 +44,59 @@ export interface StorageProvider {
 //
 // Always override by setting env var UPLOAD_DIR to an absolute path.
 
+// strip trailing /dist or /dist/ to get the project root
 function _stripDist(dir: string): string {
-  const norm = dir.replace(/\\/g, "/");
-  // Remove trailing /dist segment if present — we want the parent (project root)
-  return /\/dist\/?$/.test(norm) ? path.resolve(dir, "..") : dir;
+  return /[/\\]dist[/\\]?$/.test(dir) ? path.resolve(dir, "..") : dir;
 }
 
 function _resolveProjectRoot(): string {
-  // Strategy 1: import.meta.url (most reliable in esbuild ESM bundles)
-  try {
-    const metaDir = path.dirname(fileURLToPath(import.meta.url));
-    return _stripDist(metaDir);
-  } catch { /* ignore */ }
+  const candidates: { label: string; dir: string }[] = [];
 
-  // Strategy 2: process.argv[1] (startup script path — reliable in Passenger)
-  const argv1 = process.argv[1];
-  if (argv1) {
-    const argvDir = path.dirname(path.resolve(argv1));
-    return _stripDist(argvDir);
+  // Strategy 1: globalThis.__dirname — set by esbuild banner at bundle load time
+  // banner: globalThis.__dirname = path.dirname(fileURLToPath(import.meta.url))
+  // This is the most reliable source because it's set once, explicitly, at the
+  // top of dist/index.mjs before any module code executes.
+  const gd = (globalThis as Record<string, unknown>)["__dirname"];
+  if (typeof gd === "string" && gd) {
+    candidates.push({ label: "globalThis.__dirname", dir: gd });
   }
 
-  // Strategy 3: cwd fallback
-  return _stripDist(process.cwd());
+  // Strategy 2: import.meta.url
+  try {
+    candidates.push({ label: "import.meta.url", dir: path.dirname(fileURLToPath(import.meta.url)) });
+  } catch { /* ignore */ }
+
+  // Strategy 3: process.argv[1] (startup script — loader.mjs or dist/index.mjs)
+  if (process.argv[1]) {
+    candidates.push({ label: "process.argv[1]", dir: path.dirname(path.resolve(process.argv[1])) });
+  }
+
+  // Strategy 4: process.cwd() — last resort
+  candidates.push({ label: "process.cwd()", dir: process.cwd() });
+
+  // Log all candidates for Plesk diagnostic
+  for (const c of candidates) {
+    console.log(`[storage:diag] ${c.label} → ${c.dir} → root: ${_stripDist(c.dir)}`);
+  }
+
+  // Use first strategy that resolves to a dir containing uploads/ or can create it
+  // (prefer one not ending in /dist to avoid writing inside build output)
+  for (const c of candidates) {
+    const root = _stripDist(c.dir);
+    const candidate = path.join(root, "uploads");
+    // If uploads/ already exists there, definitely use it
+    try {
+      if (fs.existsSync(candidate) && fs.statSync(candidate).isDirectory()) {
+        console.log(`[storage:diag] selected by fs.existsSync: ${c.label}`);
+        return root;
+      }
+    } catch { /* ignore */ }
+  }
+
+  // No uploads/ found — fall back to first candidate that stripped /dist
+  const first = candidates[0];
+  if (first) return _stripDist(first.dir);
+  return process.cwd();
 }
 
 const _projectRoot = _resolveProjectRoot();
@@ -73,8 +104,7 @@ const _projectRoot = _resolveProjectRoot();
 export const UPLOAD_DIR: string =
   process.env["UPLOAD_DIR"] ?? path.join(_projectRoot, "uploads");
 
-// Log on startup so Plesk application logs show the resolved path clearly.
-console.log(`[storage] UPLOAD_DIR = ${UPLOAD_DIR}  (project root = ${_projectRoot})`);
+console.log(`[storage] UPLOAD_DIR = ${UPLOAD_DIR}`);
 
 /* ── MIME type helper ───────────────────────────────────────────────── */
 export function mimeTypeForPath(filePath: string): string {
