@@ -274,18 +274,18 @@ export default function Admin() {
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: A.bg, fontFamily: "'Be Vietnam Pro', sans-serif" }}>
 
       {/* ── Top bar ─────────────────────────────────────────────────── */}
-      <header style={{ height: "52px", flexShrink: 0, background: "#fff", borderBottom: `1px solid ${A.border}`, display: "flex", alignItems: "center", padding: "0 1.25rem 0 0", position: "sticky", top: 0, zIndex: 100 }}>
-        <div style={{ width: "220px", flexShrink: 0, display: "flex", alignItems: "center", gap: "0.625rem", padding: "0 1.25rem", height: "100%", borderRight: `1px solid ${A.border}` }}>
-          <div style={{ width: "26px", height: "26px", borderRadius: "7px", background: "linear-gradient(140deg, #22917f, #1a7868)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <span style={{ color: "#fff", fontSize: "12px", fontWeight: 700 }}>S</span>
+      <header style={{ height: "60px", flexShrink: 0, background: "rgba(255,255,255,0.85)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${A.border}`, display: "flex", alignItems: "center", padding: "0 1.25rem 0 0", position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ width: "240px", flexShrink: 0, display: "flex", alignItems: "center", gap: "0.75rem", padding: "0 1.5rem", height: "100%", borderRight: `1px solid ${A.border}` }}>
+          <div style={{ width: "30px", height: "30px", borderRadius: "8px", background: `linear-gradient(135deg, ${A.primary}, ${A.primaryHov})`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(15, 94, 80, 0.25)" }}>
+            <span style={{ color: "#fff", fontSize: "14px", fontWeight: 700 }}>S</span>
           </div>
           <div>
-            <p style={{ fontSize: "12.5px", fontWeight: 700, color: A.text, margin: 0, lineHeight: 1.2 }}>Thắng SWC</p>
-            <p style={{ fontSize: "9.5px", fontWeight: 600, color: A.primary, margin: 0, letterSpacing: "0.08em", textTransform: "uppercase" }}>Admin</p>
+            <p style={{ fontSize: "13px", fontWeight: 700, color: A.text, margin: 0, lineHeight: 1.2 }}>Thắng SWC</p>
+            <p style={{ fontSize: "10px", fontWeight: 600, color: A.primary, margin: 0, letterSpacing: "0.08em", textTransform: "uppercase" }}>Workspace</p>
           </div>
         </div>
-        <div style={{ flex: 1, padding: "0 1.5rem" }}>
-          <p style={{ fontSize: "14px", fontWeight: 600, color: A.text, margin: 0 }}>{SECTION_TITLES[section]}</p>
+        <div style={{ flex: 1, padding: "0 2rem" }}>
+          <p style={{ fontSize: "15px", fontWeight: 600, color: A.text, margin: 0 }}>{SECTION_TITLES[section]}</p>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <a href="/" target="_blank" rel="noopener" style={{ fontSize: "12.5px", fontWeight: 500, color: A.textMuted, textDecoration: "none", padding: "5px 12px", borderRadius: "6px", border: `1px solid ${A.border}`, display: "flex", alignItems: "center", gap: "5px" }}>
@@ -301,12 +301,12 @@ export default function Admin() {
       <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden" }}>
 
         {/* ── Sidebar ─────────────────────────────────────────────── */}
-        <aside style={{ width: "220px", flexShrink: 0, background: "#fff", borderRight: `1px solid ${A.border}`, display: "flex", flexDirection: "column", position: "sticky", top: "52px", height: "calc(100vh - 52px)", overflowY: "auto" }}>
-          <nav style={{ flex: 1, padding: "0.875rem 0.625rem 1rem" }}>
+        <aside style={{ width: "240px", flexShrink: 0, background: "#fff", borderRight: `1px solid ${A.border}`, display: "flex", flexDirection: "column", position: "sticky", top: "60px", height: "calc(100vh - 60px)", overflowY: "auto" }}>
+          <nav style={{ flex: 1, padding: "1.25rem 1rem" }}>
             {NAV_STRUCTURE.map((group, gi) => (
-              <div key={gi} style={{ marginBottom: "0.5rem" }}>
+              <div key={gi} style={{ marginBottom: "0.75rem" }}>
                 {group.group && (
-                  <p style={{ fontSize: "9.5px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: A.textLight, margin: gi === 0 ? "0 0 4px 10px" : "12px 0 4px 10px" }}>
+                  <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: A.textLight, margin: gi === 0 ? "0 0 6px 12px" : "16px 0 6px 12px" }}>
                     {group.group}
                   </p>
                 )}
@@ -314,14 +314,17 @@ export default function Admin() {
                   const active = section === item.id;
                   return (
                     <button key={item.id} onClick={() => setSection(item.id)} style={{
-                      width: "100%", display: "flex", alignItems: "center", gap: "0.625rem",
-                      padding: "7px 10px 7px 8px", borderRadius: "7px", border: "none", cursor: "pointer", textAlign: "left",
-                      background: active ? `${A.primary}12` : "transparent",
+                      width: "100%", display: "flex", alignItems: "center", gap: "0.75rem",
+                      padding: "8px 12px", borderRadius: "8px", border: "none", cursor: "pointer", textAlign: "left",
+                      background: active ? A.primaryLight : "transparent",
                       color: active ? A.primary : A.textMuted,
-                      fontWeight: active ? 600 : 400, fontSize: "13px",
-                      transition: "background 0.12s ease, color 0.12s ease",
-                      marginBottom: "1px", position: "relative",
-                    }}>
+                      fontWeight: active ? 600 : 500, fontSize: "13.5px",
+                      transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                      marginBottom: "2px", position: "relative",
+                    }}
+                    onMouseEnter={(e) => { if (!active) { e.currentTarget.style.background = "rgba(0,0,0,0.02)"; e.currentTarget.style.transform = "translateX(2px)"; } }}
+                    onMouseLeave={(e) => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "translateX(0)"; } }}
+                    >
                       {active && (
                         <span style={{ position: "absolute", left: 0, top: "5px", bottom: "5px", width: "3px", borderRadius: "0 2px 2px 0", background: A.primary }} />
                       )}

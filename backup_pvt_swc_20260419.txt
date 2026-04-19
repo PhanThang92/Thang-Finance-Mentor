@@ -1,0 +1,2515 @@
+--
+-- PostgreSQL database dump
+--
+
+\restrict oFEHbcNWuFNQkpR2ScBxqW1OsXocTZ798St8DdcSTs8FhH2nFgdhF1H0a58CrPo
+
+-- Dumped from database version 16.10
+-- Dumped by pg_dump version 16.10
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+ALTER TABLE IF EXISTS ONLY public.resource_access_events DROP CONSTRAINT IF EXISTS resource_access_events_subscriber_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.resource_access_events DROP CONSTRAINT IF EXISTS resource_access_events_resource_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.resource_access_events DROP CONSTRAINT IF EXISTS resource_access_events_lead_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.news_posts DROP CONSTRAINT IF EXISTS news_posts_product_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.news_posts DROP CONSTRAINT IF EXISTS news_posts_category_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.news_post_tags DROP CONSTRAINT IF EXISTS news_post_tags_tag_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.news_post_tags DROP CONSTRAINT IF EXISTS news_post_tags_post_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.lead_notes DROP CONSTRAINT IF EXISTS lead_notes_lead_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.email_subscribers DROP CONSTRAINT IF EXISTS email_subscribers_linked_lead_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.email_sequence_steps DROP CONSTRAINT IF EXISTS email_sequence_steps_target_sequence_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.email_sequence_steps DROP CONSTRAINT IF EXISTS email_sequence_steps_sequence_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.email_sequence_enrollments DROP CONSTRAINT IF EXISTS email_sequence_enrollments_subscriber_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.email_sequence_enrollments DROP CONSTRAINT IF EXISTS email_sequence_enrollments_sequence_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.email_events DROP CONSTRAINT IF EXISTS email_events_subscriber_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.email_events DROP CONSTRAINT IF EXISTS email_events_step_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.email_events DROP CONSTRAINT IF EXISTS email_events_sequence_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.email_events DROP CONSTRAINT IF EXISTS email_events_campaign_id_fkey;
+DROP INDEX IF EXISTS public.lead_notes_lead_id_idx;
+DROP INDEX IF EXISTS public.idx_resource_access_type;
+DROP INDEX IF EXISTS public.idx_resource_access_resource_id;
+DROP INDEX IF EXISTS public.idx_resource_access_email;
+DROP INDEX IF EXISTS public.idx_media_assets_created_at;
+DROP INDEX IF EXISTS public.idx_media_assets_content_type;
+DROP INDEX IF EXISTS public.idx_lead_notes_lead_id;
+DROP INDEX IF EXISTS public.idx_lead_notes_created_at;
+DROP INDEX IF EXISTS public.idx_lead_magnets_status;
+DROP INDEX IF EXISTS public.idx_lead_magnets_slug;
+DROP INDEX IF EXISTS public.idx_lead_magnets_featured;
+DROP INDEX IF EXISTS public.idx_email_subs_status;
+DROP INDEX IF EXISTS public.idx_email_subs_email;
+DROP INDEX IF EXISTS public.idx_email_enroll_status_next;
+DROP INDEX IF EXISTS public.idx_ae_type_date;
+DROP INDEX IF EXISTS public.idx_ae_type;
+DROP INDEX IF EXISTS public.idx_ae_entity_slug;
+DROP INDEX IF EXISTS public.idx_ae_created_at;
+DROP INDEX IF EXISTS public.email_sequences_slug_idx;
+DROP INDEX IF EXISTS public.email_events_sub_type_idx;
+DROP INDEX IF EXISTS public.email_events_step_idx;
+DROP INDEX IF EXISTS public.email_events_seq_idx;
+ALTER TABLE IF EXISTS ONLY public.videos DROP CONSTRAINT IF EXISTS videos_slug_key;
+ALTER TABLE IF EXISTS ONLY public.videos DROP CONSTRAINT IF EXISTS videos_pkey;
+ALTER TABLE IF EXISTS ONLY public.topics DROP CONSTRAINT IF EXISTS topics_slug_key;
+ALTER TABLE IF EXISTS ONLY public.topics DROP CONSTRAINT IF EXISTS topics_pkey;
+ALTER TABLE IF EXISTS ONLY public.site_settings DROP CONSTRAINT IF EXISTS site_settings_pkey;
+ALTER TABLE IF EXISTS ONLY public.site_contact_widget_settings DROP CONSTRAINT IF EXISTS site_contact_widget_settings_pkey;
+ALTER TABLE IF EXISTS ONLY public.series DROP CONSTRAINT IF EXISTS series_slug_key;
+ALTER TABLE IF EXISTS ONLY public.series DROP CONSTRAINT IF EXISTS series_pkey;
+ALTER TABLE IF EXISTS ONLY public.resource_access_events DROP CONSTRAINT IF EXISTS resource_access_events_pkey;
+ALTER TABLE IF EXISTS ONLY public.news_tags DROP CONSTRAINT IF EXISTS news_tags_slug_key;
+ALTER TABLE IF EXISTS ONLY public.news_tags DROP CONSTRAINT IF EXISTS news_tags_pkey;
+ALTER TABLE IF EXISTS ONLY public.news_products DROP CONSTRAINT IF EXISTS news_products_slug_key;
+ALTER TABLE IF EXISTS ONLY public.news_products DROP CONSTRAINT IF EXISTS news_products_pkey;
+ALTER TABLE IF EXISTS ONLY public.news_posts DROP CONSTRAINT IF EXISTS news_posts_slug_key;
+ALTER TABLE IF EXISTS ONLY public.news_posts DROP CONSTRAINT IF EXISTS news_posts_pkey;
+ALTER TABLE IF EXISTS ONLY public.news_post_tags DROP CONSTRAINT IF EXISTS news_post_tags_pkey;
+ALTER TABLE IF EXISTS ONLY public.news_categories DROP CONSTRAINT IF EXISTS news_categories_slug_key;
+ALTER TABLE IF EXISTS ONLY public.news_categories DROP CONSTRAINT IF EXISTS news_categories_pkey;
+ALTER TABLE IF EXISTS ONLY public.media_assets DROP CONSTRAINT IF EXISTS media_assets_pkey;
+ALTER TABLE IF EXISTS ONLY public.leads DROP CONSTRAINT IF EXISTS leads_pkey;
+ALTER TABLE IF EXISTS ONLY public.lead_notes DROP CONSTRAINT IF EXISTS lead_notes_pkey;
+ALTER TABLE IF EXISTS ONLY public.lead_magnets DROP CONSTRAINT IF EXISTS lead_magnets_slug_key;
+ALTER TABLE IF EXISTS ONLY public.lead_magnets DROP CONSTRAINT IF EXISTS lead_magnets_pkey;
+ALTER TABLE IF EXISTS ONLY public.email_subscribers DROP CONSTRAINT IF EXISTS email_subscribers_pkey;
+ALTER TABLE IF EXISTS ONLY public.email_subscribers DROP CONSTRAINT IF EXISTS email_subscribers_email_key;
+ALTER TABLE IF EXISTS ONLY public.email_sequences DROP CONSTRAINT IF EXISTS email_sequences_pkey;
+ALTER TABLE IF EXISTS ONLY public.email_sequence_steps DROP CONSTRAINT IF EXISTS email_sequence_steps_pkey;
+ALTER TABLE IF EXISTS ONLY public.email_sequence_enrollments DROP CONSTRAINT IF EXISTS email_sequence_enrollments_pkey;
+ALTER TABLE IF EXISTS ONLY public.email_events DROP CONSTRAINT IF EXISTS email_events_pkey;
+ALTER TABLE IF EXISTS ONLY public.email_campaigns DROP CONSTRAINT IF EXISTS email_campaigns_pkey;
+ALTER TABLE IF EXISTS ONLY public.contact_channels DROP CONSTRAINT IF EXISTS contact_channels_pkey;
+ALTER TABLE IF EXISTS ONLY public.articles DROP CONSTRAINT IF EXISTS articles_slug_key;
+ALTER TABLE IF EXISTS ONLY public.articles DROP CONSTRAINT IF EXISTS articles_pkey;
+ALTER TABLE IF EXISTS ONLY public.analytics_events DROP CONSTRAINT IF EXISTS analytics_events_pkey;
+ALTER TABLE IF EXISTS public.videos ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.topics ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.site_contact_widget_settings ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.series ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.resource_access_events ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.news_tags ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.news_products ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.news_posts ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.news_categories ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.media_assets ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.leads ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.lead_notes ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.lead_magnets ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.email_subscribers ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.email_sequences ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.email_sequence_steps ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.email_sequence_enrollments ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.email_events ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.email_campaigns ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.contact_channels ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.articles ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.analytics_events ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE IF EXISTS public.videos_id_seq;
+DROP TABLE IF EXISTS public.videos;
+DROP SEQUENCE IF EXISTS public.topics_id_seq;
+DROP TABLE IF EXISTS public.topics;
+DROP TABLE IF EXISTS public.site_settings;
+DROP SEQUENCE IF EXISTS public.site_contact_widget_settings_id_seq;
+DROP TABLE IF EXISTS public.site_contact_widget_settings;
+DROP SEQUENCE IF EXISTS public.series_id_seq;
+DROP TABLE IF EXISTS public.series;
+DROP SEQUENCE IF EXISTS public.resource_access_events_id_seq;
+DROP TABLE IF EXISTS public.resource_access_events;
+DROP SEQUENCE IF EXISTS public.news_tags_id_seq;
+DROP TABLE IF EXISTS public.news_tags;
+DROP SEQUENCE IF EXISTS public.news_products_id_seq;
+DROP TABLE IF EXISTS public.news_products;
+DROP SEQUENCE IF EXISTS public.news_posts_id_seq;
+DROP TABLE IF EXISTS public.news_posts;
+DROP TABLE IF EXISTS public.news_post_tags;
+DROP SEQUENCE IF EXISTS public.news_categories_id_seq;
+DROP TABLE IF EXISTS public.news_categories;
+DROP SEQUENCE IF EXISTS public.media_assets_id_seq;
+DROP TABLE IF EXISTS public.media_assets;
+DROP SEQUENCE IF EXISTS public.leads_id_seq;
+DROP TABLE IF EXISTS public.leads;
+DROP SEQUENCE IF EXISTS public.lead_notes_id_seq;
+DROP TABLE IF EXISTS public.lead_notes;
+DROP SEQUENCE IF EXISTS public.lead_magnets_id_seq;
+DROP TABLE IF EXISTS public.lead_magnets;
+DROP SEQUENCE IF EXISTS public.email_subscribers_id_seq;
+DROP TABLE IF EXISTS public.email_subscribers;
+DROP SEQUENCE IF EXISTS public.email_sequences_id_seq;
+DROP TABLE IF EXISTS public.email_sequences;
+DROP SEQUENCE IF EXISTS public.email_sequence_steps_id_seq;
+DROP TABLE IF EXISTS public.email_sequence_steps;
+DROP SEQUENCE IF EXISTS public.email_sequence_enrollments_id_seq;
+DROP TABLE IF EXISTS public.email_sequence_enrollments;
+DROP SEQUENCE IF EXISTS public.email_events_id_seq;
+DROP TABLE IF EXISTS public.email_events;
+DROP SEQUENCE IF EXISTS public.email_campaigns_id_seq;
+DROP TABLE IF EXISTS public.email_campaigns;
+DROP SEQUENCE IF EXISTS public.contact_channels_id_seq;
+DROP TABLE IF EXISTS public.contact_channels;
+DROP SEQUENCE IF EXISTS public.articles_id_seq;
+DROP TABLE IF EXISTS public.articles;
+DROP SEQUENCE IF EXISTS public.analytics_events_id_seq;
+DROP TABLE IF EXISTS public.analytics_events;
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: analytics_events; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.analytics_events (
+    id integer NOT NULL,
+    event_type text NOT NULL,
+    entity_type text,
+    entity_slug text,
+    event_label text,
+    page_path text,
+    referrer text,
+    session_id text,
+    visitor_id text,
+    metadata jsonb,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.analytics_events OWNER TO postgres;
+
+--
+-- Name: analytics_events_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.analytics_events_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.analytics_events_id_seq OWNER TO postgres;
+
+--
+-- Name: analytics_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.analytics_events_id_seq OWNED BY public.analytics_events.id;
+
+
+--
+-- Name: articles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.articles (
+    id integer NOT NULL,
+    title text NOT NULL,
+    slug text NOT NULL,
+    excerpt text,
+    content text,
+    cover_image_url text,
+    cover_image_alt text,
+    category text,
+    category_slug text,
+    tags text[],
+    publish_date timestamp with time zone,
+    featured boolean DEFAULT false NOT NULL,
+    status text DEFAULT 'draft'::text NOT NULL,
+    reading_time text,
+    topic_slug text,
+    series_slug text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    seo_title text,
+    seo_description text,
+    seo_keywords text,
+    og_title text,
+    og_description text,
+    og_image_url text,
+    canonical_url text,
+    noindex boolean DEFAULT false NOT NULL,
+    display_order integer DEFAULT 0 NOT NULL,
+    show_on_homepage boolean DEFAULT false NOT NULL,
+    cover_thumbnail_url text,
+    generated_og_image_url text,
+    og_image_generated boolean DEFAULT false NOT NULL,
+    og_image_updated_at timestamp with time zone
+);
+
+
+ALTER TABLE public.articles OWNER TO postgres;
+
+--
+-- Name: articles_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.articles_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.articles_id_seq OWNER TO postgres;
+
+--
+-- Name: articles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.articles_id_seq OWNED BY public.articles.id;
+
+
+--
+-- Name: contact_channels; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.contact_channels (
+    id integer NOT NULL,
+    channel_type text NOT NULL,
+    label text NOT NULL,
+    value text NOT NULL,
+    icon_key text,
+    tooltip_text text,
+    is_enabled boolean DEFAULT true NOT NULL,
+    display_order integer DEFAULT 0 NOT NULL,
+    open_mode text DEFAULT 'new_tab'::text NOT NULL,
+    show_on_desktop boolean DEFAULT true NOT NULL,
+    show_on_mobile boolean DEFAULT true NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.contact_channels OWNER TO postgres;
+
+--
+-- Name: contact_channels_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.contact_channels_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.contact_channels_id_seq OWNER TO postgres;
+
+--
+-- Name: contact_channels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.contact_channels_id_seq OWNED BY public.contact_channels.id;
+
+
+--
+-- Name: email_campaigns; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.email_campaigns (
+    id integer NOT NULL,
+    title text NOT NULL,
+    subject text NOT NULL,
+    preview_text text,
+    campaign_type text DEFAULT 'newsletter'::text NOT NULL,
+    status text DEFAULT 'draft'::text NOT NULL,
+    content_body text,
+    target_type text DEFAULT 'all'::text,
+    target_tags jsonb,
+    recipient_count integer,
+    sent_at timestamp with time zone,
+    scheduled_at timestamp with time zone,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    target_stage text,
+    target_source text,
+    target_interest text
+);
+
+
+ALTER TABLE public.email_campaigns OWNER TO postgres;
+
+--
+-- Name: email_campaigns_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.email_campaigns_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.email_campaigns_id_seq OWNER TO postgres;
+
+--
+-- Name: email_campaigns_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.email_campaigns_id_seq OWNED BY public.email_campaigns.id;
+
+
+--
+-- Name: email_events; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.email_events (
+    id integer NOT NULL,
+    subscriber_id integer,
+    campaign_id integer,
+    event_type text NOT NULL,
+    event_metadata jsonb,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    sequence_id integer,
+    step_id integer
+);
+
+
+ALTER TABLE public.email_events OWNER TO postgres;
+
+--
+-- Name: email_events_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.email_events_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.email_events_id_seq OWNER TO postgres;
+
+--
+-- Name: email_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.email_events_id_seq OWNED BY public.email_events.id;
+
+
+--
+-- Name: email_sequence_enrollments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.email_sequence_enrollments (
+    id integer NOT NULL,
+    subscriber_id integer NOT NULL,
+    sequence_id integer NOT NULL,
+    current_step integer DEFAULT 1 NOT NULL,
+    status text DEFAULT 'active'::text NOT NULL,
+    next_send_at timestamp with time zone,
+    enrolled_at timestamp with time zone DEFAULT now() NOT NULL,
+    completed_at timestamp with time zone
+);
+
+
+ALTER TABLE public.email_sequence_enrollments OWNER TO postgres;
+
+--
+-- Name: email_sequence_enrollments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.email_sequence_enrollments_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.email_sequence_enrollments_id_seq OWNER TO postgres;
+
+--
+-- Name: email_sequence_enrollments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.email_sequence_enrollments_id_seq OWNED BY public.email_sequence_enrollments.id;
+
+
+--
+-- Name: email_sequence_steps; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.email_sequence_steps (
+    id integer NOT NULL,
+    sequence_id integer NOT NULL,
+    step_order integer DEFAULT 1 NOT NULL,
+    delay_days integer DEFAULT 0 NOT NULL,
+    subject text NOT NULL,
+    preview_text text,
+    content_body text,
+    is_active boolean DEFAULT true NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    step_type text DEFAULT 'email'::text NOT NULL,
+    tag_name text,
+    action_data jsonb,
+    sender_name text,
+    sender_email text,
+    cta_text text,
+    cta_url text,
+    cta_secondary_text text,
+    cta_secondary_url text,
+    target_sequence_id integer,
+    update_field text,
+    update_value text
+);
+
+
+ALTER TABLE public.email_sequence_steps OWNER TO postgres;
+
+--
+-- Name: email_sequence_steps_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.email_sequence_steps_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.email_sequence_steps_id_seq OWNER TO postgres;
+
+--
+-- Name: email_sequence_steps_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.email_sequence_steps_id_seq OWNED BY public.email_sequence_steps.id;
+
+
+--
+-- Name: email_sequences; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.email_sequences (
+    id integer NOT NULL,
+    title text NOT NULL,
+    description text,
+    status text DEFAULT 'active'::text NOT NULL,
+    trigger_type text DEFAULT 'on_subscribe'::text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    trigger_tags jsonb,
+    goal text,
+    slug text,
+    trigger_config jsonb,
+    exclude_rules jsonb
+);
+
+
+ALTER TABLE public.email_sequences OWNER TO postgres;
+
+--
+-- Name: email_sequences_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.email_sequences_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.email_sequences_id_seq OWNER TO postgres;
+
+--
+-- Name: email_sequences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.email_sequences_id_seq OWNED BY public.email_sequences.id;
+
+
+--
+-- Name: email_subscribers; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.email_subscribers (
+    id integer NOT NULL,
+    email text NOT NULL,
+    full_name text,
+    subscriber_status text DEFAULT 'subscribed'::text NOT NULL,
+    source_type text,
+    source_page text,
+    source_section text,
+    consent_status text DEFAULT 'given'::text,
+    unsubscribe_token text NOT NULL,
+    linked_lead_id integer,
+    tags jsonb,
+    subscribed_at timestamp with time zone DEFAULT now(),
+    unsubscribed_at timestamp with time zone,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    first_name text,
+    interest_primary text,
+    stage text DEFAULT 'new_lead'::text,
+    last_email_sent_at timestamp with time zone,
+    last_opened_at timestamp with time zone,
+    last_clicked_at timestamp with time zone
+);
+
+
+ALTER TABLE public.email_subscribers OWNER TO postgres;
+
+--
+-- Name: email_subscribers_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.email_subscribers_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.email_subscribers_id_seq OWNER TO postgres;
+
+--
+-- Name: email_subscribers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.email_subscribers_id_seq OWNED BY public.email_subscribers.id;
+
+
+--
+-- Name: lead_magnets; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.lead_magnets (
+    id integer NOT NULL,
+    title text NOT NULL,
+    slug text NOT NULL,
+    short_description text,
+    full_description text,
+    resource_type text DEFAULT 'file'::text NOT NULL,
+    cover_image_url text,
+    cover_image_alt text,
+    file_url text,
+    file_name text,
+    file_size integer,
+    file_mime_type text,
+    external_url text,
+    thank_you_message text,
+    button_label text,
+    status text DEFAULT 'draft'::text NOT NULL,
+    gating_mode text DEFAULT 'email_unlock'::text NOT NULL,
+    delivery_mode text DEFAULT 'direct'::text NOT NULL,
+    featured boolean DEFAULT false NOT NULL,
+    topic_slug text,
+    tags jsonb,
+    cta_title text,
+    cta_description text,
+    seo_title text,
+    seo_description text,
+    og_image_url text,
+    requires_phone boolean DEFAULT false NOT NULL,
+    sort_order integer DEFAULT 0,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.lead_magnets OWNER TO postgres;
+
+--
+-- Name: lead_magnets_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.lead_magnets_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.lead_magnets_id_seq OWNER TO postgres;
+
+--
+-- Name: lead_magnets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.lead_magnets_id_seq OWNED BY public.lead_magnets.id;
+
+
+--
+-- Name: lead_notes; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.lead_notes (
+    id integer NOT NULL,
+    lead_id integer NOT NULL,
+    note text NOT NULL,
+    note_type text DEFAULT 'internal'::text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.lead_notes OWNER TO postgres;
+
+--
+-- Name: lead_notes_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.lead_notes_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.lead_notes_id_seq OWNER TO postgres;
+
+--
+-- Name: lead_notes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.lead_notes_id_seq OWNED BY public.lead_notes.id;
+
+
+--
+-- Name: leads; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.leads (
+    id integer NOT NULL,
+    name text NOT NULL,
+    email text,
+    phone text,
+    source_type text,
+    source_page text,
+    product_ref text,
+    message text,
+    status text DEFAULT 'moi'::text NOT NULL,
+    notes text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    interest_topic text,
+    form_type text,
+    lead_stage text,
+    tags jsonb,
+    last_contacted_at timestamp with time zone,
+    next_follow_up_at timestamp with time zone,
+    consent_status text,
+    utm_source text,
+    utm_medium text,
+    utm_campaign text,
+    assigned_to text,
+    score integer DEFAULT 0 NOT NULL,
+    source_section text,
+    referrer text,
+    utm_term text,
+    utm_content text,
+    article_slug text,
+    article_title text,
+    synced_to_notion boolean DEFAULT false NOT NULL,
+    notion_page_id text,
+    notion_synced_at timestamp with time zone,
+    synced_to_sheets boolean DEFAULT false NOT NULL,
+    sheets_synced_at timestamp with time zone,
+    sync_error text,
+    notify_status text,
+    notify_error text
+);
+
+
+ALTER TABLE public.leads OWNER TO postgres;
+
+--
+-- Name: leads_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.leads_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.leads_id_seq OWNER TO postgres;
+
+--
+-- Name: leads_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.leads_id_seq OWNED BY public.leads.id;
+
+
+--
+-- Name: media_assets; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.media_assets (
+    id integer NOT NULL,
+    title text,
+    filename text NOT NULL,
+    original_filename text,
+    mime_type text,
+    size_bytes integer,
+    width integer,
+    height integer,
+    storage_path_original text,
+    storage_path_processed text DEFAULT ''::text NOT NULL,
+    storage_path_thumbnail text,
+    public_url text DEFAULT ''::text NOT NULL,
+    thumbnail_url text,
+    alt_text text,
+    watermark_enabled boolean DEFAULT true NOT NULL,
+    watermark_text text,
+    content_type text DEFAULT 'shared'::text NOT NULL,
+    usage_context text DEFAULT 'cover'::text NOT NULL,
+    tags text[],
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    storage_provider text DEFAULT 'local'::text NOT NULL,
+    storage_path_medium text,
+    medium_url text
+);
+
+
+ALTER TABLE public.media_assets OWNER TO postgres;
+
+--
+-- Name: media_assets_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.media_assets_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.media_assets_id_seq OWNER TO postgres;
+
+--
+-- Name: media_assets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.media_assets_id_seq OWNED BY public.media_assets.id;
+
+
+--
+-- Name: news_categories; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.news_categories (
+    id integer NOT NULL,
+    name text NOT NULL,
+    slug text NOT NULL,
+    description text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.news_categories OWNER TO postgres;
+
+--
+-- Name: news_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.news_categories_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.news_categories_id_seq OWNER TO postgres;
+
+--
+-- Name: news_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.news_categories_id_seq OWNED BY public.news_categories.id;
+
+
+--
+-- Name: news_post_tags; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.news_post_tags (
+    post_id integer NOT NULL,
+    tag_id integer NOT NULL
+);
+
+
+ALTER TABLE public.news_post_tags OWNER TO postgres;
+
+--
+-- Name: news_posts; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.news_posts (
+    id integer NOT NULL,
+    title text NOT NULL,
+    slug text NOT NULL,
+    excerpt text,
+    content text,
+    featured_image text,
+    category_id integer,
+    product_id integer,
+    status text DEFAULT 'draft'::text NOT NULL,
+    published_at timestamp with time zone,
+    author_name text DEFAULT 'Phan Văn Thắng'::text NOT NULL,
+    seo_title text,
+    seo_description text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    is_featured boolean DEFAULT false NOT NULL,
+    show_on_homepage boolean DEFAULT false NOT NULL,
+    show_in_related boolean DEFAULT true NOT NULL,
+    featured_image_display text,
+    CONSTRAINT news_posts_status_check CHECK ((status = ANY (ARRAY['draft'::text, 'published'::text])))
+);
+
+
+ALTER TABLE public.news_posts OWNER TO postgres;
+
+--
+-- Name: news_posts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.news_posts_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.news_posts_id_seq OWNER TO postgres;
+
+--
+-- Name: news_posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.news_posts_id_seq OWNED BY public.news_posts.id;
+
+
+--
+-- Name: news_products; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.news_products (
+    id integer NOT NULL,
+    name text NOT NULL,
+    slug text NOT NULL,
+    description text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.news_products OWNER TO postgres;
+
+--
+-- Name: news_products_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.news_products_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.news_products_id_seq OWNER TO postgres;
+
+--
+-- Name: news_products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.news_products_id_seq OWNED BY public.news_products.id;
+
+
+--
+-- Name: news_tags; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.news_tags (
+    id integer NOT NULL,
+    name text NOT NULL,
+    slug text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.news_tags OWNER TO postgres;
+
+--
+-- Name: news_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.news_tags_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.news_tags_id_seq OWNER TO postgres;
+
+--
+-- Name: news_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.news_tags_id_seq OWNED BY public.news_tags.id;
+
+
+--
+-- Name: resource_access_events; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.resource_access_events (
+    id integer NOT NULL,
+    resource_id integer NOT NULL,
+    lead_id integer,
+    subscriber_id integer,
+    full_name text,
+    email text,
+    phone text,
+    access_type text NOT NULL,
+    source_page text,
+    source_section text,
+    metadata jsonb,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.resource_access_events OWNER TO postgres;
+
+--
+-- Name: resource_access_events_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.resource_access_events_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.resource_access_events_id_seq OWNER TO postgres;
+
+--
+-- Name: resource_access_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.resource_access_events_id_seq OWNED BY public.resource_access_events.id;
+
+
+--
+-- Name: series; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.series (
+    id integer NOT NULL,
+    title text NOT NULL,
+    slug text NOT NULL,
+    description text,
+    short_description text,
+    cover_image_url text,
+    cover_image_alt text,
+    type text DEFAULT 'mixed'::text NOT NULL,
+    featured boolean DEFAULT false NOT NULL,
+    display_order integer DEFAULT 0 NOT NULL,
+    status text DEFAULT 'active'::text NOT NULL,
+    seo_title text,
+    seo_description text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.series OWNER TO postgres;
+
+--
+-- Name: series_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.series_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.series_id_seq OWNER TO postgres;
+
+--
+-- Name: series_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.series_id_seq OWNED BY public.series.id;
+
+
+--
+-- Name: site_contact_widget_settings; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.site_contact_widget_settings (
+    id integer NOT NULL,
+    is_enabled boolean DEFAULT true NOT NULL,
+    widget_title text,
+    widget_subtitle text,
+    "position" text DEFAULT 'bottom-right'::text NOT NULL,
+    expand_direction text DEFAULT 'up'::text NOT NULL,
+    show_labels boolean DEFAULT true NOT NULL,
+    show_tooltips boolean DEFAULT true NOT NULL,
+    desktop_offset_x integer DEFAULT 24 NOT NULL,
+    desktop_offset_y integer DEFAULT 24 NOT NULL,
+    mobile_offset_x integer DEFAULT 16 NOT NULL,
+    mobile_offset_y integer DEFAULT 16 NOT NULL,
+    default_open boolean DEFAULT false NOT NULL,
+    theme_variant text,
+    show_on_desktop boolean DEFAULT true NOT NULL,
+    show_on_mobile boolean DEFAULT true NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.site_contact_widget_settings OWNER TO postgres;
+
+--
+-- Name: site_contact_widget_settings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.site_contact_widget_settings_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.site_contact_widget_settings_id_seq OWNER TO postgres;
+
+--
+-- Name: site_contact_widget_settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.site_contact_widget_settings_id_seq OWNED BY public.site_contact_widget_settings.id;
+
+
+--
+-- Name: site_settings; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.site_settings (
+    key text NOT NULL,
+    value text,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.site_settings OWNER TO postgres;
+
+--
+-- Name: topics; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.topics (
+    id integer NOT NULL,
+    title text NOT NULL,
+    slug text NOT NULL,
+    description text,
+    short_description text,
+    icon_key text,
+    featured boolean DEFAULT false NOT NULL,
+    display_order integer DEFAULT 0 NOT NULL,
+    status text DEFAULT 'active'::text NOT NULL,
+    seo_title text,
+    seo_description text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.topics OWNER TO postgres;
+
+--
+-- Name: topics_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.topics_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.topics_id_seq OWNER TO postgres;
+
+--
+-- Name: topics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.topics_id_seq OWNED BY public.topics.id;
+
+
+--
+-- Name: videos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.videos (
+    id integer NOT NULL,
+    title text NOT NULL,
+    slug text NOT NULL,
+    excerpt text,
+    youtube_url text NOT NULL,
+    youtube_video_id text,
+    thumbnail_url text,
+    thumbnail_alt text,
+    thumbnail_gradient text,
+    duration text,
+    publish_date timestamp with time zone,
+    featured boolean DEFAULT false NOT NULL,
+    is_featured_video boolean DEFAULT false NOT NULL,
+    status text DEFAULT 'draft'::text NOT NULL,
+    topic_slug text,
+    series_slug text,
+    categories text[],
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    seo_title text,
+    seo_description text,
+    seo_keywords text,
+    og_title text,
+    og_description text,
+    og_image_url text,
+    canonical_url text,
+    noindex boolean DEFAULT false NOT NULL,
+    display_order integer DEFAULT 0 NOT NULL,
+    show_on_homepage boolean DEFAULT false NOT NULL,
+    thumbnail_small_url text,
+    generated_og_image_url text,
+    og_image_generated boolean DEFAULT false NOT NULL,
+    og_image_updated_at timestamp with time zone
+);
+
+
+ALTER TABLE public.videos OWNER TO postgres;
+
+--
+-- Name: videos_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.videos_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.videos_id_seq OWNER TO postgres;
+
+--
+-- Name: videos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.videos_id_seq OWNED BY public.videos.id;
+
+
+--
+-- Name: analytics_events id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.analytics_events ALTER COLUMN id SET DEFAULT nextval('public.analytics_events_id_seq'::regclass);
+
+
+--
+-- Name: articles id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.articles ALTER COLUMN id SET DEFAULT nextval('public.articles_id_seq'::regclass);
+
+
+--
+-- Name: contact_channels id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contact_channels ALTER COLUMN id SET DEFAULT nextval('public.contact_channels_id_seq'::regclass);
+
+
+--
+-- Name: email_campaigns id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_campaigns ALTER COLUMN id SET DEFAULT nextval('public.email_campaigns_id_seq'::regclass);
+
+
+--
+-- Name: email_events id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_events ALTER COLUMN id SET DEFAULT nextval('public.email_events_id_seq'::regclass);
+
+
+--
+-- Name: email_sequence_enrollments id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_sequence_enrollments ALTER COLUMN id SET DEFAULT nextval('public.email_sequence_enrollments_id_seq'::regclass);
+
+
+--
+-- Name: email_sequence_steps id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_sequence_steps ALTER COLUMN id SET DEFAULT nextval('public.email_sequence_steps_id_seq'::regclass);
+
+
+--
+-- Name: email_sequences id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_sequences ALTER COLUMN id SET DEFAULT nextval('public.email_sequences_id_seq'::regclass);
+
+
+--
+-- Name: email_subscribers id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_subscribers ALTER COLUMN id SET DEFAULT nextval('public.email_subscribers_id_seq'::regclass);
+
+
+--
+-- Name: lead_magnets id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lead_magnets ALTER COLUMN id SET DEFAULT nextval('public.lead_magnets_id_seq'::regclass);
+
+
+--
+-- Name: lead_notes id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lead_notes ALTER COLUMN id SET DEFAULT nextval('public.lead_notes_id_seq'::regclass);
+
+
+--
+-- Name: leads id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.leads ALTER COLUMN id SET DEFAULT nextval('public.leads_id_seq'::regclass);
+
+
+--
+-- Name: media_assets id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.media_assets ALTER COLUMN id SET DEFAULT nextval('public.media_assets_id_seq'::regclass);
+
+
+--
+-- Name: news_categories id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_categories ALTER COLUMN id SET DEFAULT nextval('public.news_categories_id_seq'::regclass);
+
+
+--
+-- Name: news_posts id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_posts ALTER COLUMN id SET DEFAULT nextval('public.news_posts_id_seq'::regclass);
+
+
+--
+-- Name: news_products id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_products ALTER COLUMN id SET DEFAULT nextval('public.news_products_id_seq'::regclass);
+
+
+--
+-- Name: news_tags id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_tags ALTER COLUMN id SET DEFAULT nextval('public.news_tags_id_seq'::regclass);
+
+
+--
+-- Name: resource_access_events id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.resource_access_events ALTER COLUMN id SET DEFAULT nextval('public.resource_access_events_id_seq'::regclass);
+
+
+--
+-- Name: series id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.series ALTER COLUMN id SET DEFAULT nextval('public.series_id_seq'::regclass);
+
+
+--
+-- Name: site_contact_widget_settings id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.site_contact_widget_settings ALTER COLUMN id SET DEFAULT nextval('public.site_contact_widget_settings_id_seq'::regclass);
+
+
+--
+-- Name: topics id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.topics ALTER COLUMN id SET DEFAULT nextval('public.topics_id_seq'::regclass);
+
+
+--
+-- Name: videos id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.videos ALTER COLUMN id SET DEFAULT nextval('public.videos_id_seq'::regclass);
+
+
+--
+-- Data for Name: analytics_events; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.analytics_events (id, event_type, entity_type, entity_slug, event_label, page_path, referrer, session_id, visitor_id, metadata, created_at) FROM stdin;
+6	cta_click	\N	\N	Xem bài viết mới	/	\N	9d56f56e-b2f3-4aab-b644-c823d80216f2	0a388e27-9a03-4364-b671-d0807efd016f	{"context": "cta_section"}	2026-04-05 00:24:59.906585+00
+7	article_view	article	lam-phat-khong-phai-ke-thu	\N	/tin-tuc/tu-duy-dau-tu/lam-phat-khong-phai-ke-thu	https://64f06b06-7715-443c-a100-7b0c474e6539-00-x8c1cwnpkg0c.riker.replit.dev/	ce5b4daa-6a01-458f-a6b6-bc289d2705a8	7f2cad86-945c-402a-a711-80e7eaa9681c	\N	2026-04-05 01:28:18.066298+00
+8	article_view	article	lai-kep-ky-quan-thu-tam	\N	/tin-tuc/tu-duy-dau-tu/lai-kep-ky-quan-thu-tam	https://64f06b06-7715-443c-a100-7b0c474e6539-00-x8c1cwnpkg0c.riker.replit.dev/gioi-thieu	ce5b4daa-6a01-458f-a6b6-bc289d2705a8	7f2cad86-945c-402a-a711-80e7eaa9681c	\N	2026-04-05 05:05:15.139865+00
+9	contact_widget_open	contact_widget	\N	\N	/	\N	\N	\N	{"device_type": "desktop", "source_path": "/"}	2026-04-05 05:36:45.405158+00
+10	contact_channel_click	contact_widget	\N	\N	/	\N	\N	\N	{"label": "Gọi điện", "channel_id": 1, "device_type": "desktop", "source_path": "/", "channel_type": "phone"}	2026-04-05 05:36:50.639088+00
+11	contact_widget_open	contact_widget	\N	\N	/	\N	\N	\N	{"device_type": "desktop", "source_path": "/"}	2026-04-05 05:36:53.862608+00
+12	contact_channel_click	contact_widget	\N	\N	/	\N	\N	\N	{"label": "Chat Zalo", "channel_id": 2, "device_type": "desktop", "source_path": "/", "channel_type": "zalo"}	2026-04-05 05:36:55.202351+00
+13	contact_widget_open	contact_widget	\N	\N	/	\N	\N	\N	{"device_type": "desktop", "source_path": "/"}	2026-04-05 05:37:12.161456+00
+14	contact_widget_open	contact_widget	\N	\N	/	\N	\N	\N	{"device_type": "desktop", "source_path": "/"}	2026-04-05 05:41:25.621286+00
+15	contact_widget_open	contact_widget	\N	\N	/	\N	\N	\N	{"device_type": "desktop", "source_path": "/"}	2026-04-05 05:41:53.806153+00
+16	contact_widget_close	contact_widget	\N	\N	/	\N	\N	\N	{"device_type": "desktop", "source_path": "/"}	2026-04-05 05:41:54.757912+00
+17	contact_widget_open	contact_widget	\N	\N	/	\N	\N	\N	{"device_type": "desktop", "source_path": "/"}	2026-04-05 09:29:10.140897+00
+18	contact_widget_close	contact_widget	\N	\N	/	\N	\N	\N	{"device_type": "desktop", "source_path": "/"}	2026-04-05 09:30:01.056913+00
+19	article_view	article	bat-dau-dau-tu-tu-bao-nhieu-tien-la-du	\N	/bai-viet/bat-dau-dau-tu-tu-bao-nhieu-tien-la-du	\N	ce23a014-b831-4eb6-aa4c-bf31642b3742	3b88ad91-bf43-4b31-a019-ff912a50645e	\N	2026-04-05 09:41:40.653816+00
+20	article_view	article	bat-dau-dau-tu-tu-bao-nhieu-tien-la-du	\N	/bai-viet/bat-dau-dau-tu-tu-bao-nhieu-tien-la-du	\N	16998bee-4879-4eed-b419-27138b130611	3b88ad91-bf43-4b31-a019-ff912a50645e	\N	2026-04-05 09:41:58.79564+00
+21	article_view	article	bat-dau-dau-tu-tu-bao-nhieu-tien-la-du	\N	/bai-viet/bat-dau-dau-tu-tu-bao-nhieu-tien-la-du	\N	96c43814-16fb-4423-9bb4-9fa27dabb2d8	3b88ad91-bf43-4b31-a019-ff912a50645e	\N	2026-04-05 09:42:01.105746+00
+22	article_view	article	tu-duy-dai-han-trong-thi-truong-ngan-han	\N	/bai-viet/tu-duy-dai-han-trong-thi-truong-ngan-han	\N	b10ea333-faf1-469d-b254-6fb8b5ed228f	3b88ad91-bf43-4b31-a019-ff912a50645e	\N	2026-04-05 09:42:54.347548+00
+23	contact_form_submit	\N	\N	lien-he	/lien-he	\N	ea1923f3-e347-4b99-9bcd-4d9286b77c28	499db58c-509b-4d2f-ab55-8808ba64ae76	{"interest": ""}	2026-04-05 12:32:41.159195+00
+24	article_view	article	lam-phat-khong-phai-ke-thu	\N	/tin-tuc/tu-duy-dau-tu/lam-phat-khong-phai-ke-thu	\N	dc4fcd2f-141b-4099-9877-d39027d08ee4	139b9efa-0ca7-41f6-81cf-5cc3ad27c904	\N	2026-04-05 12:34:33.166855+00
+25	article_view	article	lam-phat-khong-phai-ke-thu	\N	/tin-tuc/tu-duy-dau-tu/lam-phat-khong-phai-ke-thu	https://64f06b06-7715-443c-a100-7b0c474e6539-00-x8c1cwnpkg0c.riker.replit.dev/lien-he	ce5b4daa-6a01-458f-a6b6-bc289d2705a8	7f2cad86-945c-402a-a711-80e7eaa9681c	\N	2026-04-05 12:40:16.127886+00
+26	article_view	article	lam-phat-khong-phai-ke-thu	\N	/tin-tuc/tu-duy-dau-tu/lam-phat-khong-phai-ke-thu	https://64f06b06-7715-443c-a100-7b0c474e6539-00-x8c1cwnpkg0c.riker.replit.dev/	ce5b4daa-6a01-458f-a6b6-bc289d2705a8	7f2cad86-945c-402a-a711-80e7eaa9681c	\N	2026-04-05 12:49:34.183526+00
+27	article_view	article	lam-phat-khong-phai-ke-thu	\N	/tin-tuc/tu-duy-dau-tu/lam-phat-khong-phai-ke-thu	https://64f06b06-7715-443c-a100-7b0c474e6539-00-x8c1cwnpkg0c.riker.replit.dev/tin-tuc/tu-duy-dau-tu/lam-phat-khong-phai-ke-thu	ce5b4daa-6a01-458f-a6b6-bc289d2705a8	7f2cad86-945c-402a-a711-80e7eaa9681c	\N	2026-04-05 12:51:15.452336+00
+28	article_view	article	lam-phat-khong-phai-ke-thu	\N	/tin-tuc/tu-duy-dau-tu/lam-phat-khong-phai-ke-thu	\N	27c5a173-c605-4ce0-8b28-cc10e0f329f1	9d763327-4997-4df9-a26a-8bae255d8e8e	\N	2026-04-05 13:02:32.97994+00
+29	article_view	article	lam-phat-khong-phai-ke-thu	\N	/tin-tuc/tu-duy-dau-tu/lam-phat-khong-phai-ke-thu	\N	3207dba7-09b3-4902-86a6-4f75b5d5db7a	9d763327-4997-4df9-a26a-8bae255d8e8e	\N	2026-04-05 13:02:46.311807+00
+30	article_view	article	lai-kep-ky-quan-thu-tam	\N	/tin-tuc/tu-duy-dau-tu/lai-kep-ky-quan-thu-tam	\N	b1dd6ccb-3316-4bd6-b2cc-d65e1b0f3035	9d763327-4997-4df9-a26a-8bae255d8e8e	\N	2026-04-05 13:03:10.310068+00
+31	article_view	article	lai-kep-ky-quan-thu-tam	\N	/tin-tuc/tu-duy-dau-tu/lai-kep-ky-quan-thu-tam	https://64f06b06-7715-443c-a100-7b0c474e6539-00-x8c1cwnpkg0c.riker.replit.dev/	ce5b4daa-6a01-458f-a6b6-bc289d2705a8	7f2cad86-945c-402a-a711-80e7eaa9681c	\N	2026-04-05 13:03:53.170579+00
+32	article_view	article	lai-kep-ky-quan-thu-tam	\N	/bai-viet/lai-kep-ky-quan-thu-tam	\N	42e2f185-a971-4dcc-ab8e-2261115093c6	0c19555e-c31a-4de7-a006-51f3f0d39884	\N	2026-04-05 15:12:58.786067+00
+33	article_view	article	lai-kep-ky-quan-thu-tam	\N	/tin-tuc/tu-duy-dau-tu/lai-kep-ky-quan-thu-tam	https://64f06b06-7715-443c-a100-7b0c474e6539-00-x8c1cwnpkg0c.riker.replit.dev/	ce5b4daa-6a01-458f-a6b6-bc289d2705a8	7f2cad86-945c-402a-a711-80e7eaa9681c	\N	2026-04-05 15:13:05.351089+00
+34	article_view	article	hieu-dung-ve-tich-san	\N	/bai-viet/hieu-dung-ve-tich-san	\N	f43e9b74-cf7a-4088-88f8-23520ccf4e54	0c19555e-c31a-4de7-a006-51f3f0d39884	\N	2026-04-05 15:14:46.495596+00
+35	article_view	article	hieu-dung-ve-tich-san	\N	/bai-viet/hieu-dung-ve-tich-san	\N	6c461ee6-5a89-4476-be2d-4ad5eecedfdb	0c19555e-c31a-4de7-a006-51f3f0d39884	\N	2026-04-05 15:14:55.711792+00
+36	article_view	article	hieu-dung-ve-tich-san	\N	/bai-viet/hieu-dung-ve-tich-san	\N	30fa9571-ea9c-4de9-be22-6caf8d7bf4d2	03e16a5e-39f1-4641-a98b-9211616d4b86	\N	2026-04-05 15:24:17.285441+00
+37	article_view	article	hieu-dung-ve-tich-san	\N	/bai-viet/hieu-dung-ve-tich-san	\N	467cdf75-9e95-4a04-881d-9665a81e8b12	fc483e1f-dfe4-4d0f-b361-343f778af6d6	\N	2026-04-05 15:31:11.207609+00
+38	contact_form_submit	\N	\N	lien-he	/lien-he	https://64f06b06-7715-443c-a100-7b0c474e6539-00-x8c1cwnpkg0c.riker.replit.dev/	b21331b2-4dc1-462d-a044-2a50d5ddff12	dae5c387-c9a5-4b82-859a-0c7b535c891b	{"interest": ""}	2026-04-06 00:51:53.224181+00
+39	article_view	article	lai-kep-ky-quan-thu-tam	\N	/tin-tuc/tu-duy-dau-tu/lai-kep-ky-quan-thu-tam	\N	b21331b2-4dc1-462d-a044-2a50d5ddff12	dae5c387-c9a5-4b82-859a-0c7b535c891b	\N	2026-04-06 00:52:04.643832+00
+\.
+
+
+--
+-- Data for Name: articles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.articles (id, title, slug, excerpt, content, cover_image_url, cover_image_alt, category, category_slug, tags, publish_date, featured, status, reading_time, topic_slug, series_slug, created_at, updated_at, seo_title, seo_description, seo_keywords, og_title, og_description, og_image_url, canonical_url, noindex, display_order, show_on_homepage, cover_thumbnail_url, generated_og_image_url, og_image_generated, og_image_updated_at) FROM stdin;
+2	Tại sao người kiếm nhiều vẫn không tích lũy được tài sản?	tai-sao-nguoi-kiem-nhieu-van-khong-tich-luy	Thu nhập cao chỉ là điều kiện cần — cấu trúc tài chính đúng mới là điều kiện đủ để tích sản bền vững.	\N	\N	\N	Tài chính cá nhân	tai-chinh-ca-nhan	{"tài chính cá nhân","tích sản","thu nhập"}	2024-01-17 07:00:00+00	t	published	5 phút	tai-chinh-ca-nhan	\N	2026-04-04 18:04:17.231595+00	2026-04-04 18:04:17.231595+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+3	Những nguyên tắc đầu tư dài hạn mà người mới hay bỏ qua	nhung-nguyen-tac-dau-tu-dai-han	Đầu tư không phải cuộc đua tốc độ — đó là hành trình đòi hỏi kiên nhẫn, kỷ luật và góc nhìn rõ ràng.	\N	\N	\N	Đầu tư dài hạn	dau-tu-dai-han	{"đầu tư dài hạn","nguyên tắc","người mới"}	2024-01-24 07:00:00+00	f	published	8 phút	dau-tu-dai-han	\N	2026-04-04 18:04:17.231595+00	2026-04-04 18:04:17.231595+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+4	Quản lý dòng tiền cá nhân — từ kiểm soát đến tự do	quan-ly-dong-tien-ca-nhan	Dòng tiền được kiểm soát tốt là nền tảng không thể thiếu trước khi bắt đầu bất kỳ chiến lược tích sản nào.	\N	\N	\N	Tài chính cá nhân	tai-chinh-ca-nhan	{"dòng tiền","tài chính cá nhân","ngân sách"}	2024-02-01 07:00:00+00	f	published	6 phút	tai-chinh-ca-nhan	\N	2026-04-04 18:04:17.231595+00	2026-04-04 18:04:17.231595+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+5	Tư duy dài hạn trong thị trường ngắn hạn	tu-duy-dai-han-trong-thi-truong-ngan-han	Khi thị trường biến động, người có tư duy dài hạn không chỉ bình tĩnh hơn — họ còn đưa ra quyết định tốt hơn.	\N	\N	\N	Tư duy đầu tư	tu-duy-dau-tu	{"tư duy","đầu tư dài hạn","thị trường"}	2024-02-08 07:00:00+00	f	published	9 phút	dau-tu-dai-han	\N	2026-04-04 18:04:17.231595+00	2026-04-04 18:04:17.231595+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+6	Bắt đầu đầu tư từ bao nhiêu tiền là đủ?	bat-dau-dau-tu-tu-bao-nhieu-tien-la-du	Câu hỏi không phải là bao nhiêu — mà là bắt đầu đúng cách với số tiền bạn đang có.	\N	\N	\N	Đầu tư dài hạn	dau-tu-dai-han	{"đầu tư","vốn nhỏ","người mới"}	2024-02-15 07:00:00+00	t	published	5 phút	dau-tu-dai-han	\N	2026-04-04 18:04:17.231595+00	2026-04-04 18:04:17.231595+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+1	Hiểu đúng về tích sản để không bị lạc lối trong thị trường nhiều biến động	hieu-dung-ve-tich-san	Tích sản không chỉ là đầu tư — đó là một quá trình xây dựng nền tảng tài sản bền vững qua kỷ luật và thời gian.	## Tích sản là gì — thực sự?\n\n  Nhiều người nhầm lẫn giữa tích sản và tiết kiệm. Đây là hai thứ hoàn toàn khác nhau.\n\n  Tiết kiệm là giữ tiền không mất đi. Tích sản là đặt tiền vào tài sản sinh ra dòng tiền, tăng giá trị theo thời gian.\n\n  ## Ba trụ cột của tích sản bền vững\n\n  ### 1. Kỷ luật dòng tiền\n\n  Trước khi nghĩ đến đầu tư, bạn cần kiểm soát được dòng tiền. Không phải cắt giảm chi tiêu vô nghĩa mà là **phân bổ có chủ ý**.\n\n  Một công thức đơn giản nhưng hiệu quả:\n\n  - 50% thu nhập: chi phí thiết yếu\n  - 20% thu nhập: tích sản (trước tiên)\n  - 30% thu nhập: chi tiêu tự do\n\n  ### 2. Phân bổ tài sản\n\n  Tích sản không phải là bỏ tất cả vào một loại tài sản. **Đa dạng hóa có cấu trúc** là nguyên tắc cốt lõi.\n\n  ### 3. Thời gian và kiên nhẫn\n\n  > Cây lớn không mọc trong một đêm. Danh mục đầu tư bền vững cũng vậy.\n\n  Người thất bại không phải vì họ chọn sai tài sản, mà vì họ không đủ kiên nhẫn.\n\n  ## Bốn sai lầm phổ biến\n\n  1. Bắt đầu quá muộn vì nghĩ chưa đủ vốn\n  2. Theo đuổi lợi nhuận ngắn hạn mà bỏ qua rủi ro\n  3. Không có kế hoạch thoái vốn rõ ràng\n  4. Bỏ qua việc xây dựng **quỹ dự phòng** trước khi đầu tư\n\n  ---\n\n  Tích sản là một hành trình. Và hành trình đó bắt đầu từ việc hiểu đúng bản chất của nó.	\N	\N	Tư duy đầu tư	tu-duy-dau-tu	{"tích sản","đầu tư dài hạn","tư duy tài chính"}	2024-01-10 07:00:00+00	t	published	7 phút	tu-duy-tich-san	\N	2026-04-04 18:04:17.231595+00	2026-04-04 18:26:22.072+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+\.
+
+
+--
+-- Data for Name: contact_channels; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.contact_channels (id, channel_type, label, value, icon_key, tooltip_text, is_enabled, display_order, open_mode, show_on_desktop, show_on_mobile, created_at, updated_at) FROM stdin;
+1	phone	Gọi điện	0988123456	phone	Gọi trực tiếp	t	1	tel	t	t	2026-04-05 05:29:46.021737+00	2026-04-05 05:29:46.021737+00
+2	zalo	Chat Zalo	https://zalo.me/0988123456	zalo	Nhắn tin qua Zalo	t	2	new_tab	t	t	2026-04-05 05:29:46.021737+00	2026-04-05 05:29:46.021737+00
+3	telegram	Telegram	https://t.me/pvtswc	telegram	Nhắn tin Telegram	t	3	new_tab	t	t	2026-04-05 05:29:46.021737+00	2026-04-05 05:29:46.021737+00
+\.
+
+
+--
+-- Data for Name: email_campaigns; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.email_campaigns (id, title, subject, preview_text, campaign_type, status, content_body, target_type, target_tags, recipient_count, sent_at, scheduled_at, created_at, updated_at, target_stage, target_source, target_interest) FROM stdin;
+\.
+
+
+--
+-- Data for Name: email_events; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.email_events (id, subscriber_id, campaign_id, event_type, event_metadata, created_at, sequence_id, step_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: email_sequence_enrollments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.email_sequence_enrollments (id, subscriber_id, sequence_id, current_step, status, next_send_at, enrolled_at, completed_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: email_sequence_steps; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.email_sequence_steps (id, sequence_id, step_order, delay_days, subject, preview_text, content_body, is_active, created_at, updated_at, step_type, tag_name, action_data, sender_name, sender_email, cta_text, cta_url, cta_secondary_text, cta_secondary_url, target_sequence_id, update_field, update_value) FROM stdin;
+\.
+
+
+--
+-- Data for Name: email_sequences; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.email_sequences (id, title, description, status, trigger_type, created_at, updated_at, trigger_tags, goal, slug, trigger_config, exclude_rules) FROM stdin;
+\.
+
+
+--
+-- Data for Name: email_subscribers; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.email_subscribers (id, email, full_name, subscriber_status, source_type, source_page, source_section, consent_status, unsubscribe_token, linked_lead_id, tags, subscribed_at, unsubscribed_at, created_at, updated_at, first_name, interest_primary, stage, last_email_sent_at, last_opened_at, last_clicked_at) FROM stdin;
+1	test@example.com	Test User	subscribed	test	\N	\N	given	f057d20a2590d1bb5425b7c2a84fe5971294d828b654eb9816208e3bbac1f731	2	\N	2026-04-05 01:12:25.914+00	\N	2026-04-05 01:12:25.917254+00	2026-04-05 01:12:25.917254+00	\N	\N	new_lead	\N	\N	\N
+\.
+
+
+--
+-- Data for Name: lead_magnets; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.lead_magnets (id, title, slug, short_description, full_description, resource_type, cover_image_url, cover_image_alt, file_url, file_name, file_size, file_mime_type, external_url, thank_you_message, button_label, status, gating_mode, delivery_mode, featured, topic_slug, tags, cta_title, cta_description, seo_title, seo_description, og_image_url, requires_phone, sort_order, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: lead_notes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.lead_notes (id, lead_id, note, note_type, created_at) FROM stdin;
+3	8	Test note từ cuộc kiểm tra.	internal	2026-04-05 09:28:35.539814+00
+5	16	Liên hệ qua Zalo, quan tâm khoá học đầu tư dài hạn	call	2026-04-06 01:29:31.198428+00
+6	20	Đã gọi điện, khách hàng quan tâm đến ATLAS	call	2026-04-08 01:31:18.246401+00
+7	21	Kiểm tra ghi chú hoạt động OK	internal	2026-04-08 02:18:43.080529+00
+\.
+
+
+--
+-- Data for Name: leads; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.leads (id, name, email, phone, source_type, source_page, product_ref, message, status, notes, created_at, updated_at, interest_topic, form_type, lead_stage, tags, last_contacted_at, next_follow_up_at, consent_status, utm_source, utm_medium, utm_campaign, assigned_to, score, source_section, referrer, utm_term, utm_content, article_slug, article_title, synced_to_notion, notion_page_id, notion_synced_at, synced_to_sheets, sheets_synced_at, sync_error, notify_status, notify_error) FROM stdin;
+1	Nguyễn Test	\N	0901234567	cong-dong	/cong-dong	\N	\N	moi	\N	2026-04-04 13:47:42.103462+00	2026-04-04 13:47:42.103462+00	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+2	Test Lead	test@example.com	\N	homepage	/	\N	\N	moi	\N	2026-04-05 00:48:55.330078+00	2026-04-05 00:48:55.330078+00	tài chính cá nhân	email-capture	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+8	Test Thắng	test_final_check@example.com	0912345678	homepage	/	\N	\N	moi	\N	2026-04-05 09:27:54.452554+00	2026-04-05 09:27:54.452554+00	finance	email-capture	\N	\N	\N	\N	given	\N	\N	\N	\N	0	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+9	Nguyễn Văn Test	test-1775383885861@example.com	\N	homepage	/	\N	\N	moi	\N	2026-04-05 10:11:33.191912+00	2026-04-05 10:11:33.191912+00	\N	email-capture	\N	\N	\N	\N	given	\N	\N	\N	\N	0	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+14	Test User	test@test.com	\N	\N	\N	\N	\N	moi	\N	2026-04-06 00:50:44.775859+00	2026-04-06 00:50:44.775859+00	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+15	Nguyễn Văn A	test-e2e@example.com	0987654321	homepage	/	\N	\N	moi	\N	2026-04-06 00:51:53.171411+00	2026-04-06 00:54:31.324+00	\N	email-capture	\N	\N	\N	\N	given	\N	\N	\N	\N	0	contact_form	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+16	Trần Thị Bình Updated	binh.test.verify@example.com	0901234567	article	/tin-tuc/test	\N	\N	dang-quan-tam	\N	2026-04-06 01:29:08.355344+00	2026-04-06 01:29:31.368+00	finance	email-capture	\N	\N	2026-04-06 01:29:31.289+00	2026-04-13 00:00:00+00	given	\N	\N	\N	\N	75	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+17	Nguyễn Kiểm Thử	kiem-thu-crm@example.com	0987654321	homepage	/	\N	\N	moi	\N	2026-04-06 01:31:23.249106+00	2026-04-06 01:31:23.249106+00	finance	email-capture	\N	\N	\N	\N	given	\N	\N	\N	\N	0	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+18	Test Lead	testlead@swc.vn	\N	homepage	/	\N	\N	moi	\N	2026-04-06 02:02:04.450081+00	2026-04-06 02:02:04.450081+00	\N	email-capture	\N	\N	\N	\N	given	\N	\N	\N	\N	0	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+19	Test Nguyen	test.verify@example.com	0912345678	homepage	/	\N	\N	moi	\N	2026-04-06 04:22:09.097304+00	2026-04-06 04:22:09.097304+00	finance	email-capture	\N	\N	\N	\N	given	\N	\N	\N	\N	0	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+20	Test User CRM Updated	crm-test@example.com	0912345678	article	/tin-tuc/bai-viet-1	\N	\N	da-lien-he	\N	2026-04-08 01:30:57.270233+00	2026-04-08 01:31:18.263+00	\N	email-capture	\N	\N	2026-04-08 01:31:18.263+00	2026-04-15 00:00:00+00	given	\N	\N	\N	\N	75	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+21	Nguyễn Văn Test Updated	test-verify-2026@example.com	\N	article	\N	\N	\N	da-lien-he	Test note field	2026-04-08 02:18:15.788352+00	2026-04-08 02:18:55.332+00	\N	compact	\N	\N	\N	\N	given	\N	\N	\N	\N	0	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	\N	\N
+22	Test User	test-homepage@example.com	\N	hero	/	\N	Test từ homepage	moi	\N	2026-04-15 05:19:31.676039+00	2026-04-15 05:19:31.676039+00	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	\N	\N	\N	\N	\N	\N	f	\N	\N	f	\N	\N	sent	\N
+\.
+
+
+--
+-- Data for Name: media_assets; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.media_assets (id, title, filename, original_filename, mime_type, size_bytes, width, height, storage_path_original, storage_path_processed, storage_path_thumbnail, public_url, thumbnail_url, alt_text, watermark_enabled, watermark_text, content_type, usage_context, tags, created_at, updated_at, storage_provider, storage_path_medium, medium_url) FROM stdin;
+2	\N	52059a1eb33592a179518577.webp	og-default.jpg	image/webp	29322	1600	900	orig/52059a1eb33592a179518577.jpg	disp/52059a1eb33592a179518577.webp	thumb/52059a1eb33592a179518577_thumb.webp	/api/uploads/disp/52059a1eb33592a179518577.webp	/api/uploads/thumb/52059a1eb33592a179518577_thumb.webp	\N	t	THẮNG SWC · TÀI CHÍNH	shared	cover	\N	2026-04-08 01:52:11.074225+00	2026-04-08 01:52:11.074225+00	local	disp/52059a1eb33592a179518577_medium.webp	/api/uploads/disp/52059a1eb33592a179518577_medium.webp
+\.
+
+
+--
+-- Data for Name: news_categories; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.news_categories (id, name, slug, description, created_at) FROM stdin;
+1	Tư duy đầu tư	tu-duy-dau-tu	Góc nhìn chiến lược và tư duy về đầu tư dài hạn	2026-04-04 12:57:56.226644+00
+2	Hệ sinh thái sản phẩm	he-sinh-thai-san-pham	Cập nhật và góc nhìn về các sản phẩm trong hệ sinh thái	2026-04-04 12:57:56.226644+00
+\.
+
+
+--
+-- Data for Name: news_post_tags; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.news_post_tags (post_id, tag_id) FROM stdin;
+2	1
+2	3
+2	4
+2	10
+3	5
+3	6
+3	7
+3	10
+9	5
+9	10
+\.
+
+
+--
+-- Data for Name: news_posts; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.news_posts (id, title, slug, excerpt, content, featured_image, category_id, product_id, status, published_at, author_name, seo_title, seo_description, created_at, updated_at, is_featured, show_on_homepage, show_in_related, featured_image_display) FROM stdin;
+2	Lãi kép — thứ Einstein gọi là kỳ quan thứ tám của thế giới	lai-kep-ky-quan-thu-tam	Không phải ai cũng cảm nhận được sức mạnh thật sự của lãi kép cho đến khi nhìn vào con số sau 20 năm. Và đó là lý do nhiều người bắt đầu quá trễ.	Lãi kép là gì? Đơn giản: là lãi sinh ra từ cả gốc lẫn lãi đã tích lũy trước đó.\n\n100 triệu đồng với lãi suất 10%/năm:\n- Sau 10 năm → 259 triệu\n- Sau 20 năm → 672 triệu\n- Sau 30 năm → 1,7 tỷ\n\nSự khác biệt giữa 10 và 30 năm không phải là gấp 3 lần — mà là gấp 6,6 lần. Đó là sức mạnh của thời gian trong phương trình lãi kép.\n\nVấn đề là não người không được trang bị để hiểu tăng trưởng theo cấp số nhân một cách trực giác. Ta nghĩ tuyến tính, trong khi lãi kép vận hành theo đường cong.\n\nHệ quả thực tiễn: mỗi năm trì hoãn đầu tư sẽ đắt hơn bạn nghĩ rất nhiều.	\N	1	1	published	2026-03-28 12:57:56.226644+00	Phan Văn Thắng	\N	\N	2026-04-04 12:57:56.226644+00	2026-04-04 12:57:56.226644+00	f	f	t	\N
+3	SPV là gì và tại sao nó thay đổi cách người trẻ đầu tư bất động sản	spv-la-gi-tai-sao-quan-trong	Cấu trúc SPV (Special Purpose Vehicle) không còn là thứ dành riêng cho quỹ đầu tư lớn. ATLAS đưa mô hình này đến tay nhà đầu tư cá nhân.	SPV — Special Purpose Vehicle — là một pháp nhân được thành lập với mục đích duy nhất: nắm giữ một tài sản hoặc thực hiện một giao dịch cụ thể.\n\nTrong bất động sản truyền thống, bạn cần mua cả căn nhà, chịu toàn bộ rủi ro, và xử lý toàn bộ pháp lý. Với SPV, nhiều nhà đầu tư cùng góp vốn vào một pháp nhân — pháp nhân đó sở hữu tài sản, còn bạn sở hữu phần của mình trong pháp nhân.\n\nĐây là cách các quỹ đầu tư vận hành trong nhiều thập kỷ. ATLAS đưa mô hình này đến tay nhà đầu tư cá nhân với quy mô phù hợp hơn, minh bạch hơn, và dễ thoái vốn hơn.\n\nĐiều thú vị: với cấu trúc SPV, bạn có thể đầu tư vào nhiều tài sản khác nhau thay vì "bỏ tất cả trứng vào một giỏ" — và đó là nguyên tắc phân tán rủi ro cơ bản nhất trong đầu tư.	\N	2	2	published	2026-03-21 12:57:56.226644+00	Phan Văn Thắng	\N	\N	2026-04-04 12:57:56.226644+00	2026-04-04 12:57:56.226644+00	f	f	t	\N
+9	Bài test tag persistence	bai-test-tag-persistence				\N	\N	draft	\N	Phan Văn Thắng			2026-04-05 16:20:46.56+00	2026-04-05 16:21:45.507+00	f	f	t	
+1	Lạm phát không phải kẻ thù — nếu anh/chị hiểu nó đúng cách	lam-phat-khong-phai-ke-thu	Hầu hết mọi người sợ lạm phát. Nhưng với người hiểu cơ chế vận hành của nó, lạm phát lại là thứ có thể biến thành lợi thế chiến lược.	Lạm phát là hiện tượng giá cả leo thang theo thời gian. Nghe thì có vẻ xấu — và đúng là nó làm xói mòn sức mua của tiền mặt. Nhưng nhìn từ góc độ của người đầu tư dài hạn, câu chuyện lại khác hoàn toàn.\n\nKhi tài sản thực (bất động sản, cổ phiếu, doanh nghiệp) tăng giá cùng chiều với lạm phát, người nắm giữ chúng thực chất đang được bảo vệ. Người bị tổn thương nhất chính là người giữ tiền mặt hoặc tài sản danh nghĩa không được điều chỉnh.\n\nĐiều cần hiểu là: đồng tiền mất giá theo thời gian là điều gần như chắc chắn trong mọi nền kinh tế hiện đại. Câu hỏi không phải là "lạm phát có xảy ra không?" mà là "tài sản của mình có được cấu trúc đúng để không bị tổn thương không?"\n\nTư duy đúng về lạm phát giúp ta đưa ra quyết định phân bổ tài sản tỉnh táo hơn — không hoảng loạn, không đứng nhìn, mà chủ động định vị.		1	\N	draft	2026-04-01 12:57:56.226+00	Phan Văn Thắng			2026-04-04 12:57:56.226644+00	2026-04-05 15:16:25.117+00	f	f	t	\N
+\.
+
+
+--
+-- Data for Name: news_products; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.news_products (id, name, slug, description, created_at) FROM stdin;
+2	ATLAS	atlas	Hệ sinh thái đầu tư bất động sản số	2026-04-04 12:57:56.226644+00
+1	Road to $1M · SWC PASS	road-to-1m	Hành trình tài chính cá nhân đến 1 triệu đô	2026-04-04 12:57:56.226644+00
+\.
+
+
+--
+-- Data for Name: news_tags; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.news_tags (id, name, slug, created_at) FROM stdin;
+1	Tài chính cá nhân	tai-chinh-ca-nhan	2026-04-04 12:57:56.226644+00
+2	Lạm phát	lam-phat	2026-04-04 12:57:56.226644+00
+3	Lãi kép	lai-kep	2026-04-04 12:57:56.226644+00
+4	Road to 1M	road-to-1m	2026-04-04 12:57:56.226644+00
+5	ATLAS	atlas	2026-04-04 12:57:56.226644+00
+6	SPV	spv	2026-04-04 12:57:56.226644+00
+7	Bất động sản số	bat-dong-san-so	2026-04-04 12:57:56.226644+00
+8	Tư duy dài hạn	tu-duy-dai-han	2026-04-04 12:57:56.226644+00
+9	Dòng tiền	dong-tien	2026-04-04 12:57:56.226644+00
+10	Đầu tư bền vững	dau-tu-ben-vung	2026-04-04 12:57:56.226644+00
+\.
+
+
+--
+-- Data for Name: resource_access_events; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.resource_access_events (id, resource_id, lead_id, subscriber_id, full_name, email, phone, access_type, source_page, source_section, metadata, created_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: series; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.series (id, title, slug, description, short_description, cover_image_url, cover_image_alt, type, featured, display_order, status, seo_title, seo_description, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: site_contact_widget_settings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.site_contact_widget_settings (id, is_enabled, widget_title, widget_subtitle, "position", expand_direction, show_labels, show_tooltips, desktop_offset_x, desktop_offset_y, mobile_offset_x, mobile_offset_y, default_open, theme_variant, show_on_desktop, show_on_mobile, created_at, updated_at) FROM stdin;
+1	t	\N	\N	bottom-right	up	t	t	24	24	16	16	f	\N	t	t	2026-04-05 05:29:42.328082+00	2026-04-05 05:29:42.328082+00
+\.
+
+
+--
+-- Data for Name: site_settings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.site_settings (key, value, updated_at) FROM stdin;
+community_form_email		2026-04-05 12:10:43.572+00
+contact_email	thang@swc.vn	2026-04-05 12:10:43.572+00
+contact_phone		2026-04-05 12:10:43.572+00
+social_facebook	https://facebook.com/thangswc	2026-04-05 12:10:43.572+00
+social_youtube		2026-04-05 12:10:43.572+00
+social_zalo		2026-04-05 12:10:43.572+00
+footer_tagline	Góc nhìn dài hạn về tài chính cá nhân và đầu tư bền vững.	2026-04-05 12:10:43.572+00
+product_road-to-1m_status	visible	2026-04-05 12:10:43.572+00
+product_road-to-1m_thumbnail		2026-04-05 12:10:43.572+00
+product_road-to-1m_sort_order		2026-04-05 12:10:43.572+00
+product_road-to-1m_hero_label		2026-04-05 12:10:43.572+00
+product_road-to-1m_hero_headline		2026-04-05 12:10:43.572+00
+product_road-to-1m_hero_subtitle		2026-04-05 12:10:43.572+00
+product_road-to-1m_hero_cta2_text		2026-04-05 12:10:43.572+00
+community_hero_subtitle		2026-04-05 12:10:43.572+00
+product_road-to-1m_hero_cta2_link		2026-04-05 12:10:43.572+00
+product_road-to-1m_sections	[{"id":"cgvb51e6","key":"","title":"","subtitle":"","content":"","order":1,"visible":true}]	2026-04-05 12:10:43.572+00
+product_road-to-1m_faqs	[{"id":"nfsv7c26","question":"","answer":"","order":1,"visible":true}]	2026-04-05 12:10:43.572+00
+product_road-to-1m_pricing_v2	[{"id":"e8in2zpq","name":"","price":"","supportText":"","badge":"","ctaText":"","ctaLink":"","order":1,"visible":true}]	2026-04-05 12:10:43.572+00
+product_road-to-1m_cta_title		2026-04-05 12:10:43.572+00
+product_road-to-1m_cta_text_full		2026-04-05 12:10:43.572+00
+product_road-to-1m_cta_btn1_text		2026-04-05 12:10:43.572+00
+product_road-to-1m_cta_btn1_link		2026-04-05 12:10:43.572+00
+product_road-to-1m_cta_btn2_text		2026-04-05 12:10:43.572+00
+product_road-to-1m_cta_btn2_link		2026-04-05 12:10:43.572+00
+product_road-to-1m_cta_closing		2026-04-05 12:10:43.572+00
+product_road-to-1m_seo_title		2026-04-05 12:10:43.572+00
+product_road-to-1m_seo_desc		2026-04-05 12:10:43.572+00
+product_road-to-1m_seo_og_image		2026-04-05 12:10:43.572+00
+community_hero_title	Kiểm thử: Đồng hành cùng cộng đồng (SWC)	2026-04-05 12:10:43.572+00
+community_hero_badge		2026-04-05 12:10:43.572+00
+community_hero_intro		2026-04-05 12:10:43.572+00
+community_hero_cta1_text		2026-04-05 12:10:43.572+00
+community_hero_cta1_link		2026-04-05 12:10:43.572+00
+community_hero_cta2_text		2026-04-05 12:10:43.572+00
+community_hero_cta2_link		2026-04-05 12:10:43.572+00
+community_link_open_url		2026-04-05 12:10:43.572+00
+community_link_open_platform		2026-04-05 12:10:43.572+00
+community_link_group_url		2026-04-05 12:10:43.572+00
+community_link_group_platform		2026-04-05 12:10:43.572+00
+community_link_ecosystem_url		2026-04-05 12:10:43.572+00
+community_form_note		2026-04-05 12:10:43.572+00
+community_form_enabled	true	2026-04-05 12:10:43.572+00
+community_form_options	[{"id":"theo-doi","label":"Theo dõi cộng đồng mở","visible":true},{"id":"nhom-trao-doi","label":"Tham gia nhóm trao đổi","visible":true},{"id":"he-sinh-thai","label":"Tìm hiểu hệ sinh thái chuyên sâu","visible":true}]	2026-04-05 12:10:43.572+00
+product_road-to-1m_hero_insight		2026-04-05 12:10:43.572+00
+product_road-to-1m_hero_cta1_text		2026-04-05 12:10:43.572+00
+product_road-to-1m_hero_cta1_link		2026-04-05 12:10:43.572+00
+community_link_ecosystem_platform		2026-04-05 12:10:43.572+00
+community_link_facebook		2026-04-05 12:10:43.572+00
+community_link_zalo		2026-04-05 12:10:43.572+00
+community_link_telegram		2026-04-05 12:10:43.572+00
+community_link_youtube		2026-04-05 12:10:43.572+00
+community_link_discord		2026-04-05 12:10:43.572+00
+community_link_internal		2026-04-05 12:10:43.572+00
+community_cta_title	Tham gia cộng đồng SWC	2026-04-05 12:10:43.572+00
+community_cta_subtitle	Kết nối với những người cùng hành trình xây dựng tự do tài chính.	2026-04-05 12:10:43.572+00
+community_cta_btn_text		2026-04-05 12:10:43.572+00
+community_form_title		2026-04-05 12:10:43.572+00
+community_form_success		2026-04-05 12:10:43.572+00
+footer_nav_links	[{"id":"pn1grgkh","label":"Giới thiệu","href":"#gioi-thieu","visible":true},{"id":"ti0jgdmc","label":"Tin tức","href":"/tin-tuc","visible":true},{"id":"brr2nfvq","label":"Cộng đồng","href":"/cong-dong","visible":true},{"id":"9nn0b4w8","label":"Liên hệ","href":"#lien-he","visible":true}]	2026-04-05 12:10:43.572+00
+footer_product_links	[{"id":"c8p514kx","label":"Road to $1M · SWC PASS","href":"/san-pham/duong-toi-1-trieu-do","visible":true},{"id":"f5flda6c","label":"ATLAS","href":"/san-pham/atlas","visible":true}]	2026-04-05 12:10:43.572+00
+logo_light_bg	/logos/swc-logo-black.png	2026-04-05 12:23:33.416+00
+logo_dark_bg	/logos/swc-logo-white.png	2026-04-05 12:23:33.416+00
+logo_accent	/logos/swc-logo-blue.png	2026-04-05 12:23:33.416+00
+footer_company_name	Thắng SWC	2026-04-05 12:10:43.572+00
+community_paths	[{"id":"path-1","num":"01","label":"Bắt đầu nhẹ","title":"Theo dõi nội dung miễn phí","anchor":"Phù hợp nếu anh/chị đang ở giai đoạn bắt đầu.","desc":"Nếu anh/chị đang ở giai đoạn bắt đầu, đây là cách phù hợp nhất. Hãy xem video, đọc bài viết, tiếp nhận dần các góc nhìn nền tảng và xây tư duy đúng trước.","link":"","order":1,"visible":true},{"id":"path-2","num":"02","label":"Đi cùng cộng đồng","title":"Tham gia cộng đồng","anchor":"Một môi trường tốt giúp hành trình dài hạn bền hơn.","desc":"Nếu anh/chị muốn có môi trường để học cùng người khác, trao đổi, duy trì động lực và đi đường dài vững hơn, cộng đồng sẽ là nơi phù hợp hơn việc đi một mình.","link":"","order":2,"visible":true},{"id":"path-3","num":"03","label":"Đi sâu hơn","title":"Chương trình chuyên sâu","anchor":"Dành cho người muốn đi sâu hơn với lộ trình nghiêm túc.","desc":"Nếu anh/chị muốn đi sâu hơn vào kiến thức, công cụ, hệ thống hoặc một lộ trình nghiêm túc hơn, tôi có những chương trình phù hợp cho từng giai đoạn phát triển.","link":"","order":3,"visible":true},{"id":"wnfdwf14","num":"04","label":"","title":"","anchor":"","desc":"","link":"","order":4,"visible":true}]	2026-04-05 12:10:43.572+00
+site_nav_items	[{"id":"trang-chu","label":"Trang chủ","href":"#trang-chu","visible":true,"order":1,"children":[]},{"id":"gioi-thieu","label":"Giới thiệu","href":"#gioi-thieu","visible":true,"order":2,"children":[]},{"id":"noi-dung","label":"Nội dung","href":"#noi-dung","visible":true,"order":3,"children":[]},{"id":"tin-tuc","label":"Tin tức","href":"/tin-tuc","visible":true,"order":4,"children":[]},{"id":"cong-dong","label":"Cộng đồng","href":"/cong-dong","visible":true,"order":5,"children":[]},{"id":"san-pham","label":"Sản phẩm","href":"","visible":true,"order":6,"children":[{"id":"road-to-1m","label":"Road to $1M · SWC PASS","href":"/san-pham/duong-toi-1-trieu-do","desc":"Lộ trình tài chính cá nhân có hệ thống","visible":true},{"id":"atlas","label":"ATLAS","href":"/san-pham/atlas","desc":"Hệ sinh thái bất động sản kỹ thuật số","visible":true}]},{"id":"lien-he","label":"Liên hệ","href":"#lien-he","visible":true,"order":7,"children":[]},{"id":"ke9emjof","label":"Test Mục","href":"/test-muc","visible":true,"order":8,"children":[]}]	2026-04-05 12:10:43.572+00
+logo_icon	/logos/swc-icon-black.png	2026-04-05 12:23:33.416+00
+logo_watermark	/logos/swc-logo-lavender.png	2026-04-05 12:23:33.416+00
+logo_desktop_width	160	2026-04-05 12:23:33.416+00
+logo_mobile_width	110	2026-04-05 12:23:33.416+00
+settings	{"logo_icon_dark":"/logos/swc-icon-white.png","logo_brand_name":"Phan Văn Thắng SWC","logo_display_name":"Thắng SWC"}	2026-04-05 12:45:42.597+00
+logo_icon_dark	/logos/swc-icon-white.png	2026-04-05 12:46:07.153+00
+logo_brand_name	Phan Văn Thắng SWC	2026-04-05 12:46:07.153+00
+logo_display_name	Thắng SWC	2026-04-05 12:46:07.153+00
+brand_tagline	Tư duy tài chính đúng. Tích sản dài hạn. Đầu tư với góc nhìn thực chiến.	2026-04-06 03:56:07.537+00
+brand_description	Chia sẻ kiến thức tài chính, đầu tư và tư duy tích sản theo hướng thực tế, kỷ luật và dài hạn.	2026-04-06 03:56:07.537+00
+brand_sub_title	Thuộc hệ sinh thái Sky World Community	2026-04-06 03:56:07.537+00
+contact_email_collab	hello@phanvanthang.net	2026-04-06 03:56:07.537+00
+contact_email_newsletter	newsletter@phanvanthang.net	2026-04-06 03:56:07.537+00
+contact_email_noreply	no-reply@phanvanthang.net	2026-04-06 03:56:07.537+00
+contact_city	Hà Nội, Việt Nam	2026-04-06 03:56:07.537+00
+social_email	lienhe@phanvanthang.net	2026-04-06 03:56:07.537+00
+footer_disclaimer	Nội dung trên website mang tính chia sẻ và tham khảo, không phải cam kết lợi nhuận hay lời khuyên tài chính cá nhân hóa.	2026-04-06 03:56:07.537+00
+footer_show_community_cta	true	2026-04-06 03:56:07.537+00
+footer_show_address	true	2026-04-06 03:56:07.537+00
+site_seo_title	Phan Văn Thắng SWC — Tư duy tài chính và tích sản dài hạn	2026-04-06 03:56:07.537+00
+site_seo_description	Kiến thức tài chính, đầu tư dài hạn và tư duy tích sản theo hướng thực tế, kỷ luật và bền vững.	2026-04-06 03:56:07.537+00
+site_og_site_name	Phan Văn Thắng SWC	2026-04-06 03:56:07.537+00
+\.
+
+
+--
+-- Data for Name: topics; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.topics (id, title, slug, description, short_description, icon_key, featured, display_order, status, seo_title, seo_description, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: videos; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.videos (id, title, slug, excerpt, youtube_url, youtube_video_id, thumbnail_url, thumbnail_alt, thumbnail_gradient, duration, publish_date, featured, is_featured_video, status, topic_slug, series_slug, categories, created_at, updated_at, seo_title, seo_description, seo_keywords, og_title, og_description, og_image_url, canonical_url, noindex, display_order, show_on_homepage, thumbnail_small_url, generated_og_image_url, og_image_generated, og_image_updated_at) FROM stdin;
+1	Đầu tư dài hạn bắt đầu từ đâu nếu bạn chưa có nhiều vốn?	dau-tu-dai-han-bat-dau-tu-dau	Một góc nhìn dành cho những người mới bắt đầu hành trình tích sản và muốn đi đường dài bằng sự kỷ luật thay vì cảm xúc.	https://youtube.com/@pvtswc	\N	\N	\N	linear-gradient(145deg, #0c2622 0%, #124540 55%, #1a6258 100%)	15 phút	2024-01-15 07:00:00+00	t	t	published	dau-tu-dai-han	\N	{featured,dau-tu}	2026-04-04 18:04:53.559308+00	2026-04-04 18:04:53.559308+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+2	Vì sao kiếm nhiều hơn vẫn chưa chắc vững hơn về tài chính?	vi-sao-kiem-nhieu-hon-van-chua-chac-vung	Hiểu khác biệt giữa thu nhập cao và nền tảng tài chính vững.	https://youtube.com/@pvtswc	\N	\N	\N	linear-gradient(145deg, #0d1e2e 0%, #1a3550 55%, #1e4060 100%)	12 phút	2024-01-22 07:00:00+00	f	f	published	tai-chinh-ca-nhan	\N	{tai-chinh}	2026-04-04 18:04:53.559308+00	2026-04-04 18:04:53.559308+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+3	Người mới đầu tư nên nhìn vào điều gì trước lợi nhuận?	nguoi-moi-dau-tu-nen-nhin-vao-dieu-gi	Một cách tiếp cận thực tế hơn để giảm rủi ro khi bắt đầu.	https://youtube.com/@pvtswc	\N	\N	\N	linear-gradient(145deg, #1a200d 0%, #2d3b18 55%, #374720 100%)	10 phút	2024-01-29 07:00:00+00	f	f	published	dau-tu-dai-han	\N	{dau-tu}	2026-04-04 18:04:53.559308+00	2026-04-04 18:04:53.559308+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+4	Tích sản là quá trình của kỷ luật, không phải cảm hứng	tich-san-la-qua-trinh-cua-ky-luat	Xây tài sản bền vững thường bắt đầu từ những nguyên tắc nhỏ nhưng lặp lại đủ lâu.	https://youtube.com/@pvtswc	\N	\N	\N	linear-gradient(145deg, #1e1a0a 0%, #3a2e12 55%, #44381a 100%)	9 phút	2024-02-05 07:00:00+00	t	f	published	tu-duy-tich-san	\N	{tu-duy,featured}	2026-04-04 18:04:53.559308+00	2026-04-04 18:04:53.559308+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+5	Không phải cứ cố hơn là tài chính sẽ tốt hơn	khong-phai-cu-co-hon-la-tai-chinh-tot-hon	Đôi khi điều cần thay đổi không phải là nỗ lực, mà là cấu trúc.	https://youtube.com/@pvtswc	\N	\N	\N	linear-gradient(145deg, #0d162a 0%, #1a2a4a 55%, #1e3255 100%)	14 phút	2024-02-12 07:00:00+00	f	f	published	tai-chinh-ca-nhan	\N	{tai-chinh,tu-duy}	2026-04-04 18:04:53.559308+00	2026-04-04 18:04:53.559308+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+6	Muốn đi đường dài trong đầu tư, trước hết cần bình tĩnh	muon-di-duong-dai-trong-dau-tu-truoc-het-can-binh-tinh	Tâm lý là một phần của chất lượng quyết định tài chính.	https://youtube.com/@pvtswc	\N	\N	\N	linear-gradient(145deg, #1a0e18 0%, #341a30 55%, #3e2038 100%)	11 phút	2024-02-19 07:00:00+00	f	f	published	dau-tu-dai-han	\N	{dau-tu,tu-duy}	2026-04-04 18:04:53.559308+00	2026-04-04 18:04:53.559308+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+7	Hiểu đúng về tích sản trước khi nghĩ đến tự do tài chính	hieu-dung-ve-tich-san-truoc-khi-nghi-den-tu-do	Tự do tài chính không bắt đầu từ khát vọng lớn, mà từ nền tảng đủ rõ.	https://youtube.com/@pvtswc	\N	\N	\N	linear-gradient(145deg, #0a1e18 0%, #143328 55%, #1a4032 100%)	16 phút	2024-02-26 07:00:00+00	t	f	published	tu-duy-tich-san	\N	{tu-duy,featured}	2026-04-04 18:04:53.559308+00	2026-04-04 18:04:53.559308+00	\N	\N	\N	\N	\N	\N	\N	f	0	f	\N	\N	f	\N
+\.
+
+
+--
+-- Name: analytics_events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.analytics_events_id_seq', 39, true);
+
+
+--
+-- Name: articles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.articles_id_seq', 15, true);
+
+
+--
+-- Name: contact_channels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.contact_channels_id_seq', 3, true);
+
+
+--
+-- Name: email_campaigns_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.email_campaigns_id_seq', 1, false);
+
+
+--
+-- Name: email_events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.email_events_id_seq', 1, false);
+
+
+--
+-- Name: email_sequence_enrollments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.email_sequence_enrollments_id_seq', 1, false);
+
+
+--
+-- Name: email_sequence_steps_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.email_sequence_steps_id_seq', 1, false);
+
+
+--
+-- Name: email_sequences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.email_sequences_id_seq', 1, false);
+
+
+--
+-- Name: email_subscribers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.email_subscribers_id_seq', 1, true);
+
+
+--
+-- Name: lead_magnets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.lead_magnets_id_seq', 1, false);
+
+
+--
+-- Name: lead_notes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.lead_notes_id_seq', 7, true);
+
+
+--
+-- Name: leads_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.leads_id_seq', 22, true);
+
+
+--
+-- Name: media_assets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.media_assets_id_seq', 2, true);
+
+
+--
+-- Name: news_categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.news_categories_id_seq', 2, true);
+
+
+--
+-- Name: news_posts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.news_posts_id_seq', 9, true);
+
+
+--
+-- Name: news_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.news_products_id_seq', 2, true);
+
+
+--
+-- Name: news_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.news_tags_id_seq', 10, true);
+
+
+--
+-- Name: resource_access_events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.resource_access_events_id_seq', 1, false);
+
+
+--
+-- Name: series_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.series_id_seq', 1, false);
+
+
+--
+-- Name: site_contact_widget_settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.site_contact_widget_settings_id_seq', 1, true);
+
+
+--
+-- Name: topics_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.topics_id_seq', 1, false);
+
+
+--
+-- Name: videos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.videos_id_seq', 7, true);
+
+
+--
+-- Name: analytics_events analytics_events_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.analytics_events
+    ADD CONSTRAINT analytics_events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: articles articles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.articles
+    ADD CONSTRAINT articles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: articles articles_slug_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.articles
+    ADD CONSTRAINT articles_slug_key UNIQUE (slug);
+
+
+--
+-- Name: contact_channels contact_channels_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contact_channels
+    ADD CONSTRAINT contact_channels_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_campaigns email_campaigns_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_campaigns
+    ADD CONSTRAINT email_campaigns_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_events email_events_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_events
+    ADD CONSTRAINT email_events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_sequence_enrollments email_sequence_enrollments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_sequence_enrollments
+    ADD CONSTRAINT email_sequence_enrollments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_sequence_steps email_sequence_steps_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_sequence_steps
+    ADD CONSTRAINT email_sequence_steps_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_sequences email_sequences_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_sequences
+    ADD CONSTRAINT email_sequences_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_subscribers email_subscribers_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_subscribers
+    ADD CONSTRAINT email_subscribers_email_key UNIQUE (email);
+
+
+--
+-- Name: email_subscribers email_subscribers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_subscribers
+    ADD CONSTRAINT email_subscribers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: lead_magnets lead_magnets_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lead_magnets
+    ADD CONSTRAINT lead_magnets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: lead_magnets lead_magnets_slug_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lead_magnets
+    ADD CONSTRAINT lead_magnets_slug_key UNIQUE (slug);
+
+
+--
+-- Name: lead_notes lead_notes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lead_notes
+    ADD CONSTRAINT lead_notes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: leads leads_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.leads
+    ADD CONSTRAINT leads_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: media_assets media_assets_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.media_assets
+    ADD CONSTRAINT media_assets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: news_categories news_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_categories
+    ADD CONSTRAINT news_categories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: news_categories news_categories_slug_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_categories
+    ADD CONSTRAINT news_categories_slug_key UNIQUE (slug);
+
+
+--
+-- Name: news_post_tags news_post_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_post_tags
+    ADD CONSTRAINT news_post_tags_pkey PRIMARY KEY (post_id, tag_id);
+
+
+--
+-- Name: news_posts news_posts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_posts
+    ADD CONSTRAINT news_posts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: news_posts news_posts_slug_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_posts
+    ADD CONSTRAINT news_posts_slug_key UNIQUE (slug);
+
+
+--
+-- Name: news_products news_products_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_products
+    ADD CONSTRAINT news_products_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: news_products news_products_slug_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_products
+    ADD CONSTRAINT news_products_slug_key UNIQUE (slug);
+
+
+--
+-- Name: news_tags news_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_tags
+    ADD CONSTRAINT news_tags_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: news_tags news_tags_slug_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_tags
+    ADD CONSTRAINT news_tags_slug_key UNIQUE (slug);
+
+
+--
+-- Name: resource_access_events resource_access_events_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.resource_access_events
+    ADD CONSTRAINT resource_access_events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: series series_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.series
+    ADD CONSTRAINT series_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: series series_slug_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.series
+    ADD CONSTRAINT series_slug_key UNIQUE (slug);
+
+
+--
+-- Name: site_contact_widget_settings site_contact_widget_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.site_contact_widget_settings
+    ADD CONSTRAINT site_contact_widget_settings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: site_settings site_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.site_settings
+    ADD CONSTRAINT site_settings_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: topics topics_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.topics
+    ADD CONSTRAINT topics_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: topics topics_slug_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.topics
+    ADD CONSTRAINT topics_slug_key UNIQUE (slug);
+
+
+--
+-- Name: videos videos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT videos_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: videos videos_slug_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT videos_slug_key UNIQUE (slug);
+
+
+--
+-- Name: email_events_seq_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX email_events_seq_idx ON public.email_events USING btree (sequence_id);
+
+
+--
+-- Name: email_events_step_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX email_events_step_idx ON public.email_events USING btree (step_id);
+
+
+--
+-- Name: email_events_sub_type_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX email_events_sub_type_idx ON public.email_events USING btree (subscriber_id, event_type);
+
+
+--
+-- Name: email_sequences_slug_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX email_sequences_slug_idx ON public.email_sequences USING btree (slug) WHERE (slug IS NOT NULL);
+
+
+--
+-- Name: idx_ae_created_at; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_ae_created_at ON public.analytics_events USING btree (created_at DESC);
+
+
+--
+-- Name: idx_ae_entity_slug; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_ae_entity_slug ON public.analytics_events USING btree (entity_slug) WHERE (entity_slug IS NOT NULL);
+
+
+--
+-- Name: idx_ae_type; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_ae_type ON public.analytics_events USING btree (event_type);
+
+
+--
+-- Name: idx_ae_type_date; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_ae_type_date ON public.analytics_events USING btree (event_type, created_at DESC);
+
+
+--
+-- Name: idx_email_enroll_status_next; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_email_enroll_status_next ON public.email_sequence_enrollments USING btree (status, next_send_at);
+
+
+--
+-- Name: idx_email_subs_email; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_email_subs_email ON public.email_subscribers USING btree (email);
+
+
+--
+-- Name: idx_email_subs_status; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_email_subs_status ON public.email_subscribers USING btree (subscriber_status);
+
+
+--
+-- Name: idx_lead_magnets_featured; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_lead_magnets_featured ON public.lead_magnets USING btree (featured);
+
+
+--
+-- Name: idx_lead_magnets_slug; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_lead_magnets_slug ON public.lead_magnets USING btree (slug);
+
+
+--
+-- Name: idx_lead_magnets_status; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_lead_magnets_status ON public.lead_magnets USING btree (status);
+
+
+--
+-- Name: idx_lead_notes_created_at; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_lead_notes_created_at ON public.lead_notes USING btree (created_at DESC);
+
+
+--
+-- Name: idx_lead_notes_lead_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_lead_notes_lead_id ON public.lead_notes USING btree (lead_id);
+
+
+--
+-- Name: idx_media_assets_content_type; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_media_assets_content_type ON public.media_assets USING btree (content_type);
+
+
+--
+-- Name: idx_media_assets_created_at; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_media_assets_created_at ON public.media_assets USING btree (created_at DESC);
+
+
+--
+-- Name: idx_resource_access_email; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_resource_access_email ON public.resource_access_events USING btree (email);
+
+
+--
+-- Name: idx_resource_access_resource_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_resource_access_resource_id ON public.resource_access_events USING btree (resource_id);
+
+
+--
+-- Name: idx_resource_access_type; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_resource_access_type ON public.resource_access_events USING btree (access_type);
+
+
+--
+-- Name: lead_notes_lead_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX lead_notes_lead_id_idx ON public.lead_notes USING btree (lead_id);
+
+
+--
+-- Name: email_events email_events_campaign_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_events
+    ADD CONSTRAINT email_events_campaign_id_fkey FOREIGN KEY (campaign_id) REFERENCES public.email_campaigns(id);
+
+
+--
+-- Name: email_events email_events_sequence_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_events
+    ADD CONSTRAINT email_events_sequence_id_fkey FOREIGN KEY (sequence_id) REFERENCES public.email_sequences(id) ON DELETE SET NULL;
+
+
+--
+-- Name: email_events email_events_step_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_events
+    ADD CONSTRAINT email_events_step_id_fkey FOREIGN KEY (step_id) REFERENCES public.email_sequence_steps(id) ON DELETE SET NULL;
+
+
+--
+-- Name: email_events email_events_subscriber_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_events
+    ADD CONSTRAINT email_events_subscriber_id_fkey FOREIGN KEY (subscriber_id) REFERENCES public.email_subscribers(id);
+
+
+--
+-- Name: email_sequence_enrollments email_sequence_enrollments_sequence_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_sequence_enrollments
+    ADD CONSTRAINT email_sequence_enrollments_sequence_id_fkey FOREIGN KEY (sequence_id) REFERENCES public.email_sequences(id) ON DELETE CASCADE;
+
+
+--
+-- Name: email_sequence_enrollments email_sequence_enrollments_subscriber_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_sequence_enrollments
+    ADD CONSTRAINT email_sequence_enrollments_subscriber_id_fkey FOREIGN KEY (subscriber_id) REFERENCES public.email_subscribers(id) ON DELETE CASCADE;
+
+
+--
+-- Name: email_sequence_steps email_sequence_steps_sequence_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_sequence_steps
+    ADD CONSTRAINT email_sequence_steps_sequence_id_fkey FOREIGN KEY (sequence_id) REFERENCES public.email_sequences(id) ON DELETE CASCADE;
+
+
+--
+-- Name: email_sequence_steps email_sequence_steps_target_sequence_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_sequence_steps
+    ADD CONSTRAINT email_sequence_steps_target_sequence_id_fkey FOREIGN KEY (target_sequence_id) REFERENCES public.email_sequences(id) ON DELETE SET NULL;
+
+
+--
+-- Name: email_subscribers email_subscribers_linked_lead_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_subscribers
+    ADD CONSTRAINT email_subscribers_linked_lead_id_fkey FOREIGN KEY (linked_lead_id) REFERENCES public.leads(id);
+
+
+--
+-- Name: lead_notes lead_notes_lead_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lead_notes
+    ADD CONSTRAINT lead_notes_lead_id_fkey FOREIGN KEY (lead_id) REFERENCES public.leads(id) ON DELETE CASCADE;
+
+
+--
+-- Name: news_post_tags news_post_tags_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_post_tags
+    ADD CONSTRAINT news_post_tags_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.news_posts(id) ON DELETE CASCADE;
+
+
+--
+-- Name: news_post_tags news_post_tags_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_post_tags
+    ADD CONSTRAINT news_post_tags_tag_id_fkey FOREIGN KEY (tag_id) REFERENCES public.news_tags(id) ON DELETE CASCADE;
+
+
+--
+-- Name: news_posts news_posts_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_posts
+    ADD CONSTRAINT news_posts_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.news_categories(id) ON DELETE SET NULL;
+
+
+--
+-- Name: news_posts news_posts_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.news_posts
+    ADD CONSTRAINT news_posts_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.news_products(id) ON DELETE SET NULL;
+
+
+--
+-- Name: resource_access_events resource_access_events_lead_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.resource_access_events
+    ADD CONSTRAINT resource_access_events_lead_id_fkey FOREIGN KEY (lead_id) REFERENCES public.leads(id);
+
+
+--
+-- Name: resource_access_events resource_access_events_resource_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.resource_access_events
+    ADD CONSTRAINT resource_access_events_resource_id_fkey FOREIGN KEY (resource_id) REFERENCES public.lead_magnets(id) ON DELETE CASCADE;
+
+
+--
+-- Name: resource_access_events resource_access_events_subscriber_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.resource_access_events
+    ADD CONSTRAINT resource_access_events_subscriber_id_fkey FOREIGN KEY (subscriber_id) REFERENCES public.email_subscribers(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict oFEHbcNWuFNQkpR2ScBxqW1OsXocTZ798St8DdcSTs8FhH2nFgdhF1H0a58CrPo
+

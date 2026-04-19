@@ -2,15 +2,19 @@
 
 export const A = {
   /* colours */
-  primary:   "#1a7868",
-  primaryHov: "#16675a",
-  danger:    "#c13333",
-  bg:        "#f5f6f7",
+  primary:   "#0f5e50", // Deeper, luxurious teal
+  primaryHov: "#0b443a",
+  primaryLight: "rgba(15, 94, 80, 0.08)", // For active states
+  danger:    "#c93c3c",
+  dangerLight: "rgba(201, 60, 60, 0.08)",
+  bg:        "#f4f7f6", // Very slight cool green tint
   bgCard:    "#ffffff",
-  border:    "rgba(0,0,0,0.09)",
-  text:      "#1a1a1a",
-  textMuted: "rgba(0,0,0,0.42)",
-  textLight: "rgba(0,0,0,0.30)",
+  border:    "rgba(15, 94, 80, 0.12)", // Tinted border
+  text:      "#142421", // Dark forest text
+  textMuted: "rgba(20, 36, 33, 0.55)",
+  textLight: "rgba(20, 36, 33, 0.35)",
+  shadowSm:  "0 2px 8px rgba(15, 94, 80, 0.04)",
+  shadowMd:  "0 8px 24px rgba(15, 94, 80, 0.06)",
 } as const;
 
 export const s = {
@@ -42,33 +46,39 @@ export const s = {
   } as React.CSSProperties,
 
   btnPrimary: {
-    padding: "8px 20px", borderRadius: "7px", border: "none", cursor: "pointer",
-    fontSize: "13px", fontWeight: 600, background: A.primary, color: "#fff",
-    transition: "background 0.18s ease",
+    padding: "9px 24px", borderRadius: "8px", border: "none", cursor: "pointer",
+    fontSize: "13.5px", fontWeight: 600, 
+    background: `linear-gradient(135deg, ${A.primary}, ${A.primaryHov})`, color: "#fff",
+    boxShadow: "0 2px 10px rgba(15, 94, 80, 0.2)",
+    transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
   } as React.CSSProperties,
 
   btnSecondary: {
-    padding: "7px 16px", borderRadius: "7px", border: `1px solid ${A.border}`, cursor: "pointer",
-    fontSize: "12.5px", fontWeight: 500, background: "transparent", color: A.textMuted,
-    transition: "all 0.16s ease",
+    padding: "8px 18px", borderRadius: "8px", border: `1px solid ${A.border}`, cursor: "pointer",
+    fontSize: "13px", fontWeight: 500, background: A.bgCard, color: A.text,
+    boxShadow: A.shadowSm,
+    transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
   } as React.CSSProperties,
 
   btnDanger: {
-    padding: "6px 14px", borderRadius: "7px", border: "1px solid rgba(193,51,51,0.28)", cursor: "pointer",
-    fontSize: "12px", fontWeight: 500, background: "transparent", color: A.danger,
-    transition: "all 0.16s ease",
+    padding: "8px 18px", borderRadius: "8px", border: `1px solid rgba(201,60,60,0.2)`, cursor: "pointer",
+    fontSize: "13px", fontWeight: 500, background: A.dangerLight, color: A.danger,
+    transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
   } as React.CSSProperties,
 
   btnGhost: {
-    padding: "5px 12px", borderRadius: "6px", border: "none", cursor: "pointer",
-    fontSize: "12px", fontWeight: 500, background: "transparent", color: A.textMuted,
-    transition: "background 0.16s ease",
+    padding: "6px 14px", borderRadius: "8px", border: "none", cursor: "pointer",
+    fontSize: "13px", fontWeight: 500, background: "transparent", color: A.textMuted,
+    transition: "all 0.2s ease",
   } as React.CSSProperties,
 
   card: {
-    background: A.bgCard, borderRadius: "10px",
+    background: A.bgCard, 
+    borderRadius: "14px",
     border: `1px solid ${A.border}`,
-    padding: "1.5rem",
+    boxShadow: A.shadowMd,
+    padding: "1.75rem",
+    transition: "box-shadow 0.3s ease, transform 0.3s ease",
   } as React.CSSProperties,
 
   th: {

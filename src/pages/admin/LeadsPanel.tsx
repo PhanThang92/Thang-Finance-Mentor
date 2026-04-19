@@ -521,10 +521,13 @@ function LeadDetail({
               </div>
             )}
             {lead.syncError && (
-              <div style={{ background: "rgba(193,51,51,0.06)", border: "1px solid rgba(193,51,51,0.20)", borderRadius: "6px", padding: "8px 10px" }}>
-                <p style={{ fontSize: "11px", fontWeight: 600, color: A.danger, margin: "0 0 3px" }}>Lỗi đồng bộ</p>
-                <p style={{ fontSize: "11px", color: A.danger, margin: 0, fontFamily: "monospace", wordBreak: "break-all", lineHeight: 1.5 }}>
+              <div style={{ background: "rgba(201,60,60,0.06)", border: "1px solid rgba(201,60,60,0.20)", borderRadius: "8px", padding: "10px 12px", marginTop: "4px" }}>
+                <p style={{ fontSize: "11.5px", fontWeight: 600, color: A.danger, margin: "0 0 4px" }}>⚠️ Lỗi đồng bộ</p>
+                <p style={{ fontSize: "11.5px", color: A.danger, margin: "0 0 6px", fontFamily: "monospace", wordBreak: "break-all", lineHeight: 1.5 }}>
                   {lead.syncError}
+                </p>
+                <p style={{ fontSize: "11px", color: A.danger, opacity: 0.8, margin: 0, fontStyle: "italic" }}>
+                  (Hệ thống sẽ tự động thử lại quá trình đồng bộ mỗi 30 phút)
                 </p>
               </div>
             )}
