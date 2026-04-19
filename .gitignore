@@ -63,3 +63,4 @@ uploads/**
 !uploads/disp/.gitkeep
 !uploads/thumb/
 !uploads/thumb/.gitkeep
+backup_pvt_swc*
