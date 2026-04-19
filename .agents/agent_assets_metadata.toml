@@ -24,3 +24,9 @@ id = "Rr6riK1C9QZywTkzkvAzT"
 uri = "file://REPLIT_SETUP_GUIDE.md"
 type = "text"
 title = "Bộ quy tắc thiết lập website trên Replit"
+
+[[outputs]]
+id = "71dn62YjjhBRVtsJTzscE"
+uri = "file://backup_pvt_swc_20260419.txt"
+type = "text"
+title = "Database Backup SQL — pvt-swc (19/04/2026)"
