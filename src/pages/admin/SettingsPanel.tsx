@@ -7,7 +7,7 @@ import { invalidateSiteSettingsCache } from "@/hooks/useSiteSettings";
 import type { MediaAsset } from "@/lib/newsApi";
 
 /* ── Types ────────────────────────────────────────────────────────── */
-type SettTab = "menu" | "footer" | "social" | "contact" | "form" | "seo" | "logo" | "system";
+type SettTab = "menu" | "footer" | "social" | "contact" | "form" | "seo" | "logo" | "system" | "confirm";
 
 interface NavItem {
   id: string; label: string; href: string; visible: boolean; order: number;
@@ -69,6 +69,7 @@ function TabBar({ tab, setTab }: { tab: SettTab; setTab: (t: SettTab) => void })
     { id: "form",    label: "Form" },
     { id: "seo",     label: "SEO" },
     { id: "logo",    label: "Logo thương hiệu" },
+    { id: "confirm", label: "Email tự động" },
     { id: "system",  label: "Hệ thống" },
   ];
   return (
@@ -609,6 +610,81 @@ function SeoTab({ settings, setS }: { settings: Record<string, string>; setS: (k
   );
 }
 
+/* ── Auto-reply / Confirmation tab ────────────────────────────────── */
+function ConfirmTab({ settings, setS }: { settings: Record<string, string>; setS: (k: string, v: string) => void }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.125rem" }}>
+      <InfoBox
+        title="Email xác nhận tự động"
+        text="Khi người dùng điền thông tin (đăng ký nhận tin, liên hệ, đăng ký sản phẩm/cộng đồng), hệ thống sẽ gửi một email xác nhận tự động đến họ nếu tính năng này được bật."
+      />
+
+      {/* Main switch */}
+      <div style={s.card}>
+        <SectionHead>Trạng thái hoạt động</SectionHead>
+        <div>
+          <Lbl>Bật tính năng gửi email tự động toàn hệ thống</Lbl>
+          <select style={{ ...s.field, cursor: "pointer", maxWidth: "200px" }}
+            value={settings["confirm_enabled"] ?? "false"}
+            onChange={(e) => setS("confirm_enabled", e.target.value)}>
+            <option value="true">Bật (Gửi email)</option>
+            <option value="false">Tắt (Không gửi)</option>
+          </select>
+          <Hint text="Lưu ý: Bạn cũng cần cấu hình RESEND_API_KEY trong biến môi trường để tính năng gửi email hoạt động thực tế." />
+        </div>
+      </div>
+
+      {/* Categories */}
+      {[
+        { 
+          keyPrefix: "lead", 
+          title: "1. Đăng ký thông thường (Lead / Newsletter)", 
+          desc: "Dùng cho các form đăng ký nhận bản tin, form rút gọn ngoài trang chủ, v.v." 
+        },
+        { 
+          keyPrefix: "contact", 
+          title: "2. Form liên hệ", 
+          desc: "Dùng cho trang liên hệ (Contact) hoặc form có nội dung cần phản hồi." 
+        },
+        { 
+          keyPrefix: "product", 
+          title: "3. Form tư vấn sản phẩm / dịch vụ", 
+          desc: "Dùng cho các form đặt ở trang giới thiệu khóa học, dịch vụ tài chính." 
+        },
+        { 
+          keyPrefix: "community", 
+          title: "4. Form tham gia cộng đồng", 
+          desc: "Dùng cho trang đăng ký tham gia group chat, sinh hoạt chung." 
+        }
+      ].map((cat) => (
+        <div style={s.card} key={cat.keyPrefix}>
+          <SectionHead>{cat.title}</SectionHead>
+          <p style={{ fontSize: "12px", color: A.textLight, margin: "0 0 1rem", fontStyle: "italic" }}>
+            {cat.desc}
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+            <div>
+              <Lbl>Tiêu đề email (Subject)</Lbl>
+              <input style={{ ...s.field, fontWeight: 600 }} 
+                value={settings[`confirm_subject_${cat.keyPrefix}`] ?? ""}
+                placeholder="Cảm ơn bạn đã đăng ký..."
+                onChange={(e) => setS(`confirm_subject_${cat.keyPrefix}`, e.target.value)} />
+            </div>
+            <div>
+              <Lbl>Nội dung email (Body)</Lbl>
+              <textarea style={{ ...s.textarea, height: "120px", lineHeight: "1.6" }} 
+                value={settings[`confirm_body_${cat.keyPrefix}`] ?? ""}
+                placeholder="Nội dung thông điệp gửi đến người dùng..."
+                onChange={(e) => setS(`confirm_body_${cat.keyPrefix}`, e.target.value)} />
+              <Hint text="Gõ Enter để xuống dòng. Hệ thống sẽ tự động chèn 'Xin chào [Tên khách hàng],' ở đầu email và chữ ký ở cuối email." />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /* ── System status tab ────────────────────────────────────────────── */
 function StatusRow({
   label, ok, onLabel, offLabel, note,
@@ -1110,6 +1186,7 @@ export function SettingsPanel({ adminKey }: { adminKey: string }) {
       {tab === "form"    && <FormTab    settings={settings} setS={setS} />}
       {tab === "seo"     && <SeoTab     settings={settings} setS={setS} />}
       {tab === "logo"    && <LogoTab    settings={settings} setS={setS} adminKey={adminKey} />}
+      {tab === "confirm" && <ConfirmTab settings={settings} setS={setS} />}
       {tab === "system"  && <SystemTab  adminKey={adminKey} />}
     </div>
   );
