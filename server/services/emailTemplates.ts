@@ -124,7 +124,7 @@ export function welcomeEmailHtml(opts: {
   siteUrl?:        string;
 }): string {
   const name   = opts.fullName ? (opts.fullName.trim().split(" ").at(-1) ?? opts.fullName) : "bạn";
-  const site   = opts.siteUrl ?? "https://phanvanthang.com";
+  const site   = opts.siteUrl ?? "https://phanvanthang.net";
 
   const bodyHtml = [
     bodyHeading(`Xin chào ${escapeHtml(name)},`),

@@ -22,9 +22,9 @@ import type { EmailSubscriber, EmailCampaign, EmailSequenceStep } from "../db";
 /* ── Provider setup ─────────────────────────────────────────────────── */
 
 const RESEND_API_KEY    = process.env["RESEND_API_KEY"];
-const RESEND_FROM_EMAIL = process.env["RESEND_FROM_EMAIL"] ?? "noreply@updates.phanvanthang.com";
+const RESEND_FROM_EMAIL = process.env["RESEND_FROM_EMAIL"] ?? "noreply@updates.phanvanthang.net";
 const RESEND_FROM_NAME  = process.env["RESEND_FROM_NAME"]  ?? "Phan Văn Thắng SWC";
-const SITE_URL          = process.env["SITE_URL"]          ?? "https://phanvanthang.com";
+const SITE_URL          = process.env["SITE_URL"]          ?? "https://phanvanthang.net";
 const UNSUBSCRIBE_BASE  = `${SITE_URL}/huy-dang-ky`;
 
 let resend: Resend | null = null;

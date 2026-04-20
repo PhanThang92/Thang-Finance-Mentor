@@ -7,7 +7,7 @@ import sharp from "sharp";
 import { storage, listUploadFiles, uploadDiskStats, UPLOAD_DIR } from "../lib/storage.js";
 import { runImagePipeline } from "../services/imageService.js";
 import fs from "fs";
-import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, leadNotesTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable, contactWidgetSettingsTable, contactChannelsTable } from "../db";
+import { db, newsCategoriesTable, newsProductsTable, newsTagsTable, newsPostsTable, newsPostTagsTable, leadsTable, leadNotesTable, siteSettingsTable, articlesTable, videosTable, topicsTable, seriesTable, mediaAssetsTable, analyticsEventsTable, contactWidgetSettingsTable, contactChannelsTable, emailSubscribersTable } from "../db";
 import { eq, sql, desc, ilike, or, and, isNotNull, gte, lte, inArray } from "drizzle-orm";
 
 /* ── Upload dirs managed by storage abstraction (see src/lib/storage.ts) ── */
@@ -405,6 +405,44 @@ router.delete("/leads/:id", async (req, res) => {
   try {
     await db.delete(leadsTable).where(eq(leadsTable.id, Number(req.params.id)));
     res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+router.post("/leads/:id/subscribe", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const [lead] = await db.select().from(leadsTable).where(eq(leadsTable.id, id)).limit(1);
+    if (!lead) { res.status(404).json({ error: "Không tìm thấy lead" }); return; }
+    if (!lead.email) { res.status(400).json({ error: "Lead này không có email" }); return; }
+
+    const trimmedEmail = lead.email.trim().toLowerCase();
+    
+    // Check if already subscribed
+    const [existing] = await db.select({ id: emailSubscribersTable.id })
+      .from(emailSubscribersTable)
+      .where(eq(emailSubscribersTable.email, trimmedEmail))
+      .limit(1);
+
+    if (existing) {
+      // Just update lead status to show it's linked
+      res.json({ ok: true, message: "Email này đã nằm trong danh sách người đăng ký từ trước." });
+      return;
+    }
+
+    const { randomBytes } = await import("crypto");
+    const unsubscribeToken = randomBytes(24).toString("hex");
+
+    await db.insert(emailSubscribersTable).values({
+      email: trimmedEmail,
+      fullName: lead.name,
+      subscriberStatus: "subscribed",
+      sourceType: lead.sourceType || lead.formType || "lead_conversion",
+      unsubscribeToken,
+      subscribedAt: new Date(),
+      stage: "lead",
+    });
+
+    res.json({ ok: true, message: "Đã chuyển thành công vào danh sách Người đăng ký." });
   } catch (e) { res.status(500).json({ error: String(e) }); }
 });
 

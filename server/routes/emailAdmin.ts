@@ -759,7 +759,7 @@ function getDefaultSequenceTemplates() {
           previewText: "Cảm ơn bạn đã tin tưởng. Đây là tài liệu bạn đã yêu cầu.",
           contentBody: "Xin chào {{first_name}},\n\nCảm ơn bạn đã đăng ký nhận nội dung từ tôi.\n\nBạn đã yêu cầu tài liệu \"7 Sai lầm khiến người Việt làm việc mãi không tích lũy được tài sản\". Đây là link tải về:\n\n[Nhấn vào đây để nhận tài liệu]\n\nTrong tuần tới, tôi sẽ gửi cho bạn những nội dung thiết thực về tư duy tài chính và đầu tư dài hạn.\n\nPhan Văn Thắng",
           ctaText: "Tải tài liệu ngay",
-          ctaUrl: "https://phanvanthang.com/tai-lieu",
+          ctaUrl: "https://phanvanthang.net/tai-lieu",
         },
         { stepType: "wait", delayDays: 1, subject: "" },
         {
@@ -782,7 +782,7 @@ function getDefaultSequenceTemplates() {
           previewText: "Một điều đơn giản nhưng thay đổi cách nhìn của nhiều người.",
           contentBody: "{{first_name}},\n\nNhiều người nhầm lẫn: thu nhập cao = giàu.\n\nNhưng thực tế không phải vậy. Có người kiếm 50 triệu/tháng nhưng tài sản gần như bằng 0 vì chi tiêu hết.\n\nTài sản thực sự là: bất động sản sinh dòng tiền, cổ phiếu, doanh nghiệp, kỹ năng đặc thù.\n\nKỷ luật tài chính không có nghĩa là keo kiệt — mà là **trả cho bản thân mình trước**.\n\nMuốn tìm hiểu thêm, bạn có thể đọc thêm trong thư viện nội dung của tôi.",
           ctaText: "Đọc thêm",
-          ctaUrl: "https://phanvanthang.com/bai-viet",
+          ctaUrl: "https://phanvanthang.net/bai-viet",
         },
         { stepType: "wait", delayDays: 2, subject: "" },
         {
@@ -791,7 +791,7 @@ function getDefaultSequenceTemplates() {
           previewText: "Cảm ơn bạn đã đồng hành trong tuần qua.",
           contentBody: "{{first_name}},\n\nSau một tuần chia sẻ, tôi muốn giới thiệu với bạn 2 tài nguyên:\n\n**1. Thư viện nội dung** — Nơi tập hợp toàn bộ bài viết, video, và tài liệu miễn phí về tư duy tài chính.\n\n**2. Con đường 1 triệu đô** — Chương trình học có hướng dẫn, giúp bạn xây dựng hệ thống tài chính cá nhân từ đầu.\n\nNếu bạn muốn tìm hiểu về chương trình, hãy nhấn vào link bên dưới.",
           ctaText: "Tìm hiểu Con đường 1 triệu đô",
-          ctaUrl: "https://phanvanthang.com/san-pham",
+          ctaUrl: "https://phanvanthang.net/san-pham",
         },
         { stepType: "add_tag", delayDays: 0, subject: "", tagName: "stage_nurture" },
       ],

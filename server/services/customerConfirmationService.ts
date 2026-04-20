@@ -201,7 +201,7 @@ export async function sendCustomerConfirmation(
     const category  = resolveCategory(lead);
     const subject   = settings[`confirm_subject_${category}`] || settings.confirm_subject_lead;
     const body      = settings[`confirm_body_${category}`]   || settings.confirm_body_lead;
-    const siteUrl   = process.env["SITE_URL"] ?? "https://phanvanthang.com";
+    const siteUrl   = process.env["SITE_URL"] ?? "https://phanvanthang.net";
 
     const html = buildConfirmationHtml(lead, body, siteUrl);
 

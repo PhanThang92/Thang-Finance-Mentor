@@ -431,6 +431,38 @@ function LeadDetail({
           <DetailRow label="Họ tên" value={lead.name} />
           <DetailRow label="Điện thoại" value={lead.phone} mono />
           <DetailRow label="Email" value={lead.email} mono />
+          {lead.email && (
+            <div style={{ padding: "8px 0 0 120px" }}>
+              <button
+                onClick={async () => {
+                  try {
+                    const adminKey = localStorage.getItem("swc_admin_key") || "";
+                    const res = await fetch(`/api/admin/leads/${lead.id}/subscribe`, {
+                      method: "POST",
+                      headers: { Authorization: `Bearer ${adminKey}` },
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || "Lỗi");
+                    alert(data.message);
+                  } catch(e) {
+                    alert(String(e));
+                  }
+                }}
+                style={{
+                  background: "#0f766e",
+                  color: "#fff",
+                  border: "none",
+                  padding: "6px 12px",
+                  borderRadius: "4px",
+                  fontSize: "12px",
+                  cursor: "pointer",
+                  fontWeight: 600
+                }}
+              >
+                + Chuyển thành Người đăng ký bản tin
+              </button>
+            </div>
+          )}
         </DetailSection>
 
         {/* Source */}

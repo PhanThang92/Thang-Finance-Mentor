@@ -4,9 +4,9 @@
 import { Resend } from "resend";
 
 const RESEND_KEY  = process.env["RESEND_API_KEY"]  ?? "";
-const FROM_EMAIL  = process.env["RESEND_FROM_EMAIL"] ?? "noreply@phanvanthang.com";
+const FROM_EMAIL  = process.env["RESEND_FROM_EMAIL"] ?? "noreply@phanvanthang.net";
 const FROM_NAME   = process.env["RESEND_FROM_NAME"]  ?? "Thắng SWC";
-const SITE_URL    = process.env["SITE_URL"]           ?? "https://phanvanthang.com";
+const SITE_URL    = process.env["SITE_URL"]           ?? "https://phanvanthang.net";
 
 const resend = RESEND_KEY ? new Resend(RESEND_KEY) : null;
 
