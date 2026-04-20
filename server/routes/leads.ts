@@ -87,7 +87,23 @@ router.post("/", async (req, res) => {
           referrer:      referrer         || existing.referrer,
           updatedAt: new Date(),
         }).where(eq(leadsTable.id, existing.id)).returning();
-        if (updated) triggerLeadSync(updated);
+        
+        if (updated) {
+          triggerLeadSync(updated);
+          
+          // Gửi thông báo cho admin khi khách cũ gửi lại form
+          void (async () => {
+            const notif = await sendLeadNotification(updated);
+            await db.update(leadsTable).set({
+              notifyStatus: notif.ok ? "sent" : "failed",
+              notifyError:  notif.ok ? null : (notif.error ?? "unknown"),
+            }).where(eq(leadsTable.id, updated.id));
+          })().catch((e) => console.error("[leads] notify update failed (existing):", e));
+
+          // Gửi email tự động phản hồi cho khách cũ
+          void sendCustomerConfirmation(updated)
+            .catch((e) => console.error("[leads] customer confirmation failed (existing):", e));
+        }
         res.json({ ok: true, id: existing.id });
         return;
       }
