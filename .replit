@@ -27,3 +27,8 @@ timeoutMs = 20000
 
 [nix]
 channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+POSTGRES_URL = "postgresql://pha86411_user_pvt:T%5EOJx%24ljcah8cm32@103.138.88.63/pha86411_pvt"
