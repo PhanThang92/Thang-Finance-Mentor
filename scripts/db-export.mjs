@@ -14,9 +14,9 @@ import { execSync } from "child_process";
 import { existsSync, mkdirSync } from "fs";
 import path from "path";
 
-const DATABASE_URL = process.env.DATABASE_URL;
+const DATABASE_URL = process.env.POSTGRES_URL ?? process.env.DATABASE_URL;
 if (!DATABASE_URL) {
-  console.error("[db-export] ERROR: DATABASE_URL environment variable is not set.");
+  console.error("[db-export] ERROR: POSTGRES_URL hoặc DATABASE_URL chưa được khai báo.");
   process.exit(1);
 }
 
